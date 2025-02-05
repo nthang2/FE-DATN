@@ -1,6 +1,6 @@
 import { useRoutes } from 'react-router-dom';
 import Layout from './layout/Layout';
-import Home from './views/Home/Home';
+import Borrow from './views/Borrow/Borrow';
 import MyPortfolio from './views/MyPortfolio/MyPortfolio';
 
 export default function Routes() {
@@ -8,7 +8,7 @@ export default function Routes() {
     {
       path: '/',
       element: <Layout />,
-      children: [{ path: '/', element: <Home /> }],
+      children: [{ path: '/', element: <Borrow /> }],
     },
     {
       path: '/my-portfolio',
