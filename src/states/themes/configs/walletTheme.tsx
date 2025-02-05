@@ -1,8 +1,7 @@
-import ExpandMoreRounded from '@mui/icons-material/ExpandMoreRounded';
-import { darken, lighten, outlinedInputClasses, PaletteOptions, Theme, ThemeOptions } from '@mui/material';
-import { FontOxanium } from 'src/constants';
+import { darken, outlinedInputClasses, PaletteOptions, Theme, ThemeOptions } from '@mui/material';
 import { THEME_MODE } from '../types';
 import { buildVariant, pxToRem } from '../utils';
+import { FontOxanium } from 'src/constants';
 
 export function getWalletThemeConfig(mode: THEME_MODE): ThemeOptions {
   const getColor = (darkColor: string, lightColor: string) => {
@@ -70,6 +69,7 @@ export function getWalletThemeConfig(mode: THEME_MODE): ThemeOptions {
       primary: getColor('#FFF', '#001714'),
       secondary: getColor('#BEBEBE', '#616161'),
       disabled: getColor('#E4E3D6', '#E4E3D6'),
+      tertiary: getColor('#6c6b65', '#6c6b65'),
     },
   } as PaletteOptions;
 
@@ -109,18 +109,18 @@ export function getWalletThemeConfig(mode: THEME_MODE): ThemeOptions {
     typography: {
       fontFamily: FontOxanium,
       h1: { ...buildVariant(700, 52, 71) },
-      h2: { ...buildVariant(700, 45, 61) },
+      h2: { ...buildVariant(700, 48, 61) },
       h3: { ...buildVariant(600, 30, 40) },
       h4: { ...buildVariant(600, 28, 38) },
       h5: { ...buildVariant(600, 24, 30) },
       h6: { ...buildVariant(600, 20, 25) },
       body1: { ...buildVariant(400, 16, 24) },
       body2: { ...buildVariant(400, 14, 18) },
-      body3: { ...buildVariant(600, 12, 15) },
-      subtitle1: buildVariant(600, 16, 24, 0),
-      subtitle2: buildVariant(600, 14, 20, 0),
+      body3: { ...buildVariant(400, 12, 15) },
+      subtitle1: buildVariant(400, 16, 24, 0),
+      subtitle2: buildVariant(400, 14, 20, 0),
       caption: buildVariant(400, 14, 20, 0.15),
-      caption2: buildVariant(500, 12, 16),
+      caption2: buildVariant(400, 12, 16),
       button: {
         ...buildVariant(600, 14, 20),
         textTransform: 'none',
@@ -168,6 +168,31 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
                 background: '#d3d3d3',
               },
             },
+          },
+          '.text-truncate': {
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          },
+          '.flex-center': {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          },
+          '.flex-space-between': {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          },
+          '.flex-end': {
+            display: 'flex',
+            justifyContent: 'end',
+            alignItems: 'center',
+          },
+          '.flex-start': {
+            display: 'flex',
+            justifyContent: 'start',
+            alignItems: 'center',
           },
         },
       },
@@ -217,12 +242,13 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
       },
       MuiSelect: {
         defaultProps: {
-          IconComponent: ExpandMoreRounded,
-          size: 'small',
+          // IconComponent: ExpandMoreRounded,
+          size: 'medium',
         },
         styleOverrides: {
           root: {
             borderRadius: '16px',
+            paddingInline: '10px',
             background: (theme.palette.mode == 'dark' ? '#484848' : '#E3E3E3') + '!important',
             '& .MuiSelect-select': {
               padding: '4px 30px 4px 8px!important',
@@ -234,6 +260,8 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
           },
           icon: {
             color: theme.palette.text.primary,
+            padding: 1,
+            fontSize: '26px',
           },
           filled: {},
           select: {},
@@ -369,9 +397,7 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
         },
       },
       MuiAutocomplete: {
-        defaultProps: {
-          popupIcon: <ExpandMoreRounded />,
-        },
+        defaultProps: {},
         styleOverrides: {
           root: {
             '& > .MuiFormControl-root > .MuiOutlinedInput-root': {
@@ -440,11 +466,11 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
             background: theme.palette.background.button,
             '&:hover, &.Mui-focusVisible': {
               backgroundColor: darken(theme.palette.background.button, 0.1),
-              boxShadow: ' 0px 2px 5px 0px ' + theme.palette.background.button,
+              boxShadow: 'rgb(42, 61, 61) 2px 2px 20px',
             },
             '&.Mui-disabled': {
-              color: theme.palette.mode === 'dark' ? '#484848' : '#B5B5B5',
-              backgroundColor: theme.palette.mode === 'dark' ? '#1c1c1c' : 'rgba(0, 0, 0, 0.12)',
+              color: theme.palette.mode === 'dark' ? '#E4E3D6' : '#B5B5B5',
+              backgroundColor: theme.palette.mode === 'dark' ? '#232322' : 'rgba(0, 0, 0, 0.12)',
             },
           },
           containedSecondary: {
@@ -466,16 +492,21 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
             borderColor: theme.palette.background.button,
             color: theme.palette.background.button,
             '&:hover, &.Mui-focusVisible': {
-              boxShadow: ' 0px 2px 5px 0px ' + theme.palette.background.button,
+              boxShadow: 'rgb(42, 61, 61) 2px 2px 20px',
             },
           },
           textSecondary: {
             backgroundColor: theme.palette.secondary.light,
-            color: theme.palette.mode == 'dark' ? '#888d8b' : '#585F5A',
+            color: theme.palette.mode == 'dark' ? '#000' : '#585F5A',
           },
           textPrimary: {
             '&:hover': {
-              backgroundColor: lighten(theme.palette.primary.main, 0.85),
+              backgroundColor: theme.palette.primary.main,
+              color: '#000',
+            },
+            '&.Mui-disabled': {
+              color: theme.palette.mode === 'dark' ? '#E4E3D6' : '#B5B5B5',
+              backgroundColor: theme.palette.mode === 'dark' ? '#232322' : 'rgba(0, 0, 0, 0.12)',
             },
           },
         },
@@ -765,7 +796,7 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
               background: theme.palette.mode == 'dark' ? '#dcdcdc2e' : '#cecece75',
             },
             '&.Mui-selected': {
-              color: theme.palette.text.primary + '!important',
+              color: '#000' + '!important',
               background: theme.palette.primary.dark,
             },
           },

@@ -55,3 +55,19 @@ export const Check: _SvgIconProps = (props) => {
     </SvgIcon>
   );
 };
+
+export const PlusIcon = () => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
+      <mask id="mask0_6_117" maskUnits="userSpaceOnUse" x="0" y="0" width="20" height="21">
+        <rect y="0.5" width="20" height="20" fill="#D9D9D9" />
+      </mask>
+      <g mask="url(#mask0_6_117)">
+        <path
+          d="M9.16666 11.3333H4.16666V9.66667H9.16666V4.66667H10.8333V9.66667H15.8333V11.3333H10.8333V16.3333H9.16666V11.3333Z"
+          fill="#BEBEBE"
+        />
+      </g>
+    </svg>
+  );
+};

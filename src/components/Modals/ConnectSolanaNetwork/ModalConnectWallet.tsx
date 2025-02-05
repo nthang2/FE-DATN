@@ -11,13 +11,7 @@ const ModalConnectWallet = (props: IProps) => {
   const { open, onClose } = props;
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      sx={(theme) => ({
-        background: theme.palette.background.secondary,
-      })}
-    >
+    <Dialog open={open} onClose={onClose}>
       <DialogTitle>
         <Stack justifyContent={'space-between'} alignItems="center">
           <Typography variant="h5">Connect Wallet</Typography>
