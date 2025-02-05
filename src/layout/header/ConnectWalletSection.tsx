@@ -50,7 +50,11 @@ const ConnectWalletSection = () => {
               onClose={handleCloseAnchor}
               anchorOrigin={{
                 vertical: 'bottom',
-                horizontal: 'center',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
               }}
             >
               <Typography sx={{ p: 2, cursor: 'pointer' }} onClick={disconnect}>

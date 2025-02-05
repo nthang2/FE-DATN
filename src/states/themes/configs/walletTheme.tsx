@@ -225,11 +225,14 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
         },
         styleOverrides: {
           root: {
-            borderRadius: '30px',
+            borderRadius: '16px',
             background: (theme.palette.mode == 'dark' ? '#484848' : '#E3E3E3') + '!important',
             '& .MuiSelect-select': {
               padding: '4px 30px 4px 8px!important',
               fontSize: '14px',
+            },
+            '.MuiOutlinedInput-notchedOutline': {
+              borderColor: 'transparent !important',
             },
           },
           icon: {
