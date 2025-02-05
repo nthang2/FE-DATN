@@ -6,7 +6,7 @@ export type TMenu = {
 export const menu: TMenu[] = [
   {
     title: 'My Portfolio',
-    url: '/my_portfolio',
+    url: '/my-portfolio',
   },
   {
     title: 'Borrow',

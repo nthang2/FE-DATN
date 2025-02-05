@@ -1,3 +1,8 @@
+import { SvgIcon, SvgIconProps } from '@mui/material';
+import React from 'react';
+
+export type _SvgIconProps = React.FC<SvgIconProps>;
+
 export const WalletIcon = () => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
@@ -25,5 +30,28 @@ export const ArrowDown = () => {
         fill="#BEBEBE"
       />
     </svg>
+  );
+};
+
+export const MetroChartBarIcon: _SvgIconProps = (props) => {
+  return (
+    <SvgIcon viewBox="0 0 48 48" {...props}>
+      <path
+        d="M16.5,19.5H6.213A1.719,1.719,0,0,0,4.5,21.213V52.07a1.719,1.719,0,0,0,1.714,1.714H16.5a1.719,1.719,0,0,0,1.714-1.714V21.213A1.719,1.719,0,0,0,16.5,19.5Zm0,30.857H6.213V36.641H16.5ZM33.642,12.641H23.356a1.719,1.719,0,0,0-1.714,1.714V52.07a1.719,1.719,0,0,0,1.714,1.714H33.642a1.719,1.719,0,0,0,1.714-1.714V14.356a1.719,1.719,0,0,0-1.714-1.714Zm0,37.714H23.356V33.213H33.642ZM50.784,5.784H40.5A1.719,1.719,0,0,0,38.784,7.5V52.07A1.719,1.719,0,0,0,40.5,53.784H50.784A1.719,1.719,0,0,0,52.5,52.07V7.5a1.719,1.719,0,0,0-1.714-1.714Zm0,44.571H40.5V29.784H50.784Z"
+        transform="translate(-4.499 -5.784)"
+        fill="#B5B8B8"
+      />
+    </SvgIcon>
+  );
+};
+
+export const Check: _SvgIconProps = (props) => {
+  return (
+    <SvgIcon {...props} width="8" height="7" viewBox="0 0 8 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M7.60608 0.707083C7.99651 1.09751 7.99655 1.73052 7.60615 2.12099L3.95011 5.77775C3.55959 6.16834 2.92637 6.16837 2.53582 5.77782L0.707 3.949C0.316535 3.55853 0.316535 2.92547 0.707 2.535C1.09747 2.14453 1.73053 2.14454 2.121 2.535L3.243 3.657L6.19201 0.70718C6.58246 0.316631 7.21559 0.316588 7.60608 0.707083Z"
+        fill="#FCFFD8"
+      />
+    </SvgIcon>
   );
 };

@@ -1,8 +1,8 @@
+import ExpandMoreRounded from '@mui/icons-material/ExpandMoreRounded';
 import { darken, lighten, outlinedInputClasses, PaletteOptions, Theme, ThemeOptions } from '@mui/material';
+import { FontOxanium } from 'src/constants';
 import { THEME_MODE } from '../types';
 import { buildVariant, pxToRem } from '../utils';
-import { FontOxanium } from 'src/constants';
-import ExpandMoreRounded from '@mui/icons-material/ExpandMoreRounded';
 
 export function getWalletThemeConfig(mode: THEME_MODE): ThemeOptions {
   const getColor = (darkColor: string, lightColor: string) => {
@@ -17,10 +17,7 @@ export function getWalletThemeConfig(mode: THEME_MODE): ThemeOptions {
       default: '#08080D', // ? body background
       primary: getColor('#2D2D2D', '#F7F7F7'),
       secondary: getColor('#333331', '#D8D8D8'),
-      content: getColor(
-        'linear-gradient(142deg, #2b5971 0%, #214152 35%, #170123 65%, #170038 100%)',
-        'linear-gradient(142deg, #b6eaff 0%, #d3f1ff 35%, #FDF1FF 65%, #F0E8FF 100%)'
-      ), // ? color content background
+      content: getColor('#181817', '#181817'), // ? color content background
       selection: '#4CADD3', // ? color selection sidebar
       hover: 'linear-gradient(90deg, #0E1713 0%, #246b87 48%, #0E1713 100%)',
       button: getColor('rgba(252, 255, 216, 1)', 'linear-gradient(142deg, #b6eaff 0%, #d3f1ff 35%, #a2d6ff 65%, #5dcdff 100%)'),
