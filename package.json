@@ -27,6 +27,8 @@
     "chain-registry": "^1.69.88",
     "crypto-token-icon": "^0.0.35",
     "date-fns": "^4.1.0",
+    "highcharts": "^12.1.2",
+    "highcharts-react-official": "^3.2.1",
     "jotai": "^2.11.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
