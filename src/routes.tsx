@@ -8,16 +8,14 @@ export default function Routes() {
     {
       path: '/',
       element: <Layout />,
-      children: [{ path: '/', element: <Borrow /> }],
-    },
-    {
-      path: '/my-portfolio',
-      element: <Layout />,
-      children: [{ path: '/my-portfolio', element: <MyPortfolio /> }],
-    },
-    {
-      path: '*',
-      element: <div>404</div>,
+      children: [
+        { path: '/', element: <Borrow /> },
+        { path: '/my-portfolio', element: <MyPortfolio /> },
+        {
+          path: '*',
+          element: <div>404</div>,
+        },
+      ],
     },
   ]);
 }

@@ -93,7 +93,7 @@ export default function ConnectSolanaNetwork() {
         }
 
         return (
-          <Grid component="div" key={wallet.adapter.name + index + status} size={6}>
+          <Grid component="div" key={wallet.adapter.name + index + status} size={{ xs: 12, md: 6 }}>
             <BoxOptionWallet
               key={wallet.adapter.name + index + status}
               name={wallet.adapter.name}
