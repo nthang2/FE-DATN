@@ -1,20 +1,23 @@
 import { Box } from '@mui/material';
 
 const CustomMark = ({ ...props }) => {
+  const dataIndex = props['data-index'];
+  const bgcolor = dataIndex > 1 ? '#FCFFD8' : '#666662';
+
   return (
     <Box
       component="span"
       sx={{
         position: 'absolute',
         width: '2px',
-        'border-radius': '1px',
-        'background-color': 'currentColor',
+        borderRadius: '1px',
+        backgroundColor: 'currentColor',
         top: '50%',
-        '-webkit-transform': 'translate(-1px, -50%)',
-        '-moz-transform': 'translate(-1px, -50%)',
-        '-ms-transform': 'translate(-1px, -50%)',
+        webkitTransform: 'translate(-1px, -50%)',
+        mozTransform: 'translate(-1px, -50%)',
+        msTransform: 'translate(-1px, -50%)',
         transform: 'translate(-1px, -50%)',
-        bgcolor: '#666662',
+        bgcolor: bgcolor,
         height: '100%',
         display: props.markActive ? 'none' : 'block',
       }}

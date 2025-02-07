@@ -13,7 +13,7 @@ const CustomTrack = ({ ...props }) => {
     return trackBgColor.find((item) => item.value > Number(trackWidth))?.bgcolor;
   }, [props.style.width]);
 
-  return <SliderTrack style={{ width: props.style.width, height: '100%', top: 0, background: bgcolor }}></SliderTrack>;
+  return <SliderTrack {...props} style={{ width: props.style.width, height: '100%', background: bgcolor }}></SliderTrack>;
 };
 
 export default CustomTrack;

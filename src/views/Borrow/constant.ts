@@ -1,3 +1,5 @@
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+
 export const marks = [
   {
     value: 37,
@@ -27,3 +29,13 @@ export const labelMark = [
     label: 'Liquidation',
   },
 ];
+
+export interface IDepositItem {
+  address: string;
+  value: string;
+}
+
+export const defaultBorrowValue = {
+  address: mapNameToInfoSolana.TRUMP.address,
+  value: '0',
+};

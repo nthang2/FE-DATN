@@ -1,14 +1,34 @@
 import { Box, Slider, Stack, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
-import CustomMark from '../components/BorrowSlide/CustomMark';
-import CustomThumb from '../components/BorrowSlide/CustomThumb';
-import CustomTrack from '../components/BorrowSlide/CustomTrack';
-import { marks, labelMark } from '../constant';
+import { labelMark, marks } from '../../constant';
+import { useBorrowState } from '../../state/hooks';
+import CustomMark from '../BorrowSlide/CustomMark';
+import CustomThumb from '../BorrowSlide/CustomThumb';
+import CustomTrack from '../BorrowSlide/CustomTrack';
 
 const minZoom = 1;
 const maxZoom = 100;
+const maxValue = 500;
 
 const LTVSection = () => {
+  const [borrowState, setBorrowState] = useBorrowState();
+  const [value, setValue] = useState<number | number[]>(0);
+
+  const handleChangeSlider = (value: number | number[]) => {
+    if (Number(value) > 80) {
+      return;
+    }
+
+    const borrowValue = (Number(value) * maxValue) / 100;
+    setBorrowState({ ...borrowState, value: borrowValue.toString() });
+  };
+
+  useEffect(() => {
+    const percent = (100 * Number(borrowState.value)) / maxValue;
+    setValue(percent);
+  }, [borrowState]);
+
   return (
     <BoxCustom>
       <Stack justifyContent="space-between">
@@ -16,7 +36,7 @@ const LTVSection = () => {
           Loan to Value (LTV)
         </Typography>
         <Typography variant="h6" fontWeight={700}>
-          0.00%
+          {value}%
         </Typography>
       </Stack>
 
@@ -30,10 +50,9 @@ const LTVSection = () => {
           marks={marks}
           min={minZoom}
           max={maxZoom}
-          value={38}
-          disabled
-          onChange={(_e, value) => console.log(value)}
-          slots={{ thumb: CustomThumb, mark: CustomMark, track: CustomTrack }}
+          value={value}
+          onChange={(_e, value) => handleChangeSlider(value)}
+          slots={{ mark: CustomMark, track: CustomTrack, thumb: CustomThumb }}
           sx={{
             bgcolor: '#333331',
             ml: 1.5,

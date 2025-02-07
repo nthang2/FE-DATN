@@ -1,41 +1,22 @@
-import { Box, MenuItem, Select, SelectChangeEvent, Skeleton, Stack, Typography } from '@mui/material';
-import { ReactNode, useState } from 'react';
-import {
-  findTokenInfoByToken,
-  mapNameToInfoSolanaMainnet,
-} from 'src/constants/tokens/solana-ecosystem/solana-mainnet/mapNameToInfoSolanaMainnet';
+import { Box, MenuItem, Select, SelectProps, Skeleton, Stack, Typography } from '@mui/material';
+import { Icon, TokenName } from 'crypto-token-icon';
+import { ReactNode } from 'react';
+import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 
 type Props = {
-  value: string | null;
-  onChange: (value: string) => void;
   subValue?: string | ReactNode;
   readonly?: boolean;
   onClickMax?: () => void;
   loading?: boolean;
-  selected?: boolean;
   maxValue?: string | ReactNode;
   endAdornment?: ReactNode;
+  inputProps?: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+  selectProps?: SelectProps<string>;
 };
 
-export default function InputCustom({
-  value,
-  onChange,
-  subValue,
-  readonly = false,
-  onClickMax,
-  loading,
-  selected,
-  maxValue,
-  endAdornment,
-}: Props) {
-  const [select, setSelect] = useState(value || '');
-
-  const options = Object.values(mapNameToInfoSolanaMainnet).map((item) => item.address);
-
-  // handle select
-  const handleChange = (event: SelectChangeEvent<string>) => {
-    setSelect(event.target.value);
-  };
+export default function BorrowCustomInput(props: Props) {
+  const { subValue, readonly = false, onClickMax, loading, maxValue, endAdornment, inputProps, selectProps } = props;
+  const options = Object.values(mapNameToInfoSolana).map((item) => item.address);
 
   return (
     <Box
@@ -44,8 +25,6 @@ export default function InputCustom({
         display: 'flex',
         py: 2,
         px: { xs: 1, md: 2.5 },
-        justifyContent: 'space-between',
-        width: '100%',
         height: '83px',
         marginBottom: '16px',
         placeItems: 'center',
@@ -55,21 +34,29 @@ export default function InputCustom({
         color: '#fff',
       })}
     >
-      {selected && (
+      {Boolean(selectProps) && (
         <Select
           id="demo-select"
-          value={select}
-          onChange={(e) => handleChange(e)}
+          {...selectProps}
+          disabled={readonly}
           sx={{
             border: '1px solid #666662',
+            mr: 2,
+            ...selectProps?.sx,
           }}
-          disabled={readonly}
         >
-          {options.map((item) => (
-            <MenuItem value={item} key={item} sx={{ px: 2 }}>
-              <Stack>{findTokenInfoByToken(item)?.symbol}</Stack>
-            </MenuItem>
-          ))}
+          {options.map((item) => {
+            const tokenInfo = findTokenInfoByToken(item);
+
+            return (
+              <MenuItem value={item} key={item} sx={{ px: 2 }}>
+                <Stack>
+                  <Icon tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: 1 }} />
+                  {tokenInfo?.symbol}
+                </Stack>
+              </MenuItem>
+            );
+          })}
         </Select>
       )}
       <Box sx={{ width: '-webkit-fill-available' }}>
@@ -86,6 +73,9 @@ export default function InputCustom({
           <>
             <input
               readOnly={readonly}
+              type="number"
+              onWheel={(event) => event.currentTarget.blur()}
+              {...inputProps}
               style={{
                 display: 'block',
                 border: 'none',
@@ -96,13 +86,8 @@ export default function InputCustom({
                 fontWeight: '700',
                 width: '100%',
                 color: '#fff',
+                ...inputProps?.style,
               }}
-              type="number"
-              value={value ? findTokenInfoByToken(value)?.symbol : ''}
-              onChange={(e) => {
-                onChange(e.target.value);
-              }}
-              onWheel={(event) => event.currentTarget.blur()}
             />
             {subValue ? (
               <Typography variant="subtitle1" sx={{ fontWeight: 400 }}>

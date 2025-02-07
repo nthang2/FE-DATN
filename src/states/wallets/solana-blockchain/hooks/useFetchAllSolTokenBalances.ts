@@ -5,7 +5,7 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import BigNumber from 'bignumber.js';
 import { TokenName } from 'crypto-token-icon';
 import { BN, DEC } from 'src/utils';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/solana-mainnet/mapNameToInfoSolanaMainnet';
+import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 
 export default function useFetchAllSolTokenBalances(addressUser: string) {
   const nativeSolBalance = useNativeSolBalance(addressUser);
@@ -44,12 +44,14 @@ function useAllSlpTokenBalances(addressUser: string) {
         programId: TOKEN_PROGRAM_ID,
       });
       const result: { [k in TokenName]?: BigNumber } = {};
+
       for (const tokenAccount of tokenAccounts.value) {
         const token = tokenAccount.account.data.parsed.info.mint;
         const tokenName = findTokenInfoByToken(token)?.symbol || token;
         const balance = BN(tokenAccount.account.data.parsed.info.tokenAmount.uiAmount);
         result[tokenName as TokenName] = balance;
       }
+
       return result;
     },
     enabled: !!addressUser,
