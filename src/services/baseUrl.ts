@@ -1,1 +1,1 @@
-export const BACKEND_URL = 'http://localhost:3000';
+export const BACKEND_URL = 'http://188.166.217.182:8094';

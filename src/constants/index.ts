@@ -13,3 +13,7 @@ export enum FetchStatus {
   REFETCHING = 'isRefetching',
   PENDING = 'isPending',
 }
+
+export type Address = `0x${string}`;
+
+export const NETWORK = 'devnet'; //change to mainnet later

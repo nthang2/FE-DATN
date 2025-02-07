@@ -1,7 +1,7 @@
 import { Button, Popover, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { ArrowDown, WalletIcon } from 'src/assets/icons';
-import WalletConnectIcon from 'src/components/common/WalletConnectIcon/WalletConnectIcon';
+import WalletConnectIcon from 'src/components/Common/WalletConnectIcon/WalletConnectIcon';
 import ModalConnectWallet from 'src/components/Modals/ConnectSolanaNetwork/ModalConnectWallet';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { formatAddress } from 'src/utils/format';
