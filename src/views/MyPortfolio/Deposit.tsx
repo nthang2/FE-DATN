@@ -20,7 +20,7 @@ export default function Deposit() {
           <TableHead>
             <TableRow>
               {tableHead.map((h, i) => (
-                <TableCell align={i == 0 ? 'left' : 'right'}>
+                <TableCell key={i} align={i == 0 ? 'left' : 'right'}>
                   <Typography variant="caption2" sx={{ color: '#888880' }}>
                     {h}
                   </Typography>
