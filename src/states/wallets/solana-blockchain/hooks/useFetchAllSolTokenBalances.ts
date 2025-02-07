@@ -10,6 +10,7 @@ import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapN
 export default function useFetchAllSolTokenBalances(addressUser: string) {
   const nativeSolBalance = useNativeSolBalance(addressUser);
   const allSlpTokenBalances = useAllSlpTokenBalances(addressUser);
+
   return {
     native: {
       [TokenName.SOL]: {
@@ -35,6 +36,7 @@ function useNativeSolBalance(addressUser: string) {
     staleTime: 1000 * 60 * 5,
   });
 }
+
 function useAllSlpTokenBalances(addressUser: string) {
   return useQuery({
     queryKey: ['solana', 'all-slp-token-balances', addressUser],

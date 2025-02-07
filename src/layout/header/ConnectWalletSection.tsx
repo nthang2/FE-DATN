@@ -5,6 +5,8 @@ import WalletConnectIcon from 'src/components/Common/WalletConnectIcon/WalletCon
 import ModalConnectWallet from 'src/components/Modals/ConnectSolanaNetwork/ModalConnectWallet';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { formatAddress } from 'src/utils/format';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { copyTextToClipboard } from 'src/utils';
 
 const ConnectWalletSection = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -56,8 +58,12 @@ const ConnectWalletSection = () => {
                 vertical: 'top',
                 horizontal: 'right',
               }}
+              sx={{ textAlign: 'center' }}
             >
-              <Typography sx={{ p: 2, cursor: 'pointer' }} onClick={disconnect}>
+              <Typography sx={{ p: 2, cursor: 'pointer', width: anchorEl?.offsetWidth }} onClick={() => copyTextToClipboard(address)}>
+                {formatAddress(address)} <ContentCopyIcon sx={{ ml: 1 }} />
+              </Typography>
+              <Typography sx={{ p: 2, cursor: 'pointer', width: anchorEl?.offsetWidth }} onClick={disconnect}>
                 Disconnect
               </Typography>
             </Popover>

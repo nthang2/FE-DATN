@@ -1,9 +1,9 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import BorrowRate from './components/BorrowRate/BorrowRate';
+import ActionSection from './components/ActionSection/ActionSection';
 import BorrowSection from './components/BorrowDepositSection/BorrowSection';
 import DepositSection from './components/BorrowDepositSection/DepositSection';
+import BorrowRate from './components/BorrowRate/BorrowRate';
 import LTVSection from './components/LTVSection/LTVSection';
-import ActionSection from './components/ActionSection/ActionSection';
 
 const Borrow = () => {
   return (

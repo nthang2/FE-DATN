@@ -1,10 +1,10 @@
+import { Box, CircularProgress, Grid2 as Grid } from '@mui/material';
 import { Adapter, WalletReadyState } from '@solana/wallet-adapter-base';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { toast } from 'react-toastify';
-import { TWalletStatus } from 'src/states/wallets/types';
-import { Box, CircularProgress, Grid2 as Grid } from '@mui/material';
 import BoxOptionWallet from 'src/components/Common/BoxOptionWallet/BoxOptionWallet';
 import ButtonCustom from 'src/components/Common/ButtonCustom/ButtonCustom';
+import { TWalletStatus } from 'src/states/wallets/types';
 
 export default function ConnectSolanaNetwork() {
   const { connecting, disconnect, publicKey, select, wallet, wallets } = useWallet();
