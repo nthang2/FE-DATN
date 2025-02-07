@@ -2,6 +2,7 @@ import { useRoutes } from 'react-router-dom';
 import Layout from './layout/Layout';
 import Borrow from './views/Borrow/Borrow';
 import MyPortfolio from './views/MyPortfolio/MyPortfolio';
+import NotFound from './views/NotFound/NotFound';
 
 export default function Routes() {
   return useRoutes([
@@ -17,7 +18,7 @@ export default function Routes() {
     },
     {
       path: '*',
-      element: <div>404</div>,
+      element: <NotFound />,
     },
   ]);
 }

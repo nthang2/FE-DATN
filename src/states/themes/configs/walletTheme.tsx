@@ -1,7 +1,7 @@
 import { darken, outlinedInputClasses, PaletteOptions, Theme, ThemeOptions } from '@mui/material';
+import { FontOxanium } from 'src/constants';
 import { THEME_MODE } from '../types';
 import { buildVariant, pxToRem } from '../utils';
-import { FontOxanium } from 'src/constants';
 
 export function getWalletThemeConfig(mode: THEME_MODE): ThemeOptions {
   const getColor = (darkColor: string, lightColor: string) => {
@@ -814,6 +814,36 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
             '&.Mui-selected': {
               color: '#fff',
               boxShadow: '0px 0px 10px 1px rgba(196, 196, 196, 0.5)',
+            },
+          },
+        },
+      },
+      MuiSwitch: {
+        styleOverrides: {
+          root: {
+            width: 24,
+            height: 16,
+            padding: 0,
+            '& .MuiSwitch-switchBase': {
+              padding: 0,
+              margin: 2,
+              '&.Mui-checked': {
+                color: '#2D3400',
+                transform: 'translateX(8px)',
+                '& + .MuiSwitch-track': {
+                  backgroundColor: '#FCFFD8',
+                  opacity: 1,
+                  border: 0,
+                },
+              },
+            },
+            '& .MuiSwitch-thumb': {
+              boxSizing: 'border-box',
+              width: 12,
+              height: 12,
+            },
+            '& .MuiSwitch-track': {
+              borderRadius: 14,
             },
           },
         },
