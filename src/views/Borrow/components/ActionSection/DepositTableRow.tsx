@@ -5,12 +5,14 @@ import { Button, Stack, TableCell, TableRow, Typography } from '@mui/material';
 interface IProps {
   index: number;
   depositItem: TBorrowItem;
+  onClick: () => void;
 }
 
 const DepositTableRow = (props: IProps) => {
   const {
     index,
     depositItem: { value, address },
+    onClick,
   } = props;
 
   const tokenInfo = findTokenInfoByToken(address);
@@ -28,7 +30,7 @@ const DepositTableRow = (props: IProps) => {
         </Stack>
       </TableCell>
       <TableCell>
-        <Button variant="contained" disabled>
+        <Button variant="contained" onClick={onClick}>
           Deposit
         </Button>
       </TableCell>

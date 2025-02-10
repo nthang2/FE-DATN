@@ -8,11 +8,12 @@ import BorrowCustomInput from 'src/components/CustomForm/InputCustom/BorrowCusto
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { defaultBorrowValue } from '../../constant';
-import { useDepositState } from '../../state/hooks';
+import { useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToUsd } from '../../utils';
 
 const DepositSection = () => {
   const [depositItems, setDepositState] = useDepositState();
+  const [isSubmitted] = useBorrowSubmitState();
   const { data: listPrice } = useQueryAllTokensPrice();
 
   const handleRemoveItem = (index: number) => {
@@ -73,6 +74,7 @@ const DepositSection = () => {
                 },
               },
             }}
+            disabled={isSubmitted}
             onClick={handleAddItem}
           >
             <Typography variant="body2" alignItems="center" display="flex" gap={1} fontWeight={700}>
@@ -88,6 +90,7 @@ const DepositSection = () => {
           {depositItems.map((item, index) => {
             return (
               <BorrowCustomInput
+                readonly={isSubmitted}
                 inputProps={{
                   onChange: (e) => handleChangeInput(index, e.target.value),
                   value: item.value,
@@ -98,7 +101,7 @@ const DepositSection = () => {
                 }}
                 key={index}
                 endAdornment={
-                  <IconButton onClick={() => handleRemoveItem(index)}>
+                  <IconButton onClick={() => handleRemoveItem(index)} sx={{ display: isSubmitted ? 'none' : 'block' }} hidden={isSubmitted}>
                     <CloseOutlinedIcon fontSize="large" />
                   </IconButton>
                 }

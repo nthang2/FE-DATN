@@ -5,11 +5,8 @@ import BorrowSection from './components/BorrowDepositSection/BorrowSection';
 import DepositSection from './components/BorrowDepositSection/DepositSection';
 import BorrowRate from './components/BorrowRate/BorrowRate';
 import LTVSection from './components/LTVSection/LTVSection';
-import { useState } from 'react';
 
 const Borrow = () => {
-  const [isShowActionTable, setIsShowActionTable] = useState(false);
-
   return (
     <Box width="100%" my={4}>
       <Typography variant="h5" mb={1.5} fontWeight={700}>
@@ -35,10 +32,10 @@ const Borrow = () => {
             </Stack>
 
             <LTVSection />
-            <ActionSection isHidden={!isShowActionTable} />
+            <ActionSection />
           </Box>
 
-          <BorrowButton onSubmit={() => setIsShowActionTable(true)} isHidden={isShowActionTable} />
+          <BorrowButton />
         </Box>
 
         <BorrowRate />
