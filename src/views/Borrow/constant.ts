@@ -11,7 +11,7 @@ export const marks = [
     value: 80,
   },
   {
-    value: 84,
+    value: 30,
   },
 ];
 
@@ -38,4 +38,5 @@ export interface IDepositItem {
 export const defaultBorrowValue = {
   address: mapNameToInfoSolana.TRUMP.address,
   value: '0',
+  price: 0,
 };

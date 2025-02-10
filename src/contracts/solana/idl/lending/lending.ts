@@ -1,133 +1,228 @@
 export type IdlLending = {
-  version: '0.1.0';
-  name: 'lending';
+  address: 'FHHjnmtVgT5QJqU8Jt4kw2aVse6W982Esih2xZUfLtBq';
+  metadata: {
+    name: 'lending';
+    version: '0.1.0';
+    spec: '0.1.0';
+    description: 'Created with Anchor';
+  };
   instructions: [
     {
-      name: 'initializeController';
+      name: 'edit_controller';
+      discriminator: [132, 153, 227, 60, 132, 180, 226, 209];
       accounts: [
         {
           name: 'authority';
-          isMut: true;
-          isSigner: true;
+          docs: ['#1'];
+          writable: true;
+          signer: true;
         },
         {
           name: 'controller';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'redeemableMint';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'payer';
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: 'tokenProgram';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'systemProgram';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'rent';
-          isMut: false;
-          isSigner: false;
+          docs: ['#2'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
         }
       ];
       args: [
         {
-          name: 'redeemableMintDecimals';
+          name: 'fields';
+          type: {
+            defined: {
+              name: 'EditControllerFields';
+            };
+          };
+        }
+      ];
+    },
+    {
+      name: 'edit_type0_depository';
+      discriminator: [162, 24, 4, 132, 93, 158, 133, 90];
+      accounts: [
+        {
+          name: 'authority';
+          docs: ['#1'];
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          docs: ['#2'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateral';
+          docs: ['#3'];
+          writable: true;
+        },
+        {
+          name: 'depository';
+          docs: ['#4'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+          };
+        }
+      ];
+      args: [
+        {
+          name: 'fields';
+          type: {
+            defined: {
+              name: 'EditType0DepositoryFields';
+            };
+          };
+        }
+      ];
+    },
+    {
+      name: 'initialize_controller';
+      discriminator: [137, 255, 100, 190, 201, 247, 241, 81];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemable_mint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'token_program';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'system_program';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'redeemable_mint_decimals';
           type: 'u8';
         },
         {
-          name: 'debtSupplyCap';
+          name: 'debt_supply_cap';
           type: 'u64';
         }
       ];
     },
     {
-      name: 'initializeType0Depository';
+      name: 'initialize_type0_depository';
+      discriminator: [254, 45, 202, 71, 94, 227, 232, 245];
       accounts: [
         {
           name: 'authority';
-          isMut: false;
-          isSigner: true;
           docs: ['#1'];
-        },
-        {
-          name: 'payer';
-          isMut: true;
-          isSigner: true;
-          docs: ['#2'];
+          writable: true;
+          signer: true;
         },
         {
           name: 'controller';
-          isMut: true;
-          isSigner: false;
           docs: ['#3'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
         },
         {
           name: 'depository';
-          isMut: true;
-          isSigner: false;
           docs: ['#4'];
-        },
-        {
-          name: 'collateralVault';
-          isMut: true;
-          isSigner: false;
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+          };
         },
         {
           name: 'collateral';
-          isMut: true;
-          isSigner: false;
           docs: ['#5'];
+          writable: true;
         },
         {
-          name: 'systemProgram';
-          isMut: false;
-          isSigner: false;
+          name: 'system_program';
           docs: ['#9'];
+          address: '11111111111111111111111111111111';
         },
         {
-          name: 'tokenProgram';
-          isMut: false;
-          isSigner: false;
+          name: 'token_program';
           docs: ['#10'];
-        },
-        {
-          name: 'rent';
-          isMut: false;
-          isSigner: false;
-          docs: ['#11'];
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
         }
       ];
       args: [
         {
-          name: 'collateralDecimal';
-          type: 'u8';
-        },
-        {
-          name: 'debtCeiling';
+          name: 'debt_ceiling';
           type: 'u64';
         },
         {
-          name: 'collateralizationRatio';
+          name: 'collateralization_ratio';
           type: 'u64';
         },
         {
-          name: 'liquidationRatio';
+          name: 'liquidation_ratio';
           type: 'u64';
         },
         {
-          name: 'liquidationPenalty';
+          name: 'liquidation_penalty';
           type: 'u64';
         },
         {
@@ -137,294 +232,242 @@ export type IdlLending = {
       ];
     },
     {
-      name: 'editType0Depository';
+      name: 'interact_with_type0_depository';
+      discriminator: [100, 95, 23, 115, 241, 176, 198, 171];
       accounts: [
         {
-          name: 'authority';
-          isMut: true;
-          isSigner: true;
+          name: 'user';
           docs: ['#1'];
-        },
-        {
-          name: 'controller';
-          isMut: true;
-          isSigner: false;
-          docs: ['#2'];
+          writable: true;
+          signer: true;
         },
         {
           name: 'collateral';
-          isMut: true;
-          isSigner: false;
-          docs: ['#3'];
+          writable: true;
         },
         {
-          name: 'depository';
-          isMut: true;
-          isSigner: false;
-          docs: ['#4'];
-        }
-      ];
-      args: [
+          name: 'user_collateral';
+          writable: true;
+        },
         {
-          name: 'fields';
-          type: {
-            defined: 'EditType0DepositoryFields';
+          name: 'redeemable_mint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
           };
-        }
-      ];
-    },
-    {
-      name: 'initializeDepositWithType0Depository';
-      accounts: [
-        {
-          name: 'user';
-          isMut: false;
-          isSigner: true;
-          docs: ['#1'];
         },
         {
-          name: 'collateral';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'userCollateral';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'redeemableMint';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'userRedeemable';
-          isMut: true;
-          isSigner: false;
+          name: 'user_redeemable';
+          writable: true;
         },
         {
           name: 'controller';
-          isMut: true;
-          isSigner: false;
           docs: ['controller'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
         },
         {
           name: 'depository';
-          isMut: true;
-          isSigner: false;
           docs: ['#2'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+          };
         },
         {
-          name: 'depositoryVault';
-          isMut: true;
-          isSigner: false;
+          name: 'depository_vault';
           docs: ['#2'];
+          writable: true;
         },
         {
-          name: 'payer';
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: 'loanAccount';
-          isMut: true;
-          isSigner: false;
+          name: 'loan_account';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
         },
         {
           name: 'oracle';
-          isMut: false;
-          isSigner: false;
           docs: ['Ensure the program calling this instruction verifies the account belongs', 'to the expected Oracle program.'];
         },
         {
-          name: 'tokenProgram';
-          isMut: false;
-          isSigner: false;
+          name: 'token_program';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
         },
         {
-          name: 'systemProgram';
-          isMut: false;
-          isSigner: false;
+          name: 'token_2022_program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
         },
         {
-          name: 'rent';
-          isMut: false;
-          isSigner: false;
+          name: 'system_program';
+          address: '11111111111111111111111111111111';
         }
       ];
       args: [
         {
-          name: 'collateralAmount';
+          name: 'collateral_amount';
           type: 'u64';
         },
         {
-          name: 'loanAmount';
-          type: 'u64';
-        }
-      ];
-    },
-    {
-      name: 'interactWithType0Depository';
-      accounts: [
-        {
-          name: 'user';
-          isMut: false;
-          isSigner: true;
-          docs: ['#1'];
-        },
-        {
-          name: 'collateral';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'userCollateral';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'redeemableMint';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'userRedeemable';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'controller';
-          isMut: true;
-          isSigner: false;
-          docs: ['controller'];
-        },
-        {
-          name: 'depository';
-          isMut: true;
-          isSigner: false;
-          docs: ['#2'];
-        },
-        {
-          name: 'depositoryVault';
-          isMut: true;
-          isSigner: false;
-          docs: ['#2'];
-        },
-        {
-          name: 'payer';
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: 'loanAccount';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'oracle';
-          isMut: false;
-          isSigner: false;
-          docs: ['Ensure the program calling this instruction verifies the account belongs', 'to the expected Oracle program.'];
-        },
-        {
-          name: 'tokenProgram';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'systemProgram';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'rent';
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: 'collateralAmount';
+          name: 'debt_amount';
           type: 'u64';
         },
         {
-          name: 'debtAmount';
-          type: 'u64';
-        },
-        {
-          name: 'collateralFlag';
+          name: 'collateral_flag';
           type: 'bool';
         },
         {
-          name: 'loanFlag';
+          name: 'loan_flag';
           type: 'bool';
         }
       ];
     },
     {
       name: 'liquidate';
+      discriminator: [223, 179, 226, 125, 48, 46, 39, 74];
       accounts: [
         {
           name: 'depository';
-          isMut: true;
-          isSigner: false;
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+          };
         },
         {
-          name: 'depositoryVault';
-          isMut: true;
-          isSigner: false;
+          name: 'depository_vault';
           docs: ['#2'];
+          writable: true;
         },
         {
           name: 'loan';
-          isMut: true;
-          isSigner: false;
+          writable: true;
         },
         {
-          name: 'stablecoinMint';
-          isMut: true;
-          isSigner: false;
+          name: 'stablecoin_mint';
+          writable: true;
         },
         {
           name: 'collateral';
-          isMut: true;
-          isSigner: false;
+          writable: true;
         },
         {
           name: 'liquidator';
-          isMut: true;
-          isSigner: true;
+          writable: true;
+          signer: true;
         },
         {
-          name: 'liquidatorStablecoinAccount';
-          isMut: true;
-          isSigner: false;
+          name: 'liquidator_stablecoin_account';
+          writable: true;
         },
         {
-          name: 'liquidatorCollateralAccount';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'user';
-          isMut: false;
-          isSigner: true;
-          docs: ['#1'];
-        },
-        {
-          name: 'userCollateral';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'tokenProgram';
-          isMut: false;
-          isSigner: false;
+          name: 'liquidator_collateral_account';
+          writable: true;
         },
         {
           name: 'oracle';
-          isMut: false;
-          isSigner: false;
+        },
+        {
+          name: 'token_program';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token_2022_program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'system_program';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'repay_amount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
+      name: 'update_rate';
+      discriminator: [24, 225, 53, 189, 72, 212, 225, 178];
+      accounts: [
+        {
+          name: 'authority';
+          signer: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+        },
+        {
+          name: 'redeemable_mint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'liquidator_redeemable';
+          writable: true;
+        },
+        {
+          name: 'token_program';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token_2022_program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
         }
       ];
       args: [];
@@ -432,312 +475,50 @@ export type IdlLending = {
   ];
   accounts: [
     {
-      name: 'controller';
-      type: {
-        kind: 'struct';
-        fields: [
-          {
-            name: 'bump';
-            type: 'u8';
-          },
-          {
-            name: 'redeemableMintBump';
-            type: 'u8';
-          },
-          {
-            name: 'authority';
-            type: 'publicKey';
-          },
-          {
-            name: 'redeemableMint';
-            type: 'publicKey';
-          },
-          {
-            name: 'redeemableMintDecimals';
-            type: 'u8';
-          },
-          {
-            name: 'debtSupply';
-            type: 'u64';
-          },
-          {
-            name: 'debtSupplycap';
-            type: 'u64';
-          }
-        ];
-      };
+      name: 'Controller';
+      discriminator: [184, 79, 171, 0, 183, 43, 113, 110];
     },
     {
-      name: 'loan';
-      type: {
-        kind: 'struct';
-        fields: [
-          {
-            name: 'collateralAmount';
-            type: 'u64';
-          },
-          {
-            name: 'mintedAmount';
-            type: 'u64';
-          }
-        ];
-      };
+      name: 'Loan';
+      discriminator: [20, 195, 70, 117, 165, 227, 182, 1];
     },
     {
-      name: 'oracle';
-      type: {
-        kind: 'struct';
-        fields: [
-          {
-            name: 'priceUsd';
-            type: 'u64';
-          }
-        ];
-      };
-    },
-    {
-      name: 'type0Depository';
-      type: {
-        kind: 'struct';
-        fields: [
-          {
-            name: 'bump';
-            type: 'u8';
-          },
-          {
-            name: 'authority';
-            type: 'publicKey';
-          },
-          {
-            name: 'collateral';
-            type: 'publicKey';
-          },
-          {
-            name: 'collateralDecimal';
-            type: 'u8';
-          },
-          {
-            name: 'collateralAta';
-            type: 'publicKey';
-          },
-          {
-            name: 'debtCeiling';
-            type: 'u64';
-          },
-          {
-            name: 'collateralizationRatio';
-            type: 'u64';
-          },
-          {
-            name: 'liquidationRatio';
-            type: 'u64';
-          },
-          {
-            name: 'liquidationPenalty';
-            type: 'u64';
-          },
-          {
-            name: 'debtTotal';
-            type: 'u64';
-          },
-          {
-            name: 'collateralTotal';
-            type: 'u64';
-          },
-          {
-            name: 'dust';
-            type: 'u64';
-          },
-          {
-            name: 'reserved';
-            type: {
-              array: ['u8', 94];
-            };
-          }
-        ];
-      };
-    }
-  ];
-  types: [
-    {
-      name: 'EditType0DepositoryFields';
-      type: {
-        kind: 'struct';
-        fields: [
-          {
-            name: 'debtCeiling';
-            type: {
-              option: 'u64';
-            };
-          },
-          {
-            name: 'collateralizationRatio';
-            type: {
-              option: 'u64';
-            };
-          },
-          {
-            name: 'liquidationRatio';
-            type: {
-              option: 'u64';
-            };
-          },
-          {
-            name: 'liquidationPenalty';
-            type: {
-              option: 'u64';
-            };
-          },
-          {
-            name: 'dust';
-            type: {
-              option: 'u64';
-            };
-          }
-        ];
-      };
+      name: 'Type0Depository';
+      discriminator: [202, 54, 70, 164, 112, 15, 110, 15];
     }
   ];
   events: [
     {
       name: 'InitializeControllerEvent';
-      fields: [
-        {
-          name: 'version';
-          type: 'u8';
-          index: false;
-        },
-        {
-          name: 'controller';
-          type: 'publicKey';
-          index: false;
-        },
-        {
-          name: 'authority';
-          type: 'publicKey';
-          index: false;
-        }
-      ];
-    },
-    {
-      name: 'SetType0DepositoryDebtCeilingEvent';
-      fields: [
-        {
-          name: 'controller';
-          type: 'publicKey';
-          index: true;
-        },
-        {
-          name: 'depository';
-          type: 'publicKey';
-          index: true;
-        },
-        {
-          name: 'debtCeiling';
-          type: 'u64';
-          index: true;
-        }
-      ];
-    },
-    {
-      name: 'SetType0DepositoryCollateralizationRatioEvent';
-      fields: [
-        {
-          name: 'controller';
-          type: 'publicKey';
-          index: true;
-        },
-        {
-          name: 'depository';
-          type: 'publicKey';
-          index: true;
-        },
-        {
-          name: 'collateralizationRatio';
-          type: 'u64';
-          index: true;
-        }
-      ];
-    },
-    {
-      name: 'SetType0DepositoryLiquidationRatioEvent';
-      fields: [
-        {
-          name: 'controller';
-          type: 'publicKey';
-          index: true;
-        },
-        {
-          name: 'depository';
-          type: 'publicKey';
-          index: true;
-        },
-        {
-          name: 'liquidationRatio';
-          type: 'u64';
-          index: true;
-        }
-      ];
-    },
-    {
-      name: 'SetType0DepositoryLiquidationPenaltyEvent';
-      fields: [
-        {
-          name: 'controller';
-          type: 'publicKey';
-          index: true;
-        },
-        {
-          name: 'depository';
-          type: 'publicKey';
-          index: true;
-        },
-        {
-          name: 'liquidationPenalty';
-          type: 'u64';
-          index: true;
-        }
-      ];
-    },
-    {
-      name: 'SetType0DepositoryDustEvent';
-      fields: [
-        {
-          name: 'controller';
-          type: 'publicKey';
-          index: true;
-        },
-        {
-          name: 'depository';
-          type: 'publicKey';
-          index: true;
-        },
-        {
-          name: 'dust';
-          type: 'u64';
-          index: true;
-        }
-      ];
+      discriminator: [236, 159, 123, 225, 71, 177, 241, 0];
     },
     {
       name: 'LiquidationEvent';
-      fields: [
-        {
-          name: 'liquidator';
-          type: 'publicKey';
-          index: false;
-        },
-        {
-          name: 'repayAmount';
-          type: 'u64';
-          index: false;
-        },
-        {
-          name: 'collateralClaimed';
-          type: 'u64';
-          index: false;
-        }
-      ];
+      discriminator: [3, 13, 21, 93, 173, 136, 72, 144];
+    },
+    {
+      name: 'MintStablecoinEvent';
+      discriminator: [42, 81, 75, 72, 194, 250, 182, 1];
+    },
+    {
+      name: 'SetType0DepositoryCollateralizationRatioEvent';
+      discriminator: [4, 74, 218, 241, 218, 173, 162, 203];
+    },
+    {
+      name: 'SetType0DepositoryDebtCeilingEvent';
+      discriminator: [162, 223, 218, 229, 13, 36, 112, 235];
+    },
+    {
+      name: 'SetType0DepositoryDustEvent';
+      discriminator: [208, 216, 15, 253, 231, 140, 166, 137];
+    },
+    {
+      name: 'SetType0DepositoryLiquidationPenaltyEvent';
+      discriminator: [141, 77, 152, 220, 108, 21, 131, 81];
+    },
+    {
+      name: 'SetType0DepositoryLiquidationRatioEvent';
+      discriminator: [254, 226, 122, 32, 109, 103, 167, 214];
     }
   ];
   errors: [
@@ -898,327 +679,801 @@ export type IdlLending = {
     },
     {
       code: 6031;
+      name: 'InvalidTime';
+      msg: 'Cannot update the past states.';
+    },
+    {
+      code: 6032;
       name: 'InvalidAuthority';
       msg: 'Only the Program initializer authority can access this instructions.';
     },
     {
-      code: 6032;
+      code: 6033;
       name: 'InvalidController';
       msg: "The Depository's controller doesn't match the provided Controller.";
     },
     {
-      code: 6033;
+      code: 6034;
       name: 'InvalidDepository';
       msg: 'The Depository provided is not matching the one stored in the Controller.';
     },
     {
-      code: 6034;
+      code: 6035;
       name: 'InvalidCollateralMint';
       msg: "The provided collateral mint does not match the depository's collateral mint.";
     },
     {
-      code: 6035;
+      code: 6036;
       name: 'InvalidRedeemableMint';
       msg: "The Redeemable Mint provided does not match the Controller's one.";
     },
     {
-      code: 6036;
+      code: 6037;
       name: 'InvalidOwner';
       msg: 'The provided token account is not owner by the expected party.';
     },
     {
-      code: 6037;
+      code: 6038;
       name: 'InvalidDepositoryCollateral';
       msg: "The provided depository collateral does not match the depository's one.";
     },
     {
-      code: 6038;
+      code: 6039;
       name: 'InvalidDepositoryShares';
       msg: "The provided depository shares does not match the depository's one.";
     },
     {
-      code: 6039;
+      code: 6040;
       name: 'InvalidProfitsBeneficiaryCollateral';
       msg: "The Profits beneficiary collateral provided does not match the depository's one.";
     },
     {
-      code: 6040;
+      code: 6041;
       name: 'InvalidMercurialVault';
       msg: "The provided mercurial vault does not match the Depository's one.";
     },
     {
-      code: 6041;
+      code: 6042;
       name: 'InvalidMercurialVaultCollateralTokenSafe';
       msg: 'The provided mercurial vault collateral token safe does not match the mercurial vault one.';
     },
     {
-      code: 6042;
+      code: 6043;
       name: 'RedeemableIdentityDepositoryAmountUnderManagementCap';
       msg: 'Minting amount would go past the identity depository Redeemable Amount Under Management Cap.';
     },
     {
-      code: 6043;
+      code: 6044;
       name: 'ProgramAlreadyFrozenOrResumed';
       msg: 'Program is already frozen/resumed.';
     },
     {
-      code: 6044;
+      code: 6045;
       name: 'ProgramFrozen';
       msg: 'The program is currently in Frozen state.';
     },
     {
-      code: 6045;
+      code: 6046;
       name: 'InvalidCredixProgramState';
       msg: "The Credix ProgramState isn't the Depository one.";
     },
     {
-      code: 6046;
+      code: 6047;
       name: 'InvalidCredixGlobalMarketState';
       msg: "The Credix GlobalMarketState isn't the Depository one.";
     },
     {
-      code: 6047;
+      code: 6048;
       name: 'InvalidCredixSigningAuthority';
       msg: "The Credix SigningAuthority isn't the Depository one.";
     },
     {
-      code: 6048;
+      code: 6049;
       name: 'InvalidCredixLiquidityCollateral';
       msg: "The Credix LiquidityCollateral isn't the Depository one.";
     },
     {
-      code: 6049;
+      code: 6050;
       name: 'InvalidCredixSharesMint';
       msg: "The Credix SharesMint isn't the Depository one.";
     },
     {
-      code: 6050;
+      code: 6051;
       name: 'InvalidCredixPass';
       msg: "The Credix Pass isn't the one owned by the correct depository.";
     },
     {
-      code: 6051;
+      code: 6052;
       name: 'InvalidCredixPassNoFees';
       msg: "The Credix Pass doesn't have the fees exemption.";
     },
     {
-      code: 6052;
+      code: 6053;
       name: 'InvalidCredixTreasury';
       msg: "The Credix Treasury isn't the ProgramState one.";
     },
     {
-      code: 6053;
+      code: 6054;
       name: 'InvalidCredixTreasuryPoolCollateral';
       msg: "The Credix TreasuryPool isn't the GlobalMarketState one.";
     },
     {
-      code: 6054;
+      code: 6055;
       name: 'InvalidCredixWithdrawEpochRequestPhase';
       msg: "The Credix WithdrawEpoch isn't in its request phase.";
     },
     {
-      code: 6055;
+      code: 6056;
       name: 'InvalidCredixWithdrawEpochRedeemPhase';
       msg: "The Credix WithdrawEpoch isn't in its redeem phase.";
     },
     {
-      code: 6056;
+      code: 6057;
       name: 'Default';
       msg: 'Default - Check the source code for more info.';
     },
     {
-      code: 6057;
+      code: 6058;
       name: 'MaximumOutflowAmountError';
       msg: 'Redeem resulted into too much outflow in this epoch, please wait or try again with a smaller amount.';
     },
     {
-      code: 6058;
+      code: 6059;
       name: 'InvalidOutflowLimitPerEpochBps';
       msg: 'The outflow_limit_per_epoch_bps is invalid: over 100%.';
     },
     {
-      code: 6059;
+      code: 6060;
       name: 'ERR';
       msg: 'ERR';
     },
     {
-      code: 6060;
+      code: 6061;
       name: 'ExceededCollateralMintCapError';
       msg: 'No more coins can be minted because the limit of this collateral has been reached.';
     },
     {
-      code: 6061;
+      code: 6062;
       name: 'LoanNoDebt';
       msg: 'Loan has no debt to liquidate.';
     },
     {
-      code: 6062;
+      code: 6063;
       name: 'InvalidRepayAmount';
       msg: 'Invalid repay amount.';
     },
     {
-      code: 6063;
+      code: 6064;
       name: 'InsufficientCollateral';
       msg: 'Insufficient collateral in the Loan.';
     },
     {
-      code: 6064;
+      code: 6065;
       name: 'GlobalLiquidationLimitExceeded';
       msg: 'Global liquidation limit exceeded.';
     },
     {
-      code: 6065;
+      code: 6066;
       name: 'InvalidAccount';
       msg: 'Invalid account provided.';
     },
     {
-      code: 6066;
+      code: 6067;
       name: 'NotEligibleForLiquidation';
       msg: 'Loan is not eligible for liquidation based on LTV threshold.';
     },
     {
-      code: 6067;
+      code: 6068;
       name: 'InsufficientRepayment';
       msg: 'Insufficient collateral value to liquidate debt.';
     },
     {
-      code: 6068;
+      code: 6069;
       name: 'ExceededCollateralRatioError';
       msg: 'The value of the debt exceeds the radio collateral ratio multiplied by the value of the collateral';
+    },
+    {
+      code: 6070;
+      name: 'InvalidForLiquidation';
+      msg: 'Invalid for liquidation, max LTV is not violated.';
+    },
+    {
+      code: 6071;
+      name: 'RepayAmountExceedDebt';
+      msg: 'The repay amount exceeds the debt.';
+    },
+    {
+      code: 6072;
+      name: 'InvalidAccountDiscriminator';
+      msg: 'Invalid account discriminator';
+    },
+    {
+      code: 6073;
+      name: 'UnableToDeserializeAccount';
+      msg: 'Unable to deserialize account';
+    }
+  ];
+  types: [
+    {
+      name: 'Controller';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'bump';
+            type: 'u8';
+          },
+          {
+            name: 'redeemable_mint_bump';
+            type: 'u8';
+          },
+          {
+            name: 'authority';
+            type: 'pubkey';
+          },
+          {
+            name: 'redeemable_mint';
+            type: 'pubkey';
+          },
+          {
+            name: 'debt_supply';
+            type: 'u64';
+          },
+          {
+            name: 'debt_supplycap';
+            type: 'u64';
+          },
+          {
+            name: 'base';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'EditControllerFields';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'authority';
+            type: {
+              option: 'pubkey';
+            };
+          },
+          {
+            name: 'debt_supplycap';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'base';
+            type: {
+              option: 'u64';
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: 'EditType0DepositoryFields';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'debt_ceiling';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'collateralization_ratio';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'liquidation_ratio';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'liquidation_penalty';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'dust';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'duty';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'rate';
+            type: {
+              option: 'u64';
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: 'InitializeControllerEvent';
+      docs: ['Event called in [instructions::initialize_controller::handler].'];
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'version';
+            docs: ['The controller version.'];
+            type: 'u8';
+          },
+          {
+            name: 'controller';
+            docs: ['The controller being created.'];
+            type: 'pubkey';
+          },
+          {
+            name: 'authority';
+            docs: ['The authority.'];
+            type: 'pubkey';
+          }
+        ];
+      };
+    },
+    {
+      name: 'LiquidationEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'liquidator';
+            type: 'pubkey';
+          },
+          {
+            name: 'repay_amount';
+            type: 'u64';
+          },
+          {
+            name: 'collateral_claimed';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'Loan';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'collateral_amount';
+            type: 'u64';
+          },
+          {
+            name: 'minted_amount';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'MintStablecoinEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'user';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateral_amount';
+            type: 'u64';
+          },
+          {
+            name: 'debt_amount';
+            type: 'u64';
+          },
+          {
+            name: 'timestamp';
+            type: 'i64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'SetType0DepositoryCollateralizationRatioEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'controller';
+            type: 'pubkey';
+          },
+          {
+            name: 'depository';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateralization_ratio';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'SetType0DepositoryDebtCeilingEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'controller';
+            type: 'pubkey';
+          },
+          {
+            name: 'depository';
+            type: 'pubkey';
+          },
+          {
+            name: 'debt_ceiling';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'SetType0DepositoryDustEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'controller';
+            type: 'pubkey';
+          },
+          {
+            name: 'depository';
+            type: 'pubkey';
+          },
+          {
+            name: 'dust';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'SetType0DepositoryLiquidationPenaltyEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'controller';
+            type: 'pubkey';
+          },
+          {
+            name: 'depository';
+            type: 'pubkey';
+          },
+          {
+            name: 'liquidation_penalty';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'SetType0DepositoryLiquidationRatioEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'controller';
+            type: 'pubkey';
+          },
+          {
+            name: 'depository';
+            type: 'pubkey';
+          },
+          {
+            name: 'liquidation_ratio';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'Type0Depository';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'collateral';
+            type: 'pubkey';
+          },
+          {
+            name: 'debt_ceiling';
+            type: 'u64';
+          },
+          {
+            name: 'collateralization_ratio';
+            type: 'u64';
+          },
+          {
+            name: 'liquidation_ratio';
+            type: 'u64';
+          },
+          {
+            name: 'liquidation_penalty';
+            type: 'u64';
+          },
+          {
+            name: 'debt_total';
+            type: 'u64';
+          },
+          {
+            name: 'collateral_total';
+            type: 'u64';
+          },
+          {
+            name: 'dust';
+            type: 'u64';
+          },
+          {
+            name: 'bump';
+            type: 'u8';
+          },
+          {
+            name: 'duty';
+            type: 'u64';
+          },
+          {
+            name: 'rho';
+            type: 'u64';
+          },
+          {
+            name: 'rate';
+            type: 'u64';
+          }
+        ];
+      };
     }
   ];
 };
 
 export const idlLending: IdlLending = {
-  version: '0.1.0',
-  name: 'lending',
+  address: 'FHHjnmtVgT5QJqU8Jt4kw2aVse6W982Esih2xZUfLtBq',
+  metadata: {
+    name: 'lending',
+    version: '0.1.0',
+    spec: '0.1.0',
+    description: 'Created with Anchor',
+  },
   instructions: [
     {
-      name: 'initializeController',
+      name: 'edit_controller',
+      discriminator: [132, 153, 227, 60, 132, 180, 226, 209],
       accounts: [
         {
           name: 'authority',
-          isMut: true,
-          isSigner: true,
+          docs: ['#1'],
+          writable: true,
+          signer: true,
         },
         {
           name: 'controller',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'redeemableMint',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'payer',
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'systemProgram',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'rent',
-          isMut: false,
-          isSigner: false,
+          docs: ['#2'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
         },
       ],
       args: [
         {
-          name: 'redeemableMintDecimals',
+          name: 'fields',
+          type: {
+            defined: {
+              name: 'EditControllerFields',
+            },
+          },
+        },
+      ],
+    },
+    {
+      name: 'edit_type0_depository',
+      discriminator: [162, 24, 4, 132, 93, 158, 133, 90],
+      accounts: [
+        {
+          name: 'authority',
+          docs: ['#1'],
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          docs: ['#2'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateral',
+          docs: ['#3'],
+          writable: true,
+        },
+        {
+          name: 'depository',
+          docs: ['#4'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+          },
+        },
+      ],
+      args: [
+        {
+          name: 'fields',
+          type: {
+            defined: {
+              name: 'EditType0DepositoryFields',
+            },
+          },
+        },
+      ],
+    },
+    {
+      name: 'initialize_controller',
+      discriminator: [137, 255, 100, 190, 201, 247, 241, 81],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemable_mint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'token_program',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'system_program',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'redeemable_mint_decimals',
           type: 'u8',
         },
         {
-          name: 'debtSupplyCap',
+          name: 'debt_supply_cap',
           type: 'u64',
         },
       ],
     },
     {
-      name: 'initializeType0Depository',
+      name: 'initialize_type0_depository',
+      discriminator: [254, 45, 202, 71, 94, 227, 232, 245],
       accounts: [
         {
           name: 'authority',
-          isMut: false,
-          isSigner: true,
           docs: ['#1'],
-        },
-        {
-          name: 'payer',
-          isMut: true,
-          isSigner: true,
-          docs: ['#2'],
+          writable: true,
+          signer: true,
         },
         {
           name: 'controller',
-          isMut: true,
-          isSigner: false,
           docs: ['#3'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
         },
         {
           name: 'depository',
-          isMut: true,
-          isSigner: false,
           docs: ['#4'],
-        },
-        {
-          name: 'collateralVault',
-          isMut: true,
-          isSigner: false,
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+          },
         },
         {
           name: 'collateral',
-          isMut: true,
-          isSigner: false,
           docs: ['#5'],
+          writable: true,
         },
         {
-          name: 'systemProgram',
-          isMut: false,
-          isSigner: false,
+          name: 'system_program',
           docs: ['#9'],
+          address: '11111111111111111111111111111111',
         },
         {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
+          name: 'token_program',
           docs: ['#10'],
-        },
-        {
-          name: 'rent',
-          isMut: false,
-          isSigner: false,
-          docs: ['#11'],
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
         },
       ],
       args: [
         {
-          name: 'collateralDecimal',
-          type: 'u8',
-        },
-        {
-          name: 'debtCeiling',
+          name: 'debt_ceiling',
           type: 'u64',
         },
         {
-          name: 'collateralizationRatio',
+          name: 'collateralization_ratio',
           type: 'u64',
         },
         {
-          name: 'liquidationRatio',
+          name: 'liquidation_ratio',
           type: 'u64',
         },
         {
-          name: 'liquidationPenalty',
+          name: 'liquidation_penalty',
           type: 'u64',
         },
         {
@@ -1228,294 +1483,242 @@ export const idlLending: IdlLending = {
       ],
     },
     {
-      name: 'editType0Depository',
+      name: 'interact_with_type0_depository',
+      discriminator: [100, 95, 23, 115, 241, 176, 198, 171],
       accounts: [
         {
-          name: 'authority',
-          isMut: true,
-          isSigner: true,
+          name: 'user',
           docs: ['#1'],
-        },
-        {
-          name: 'controller',
-          isMut: true,
-          isSigner: false,
-          docs: ['#2'],
+          writable: true,
+          signer: true,
         },
         {
           name: 'collateral',
-          isMut: true,
-          isSigner: false,
-          docs: ['#3'],
+          writable: true,
         },
         {
-          name: 'depository',
-          isMut: true,
-          isSigner: false,
-          docs: ['#4'],
+          name: 'user_collateral',
+          writable: true,
         },
-      ],
-      args: [
         {
-          name: 'fields',
-          type: {
-            defined: 'EditType0DepositoryFields',
+          name: 'redeemable_mint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
           },
         },
-      ],
-    },
-    {
-      name: 'initializeDepositWithType0Depository',
-      accounts: [
         {
-          name: 'user',
-          isMut: false,
-          isSigner: true,
-          docs: ['#1'],
-        },
-        {
-          name: 'collateral',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'userCollateral',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'redeemableMint',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'userRedeemable',
-          isMut: true,
-          isSigner: false,
+          name: 'user_redeemable',
+          writable: true,
         },
         {
           name: 'controller',
-          isMut: true,
-          isSigner: false,
           docs: ['controller'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
         },
         {
           name: 'depository',
-          isMut: true,
-          isSigner: false,
           docs: ['#2'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+          },
         },
         {
-          name: 'depositoryVault',
-          isMut: true,
-          isSigner: false,
+          name: 'depository_vault',
           docs: ['#2'],
+          writable: true,
         },
         {
-          name: 'payer',
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: 'loanAccount',
-          isMut: true,
-          isSigner: false,
+          name: 'loan_account',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
         },
         {
           name: 'oracle',
-          isMut: false,
-          isSigner: false,
           docs: ['Ensure the program calling this instruction verifies the account belongs', 'to the expected Oracle program.'],
         },
         {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
+          name: 'token_program',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
         },
         {
-          name: 'systemProgram',
-          isMut: false,
-          isSigner: false,
+          name: 'token_2022_program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
         },
         {
-          name: 'rent',
-          isMut: false,
-          isSigner: false,
+          name: 'system_program',
+          address: '11111111111111111111111111111111',
         },
       ],
       args: [
         {
-          name: 'collateralAmount',
+          name: 'collateral_amount',
           type: 'u64',
         },
         {
-          name: 'loanAmount',
-          type: 'u64',
-        },
-      ],
-    },
-    {
-      name: 'interactWithType0Depository',
-      accounts: [
-        {
-          name: 'user',
-          isMut: false,
-          isSigner: true,
-          docs: ['#1'],
-        },
-        {
-          name: 'collateral',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'userCollateral',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'redeemableMint',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'userRedeemable',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'controller',
-          isMut: true,
-          isSigner: false,
-          docs: ['controller'],
-        },
-        {
-          name: 'depository',
-          isMut: true,
-          isSigner: false,
-          docs: ['#2'],
-        },
-        {
-          name: 'depositoryVault',
-          isMut: true,
-          isSigner: false,
-          docs: ['#2'],
-        },
-        {
-          name: 'payer',
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: 'loanAccount',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'oracle',
-          isMut: false,
-          isSigner: false,
-          docs: ['Ensure the program calling this instruction verifies the account belongs', 'to the expected Oracle program.'],
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'systemProgram',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'rent',
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [
-        {
-          name: 'collateralAmount',
+          name: 'debt_amount',
           type: 'u64',
         },
         {
-          name: 'debtAmount',
-          type: 'u64',
-        },
-        {
-          name: 'collateralFlag',
+          name: 'collateral_flag',
           type: 'bool',
         },
         {
-          name: 'loanFlag',
+          name: 'loan_flag',
           type: 'bool',
         },
       ],
     },
     {
       name: 'liquidate',
+      discriminator: [223, 179, 226, 125, 48, 46, 39, 74],
       accounts: [
         {
           name: 'depository',
-          isMut: true,
-          isSigner: false,
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+          },
         },
         {
-          name: 'depositoryVault',
-          isMut: true,
-          isSigner: false,
+          name: 'depository_vault',
           docs: ['#2'],
+          writable: true,
         },
         {
           name: 'loan',
-          isMut: true,
-          isSigner: false,
+          writable: true,
         },
         {
-          name: 'stablecoinMint',
-          isMut: true,
-          isSigner: false,
+          name: 'stablecoin_mint',
+          writable: true,
         },
         {
           name: 'collateral',
-          isMut: true,
-          isSigner: false,
+          writable: true,
         },
         {
           name: 'liquidator',
-          isMut: true,
-          isSigner: true,
+          writable: true,
+          signer: true,
         },
         {
-          name: 'liquidatorStablecoinAccount',
-          isMut: true,
-          isSigner: false,
+          name: 'liquidator_stablecoin_account',
+          writable: true,
         },
         {
-          name: 'liquidatorCollateralAccount',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'user',
-          isMut: false,
-          isSigner: true,
-          docs: ['#1'],
-        },
-        {
-          name: 'userCollateral',
-          isMut: true,
-          isSigner: false,
-        },
-        {
-          name: 'tokenProgram',
-          isMut: false,
-          isSigner: false,
+          name: 'liquidator_collateral_account',
+          writable: true,
         },
         {
           name: 'oracle',
-          isMut: false,
-          isSigner: false,
+        },
+        {
+          name: 'token_program',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token_2022_program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'system_program',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'repay_amount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
+      name: 'update_rate',
+      discriminator: [24, 225, 53, 189, 72, 212, 225, 178],
+      accounts: [
+        {
+          name: 'authority',
+          signer: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+        },
+        {
+          name: 'redeemable_mint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'liquidator_redeemable',
+          writable: true,
+        },
+        {
+          name: 'token_program',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token_2022_program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
         },
       ],
       args: [],
@@ -1523,312 +1726,50 @@ export const idlLending: IdlLending = {
   ],
   accounts: [
     {
-      name: 'controller',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'bump',
-            type: 'u8',
-          },
-          {
-            name: 'redeemableMintBump',
-            type: 'u8',
-          },
-          {
-            name: 'authority',
-            type: 'publicKey',
-          },
-          {
-            name: 'redeemableMint',
-            type: 'publicKey',
-          },
-          {
-            name: 'redeemableMintDecimals',
-            type: 'u8',
-          },
-          {
-            name: 'debtSupply',
-            type: 'u64',
-          },
-          {
-            name: 'debtSupplycap',
-            type: 'u64',
-          },
-        ],
-      },
+      name: 'Controller',
+      discriminator: [184, 79, 171, 0, 183, 43, 113, 110],
     },
     {
-      name: 'loan',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'collateralAmount',
-            type: 'u64',
-          },
-          {
-            name: 'mintedAmount',
-            type: 'u64',
-          },
-        ],
-      },
+      name: 'Loan',
+      discriminator: [20, 195, 70, 117, 165, 227, 182, 1],
     },
     {
-      name: 'oracle',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'priceUsd',
-            type: 'u64',
-          },
-        ],
-      },
-    },
-    {
-      name: 'type0Depository',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'bump',
-            type: 'u8',
-          },
-          {
-            name: 'authority',
-            type: 'publicKey',
-          },
-          {
-            name: 'collateral',
-            type: 'publicKey',
-          },
-          {
-            name: 'collateralDecimal',
-            type: 'u8',
-          },
-          {
-            name: 'collateralAta',
-            type: 'publicKey',
-          },
-          {
-            name: 'debtCeiling',
-            type: 'u64',
-          },
-          {
-            name: 'collateralizationRatio',
-            type: 'u64',
-          },
-          {
-            name: 'liquidationRatio',
-            type: 'u64',
-          },
-          {
-            name: 'liquidationPenalty',
-            type: 'u64',
-          },
-          {
-            name: 'debtTotal',
-            type: 'u64',
-          },
-          {
-            name: 'collateralTotal',
-            type: 'u64',
-          },
-          {
-            name: 'dust',
-            type: 'u64',
-          },
-          {
-            name: 'reserved',
-            type: {
-              array: ['u8', 94],
-            },
-          },
-        ],
-      },
-    },
-  ],
-  types: [
-    {
-      name: 'EditType0DepositoryFields',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'debtCeiling',
-            type: {
-              option: 'u64',
-            },
-          },
-          {
-            name: 'collateralizationRatio',
-            type: {
-              option: 'u64',
-            },
-          },
-          {
-            name: 'liquidationRatio',
-            type: {
-              option: 'u64',
-            },
-          },
-          {
-            name: 'liquidationPenalty',
-            type: {
-              option: 'u64',
-            },
-          },
-          {
-            name: 'dust',
-            type: {
-              option: 'u64',
-            },
-          },
-        ],
-      },
+      name: 'Type0Depository',
+      discriminator: [202, 54, 70, 164, 112, 15, 110, 15],
     },
   ],
   events: [
     {
       name: 'InitializeControllerEvent',
-      fields: [
-        {
-          name: 'version',
-          type: 'u8',
-          index: false,
-        },
-        {
-          name: 'controller',
-          type: 'publicKey',
-          index: false,
-        },
-        {
-          name: 'authority',
-          type: 'publicKey',
-          index: false,
-        },
-      ],
-    },
-    {
-      name: 'SetType0DepositoryDebtCeilingEvent',
-      fields: [
-        {
-          name: 'controller',
-          type: 'publicKey',
-          index: true,
-        },
-        {
-          name: 'depository',
-          type: 'publicKey',
-          index: true,
-        },
-        {
-          name: 'debtCeiling',
-          type: 'u64',
-          index: true,
-        },
-      ],
-    },
-    {
-      name: 'SetType0DepositoryCollateralizationRatioEvent',
-      fields: [
-        {
-          name: 'controller',
-          type: 'publicKey',
-          index: true,
-        },
-        {
-          name: 'depository',
-          type: 'publicKey',
-          index: true,
-        },
-        {
-          name: 'collateralizationRatio',
-          type: 'u64',
-          index: true,
-        },
-      ],
-    },
-    {
-      name: 'SetType0DepositoryLiquidationRatioEvent',
-      fields: [
-        {
-          name: 'controller',
-          type: 'publicKey',
-          index: true,
-        },
-        {
-          name: 'depository',
-          type: 'publicKey',
-          index: true,
-        },
-        {
-          name: 'liquidationRatio',
-          type: 'u64',
-          index: true,
-        },
-      ],
-    },
-    {
-      name: 'SetType0DepositoryLiquidationPenaltyEvent',
-      fields: [
-        {
-          name: 'controller',
-          type: 'publicKey',
-          index: true,
-        },
-        {
-          name: 'depository',
-          type: 'publicKey',
-          index: true,
-        },
-        {
-          name: 'liquidationPenalty',
-          type: 'u64',
-          index: true,
-        },
-      ],
-    },
-    {
-      name: 'SetType0DepositoryDustEvent',
-      fields: [
-        {
-          name: 'controller',
-          type: 'publicKey',
-          index: true,
-        },
-        {
-          name: 'depository',
-          type: 'publicKey',
-          index: true,
-        },
-        {
-          name: 'dust',
-          type: 'u64',
-          index: true,
-        },
-      ],
+      discriminator: [236, 159, 123, 225, 71, 177, 241, 0],
     },
     {
       name: 'LiquidationEvent',
-      fields: [
-        {
-          name: 'liquidator',
-          type: 'publicKey',
-          index: false,
-        },
-        {
-          name: 'repayAmount',
-          type: 'u64',
-          index: false,
-        },
-        {
-          name: 'collateralClaimed',
-          type: 'u64',
-          index: false,
-        },
-      ],
+      discriminator: [3, 13, 21, 93, 173, 136, 72, 144],
+    },
+    {
+      name: 'MintStablecoinEvent',
+      discriminator: [42, 81, 75, 72, 194, 250, 182, 1],
+    },
+    {
+      name: 'SetType0DepositoryCollateralizationRatioEvent',
+      discriminator: [4, 74, 218, 241, 218, 173, 162, 203],
+    },
+    {
+      name: 'SetType0DepositoryDebtCeilingEvent',
+      discriminator: [162, 223, 218, 229, 13, 36, 112, 235],
+    },
+    {
+      name: 'SetType0DepositoryDustEvent',
+      discriminator: [208, 216, 15, 253, 231, 140, 166, 137],
+    },
+    {
+      name: 'SetType0DepositoryLiquidationPenaltyEvent',
+      discriminator: [141, 77, 152, 220, 108, 21, 131, 81],
+    },
+    {
+      name: 'SetType0DepositoryLiquidationRatioEvent',
+      discriminator: [254, 226, 122, 32, 109, 103, 167, 214],
     },
   ],
   errors: [
@@ -1989,193 +1930,572 @@ export const idlLending: IdlLending = {
     },
     {
       code: 6031,
+      name: 'InvalidTime',
+      msg: 'Cannot update the past states.',
+    },
+    {
+      code: 6032,
       name: 'InvalidAuthority',
       msg: 'Only the Program initializer authority can access this instructions.',
     },
     {
-      code: 6032,
+      code: 6033,
       name: 'InvalidController',
       msg: "The Depository's controller doesn't match the provided Controller.",
     },
     {
-      code: 6033,
+      code: 6034,
       name: 'InvalidDepository',
       msg: 'The Depository provided is not matching the one stored in the Controller.',
     },
     {
-      code: 6034,
+      code: 6035,
       name: 'InvalidCollateralMint',
       msg: "The provided collateral mint does not match the depository's collateral mint.",
     },
     {
-      code: 6035,
+      code: 6036,
       name: 'InvalidRedeemableMint',
       msg: "The Redeemable Mint provided does not match the Controller's one.",
     },
     {
-      code: 6036,
+      code: 6037,
       name: 'InvalidOwner',
       msg: 'The provided token account is not owner by the expected party.',
     },
     {
-      code: 6037,
+      code: 6038,
       name: 'InvalidDepositoryCollateral',
       msg: "The provided depository collateral does not match the depository's one.",
     },
     {
-      code: 6038,
+      code: 6039,
       name: 'InvalidDepositoryShares',
       msg: "The provided depository shares does not match the depository's one.",
     },
     {
-      code: 6039,
+      code: 6040,
       name: 'InvalidProfitsBeneficiaryCollateral',
       msg: "The Profits beneficiary collateral provided does not match the depository's one.",
     },
     {
-      code: 6040,
+      code: 6041,
       name: 'InvalidMercurialVault',
       msg: "The provided mercurial vault does not match the Depository's one.",
     },
     {
-      code: 6041,
+      code: 6042,
       name: 'InvalidMercurialVaultCollateralTokenSafe',
       msg: 'The provided mercurial vault collateral token safe does not match the mercurial vault one.',
     },
     {
-      code: 6042,
+      code: 6043,
       name: 'RedeemableIdentityDepositoryAmountUnderManagementCap',
       msg: 'Minting amount would go past the identity depository Redeemable Amount Under Management Cap.',
     },
     {
-      code: 6043,
+      code: 6044,
       name: 'ProgramAlreadyFrozenOrResumed',
       msg: 'Program is already frozen/resumed.',
     },
     {
-      code: 6044,
+      code: 6045,
       name: 'ProgramFrozen',
       msg: 'The program is currently in Frozen state.',
     },
     {
-      code: 6045,
+      code: 6046,
       name: 'InvalidCredixProgramState',
       msg: "The Credix ProgramState isn't the Depository one.",
     },
     {
-      code: 6046,
+      code: 6047,
       name: 'InvalidCredixGlobalMarketState',
       msg: "The Credix GlobalMarketState isn't the Depository one.",
     },
     {
-      code: 6047,
+      code: 6048,
       name: 'InvalidCredixSigningAuthority',
       msg: "The Credix SigningAuthority isn't the Depository one.",
     },
     {
-      code: 6048,
+      code: 6049,
       name: 'InvalidCredixLiquidityCollateral',
       msg: "The Credix LiquidityCollateral isn't the Depository one.",
     },
     {
-      code: 6049,
+      code: 6050,
       name: 'InvalidCredixSharesMint',
       msg: "The Credix SharesMint isn't the Depository one.",
     },
     {
-      code: 6050,
+      code: 6051,
       name: 'InvalidCredixPass',
       msg: "The Credix Pass isn't the one owned by the correct depository.",
     },
     {
-      code: 6051,
+      code: 6052,
       name: 'InvalidCredixPassNoFees',
       msg: "The Credix Pass doesn't have the fees exemption.",
     },
     {
-      code: 6052,
+      code: 6053,
       name: 'InvalidCredixTreasury',
       msg: "The Credix Treasury isn't the ProgramState one.",
     },
     {
-      code: 6053,
+      code: 6054,
       name: 'InvalidCredixTreasuryPoolCollateral',
       msg: "The Credix TreasuryPool isn't the GlobalMarketState one.",
     },
     {
-      code: 6054,
+      code: 6055,
       name: 'InvalidCredixWithdrawEpochRequestPhase',
       msg: "The Credix WithdrawEpoch isn't in its request phase.",
     },
     {
-      code: 6055,
+      code: 6056,
       name: 'InvalidCredixWithdrawEpochRedeemPhase',
       msg: "The Credix WithdrawEpoch isn't in its redeem phase.",
     },
     {
-      code: 6056,
+      code: 6057,
       name: 'Default',
       msg: 'Default - Check the source code for more info.',
     },
     {
-      code: 6057,
+      code: 6058,
       name: 'MaximumOutflowAmountError',
       msg: 'Redeem resulted into too much outflow in this epoch, please wait or try again with a smaller amount.',
     },
     {
-      code: 6058,
+      code: 6059,
       name: 'InvalidOutflowLimitPerEpochBps',
       msg: 'The outflow_limit_per_epoch_bps is invalid: over 100%.',
     },
     {
-      code: 6059,
+      code: 6060,
       name: 'ERR',
       msg: 'ERR',
     },
     {
-      code: 6060,
+      code: 6061,
       name: 'ExceededCollateralMintCapError',
       msg: 'No more coins can be minted because the limit of this collateral has been reached.',
     },
     {
-      code: 6061,
+      code: 6062,
       name: 'LoanNoDebt',
       msg: 'Loan has no debt to liquidate.',
     },
     {
-      code: 6062,
+      code: 6063,
       name: 'InvalidRepayAmount',
       msg: 'Invalid repay amount.',
     },
     {
-      code: 6063,
+      code: 6064,
       name: 'InsufficientCollateral',
       msg: 'Insufficient collateral in the Loan.',
     },
     {
-      code: 6064,
+      code: 6065,
       name: 'GlobalLiquidationLimitExceeded',
       msg: 'Global liquidation limit exceeded.',
     },
     {
-      code: 6065,
+      code: 6066,
       name: 'InvalidAccount',
       msg: 'Invalid account provided.',
     },
     {
-      code: 6066,
+      code: 6067,
       name: 'NotEligibleForLiquidation',
       msg: 'Loan is not eligible for liquidation based on LTV threshold.',
     },
     {
-      code: 6067,
+      code: 6068,
       name: 'InsufficientRepayment',
       msg: 'Insufficient collateral value to liquidate debt.',
     },
     {
-      code: 6068,
+      code: 6069,
       name: 'ExceededCollateralRatioError',
       msg: 'The value of the debt exceeds the radio collateral ratio multiplied by the value of the collateral',
+    },
+    {
+      code: 6070,
+      name: 'InvalidForLiquidation',
+      msg: 'Invalid for liquidation, max LTV is not violated.',
+    },
+    {
+      code: 6071,
+      name: 'RepayAmountExceedDebt',
+      msg: 'The repay amount exceeds the debt.',
+    },
+    {
+      code: 6072,
+      name: 'InvalidAccountDiscriminator',
+      msg: 'Invalid account discriminator',
+    },
+    {
+      code: 6073,
+      name: 'UnableToDeserializeAccount',
+      msg: 'Unable to deserialize account',
+    },
+  ],
+  types: [
+    {
+      name: 'Controller',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'bump',
+            type: 'u8',
+          },
+          {
+            name: 'redeemable_mint_bump',
+            type: 'u8',
+          },
+          {
+            name: 'authority',
+            type: 'pubkey',
+          },
+          {
+            name: 'redeemable_mint',
+            type: 'pubkey',
+          },
+          {
+            name: 'debt_supply',
+            type: 'u64',
+          },
+          {
+            name: 'debt_supplycap',
+            type: 'u64',
+          },
+          {
+            name: 'base',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'EditControllerFields',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'authority',
+            type: {
+              option: 'pubkey',
+            },
+          },
+          {
+            name: 'debt_supplycap',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'base',
+            type: {
+              option: 'u64',
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: 'EditType0DepositoryFields',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'debt_ceiling',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'collateralization_ratio',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'liquidation_ratio',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'liquidation_penalty',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'dust',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'duty',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'rate',
+            type: {
+              option: 'u64',
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: 'InitializeControllerEvent',
+      docs: ['Event called in [instructions::initialize_controller::handler].'],
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'version',
+            docs: ['The controller version.'],
+            type: 'u8',
+          },
+          {
+            name: 'controller',
+            docs: ['The controller being created.'],
+            type: 'pubkey',
+          },
+          {
+            name: 'authority',
+            docs: ['The authority.'],
+            type: 'pubkey',
+          },
+        ],
+      },
+    },
+    {
+      name: 'LiquidationEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'liquidator',
+            type: 'pubkey',
+          },
+          {
+            name: 'repay_amount',
+            type: 'u64',
+          },
+          {
+            name: 'collateral_claimed',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'Loan',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'collateral_amount',
+            type: 'u64',
+          },
+          {
+            name: 'minted_amount',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'MintStablecoinEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'user',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateral_amount',
+            type: 'u64',
+          },
+          {
+            name: 'debt_amount',
+            type: 'u64',
+          },
+          {
+            name: 'timestamp',
+            type: 'i64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'SetType0DepositoryCollateralizationRatioEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'controller',
+            type: 'pubkey',
+          },
+          {
+            name: 'depository',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateralization_ratio',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'SetType0DepositoryDebtCeilingEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'controller',
+            type: 'pubkey',
+          },
+          {
+            name: 'depository',
+            type: 'pubkey',
+          },
+          {
+            name: 'debt_ceiling',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'SetType0DepositoryDustEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'controller',
+            type: 'pubkey',
+          },
+          {
+            name: 'depository',
+            type: 'pubkey',
+          },
+          {
+            name: 'dust',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'SetType0DepositoryLiquidationPenaltyEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'controller',
+            type: 'pubkey',
+          },
+          {
+            name: 'depository',
+            type: 'pubkey',
+          },
+          {
+            name: 'liquidation_penalty',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'SetType0DepositoryLiquidationRatioEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'controller',
+            type: 'pubkey',
+          },
+          {
+            name: 'depository',
+            type: 'pubkey',
+          },
+          {
+            name: 'liquidation_ratio',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'Type0Depository',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'collateral',
+            type: 'pubkey',
+          },
+          {
+            name: 'debt_ceiling',
+            type: 'u64',
+          },
+          {
+            name: 'collateralization_ratio',
+            type: 'u64',
+          },
+          {
+            name: 'liquidation_ratio',
+            type: 'u64',
+          },
+          {
+            name: 'liquidation_penalty',
+            type: 'u64',
+          },
+          {
+            name: 'debt_total',
+            type: 'u64',
+          },
+          {
+            name: 'collateral_total',
+            type: 'u64',
+          },
+          {
+            name: 'dust',
+            type: 'u64',
+          },
+          {
+            name: 'bump',
+            type: 'u8',
+          },
+          {
+            name: 'duty',
+            type: 'u64',
+          },
+          {
+            name: 'rho',
+            type: 'u64',
+          },
+          {
+            name: 'rate',
+            type: 'u64',
+          },
+        ],
+      },
     },
   ],
 };

@@ -5,19 +5,28 @@ import { PlusIcon } from 'src/assets/icons';
 import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/Common/TooltipInfo/TooltipInfo';
 import BorrowCustomInput from 'src/components/CustomForm/InputCustom/BorrowCustomInput';
-import { useDepositState } from '../../state/hooks';
-import { defaultBorrowValue } from '../../constant';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import { defaultBorrowValue } from '../../constant';
+import { useDepositState } from '../../state/hooks';
+import { convertToUsd } from '../../utils';
 
 const DepositSection = () => {
   const [depositItems, setDepositState] = useDepositState();
+  const { data: listPrice } = useQueryAllTokensPrice();
 
-  const handleDecreaseCount = (index: number) => {
+  const handleRemoveItem = (index: number) => {
     if (depositItems.length === 1) return;
     const newArr = [...depositItems];
     newArr.splice(index, 1);
 
     setDepositState(newArr);
+  };
+
+  const handleAddItem = () => {
+    if (depositItems.length <= 10) {
+      setDepositState((prev) => [...prev, defaultBorrowValue]);
+    }
   };
 
   const handleChangeSelectInput = (index: number, value: string) => {
@@ -35,7 +44,7 @@ const DepositSection = () => {
   const handleChangeInput = (index: number, value: string) => {
     const cloneArr = depositItems.map((item, arrIndex) => {
       if (arrIndex === index) {
-        return { ...item, value: value };
+        return { ...item, value: value, price: convertToUsd(item.address, value, listPrice) };
       }
 
       return item;
@@ -64,7 +73,7 @@ const DepositSection = () => {
                 },
               },
             }}
-            onClick={() => setDepositState((prev) => [...prev, defaultBorrowValue])}
+            onClick={handleAddItem}
           >
             <Typography variant="body2" alignItems="center" display="flex" gap={1} fontWeight={700}>
               <span>
@@ -76,32 +85,35 @@ const DepositSection = () => {
         </Stack>
 
         <Box>
-          {depositItems.map((item, index) => (
-            <BorrowCustomInput
-              inputProps={{
-                onBlur: (e) => handleChangeInput(index, e.target.value),
-                defaultValue: '0',
-              }}
-              selectProps={{
-                onChange: (e) => handleChangeSelectInput(index, e.target.value),
-                value: item.address,
-              }}
-              key={index}
-              endAdornment={
-                <IconButton onClick={() => handleDecreaseCount(index)}>
-                  <CloseOutlinedIcon fontSize="large" />
-                </IconButton>
-              }
-            />
-          ))}
+          {depositItems.map((item, index) => {
+            return (
+              <BorrowCustomInput
+                inputProps={{
+                  onChange: (e) => handleChangeInput(index, e.target.value),
+                  value: item.value,
+                }}
+                selectProps={{
+                  onChange: (e) => handleChangeSelectInput(index, e.target.value),
+                  value: item.address,
+                }}
+                key={index}
+                endAdornment={
+                  <IconButton onClick={() => handleRemoveItem(index)}>
+                    <CloseOutlinedIcon fontSize="large" />
+                  </IconButton>
+                }
+                subValue={item.price}
+              />
+            );
+          })}
         </Box>
       </BoxCustom>
 
       <Stack bgcolor="#333331" p="16px 20px" borderRadius="0px 0px 16px 16px" alignItems="center">
         <Stack>
-          {depositItems.slice(0, 2).map((item) => {
+          {depositItems.slice(0, 2).map((item, index) => {
             const tokenInfo = findTokenInfoByToken(item.address);
-            return <Icon key={item.address} tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: '1px', width: '16px', height: '16px' }} />;
+            return <Icon key={index} tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: '1px', width: '16px', height: '16px' }} />;
           })}
         </Stack>
 

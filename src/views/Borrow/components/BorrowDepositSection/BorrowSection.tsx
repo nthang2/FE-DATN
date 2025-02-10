@@ -2,15 +2,19 @@ import { Box, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
 import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
 import BorrowCustomInput from 'src/components/CustomForm/InputCustom/BorrowCustomInput';
-import { useBorrowState } from '../../state/hooks';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import { useBorrowState } from '../../state/hooks';
+import { convertToUsd } from '../../utils';
 
 const BorrowSection = () => {
+  const { data: listPrice } = useQueryAllTokensPrice();
   const [borrowState, setBorrowState] = useBorrowState();
   const tokenInfo = findTokenInfoByToken(borrowState.address);
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setBorrowState({ ...borrowState, value: event.target.value });
+    const value = event.target.value;
+    setBorrowState({ ...borrowState, value: value, price: convertToUsd(borrowState.address, value, listPrice) });
   };
 
   const handleChangeSelectInput = (event: SelectChangeEvent<string>) => {
@@ -33,6 +37,7 @@ const BorrowSection = () => {
               onChange: handleChangeSelectInput,
               value: borrowState.address,
             }}
+            subValue={borrowState.price}
           />
         </Box>
       </BoxCustom>

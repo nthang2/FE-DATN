@@ -90,8 +90,8 @@ export default function BorrowCustomInput(props: Props) {
               }}
             />
             {subValue ? (
-              <Typography variant="subtitle1" sx={{ fontWeight: 400 }}>
-                {subValue}
+              <Typography variant="body3" sx={{ color: 'text.secondary' }}>
+                ${subValue}
               </Typography>
             ) : null}
           </>

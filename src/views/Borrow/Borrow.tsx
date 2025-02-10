@@ -1,5 +1,6 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import ActionSection from './components/ActionSection/ActionSection';
+import BorrowButton from './components/BorrowButton/BorrowButton';
 import BorrowSection from './components/BorrowDepositSection/BorrowSection';
 import DepositSection from './components/BorrowDepositSection/DepositSection';
 import BorrowRate from './components/BorrowRate/BorrowRate';
@@ -34,9 +35,7 @@ const Borrow = () => {
             <ActionSection />
           </Box>
 
-          <Button variant="contained" fullWidth sx={{ mt: 2 }}>
-            Borrow
-          </Button>
+          <BorrowButton />
         </Box>
 
         <BorrowRate />
