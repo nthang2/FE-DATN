@@ -3,11 +3,12 @@ import { useBorrowState, useDepositState } from '../../state/hooks';
 import { useMemo } from 'react';
 
 interface IProps {
-  onSubmit?: () => void;
+  onSubmit: () => void;
+  isHidden: boolean;
 }
 
 const BorrowButton = (props: IProps) => {
-  const { onSubmit } = props;
+  const { onSubmit, isHidden } = props;
   const [borrowState] = useBorrowState();
   const [depositItems] = useDepositState();
 
@@ -16,6 +17,10 @@ const BorrowButton = (props: IProps) => {
 
     return borrowState.price > totalDepositValue;
   }, [borrowState.price, depositItems]);
+
+  if (isHidden) {
+    return <></>;
+  }
 
   return (
     <Button variant="contained" onClick={onSubmit} disabled={isValidBorrow} fullWidth sx={{ mt: 2 }}>
