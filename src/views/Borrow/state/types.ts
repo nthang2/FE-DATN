@@ -1,12 +1,7 @@
 export type TBorrowItem = {
   address: string;
   value: string;
-};
-
-export type TBorrowState = {
-  depositItems: TBorrowItem[];
-  borrowItem: TBorrowItem;
-  submitBorrow: boolean;
+  price: number;
 };
 
 export type TBorrowFunctionName = 'setBorrowState';

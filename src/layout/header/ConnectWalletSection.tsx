@@ -1,4 +1,4 @@
-import { Button, Popover, Stack, Typography } from '@mui/material';
+import { Box, Button, Popover, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { ArrowDown, WalletIcon } from 'src/assets/icons';
 import WalletConnectIcon from 'src/components/Common/WalletConnectIcon/WalletConnectIcon';
@@ -60,12 +60,18 @@ const ConnectWalletSection = () => {
               }}
               sx={{ textAlign: 'center' }}
             >
-              <Typography sx={{ p: 2, cursor: 'pointer', width: anchorEl?.offsetWidth }} onClick={() => copyTextToClipboard(address)}>
-                {formatAddress(address)} <ContentCopyIcon sx={{ ml: 1 }} />
-              </Typography>
-              <Typography sx={{ p: 2, cursor: 'pointer', width: anchorEl?.offsetWidth }} onClick={disconnect}>
-                Disconnect
-              </Typography>
+              <Box
+                sx={{
+                  p: 2,
+                  cursor: 'pointer',
+                  width: anchorEl?.offsetWidth,
+                }}
+              >
+                <Typography onClick={() => copyTextToClipboard(address)} mb={2}>
+                  {formatAddress(address)} <ContentCopyIcon sx={{ ml: 1, fontSize: '15px' }} />
+                </Typography>
+                <Typography onClick={disconnect}>Disconnect</Typography>
+              </Box>
             </Popover>
           </Stack>
         ) : (

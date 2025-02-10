@@ -1,33 +1,52 @@
 import { Box, Slider, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
 import { labelMark, marks } from '../../constant';
-import { useBorrowState } from '../../state/hooks';
+import { useBorrowState, useDepositState } from '../../state/hooks';
 import CustomMark from '../BorrowSlide/CustomMark';
 import CustomThumb from '../BorrowSlide/CustomThumb';
 import CustomTrack from '../BorrowSlide/CustomTrack';
+import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import { convertToUsd } from '../../utils';
 
-const minZoom = 1;
+const minZoom = 0;
 const maxZoom = 100;
-const maxValue = 500;
+const maxBorrowPercent = 30;
 
 const LTVSection = () => {
   const [borrowState, setBorrowState] = useBorrowState();
-  const [value, setValue] = useState<number | number[]>(0);
+  const [depositItems] = useDepositState();
+  const { data: listPrice } = useQueryAllTokensPrice();
+  const [sliderValue, setSliderValue] = useState<number | number[]>(0);
+
+  const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item.price, 0), [depositItems]);
+  const borrowPercent = useMemo(() => {
+    if (borrowState.price > totalDepositValue) return -1;
+
+    return (borrowState.price / totalDepositValue) * 100;
+  }, [borrowState.price, totalDepositValue]);
 
   const handleChangeSlider = (value: number | number[]) => {
-    if (Number(value) > 80) {
+    if (Number(value) > maxBorrowPercent) {
       return;
     }
 
-    const borrowValue = (Number(value) * maxValue) / 100;
-    setBorrowState({ ...borrowState, value: borrowValue.toString() });
+    const borrowValue = (Number(value) / 100) * totalDepositValue;
+    setBorrowState({
+      ...borrowState,
+      value: borrowValue.toString(),
+      price: convertToUsd(borrowState.address, borrowValue.toString(), listPrice),
+    });
   };
 
   useEffect(() => {
-    const percent = (100 * Number(borrowState.value)) / maxValue;
-    setValue(percent);
-  }, [borrowState]);
+    if (!borrowPercent || borrowPercent > maxBorrowPercent) {
+      setSliderValue(0);
+      return;
+    }
+
+    setSliderValue(borrowPercent);
+  }, [borrowState, borrowPercent]);
 
   return (
     <BoxCustom>
@@ -36,7 +55,7 @@ const LTVSection = () => {
           Loan to Value (LTV)
         </Typography>
         <Typography variant="h6" fontWeight={700}>
-          {value}%
+          {Number(sliderValue).toFixed(2)}%
         </Typography>
       </Stack>
 
@@ -50,17 +69,18 @@ const LTVSection = () => {
           marks={marks}
           min={minZoom}
           max={maxZoom}
-          value={value}
+          value={sliderValue}
+          step={0.5}
           onChange={(_e, value) => handleChangeSlider(value)}
           slots={{ mark: CustomMark, track: CustomTrack, thumb: CustomThumb }}
           sx={{
             bgcolor: '#333331',
-            ml: 1.5,
             borderRadius: '100px',
             '& .MuiSlider-rail': {
               bgcolor: 'transparent',
             },
           }}
+          disabled={borrowPercent < 0}
         />
 
         {/* Label */}
