@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AnchorProvider, Idl, Program } from '@project-serum/anchor';
-import { Wallet } from '@project-serum/anchor/dist/cjs/provider';
+import { AnchorProvider, Idl, Program, Wallet } from '@coral-xyz/anchor';
 import { ComputeBudgetProgram, PublicKey, Transaction } from '@solana/web3.js';
 import { publicClientSol } from 'src/states/wallets/solana-blockchain/configs';
 
@@ -10,7 +9,7 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
 
   constructor(wallet: Wallet, programId: PublicKey, idl: IDL) {
     this.provider = new AnchorProvider(publicClientSol, wallet, { preflightCommitment: 'confirmed' });
-    this.program = new Program(idl, programId, this.provider);
+    this.program = new Program(idl, { ...this.provider, publicKey: programId });
   }
 
   abstract initialize(...args: any[]): Promise<string>;
