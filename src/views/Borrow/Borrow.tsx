@@ -35,7 +35,7 @@ const Borrow = () => {
             </Stack>
 
             <LTVSection />
-            <ActionSection />
+            <ActionSection isHidden={!isShowActionTable} />
           </Box>
 
           <BorrowButton onSubmit={() => setIsShowActionTable(true)} isHidden={isShowActionTable} />

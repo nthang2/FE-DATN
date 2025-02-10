@@ -17,6 +17,7 @@ const LTVSection = () => {
   const [borrowState, setBorrowState] = useBorrowState();
   const [depositItems] = useDepositState();
   const { data: listPrice } = useQueryAllTokensPrice();
+
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
 
   const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item.price, 0), [depositItems]);
@@ -40,8 +41,13 @@ const LTVSection = () => {
   };
 
   useEffect(() => {
-    if (!borrowPercent || borrowPercent > maxBorrowPercent) {
+    if (!borrowPercent) {
       setSliderValue(0);
+      return;
+    }
+
+    if (borrowPercent > maxBorrowPercent) {
+      setSliderValue(maxBorrowPercent);
       return;
     }
 

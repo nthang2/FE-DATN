@@ -13,17 +13,20 @@ const BorrowButton = (props: IProps) => {
   const [depositItems] = useDepositState();
 
   const isValidBorrow = useMemo(() => {
+    if (borrowState.value === '0') return false;
     const totalDepositValue = depositItems.reduce((total, item) => total + item.price, 0);
 
-    return borrowState.price > totalDepositValue;
-  }, [borrowState.price, depositItems]);
+    if (totalDepositValue === 0) return false;
+
+    return totalDepositValue > borrowState.price;
+  }, [borrowState.price, borrowState.value, depositItems]);
 
   if (isHidden) {
     return <></>;
   }
 
   return (
-    <Button variant="contained" onClick={onSubmit} disabled={isValidBorrow} fullWidth sx={{ mt: 2 }}>
+    <Button variant="contained" onClick={onSubmit} disabled={!isValidBorrow} fullWidth sx={{ mt: 2 }}>
       Borrow
     </Button>
   );
