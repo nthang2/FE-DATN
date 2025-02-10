@@ -3,6 +3,8 @@ import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
 import { useBorrowState, useDepositState } from '../../state/hooks';
 import DepositTableRow from './DepositTableRow';
 import BorrowTableRow from './BorrowTableRow';
+import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 interface IProps {
   isHidden: boolean;
@@ -11,10 +13,18 @@ interface IProps {
 const ActionSection = ({ isHidden }: IProps) => {
   const [borrowState] = useBorrowState();
   const [depositItems] = useDepositState();
+  const wallet = useWallet();
+
+  const handleDeposit = async () => {
+    if (!wallet || !wallet.wallet?.adapter.publicKey) return;
+    const lendingContract = new LendingContract(wallet);
+    await lendingContract.initialize();
+    // lendingContract.program.methods.liquidate
+  };
 
   return (
     <BoxCustom p="24px 20px" hidden={isHidden}>
-      <Typography variant="h6" mb={3.5}>
+      <Typography variant="h6" mb={3.5} onClick={() => handleDeposit()}>
         Actions
       </Typography>
 

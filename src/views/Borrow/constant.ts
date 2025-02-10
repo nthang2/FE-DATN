@@ -30,13 +30,10 @@ export const labelMark = [
   },
 ];
 
-export interface IDepositItem {
-  address: string;
-  value: string;
-}
-
 export const defaultBorrowValue = {
   address: mapNameToInfoSolana.TRUMP.address,
   value: '0',
   price: 0,
 };
+
+export const lendingContractAddress = 'FHHjnmtVgT5QJqU8Jt4kw2aVse6W982Esih2xZUfLtBq';
