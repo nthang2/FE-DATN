@@ -4,3 +4,4 @@ import { TBorrowItem } from './types';
 
 export const depositAtom = atom<TBorrowItem[]>([defaultBorrowValue]);
 export const borrowAtom = atom<TBorrowItem>(defaultBorrowValue);
+export const borrowSubmitAtom = atom<boolean>(false);

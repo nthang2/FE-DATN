@@ -20,8 +20,8 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
     });
   }
   async sendTransaction(instruction: Transaction, signers: any[] = []) {
-    const transaction = new Transaction().add(instruction);
-    const signature = await this.provider.sendAndConfirm(transaction, signers, { maxRetries: 1000 * 60 });
+    // const transaction = new Transaction().add(instruction);
+    const signature = await this.provider.sendAndConfirm(instruction, signers, { maxRetries: 1000 * 60 });
     return signature;
   }
 }

@@ -85,6 +85,9 @@ const LTVSection = () => {
             '& .MuiSlider-rail': {
               bgcolor: 'transparent',
             },
+            '& .MuiSlider-thumb': {
+              transform: `translate(${Number(sliderValue) > 1 ? '-90%' : '-50%'}, -50%)`,
+            },
           }}
           disabled={borrowPercent < 0}
         />
