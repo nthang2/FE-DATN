@@ -6,7 +6,7 @@ import { PublicKey } from '@solana/web3.js';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
-import { collateral, CONTROLLER_SEED, DEPOSITORY_SEED, oracle, REDEEMABLE_MINT_SEED } from './constains';
+import { collateral, CONTROLLER_SEED, DEPOSITORY_SEED, REDEEMABLE_MINT_SEED } from './constains';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -30,20 +30,21 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
 
   getUserLoanByToken = async (user: PublicKey, token: PublicKey) => {
     const depositoryPda = this.getPda2(DEPOSITORY_SEED, token);
-    const loanPda = this.getPda3('LOAN', depositoryPda, user);
-    return loanPda;
+    const pdAddress = this.getPda3('LOAN', depositoryPda, user);
+
+    return { pdAddress };
   };
 
   async initialize(): Promise<string> {
     const redeemable_mint = this.getPda1(REDEEMABLE_MINT_SEED);
-    const userCollateralATA = await getAssociatedTokenAddressSync(this.provider.publicKey, collateral, true);
-    const userRedeemATA = await getAssociatedTokenAddressSync(this.provider.publicKey, redeemable_mint, true);
-    const loanAccount = await this.getUserLoanByToken(this.provider.publicKey, collateral);
-    const collateralAmount = new BN(3 * 1e9);
-    const usdaiAmount = new BN(100 * 1e6);
+    const userCollateralATA = getAssociatedTokenAddressSync(collateral, this.provider.publicKey);
+    const userRedeemATA = getAssociatedTokenAddressSync(redeemable_mint, this.provider.publicKey);
+    const { pdAddress } = await this.getUserLoanByToken(this.provider.publicKey, collateral);
+    const collateralAmount = new BN(0.1 * 1e9);
+    const usdaiAmount = new BN(0 * 1e6);
     const controller = this.getPda1(CONTROLLER_SEED);
     const depository = this.getPda2(DEPOSITORY_SEED, collateral);
-    const depositoryVault = await getAssociatedTokenAddressSync(collateral, depository, true);
+    const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
 
     try {
       const temp = await this.program.methods
@@ -57,31 +58,13 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
           controller: controller,
           depository: depository,
           depositoryVault: depositoryVault,
-          oracle: oracle,
-          loanAccount: loanAccount,
+          oracle: ctrAdsSolana.oracle,
+          loanAccount: pdAddress,
         })
         .transaction();
-      console.log('🚀 ~ LendingContract ~ initialize ~ temp:', temp);
 
-      const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
-      temp.recentBlockhash = blockhash;
-      temp.feePayer = this.provider.publicKey;
-
-      const signedTx = await this.provider.wallet.signTransaction(temp);
-
-      const txid = await this.provider.connection.sendRawTransaction(signedTx.serialize(), {
-        skipPreflight: false,
-        preflightCommitment: 'confirmed',
-      });
-
-      await this.provider.connection.confirmTransaction(
-        {
-          signature: txid,
-          blockhash,
-          lastValidBlockHeight,
-        },
-        'confirmed'
-      );
+      const resp = await this.sendTransaction(temp);
+      console.log('🚀 ~ LendingContract ~ initialize ~ resp:', resp);
     } catch (error) {
       console.log('🚀 ~ LendingContract ~ initialize ~ error:', error);
     }

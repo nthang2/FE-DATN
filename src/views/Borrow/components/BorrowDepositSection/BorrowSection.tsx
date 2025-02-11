@@ -4,12 +4,13 @@ import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
 import BorrowCustomInput from 'src/components/CustomForm/InputCustom/BorrowCustomInput';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import { useBorrowState } from '../../state/hooks';
+import { useBorrowState, useBorrowSubmitState } from '../../state/hooks';
 import { convertToUsd } from '../../utils';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
   const [borrowState, setBorrowState] = useBorrowState();
+  const [isSubmitted] = useBorrowSubmitState();
   const tokenInfo = findTokenInfoByToken(borrowState.address);
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,6 +30,7 @@ const BorrowSection = () => {
         </Typography>
         <Box>
           <BorrowCustomInput
+            readonly={isSubmitted}
             inputProps={{
               onChange: handleChangeInput,
               value: borrowState.value,

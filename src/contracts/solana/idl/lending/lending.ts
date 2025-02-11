@@ -1,5 +1,5 @@
 export type IdlLending = {
-  address: '8muCr8KxAyga2zHQoZYVPYm4h6jVzhLwWZp1AhLmQv4G';
+  address: 'Gpc1tWMi1ZCgb7CDyKdtBQ7Hmkv2B1FuNPY8xHryiH58';
   metadata: {
     name: 'lending';
     version: '0.1.0';
@@ -198,6 +198,10 @@ export type IdlLending = {
           writable: true;
         },
         {
+          name: 'oracle';
+          docs: ['CHECK'];
+        },
+        {
           name: 'systemProgram';
           docs: ['#9'];
           address: '11111111111111111111111111111111';
@@ -264,10 +268,95 @@ export type IdlLending = {
         {
           name: 'userRedeemable';
           writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'user';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
         },
         {
           name: 'controller';
-          docs: ['controller'];
           writable: true;
           pda: {
             seeds: [
@@ -280,7 +369,6 @@ export type IdlLending = {
         },
         {
           name: 'depository';
-          docs: ['#2'];
           writable: true;
           pda: {
             seeds: [
@@ -297,7 +385,6 @@ export type IdlLending = {
         },
         {
           name: 'depositoryVault';
-          docs: ['#2'];
           writable: true;
         },
         {
@@ -333,6 +420,10 @@ export type IdlLending = {
           address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
         },
         {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
           name: 'systemProgram';
           address: '11111111111111111111111111111111';
         }
@@ -357,9 +448,21 @@ export type IdlLending = {
       ];
     },
     {
-      name: 'liquidate';
-      discriminator: [223, 179, 226, 125, 48, 46, 39, 74];
+      name: 'liquidateType0';
+      discriminator: [132, 41, 76, 79, 227, 71, 42, 4];
       accounts: [
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
         {
           name: 'depository';
           writable: true;
@@ -378,7 +481,6 @@ export type IdlLending = {
         },
         {
           name: 'depositoryVault';
-          docs: ['#2'];
           writable: true;
         },
         {
@@ -388,6 +490,14 @@ export type IdlLending = {
         {
           name: 'stablecoinMint';
           writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
         },
         {
           name: 'collateral';
@@ -428,6 +538,47 @@ export type IdlLending = {
           type: 'u64';
         }
       ];
+    },
+    {
+      name: 'readOracleAccount';
+      discriminator: [84, 167, 143, 192, 12, 22, 206, 184];
+      accounts: [
+        {
+          name: 'oracle';
+        }
+      ];
+      args: [];
+      returns: {
+        defined: {
+          name: 'pricePair';
+        };
+      };
+    },
+    {
+      name: 'updateAuthority';
+      discriminator: [32, 46, 64, 28, 149, 75, 243, 88];
+      accounts: [
+        {
+          name: 'newAuthority';
+          docs: ['#1'];
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          docs: ['#2'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        }
+      ];
+      args: [];
     },
     {
       name: 'updateRate';
@@ -479,8 +630,8 @@ export type IdlLending = {
       discriminator: [184, 79, 171, 0, 183, 43, 113, 110];
     },
     {
-      name: 'loan';
-      discriminator: [20, 195, 70, 117, 165, 227, 182, 1];
+      name: 'loanType0';
+      discriminator: [53, 107, 87, 167, 145, 117, 129, 201];
     },
     {
       name: 'type0Depository';
@@ -680,148 +831,148 @@ export type IdlLending = {
     },
     {
       code: 6032;
+      name: 'authorityPulled';
+      msg: 'The authority of this program has been pulled.';
+    },
+    {
+      code: 6033;
       name: 'invalidAuthority';
       msg: 'Only the Program initializer authority can access this instructions.';
     },
     {
-      code: 6033;
+      code: 6034;
       name: 'invalidController';
       msg: "The Depository's controller doesn't match the provided Controller.";
     },
     {
-      code: 6034;
+      code: 6035;
       name: 'invalidDepository';
       msg: 'The Depository provided is not matching the one stored in the Controller.';
     },
     {
-      code: 6035;
+      code: 6036;
       name: 'invalidCollateralMint';
       msg: "The provided collateral mint does not match the depository's collateral mint.";
     },
     {
-      code: 6036;
+      code: 6037;
       name: 'invalidRedeemableMint';
       msg: "The Redeemable Mint provided does not match the Controller's one.";
     },
     {
-      code: 6037;
+      code: 6038;
       name: 'invalidOwner';
       msg: 'The provided token account is not owner by the expected party.';
     },
     {
-      code: 6038;
+      code: 6039;
       name: 'invalidDepositoryCollateral';
       msg: "The provided depository collateral does not match the depository's one.";
     },
     {
-      code: 6039;
+      code: 6040;
       name: 'invalidDepositoryShares';
       msg: "The provided depository shares does not match the depository's one.";
     },
     {
-      code: 6040;
+      code: 6041;
       name: 'invalidProfitsBeneficiaryCollateral';
       msg: "The Profits beneficiary collateral provided does not match the depository's one.";
     },
     {
-      code: 6041;
+      code: 6042;
       name: 'invalidMercurialVault';
       msg: "The provided mercurial vault does not match the Depository's one.";
     },
     {
-      code: 6042;
+      code: 6043;
       name: 'invalidMercurialVaultCollateralTokenSafe';
       msg: 'The provided mercurial vault collateral token safe does not match the mercurial vault one.';
     },
     {
-      code: 6043;
+      code: 6044;
       name: 'redeemableIdentityDepositoryAmountUnderManagementCap';
       msg: 'Minting amount would go past the identity depository Redeemable Amount Under Management Cap.';
     },
     {
-      code: 6044;
+      code: 6045;
       name: 'programAlreadyFrozenOrResumed';
       msg: 'Program is already frozen/resumed.';
     },
     {
-      code: 6045;
+      code: 6046;
       name: 'programFrozen';
       msg: 'The program is currently in Frozen state.';
     },
     {
-      code: 6046;
+      code: 6047;
       name: 'invalidCredixProgramState';
       msg: "The Credix ProgramState isn't the Depository one.";
     },
     {
-      code: 6047;
+      code: 6048;
       name: 'invalidCredixGlobalMarketState';
       msg: "The Credix GlobalMarketState isn't the Depository one.";
     },
     {
-      code: 6048;
+      code: 6049;
       name: 'invalidCredixSigningAuthority';
       msg: "The Credix SigningAuthority isn't the Depository one.";
     },
     {
-      code: 6049;
+      code: 6050;
       name: 'invalidCredixLiquidityCollateral';
       msg: "The Credix LiquidityCollateral isn't the Depository one.";
     },
     {
-      code: 6050;
+      code: 6051;
       name: 'invalidCredixSharesMint';
       msg: "The Credix SharesMint isn't the Depository one.";
     },
     {
-      code: 6051;
+      code: 6052;
       name: 'invalidCredixPass';
       msg: "The Credix Pass isn't the one owned by the correct depository.";
     },
     {
-      code: 6052;
+      code: 6053;
       name: 'invalidCredixPassNoFees';
       msg: "The Credix Pass doesn't have the fees exemption.";
     },
     {
-      code: 6053;
+      code: 6054;
       name: 'invalidCredixTreasury';
       msg: "The Credix Treasury isn't the ProgramState one.";
     },
     {
-      code: 6054;
+      code: 6055;
       name: 'invalidCredixTreasuryPoolCollateral';
       msg: "The Credix TreasuryPool isn't the GlobalMarketState one.";
     },
     {
-      code: 6055;
+      code: 6056;
       name: 'invalidCredixWithdrawEpochRequestPhase';
       msg: "The Credix WithdrawEpoch isn't in its request phase.";
     },
     {
-      code: 6056;
+      code: 6057;
       name: 'invalidCredixWithdrawEpochRedeemPhase';
       msg: "The Credix WithdrawEpoch isn't in its redeem phase.";
     },
     {
-      code: 6057;
+      code: 6058;
       name: 'default';
       msg: 'Default - Check the source code for more info.';
     },
     {
-      code: 6058;
+      code: 6059;
       name: 'maximumOutflowAmountError';
       msg: 'Redeem resulted into too much outflow in this epoch, please wait or try again with a smaller amount.';
     },
     {
-      code: 6059;
+      code: 6060;
       name: 'invalidOutflowLimitPerEpochBps';
       msg: 'The outflow_limit_per_epoch_bps is invalid: over 100%.';
-    },
-    {
-      code: 6060;
-      name: 'err';
-      msg: 'err';
     },
     {
       code: 6061;
@@ -887,6 +1038,16 @@ export type IdlLending = {
       code: 6073;
       name: 'unableToDeserializeAccount';
       msg: 'Unable to deserialize account';
+    },
+    {
+      code: 6074;
+      name: 'invalidOracle';
+      msg: 'The provided oracle account is invalid.';
+    },
+    {
+      code: 6075;
+      name: 'onlyOneLoanAccount';
+      msg: 'Only 1 loan account to be liquidated';
     }
   ];
   types: [
@@ -905,6 +1066,10 @@ export type IdlLending = {
           },
           {
             name: 'authority';
+            type: 'pubkey';
+          },
+          {
+            name: 'pendingAuthority';
             type: 'pubkey';
           },
           {
@@ -998,6 +1163,12 @@ export type IdlLending = {
             type: {
               option: 'u64';
             };
+          },
+          {
+            name: 'oracle';
+            type: {
+              option: 'pubkey';
+            };
           }
         ];
       };
@@ -1047,7 +1218,7 @@ export type IdlLending = {
       };
     },
     {
-      name: 'loan';
+      name: 'loanType0';
       type: {
         kind: 'struct';
         fields: [
@@ -1058,6 +1229,34 @@ export type IdlLending = {
           {
             name: 'mintedAmount';
             type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'pricePair';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'bump';
+            docs: ['Bump seed used to generate the program address / authority'];
+            type: {
+              array: ['u8', 1];
+            };
+          },
+          {
+            name: 'metadata';
+            docs: ['Owner of the configuration'];
+            type: 'pubkey';
+          },
+          {
+            name: 'price';
+            type: 'f64';
+          },
+          {
+            name: 'updatedTimestamp';
+            type: 'i64';
           }
         ];
       };
@@ -1172,6 +1371,10 @@ export type IdlLending = {
             type: 'pubkey';
           },
           {
+            name: 'oracle';
+            type: 'pubkey';
+          },
+          {
             name: 'debtCeiling';
             type: 'u64';
           },
@@ -1222,7 +1425,7 @@ export type IdlLending = {
 };
 
 export const idlLending: IdlLending = {
-  address: '8muCr8KxAyga2zHQoZYVPYm4h6jVzhLwWZp1AhLmQv4G',
+  address: 'Gpc1tWMi1ZCgb7CDyKdtBQ7Hmkv2B1FuNPY8xHryiH58',
   metadata: {
     name: 'lending',
     version: '0.1.0',
@@ -1421,6 +1624,10 @@ export const idlLending: IdlLending = {
           writable: true,
         },
         {
+          name: 'oracle',
+          docs: ['CHECK'],
+        },
+        {
           name: 'systemProgram',
           docs: ['#9'],
           address: '11111111111111111111111111111111',
@@ -1487,10 +1694,35 @@ export const idlLending: IdlLending = {
         {
           name: 'userRedeemable',
           writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'user',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
         },
         {
           name: 'controller',
-          docs: ['controller'],
           writable: true,
           pda: {
             seeds: [
@@ -1503,7 +1735,6 @@ export const idlLending: IdlLending = {
         },
         {
           name: 'depository',
-          docs: ['#2'],
           writable: true,
           pda: {
             seeds: [
@@ -1520,7 +1751,6 @@ export const idlLending: IdlLending = {
         },
         {
           name: 'depositoryVault',
-          docs: ['#2'],
           writable: true,
         },
         {
@@ -1556,6 +1786,10 @@ export const idlLending: IdlLending = {
           address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
         },
         {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
           name: 'systemProgram',
           address: '11111111111111111111111111111111',
         },
@@ -1580,9 +1814,21 @@ export const idlLending: IdlLending = {
       ],
     },
     {
-      name: 'liquidate',
-      discriminator: [223, 179, 226, 125, 48, 46, 39, 74],
+      name: 'liquidateType0',
+      discriminator: [132, 41, 76, 79, 227, 71, 42, 4],
       accounts: [
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
         {
           name: 'depository',
           writable: true,
@@ -1601,7 +1847,6 @@ export const idlLending: IdlLending = {
         },
         {
           name: 'depositoryVault',
-          docs: ['#2'],
           writable: true,
         },
         {
@@ -1611,6 +1856,14 @@ export const idlLending: IdlLending = {
         {
           name: 'stablecoinMint',
           writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
         },
         {
           name: 'collateral',
@@ -1651,6 +1904,47 @@ export const idlLending: IdlLending = {
           type: 'u64',
         },
       ],
+    },
+    {
+      name: 'readOracleAccount',
+      discriminator: [84, 167, 143, 192, 12, 22, 206, 184],
+      accounts: [
+        {
+          name: 'oracle',
+        },
+      ],
+      args: [],
+      returns: {
+        defined: {
+          name: 'pricePair',
+        },
+      },
+    },
+    {
+      name: 'updateAuthority',
+      discriminator: [32, 46, 64, 28, 149, 75, 243, 88],
+      accounts: [
+        {
+          name: 'newAuthority',
+          docs: ['#1'],
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          docs: ['#2'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+      ],
+      args: [],
     },
     {
       name: 'updateRate',
@@ -1702,8 +1996,8 @@ export const idlLending: IdlLending = {
       discriminator: [184, 79, 171, 0, 183, 43, 113, 110],
     },
     {
-      name: 'loan',
-      discriminator: [20, 195, 70, 117, 165, 227, 182, 1],
+      name: 'loanType0',
+      discriminator: [53, 107, 87, 167, 145, 117, 129, 201],
     },
     {
       name: 'type0Depository',
@@ -1903,148 +2197,148 @@ export const idlLending: IdlLending = {
     },
     {
       code: 6032,
+      name: 'authorityPulled',
+      msg: 'The authority of this program has been pulled.',
+    },
+    {
+      code: 6033,
       name: 'invalidAuthority',
       msg: 'Only the Program initializer authority can access this instructions.',
     },
     {
-      code: 6033,
+      code: 6034,
       name: 'invalidController',
       msg: "The Depository's controller doesn't match the provided Controller.",
     },
     {
-      code: 6034,
+      code: 6035,
       name: 'invalidDepository',
       msg: 'The Depository provided is not matching the one stored in the Controller.',
     },
     {
-      code: 6035,
+      code: 6036,
       name: 'invalidCollateralMint',
       msg: "The provided collateral mint does not match the depository's collateral mint.",
     },
     {
-      code: 6036,
+      code: 6037,
       name: 'invalidRedeemableMint',
       msg: "The Redeemable Mint provided does not match the Controller's one.",
     },
     {
-      code: 6037,
+      code: 6038,
       name: 'invalidOwner',
       msg: 'The provided token account is not owner by the expected party.',
     },
     {
-      code: 6038,
+      code: 6039,
       name: 'invalidDepositoryCollateral',
       msg: "The provided depository collateral does not match the depository's one.",
     },
     {
-      code: 6039,
+      code: 6040,
       name: 'invalidDepositoryShares',
       msg: "The provided depository shares does not match the depository's one.",
     },
     {
-      code: 6040,
+      code: 6041,
       name: 'invalidProfitsBeneficiaryCollateral',
       msg: "The Profits beneficiary collateral provided does not match the depository's one.",
     },
     {
-      code: 6041,
+      code: 6042,
       name: 'invalidMercurialVault',
       msg: "The provided mercurial vault does not match the Depository's one.",
     },
     {
-      code: 6042,
+      code: 6043,
       name: 'invalidMercurialVaultCollateralTokenSafe',
       msg: 'The provided mercurial vault collateral token safe does not match the mercurial vault one.',
     },
     {
-      code: 6043,
+      code: 6044,
       name: 'redeemableIdentityDepositoryAmountUnderManagementCap',
       msg: 'Minting amount would go past the identity depository Redeemable Amount Under Management Cap.',
     },
     {
-      code: 6044,
+      code: 6045,
       name: 'programAlreadyFrozenOrResumed',
       msg: 'Program is already frozen/resumed.',
     },
     {
-      code: 6045,
+      code: 6046,
       name: 'programFrozen',
       msg: 'The program is currently in Frozen state.',
     },
     {
-      code: 6046,
+      code: 6047,
       name: 'invalidCredixProgramState',
       msg: "The Credix ProgramState isn't the Depository one.",
     },
     {
-      code: 6047,
+      code: 6048,
       name: 'invalidCredixGlobalMarketState',
       msg: "The Credix GlobalMarketState isn't the Depository one.",
     },
     {
-      code: 6048,
+      code: 6049,
       name: 'invalidCredixSigningAuthority',
       msg: "The Credix SigningAuthority isn't the Depository one.",
     },
     {
-      code: 6049,
+      code: 6050,
       name: 'invalidCredixLiquidityCollateral',
       msg: "The Credix LiquidityCollateral isn't the Depository one.",
     },
     {
-      code: 6050,
+      code: 6051,
       name: 'invalidCredixSharesMint',
       msg: "The Credix SharesMint isn't the Depository one.",
     },
     {
-      code: 6051,
+      code: 6052,
       name: 'invalidCredixPass',
       msg: "The Credix Pass isn't the one owned by the correct depository.",
     },
     {
-      code: 6052,
+      code: 6053,
       name: 'invalidCredixPassNoFees',
       msg: "The Credix Pass doesn't have the fees exemption.",
     },
     {
-      code: 6053,
+      code: 6054,
       name: 'invalidCredixTreasury',
       msg: "The Credix Treasury isn't the ProgramState one.",
     },
     {
-      code: 6054,
+      code: 6055,
       name: 'invalidCredixTreasuryPoolCollateral',
       msg: "The Credix TreasuryPool isn't the GlobalMarketState one.",
     },
     {
-      code: 6055,
+      code: 6056,
       name: 'invalidCredixWithdrawEpochRequestPhase',
       msg: "The Credix WithdrawEpoch isn't in its request phase.",
     },
     {
-      code: 6056,
+      code: 6057,
       name: 'invalidCredixWithdrawEpochRedeemPhase',
       msg: "The Credix WithdrawEpoch isn't in its redeem phase.",
     },
     {
-      code: 6057,
+      code: 6058,
       name: 'default',
       msg: 'Default - Check the source code for more info.',
     },
     {
-      code: 6058,
+      code: 6059,
       name: 'maximumOutflowAmountError',
       msg: 'Redeem resulted into too much outflow in this epoch, please wait or try again with a smaller amount.',
     },
     {
-      code: 6059,
+      code: 6060,
       name: 'invalidOutflowLimitPerEpochBps',
       msg: 'The outflow_limit_per_epoch_bps is invalid: over 100%.',
-    },
-    {
-      code: 6060,
-      name: 'err',
-      msg: 'err',
     },
     {
       code: 6061,
@@ -2111,6 +2405,16 @@ export const idlLending: IdlLending = {
       name: 'unableToDeserializeAccount',
       msg: 'Unable to deserialize account',
     },
+    {
+      code: 6074,
+      name: 'invalidOracle',
+      msg: 'The provided oracle account is invalid.',
+    },
+    {
+      code: 6075,
+      name: 'onlyOneLoanAccount',
+      msg: 'Only 1 loan account to be liquidated',
+    },
   ],
   types: [
     {
@@ -2128,6 +2432,10 @@ export const idlLending: IdlLending = {
           },
           {
             name: 'authority',
+            type: 'pubkey',
+          },
+          {
+            name: 'pendingAuthority',
             type: 'pubkey',
           },
           {
@@ -2222,6 +2530,12 @@ export const idlLending: IdlLending = {
               option: 'u64',
             },
           },
+          {
+            name: 'oracle',
+            type: {
+              option: 'pubkey',
+            },
+          },
         ],
       },
     },
@@ -2270,7 +2584,7 @@ export const idlLending: IdlLending = {
       },
     },
     {
-      name: 'loan',
+      name: 'loanType0',
       type: {
         kind: 'struct',
         fields: [
@@ -2281,6 +2595,34 @@ export const idlLending: IdlLending = {
           {
             name: 'mintedAmount',
             type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'pricePair',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'bump',
+            docs: ['Bump seed used to generate the program address / authority'],
+            type: {
+              array: ['u8', 1],
+            },
+          },
+          {
+            name: 'metadata',
+            docs: ['Owner of the configuration'],
+            type: 'pubkey',
+          },
+          {
+            name: 'price',
+            type: 'f64',
+          },
+          {
+            name: 'updatedTimestamp',
+            type: 'i64',
           },
         ],
       },
@@ -2392,6 +2734,10 @@ export const idlLending: IdlLending = {
         fields: [
           {
             name: 'collateral',
+            type: 'pubkey',
+          },
+          {
+            name: 'oracle',
             type: 'pubkey',
           },
           {

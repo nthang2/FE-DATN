@@ -5,7 +5,7 @@ import { ToastNotifier } from 'src/components/ToastNotifier/ToastNotifier';
 import Content from './content/Content';
 import Header from './header/Header';
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 export default function Layout() {
   return (
