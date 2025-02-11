@@ -1,4 +1,4 @@
-FROM node:18-alpine AS build
+FROM node:22.13.1 AS build
 
 ARG ENVIRONMENT
 
