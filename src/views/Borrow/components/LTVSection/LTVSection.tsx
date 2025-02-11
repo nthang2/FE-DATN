@@ -1,22 +1,23 @@
 import { Box, Slider, Stack, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
+import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { labelMark, marks } from '../../constant';
+import useMaxLtv from '../../hooks/useMaxLtv';
 import { useBorrowState, useDepositState } from '../../state/hooks';
+import { convertToUsd } from '../../utils';
 import CustomMark from '../BorrowSlide/CustomMark';
 import CustomThumb from '../BorrowSlide/CustomThumb';
 import CustomTrack from '../BorrowSlide/CustomTrack';
-import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import { convertToUsd } from '../../utils';
 
 const minZoom = 0;
 const maxZoom = 100;
-const maxBorrowPercent = 30;
 
 const LTVSection = () => {
   const [borrowState, setBorrowState] = useBorrowState();
   const [depositItems] = useDepositState();
   const { data: listPrice } = useQueryAllTokensPrice();
+  const { maxLtv } = useMaxLtv();
 
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
 
@@ -28,7 +29,7 @@ const LTVSection = () => {
   }, [borrowState.price, totalDepositValue]);
 
   const handleChangeSlider = (value: number | number[]) => {
-    if (Number(value) > maxBorrowPercent) {
+    if (!maxLtv || Number(value) > maxLtv) {
       return;
     }
 
@@ -41,18 +42,19 @@ const LTVSection = () => {
   };
 
   useEffect(() => {
+    if (!maxLtv) return;
     if (!borrowPercent) {
       setSliderValue(0);
       return;
     }
 
-    if (borrowPercent > maxBorrowPercent) {
-      setSliderValue(maxBorrowPercent);
+    if (borrowPercent > maxLtv) {
+      setSliderValue(maxLtv);
       return;
     }
 
     setSliderValue(borrowPercent);
-  }, [borrowState, borrowPercent]);
+  }, [borrowState, borrowPercent, maxLtv]);
 
   return (
     <BoxCustom>
@@ -67,7 +69,7 @@ const LTVSection = () => {
 
       <Stack justifyContent="space-between" mt={1.5}>
         <Typography variant="body2">Ratio of the collateral value to the borrowed value</Typography>
-        <Typography variant="body2">max 30.00%</Typography>
+        <Typography variant="body2">max {maxLtv?.toFixed(2)}%</Typography>
       </Stack>
 
       <Box mt={3.5}>

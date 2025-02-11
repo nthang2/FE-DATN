@@ -1,10 +1,10 @@
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 const CustomMark = ({ ...props }) => {
-  // console.log('🚀 ~ CustomMark ~ props:', props);
   const dataIndex = props['data-index'];
-  const bgcolor = dataIndex > 1 ? '#FCFFD8' : '#666662';
   const isMaxValueMark = dataIndex === 3;
+  const maxValue = props.ownerState.marks[3].value;
+  const bgcolor = dataIndex > 1 ? '#FCFFD8' : '#666662';
 
   return (
     <Box
@@ -21,12 +21,16 @@ const CustomMark = ({ ...props }) => {
         transform: 'translate(-1px, -50%)',
         bgcolor: bgcolor,
         height: '100%',
-        display: props.markActive ? 'none' : 'block',
+        display: props.markActive && !isMaxValueMark ? 'none' : 'block',
       }}
       {...props}
     >
       <Box position="relative" height="100%">
-        {isMaxValueMark && <Box position="absolute"></Box>}
+        {isMaxValueMark && (
+          <Box position="absolute" top={-18}>
+            <Typography variant="body3">{maxValue}%</Typography>
+          </Box>
+        )}
       </Box>
     </Box>
   );
