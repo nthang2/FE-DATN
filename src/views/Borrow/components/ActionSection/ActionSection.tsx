@@ -1,10 +1,10 @@
 import { Table, TableBody, TableContainer, Typography } from '@mui/material';
-import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
-import { useBorrowState, useDepositState } from '../../state/hooks';
-import DepositTableRow from './DepositTableRow';
-import BorrowTableRow from './BorrowTableRow';
-import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
+import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
+import { useBorrowState, useDepositState } from '../../state/hooks';
+import BorrowTableRow from './BorrowTableRow';
+import DepositTableRow from './DepositTableRow';
 
 interface IProps {
   isHidden: boolean;

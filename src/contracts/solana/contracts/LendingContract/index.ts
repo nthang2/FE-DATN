@@ -6,7 +6,7 @@ import { PublicKey } from '@solana/web3.js';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
-import { DEPOSITORY_SEED, REDEEMABLE_MINT_SEED, collateral, CONTROLLER_SEED, oracle } from './constains';
+import { collateral, CONTROLLER_SEED, DEPOSITORY_SEED, oracle, REDEEMABLE_MINT_SEED } from './constains';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -36,8 +36,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
 
   async initialize(): Promise<string> {
     const redeemable_mint = this.getPda1(REDEEMABLE_MINT_SEED);
-    const userCollateralATA = await getAssociatedTokenAddressSync(this.provider.publicKey, collateral);
-    const userRedeemATA = await getAssociatedTokenAddressSync(this.provider.publicKey, redeemable_mint);
+    const userCollateralATA = await getAssociatedTokenAddressSync(this.provider.publicKey, collateral, true);
+    const userRedeemATA = await getAssociatedTokenAddressSync(this.provider.publicKey, redeemable_mint, true);
     const loanAccount = await this.getUserLoanByToken(this.provider.publicKey, collateral);
     const collateralAmount = new BN(3 * 1e9);
     const usdaiAmount = new BN(100 * 1e6);
