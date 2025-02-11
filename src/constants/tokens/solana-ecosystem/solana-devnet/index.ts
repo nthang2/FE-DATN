@@ -10,6 +10,15 @@ export const usdcDevSolanaDevnet = new SolanaDevnetTokenInfo({
   isToken2022: false,
 });
 
+export const solanaDevnet = new SolanaDevnetTokenInfo({
+  address: '',
+  decimals: 6,
+  symbol: TokenName.SOL,
+  prettyName: 'Solana',
+  isNative: true,
+  isToken2022: false,
+});
+
 export const token1SolanaDevnet = new SolanaDevnetTokenInfo({
   address: '3eURz91ZVhdVBghyet9wcDwsBTcsGxeMA2ovMkWku3Y8',
   decimals: 9,

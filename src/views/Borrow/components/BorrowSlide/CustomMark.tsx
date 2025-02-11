@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material';
 const CustomMark = ({ ...props }) => {
   const dataIndex = props['data-index'];
   const isMaxValueMark = dataIndex === 3;
-  const maxValue = props.ownerState.marks[3].value;
+  const maxValue: number = props.ownerState.marks[3].value;
   const bgcolor = dataIndex > 1 ? '#FCFFD8' : '#666662';
 
   return (
@@ -28,7 +28,7 @@ const CustomMark = ({ ...props }) => {
       <Box position="relative" height="100%">
         {isMaxValueMark && (
           <Box position="absolute" top={-18}>
-            <Typography variant="body3">{maxValue}%</Typography>
+            <Typography variant="body3">{maxValue.toFixed(2)}%</Typography>
           </Box>
         )}
       </Box>

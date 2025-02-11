@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useState } from 'react';
-import { BoxCustom } from 'src/components/common/BoxCustom/BoxCustom';
+import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
 
 export default function Borrow() {
   const [eMode, setEMode] = useState<boolean>(false);

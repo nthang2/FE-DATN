@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { BoxCustom } from 'src/components/common/BoxCustom/BoxCustom';
 import SwitchCustom from './components/SwitchCustom';
+import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
 
 export default function Deposit() {
   const data = [

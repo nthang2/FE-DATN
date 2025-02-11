@@ -6,7 +6,7 @@ import { PublicKey } from '@solana/web3.js';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
-import { DEPOSITORY_SEED, REDEEMABLE_MINT_SEED, collateral, CONTROLLER_SEED } from './constains';
+import { DEPOSITORY_SEED, REDEEMABLE_MINT_SEED, CONTROLLER_SEED, collateral as defaultCollateral } from './constant';
 import { queryClient } from 'src/layout/Layout';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
@@ -25,8 +25,9 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     return pda;
   }
 
-  getAccountsPartial() {
+  getAccountsPartial(tokenAddress: string) {
     const redeemable_mint = this.getPda(REDEEMABLE_MINT_SEED);
+    const collateral = new PublicKey(tokenAddress);
     const userCollateralATA = getAssociatedTokenAddressSync(collateral, this.provider.publicKey);
     const userRedeemATA = getAssociatedTokenAddressSync(redeemable_mint, this.provider.publicKey);
     const { pdAddress } = this.getUserLoanByToken(this.provider.publicKey, collateral);
@@ -62,10 +63,10 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     });
   }
 
-  async deposit(depositAmount: number): Promise<string> {
+  async deposit(depositAmount: number, tokenAddress: string): Promise<string> {
     const collateralAmount = new BN(depositAmount * 1e9);
     const usdaiAmount = new BN(0 * 1e6);
-    const accountsPartial = this.getAccountsPartial();
+    const accountsPartial = this.getAccountsPartial(tokenAddress);
 
     const transaction = await this.program.methods
       .interactWithType0Depository(collateralAmount, usdaiAmount, true, true)
@@ -76,10 +77,10 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     return transactionHash;
   }
 
-  async borrow(borrowAmount: number): Promise<string> {
+  async borrow(borrowAmount: number, tokenAddress: string): Promise<string> {
     const collateralAmount = new BN(0 * 1e9);
     const usdaiAmount = new BN(borrowAmount * 1e6);
-    const accountsPartial = this.getAccountsPartial();
+    const accountsPartial = this.getAccountsPartial(tokenAddress);
 
     const transaction = await this.program.methods
       .interactWithType0Depository(collateralAmount, usdaiAmount, false, true)
@@ -91,7 +92,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async getMaxLtv(): Promise<number> {
-    const { depositoryPda } = this.getUserLoanByToken(this.provider.publicKey, collateral);
+    const { depositoryPda } = this.getUserLoanByToken(this.provider.publicKey, defaultCollateral);
     const ratio = (await this.getAccountType0Depository(depositoryPda)).collateralizationRatio;
     const result = 1e9 / ratio.toNumber();
 
@@ -99,7 +100,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async getBorrowRate(): Promise<number> {
-    const { depositoryPda } = this.getUserLoanByToken(this.provider.publicKey, collateral);
+    const { depositoryPda } = this.getUserLoanByToken(this.provider.publicKey, defaultCollateral);
     const rate = (await this.getAccountType0Depository(depositoryPda)).rate;
     const result = rate.toNumber() / 1e9 - 1;
 
