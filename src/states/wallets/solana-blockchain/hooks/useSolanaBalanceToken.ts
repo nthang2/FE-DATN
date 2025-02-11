@@ -1,9 +1,9 @@
-import useFetchAllSolTokenBalances from './useFetchAllSolTokenBalances';
 import { TokenName } from 'crypto-token-icon';
-import { TSolanaMainnetToken } from 'src/constants/tokens/solana-ecosystem/solana-mainnet/mapNameToInfoSolanaMainnet';
+import { TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { BN } from 'src/utils';
+import useFetchAllSolTokenBalances from './useFetchAllSolTokenBalances';
 
-export default function useSolanaBalanceToken(address: string, tokenName: TSolanaMainnetToken) {
+export default function useSolanaBalanceToken(address: string, tokenName: TSolanaToken) {
   const { allSlpTokenBalances, native } = useFetchAllSolTokenBalances(address);
   if (tokenName === TokenName.SOL) {
     return native.SOL;
@@ -17,7 +17,7 @@ export default function useSolanaBalanceToken(address: string, tokenName: TSolan
   };
 }
 
-export const useSolanaBalanceTokens = (userAddress: string, tokens: TSolanaMainnetToken[]) => {
+export const useSolanaBalanceTokens = (userAddress: string, tokens: TSolanaToken[]) => {
   const { allSlpTokenBalances, native } = useFetchAllSolTokenBalances(userAddress);
   return tokens.map((token) => {
     if (token === TokenName.SOL) {

@@ -1,20 +1,17 @@
 import { Box, Typography } from '@mui/material';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { BoxCustom } from 'src/components/common/BoxCustom/BoxCustom';
 import ValueWithStatus from 'src/components/common/ValueWithStatus/ValueWithStatus';
 import { FetchStatus } from 'src/constants';
-import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import { formatNumber } from 'src/utils/format';
 import SliderCustom from './components/SliderCustom';
 
 export default function YourPosition() {
-  const { wallet } = useWallet();
+  // const getCollateral = async () => {
+  //   if (!wallet || !wallet.wallet?.adapter.publicKey) return;
+  //   const lendingContract = new LendingContract(wallet);
+  //   const result = await lendingContract.
+  // };
 
-  const getCollateral = async () => {
-    if (wallet) {
-      const lendingContract = new LendingContract(wallet);
-    }
-  };
   return (
     <BoxCustom>
       <Typography variant="h5">Your Position</Typography>

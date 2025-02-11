@@ -14,10 +14,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     super(wallet as any, ctrAdsSolana.lending, idlLending);
   }
 
-  async initialize(): Promise<string> {
-    return '';
-  }
-
   getPda(seed: string, ...tokens: PublicKey[]) {
     const addressParam = tokens.map((token) => token.toBuffer());
     const [pda] = PublicKey.findProgramAddressSync([Buffer.from(seed), ...addressParam], this.program.programId);
@@ -62,6 +58,16 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     });
   }
 
+  getAmountDeposit = async (userLoanPDAAddress: string) => {
+    const result = (await this.program.account.loanType0.fetch(userLoanPDAAddress)).collateralAmount;
+    console.log('🚀 ~ LendingContract ~ getAmountDeposit= ~ result:', result);
+    return result;
+  };
+
+  async initialize(): Promise<string> {
+    return '';
+  }
+
   async deposit(depositAmount: number): Promise<string> {
     const collateralAmount = new BN(depositAmount * 1e9);
     const usdaiAmount = new BN(0 * 1e6);
@@ -79,6 +85,34 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   async borrow(borrowAmount: number): Promise<string> {
     const collateralAmount = new BN(0 * 1e9);
     const usdaiAmount = new BN(borrowAmount * 1e6);
+    const accountsPartial = this.getAccountsPartial();
+
+    const transaction = await this.program.methods
+      .interactWithType0Depository(collateralAmount, usdaiAmount, false, true)
+      .accountsPartial(accountsPartial)
+      .transaction();
+    const transactionHash = await this.sendTransaction(transaction);
+
+    return transactionHash;
+  }
+
+  async repay(debtAmount: number): Promise<string> {
+    const collateralAmount = new BN(0 * 1e9);
+    const usdaiAmount = new BN(debtAmount * 1e6);
+    const accountsPartial = this.getAccountsPartial();
+
+    const transaction = await this.program.methods
+      .interactWithType0Depository(collateralAmount, usdaiAmount, false, true)
+      .accountsPartial(accountsPartial)
+      .transaction();
+    const transactionHash = await this.sendTransaction(transaction);
+
+    return transactionHash;
+  }
+
+  async withdraw(depositAmount: number): Promise<string> {
+    const collateralAmount = new BN(depositAmount * 1e9);
+    const usdaiAmount = new BN(0 * 1e6);
     const accountsPartial = this.getAccountsPartial();
 
     const transaction = await this.program.methods
