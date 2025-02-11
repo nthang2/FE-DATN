@@ -20,7 +20,7 @@ export const solanaDevnet = new SolanaDevnetTokenInfo({
 });
 
 export const token1SolanaDevnet = new SolanaDevnetTokenInfo({
-  address: '3eURz91ZVhdVBghyet9wcDwsBTcsGxeMA2ovMkWku3Y8',
+  address: '3eURz91ZVhdVBghyet6wcDwsBTcsGxeMA2ovMkWku3Y8',
   decimals: 9,
   symbol: TokenName.MAX,
   prettyName: 'MAX',
@@ -29,7 +29,7 @@ export const token1SolanaDevnet = new SolanaDevnetTokenInfo({
 });
 
 export const token2SolanaDevnet = new SolanaDevnetTokenInfo({
-  address: '7FWWHpj9U9jnzkFaDg5kWVCw74gGzrhiSrKFkPU7ycDi',
+  address: '7FWWHpj9U6jnzkFaDg5kWVCw74gGzrhiSrKFkPU7ycDi',
   decimals: 9,
   symbol: TokenName.TRUMP,
   prettyName: 'TRUMP',
@@ -38,7 +38,7 @@ export const token2SolanaDevnet = new SolanaDevnetTokenInfo({
 });
 
 export const token3SolanaDevnet = new SolanaDevnetTokenInfo({
-  address: 'EvBgWJhp9k1CSW1hPC7hVMQeT8Psm54wTk2DyR5JtHNP',
+  address: 'EvBgWJhp6k1CSW1hPC7hVMQeT8Psm54wTk2DyR5JtHNP',
   decimals: 9,
   symbol: TokenName.AI16Z,
   prettyName: 'ai16z',

@@ -1,11 +1,11 @@
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { PublicKey } from '@solana/web3.js';
 import { useQuery } from '@tanstack/react-query';
-import { publicClientSol } from '../configs';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import BigNumber from 'bignumber.js';
 import { TokenName } from 'crypto-token-icon';
-import { BN, DEC } from 'src/utils';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { BN, DEC } from 'src/utils';
+import { publicClientSol } from '../configs';
 
 export default function useFetchAllSolTokenBalances(addressUser: string) {
   const nativeSolBalance = useNativeSolBalance(addressUser);

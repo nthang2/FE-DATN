@@ -6,6 +6,12 @@ import { formatNumber } from 'src/utils/format';
 import SliderCustom from './components/SliderCustom';
 
 export default function YourPosition() {
+  // const getCollateral = async () => {
+  //   if (!wallet || !wallet.wallet?.adapter.publicKey) return;
+  //   const lendingContract = new LendingContract(wallet);
+  //   const result = await lendingContract.
+  // };
+
   return (
     <BoxCustom>
       <Typography variant="h5">Your Position</Typography>

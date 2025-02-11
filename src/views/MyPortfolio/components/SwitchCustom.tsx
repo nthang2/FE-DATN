@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { Check } from 'src/assets/icons';
 
 export default function SwitchCustom({ _checked }: { _checked: boolean }) {
-  const [checked, setChecked] = useState<boolean>(_checked);
+  const [checked] = useState<boolean>(_checked);
 
   const handleChange = () => {
-    setChecked(!checked);
+    // setChecked(!checked);
   };
   return (
     <Box

@@ -1,14 +1,12 @@
 import { Avatar, Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useState } from 'react';
-import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
+import { BoxCustom } from 'src/components/common/BoxCustom/BoxCustom';
+import { mapNameToInfoSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet/mapNameToInfoSolanaDevnet';
+import useQueryYourBorrow from 'src/hooks/useQueryYourBorrow';
 
 export default function Borrow() {
   const [eMode, setEMode] = useState<boolean>(false);
-
-  const data = [
-    { id: 0, token: { symbol: 'USDC' }, available: 0.44444, yourBorrow: 0.0001, apy: 12.22 },
-    { id: 1, token: { symbol: 'USDC' }, available: 0.44444, yourBorrow: 0.0001, apy: 12.22 },
-  ];
+  const { data: yourBorrow } = useQueryYourBorrow();
 
   const tableHead = ['Asset', 'Available', 'your borrow', 'APY', ''];
 
@@ -49,29 +47,29 @@ export default function Borrow() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row) => (
-              <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+            {Object.values(mapNameToInfoSolanaDevnet).map((row) => (
+              <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell component="th" scope="row">
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar sx={{ height: '24px', width: '24px', mr: 1.5 }} />
                     <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary' }}>
-                      {row.token.symbol}
+                      {row.symbol}
                     </Typography>
                   </Box>
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {row.available}
+                    --
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {row.yourBorrow}
+                    {yourBorrow?.[row.address] ?? '--'}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {row.apy}
+                    --
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
@@ -80,7 +78,9 @@ export default function Borrow() {
                       Borrow
                     </Typography>
                   </Button>
-                  <Button disabled>Repay</Button>
+                  <Button sx={{ ml: 1 }} size="small" variant="outlined">
+                    Repay
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}

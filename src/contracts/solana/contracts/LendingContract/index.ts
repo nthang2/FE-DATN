@@ -4,18 +4,14 @@ import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
+import { queryClient } from 'src/layout/Layout';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
-import { DEPOSITORY_SEED, REDEEMABLE_MINT_SEED, CONTROLLER_SEED, collateral as defaultCollateral } from './constant';
-import { queryClient } from 'src/layout/Layout';
+import { CONTROLLER_SEED, collateral as defaultCollateral, DEPOSITORY_SEED, REDEEMABLE_MINT_SEED } from './constant';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
     super(wallet as any, ctrAdsSolana.lending, idlLending);
-  }
-
-  async initialize(): Promise<string> {
-    return '';
   }
 
   getPda(seed: string, ...tokens: PublicKey[]) {
@@ -63,6 +59,30 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     });
   }
 
+  async getAmountDeposit(userLoanPDAAddress: PublicKey) {
+    try {
+      const result = await this.program.account.loanType0.fetch(userLoanPDAAddress);
+      return result.collateralAmount.toString();
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  async getYourBorrow(userLoanPDAAddress: PublicKey) {
+    try {
+      const result = await this.program.account.loanType0.fetch(userLoanPDAAddress);
+      return result.mintedAmount.toString();
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  async initialize(): Promise<string> {
+    return '';
+  }
+
   async deposit(depositAmount: number, tokenAddress: string): Promise<string> {
     const collateralAmount = new BN(depositAmount * 1e9);
     const usdaiAmount = new BN(0 * 1e6);
@@ -80,6 +100,34 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   async borrow(borrowAmount: number, tokenAddress: string): Promise<string> {
     const collateralAmount = new BN(0 * 1e9);
     const usdaiAmount = new BN(borrowAmount * 1e6);
+    const accountsPartial = this.getAccountsPartial(tokenAddress);
+
+    const transaction = await this.program.methods
+      .interactWithType0Depository(collateralAmount, usdaiAmount, false, true)
+      .accountsPartial(accountsPartial)
+      .transaction();
+    const transactionHash = await this.sendTransaction(transaction);
+
+    return transactionHash;
+  }
+
+  async repay(debtAmount: number, tokenAddress: string): Promise<string> {
+    const collateralAmount = new BN(0 * 1e9);
+    const usdaiAmount = new BN(debtAmount * 1e6);
+    const accountsPartial = this.getAccountsPartial(tokenAddress);
+
+    const transaction = await this.program.methods
+      .interactWithType0Depository(collateralAmount, usdaiAmount, false, true)
+      .accountsPartial(accountsPartial)
+      .transaction();
+    const transactionHash = await this.sendTransaction(transaction);
+
+    return transactionHash;
+  }
+
+  async withdraw(depositAmount: number, tokenAddress: string): Promise<string> {
+    const collateralAmount = new BN(depositAmount * 1e9);
+    const usdaiAmount = new BN(0 * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 
     const transaction = await this.program.methods

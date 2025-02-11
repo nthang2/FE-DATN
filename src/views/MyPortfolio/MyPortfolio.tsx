@@ -1,7 +1,6 @@
 import { Grid2 } from '@mui/material';
 import Borrow from './Borrow';
 import Deposit from './Deposit';
-import HealthFactor from './HealthFactor';
 import MyWallet from './MyWallet';
 import YourPosition from './YourPosition';
 
@@ -14,7 +13,7 @@ export default function MyPortfolio() {
         <Borrow />
       </Grid2>
       <Grid2 size={4}>
-        <HealthFactor />
+        {/* <HealthFactor /> */}
         <MyWallet />
       </Grid2>
     </Grid2>
