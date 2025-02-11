@@ -11,11 +11,21 @@ export default function useDonutChartConfig(extraOptions: Highcharts.Options, de
       {
         chart: {
           type: 'pie',
+          options3d: {
+            enabled: true,
+            alpha: 45,
+          },
         },
         plotOptions: {
-          series: {
-            borderWidth: 0,
-            borderRadius: 2,
+          pie: {
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: false,
+            },
+            innerSize: '82%',
+            depth: 45,
+            borderWidth: 2,
+            borderColor: 'inherit',
           },
         },
         xAxis: {

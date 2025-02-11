@@ -58,11 +58,25 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     });
   }
 
-  getAmountDeposit = async (userLoanPDAAddress: string) => {
-    const result = (await this.program.account.loanType0.fetch(userLoanPDAAddress)).collateralAmount;
-    console.log('🚀 ~ LendingContract ~ getAmountDeposit= ~ result:', result);
-    return result;
-  };
+  async getAmountDeposit(userLoanPDAAddress: PublicKey) {
+    try {
+      const result = await this.program.account.loanType0.fetch(userLoanPDAAddress);
+      return result.collateralAmount.toString();
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  async getYourBorrow(userLoanPDAAddress: PublicKey) {
+    try {
+      const result = await this.program.account.loanType0.fetch(userLoanPDAAddress);
+      return result.mintedAmount.toString();
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
 
   async initialize(): Promise<string> {
     return '';
