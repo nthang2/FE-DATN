@@ -1,5 +1,6 @@
 import { Table, TableBody, TableContainer, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useState } from 'react';
 import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
@@ -12,16 +13,28 @@ const ActionSection = () => {
   const [depositItems] = useDepositState();
   const [isSubmitted] = useBorrowSubmitState();
 
-  const handleDeposit = async (depositValue: number) => {
+  const [actionStatus, setActionStatus] = useState<boolean[]>(() => {
+    return Array(depositItems.length + 1).fill(false);
+  });
+
+  const handChangeActionStatus = (index: number) => {
+    const cloneArr = [...actionStatus];
+    cloneArr.splice(index, 1, true);
+    setActionStatus(cloneArr);
+  };
+
+  const handleDeposit = async (depositValue: number, index: number) => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
     await lendingContract.deposit(depositValue);
+    handChangeActionStatus(index);
   };
 
   const handleBorrow = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
     await lendingContract.borrow(Number(borrowState.value));
+    handChangeActionStatus(actionStatus.length);
   };
 
   return (
@@ -34,9 +47,20 @@ const ActionSection = () => {
         <Table>
           <TableBody>
             {depositItems.map((item, index) => (
-              <DepositTableRow index={index + 1} key={index} depositItem={item} onClick={() => handleDeposit(Number(item.value))} />
+              <DepositTableRow
+                actionStatus={actionStatus[index]}
+                index={index + 1}
+                key={index}
+                depositItem={item}
+                onClick={() => handleDeposit(Number(item.value), index)}
+              />
             ))}
-            <BorrowTableRow index={depositItems.length + 1} borrowItem={borrowState} onClick={handleBorrow} />
+            <BorrowTableRow
+              actionStatus={actionStatus[depositItems.length + 1]}
+              index={depositItems.length + 1}
+              borrowItem={borrowState}
+              onClick={handleBorrow}
+            />
           </TableBody>
         </Table>
       </TableContainer>
