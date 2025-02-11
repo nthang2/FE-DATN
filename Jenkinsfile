@@ -23,16 +23,16 @@ pipeline {
         // Staging server information
         STAGING_VM_IP = "174.138.24.54"
         STAGING_URL = "https://app-staging.jpow.ai"
-        STAGING_DOCKER_PORT = "80"
-        STAGING_DOCKER_BIND_PORT = "4001" 
-        STAGING_ENV_CREDENTIALS_ID = ''
+        STAGING_DOCKER_PORT = 80
+        STAGING_DOCKER_BIND_PORT = 4001 
+        STAGING_ENV_CREDENTIALS_ID = "env-trava-finance-lending-app-staging"
 
         // Production server information
-        PRODUCTION_VM_IP = ""
-        PRODUCTION_URL = ""
-        PRODUCTION_DOCKER_PORT = 
-        PRODUCTION_DOCKER_BIND_PORT = 
-        PRODUCTION_ENV_CREDENTIALS_ID = ''
+        PRODUCTION_VM_IP = "174.138.24.54"
+        PRODUCTION_URL = "https://app.jpow.ai"
+        PRODUCTION_DOCKER_PORT = 80
+        PRODUCTION_DOCKER_BIND_PORT = 4000
+        PRODUCTION_ENV_CREDENTIALS_ID = "env-trava-finance-lending-app-staging"
 
         // Configuation
         DEPLOY_PRODUCTION_MODE = "auto"
