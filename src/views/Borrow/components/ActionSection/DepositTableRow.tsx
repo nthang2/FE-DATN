@@ -1,11 +1,13 @@
+import { Stack, TableCell, TableRow, Typography } from '@mui/material';
+import ButtonLoading from 'src/components/Common/ButtonLoading/ButtonLoading';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import { TBorrowItem } from '../../state/types';
-import { Button, Stack, TableCell, TableRow, Typography } from '@mui/material';
 
 interface IProps {
   index: number;
   depositItem: TBorrowItem;
-  onClick: () => void;
+  onClick: () => Promise<void>;
 }
 
 const DepositTableRow = (props: IProps) => {
@@ -14,6 +16,7 @@ const DepositTableRow = (props: IProps) => {
     depositItem: { value, address },
     onClick,
   } = props;
+  const { asyncExecute, loading } = useAsyncExecute();
 
   const tokenInfo = findTokenInfoByToken(address);
 
@@ -30,9 +33,9 @@ const DepositTableRow = (props: IProps) => {
         </Stack>
       </TableCell>
       <TableCell>
-        <Button variant="contained" onClick={onClick}>
+        <ButtonLoading loading={loading} variant="contained" onClick={() => asyncExecute({ fn: onClick })}>
           Deposit
-        </Button>
+        </ButtonLoading>
       </TableCell>
     </TableRow>
   );

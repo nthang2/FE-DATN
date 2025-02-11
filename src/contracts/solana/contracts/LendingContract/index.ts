@@ -36,38 +36,69 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   };
 
   async initialize(): Promise<string> {
+    return '';
+  }
+
+  async deposit(depositAmount: number): Promise<string> {
     const redeemable_mint = this.getPda1(REDEEMABLE_MINT_SEED);
     const userCollateralATA = getAssociatedTokenAddressSync(collateral, this.provider.publicKey);
     const userRedeemATA = getAssociatedTokenAddressSync(redeemable_mint, this.provider.publicKey);
     const { pdAddress } = await this.getUserLoanByToken(this.provider.publicKey, collateral);
-    const collateralAmount = new BN(0.1 * 1e9);
+    const collateralAmount = new BN(depositAmount * 1e9);
     const usdaiAmount = new BN(0 * 1e6);
     const controller = this.getPda1(CONTROLLER_SEED);
     const depository = this.getPda2(DEPOSITORY_SEED, collateral);
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
 
-    try {
-      const temp = await this.program.methods
-        .interactWithType0Depository(collateralAmount, usdaiAmount, true, true)
-        .accountsPartial({
-          user: this.provider.publicKey,
-          collateral: collateral,
-          userCollateral: userCollateralATA,
-          redeemableMint: redeemable_mint,
-          userRedeemable: userRedeemATA,
-          controller: controller,
-          depository: depository,
-          depositoryVault: depositoryVault,
-          oracle: ctrAdsSolana.oracle,
-          loanAccount: pdAddress,
-        })
-        .transaction();
+    const transaction = await this.program.methods
+      .interactWithType0Depository(collateralAmount, usdaiAmount, true, true)
+      .accountsPartial({
+        user: this.provider.publicKey,
+        collateral: collateral,
+        userCollateral: userCollateralATA,
+        redeemableMint: redeemable_mint,
+        userRedeemable: userRedeemATA,
+        controller: controller,
+        depository: depository,
+        depositoryVault: depositoryVault,
+        oracle: ctrAdsSolana.oracle,
+        loanAccount: pdAddress,
+      })
+      .transaction();
 
-      const resp = await this.sendTransaction(temp);
-      console.log('🚀 ~ LendingContract ~ initialize ~ resp:', resp);
-    } catch (error) {
-      console.log('🚀 ~ LendingContract ~ initialize ~ error:', error);
-    }
-    return '';
+    const transactionHash = await this.sendTransaction(transaction);
+    return transactionHash;
+  }
+
+  async borrow(borrowAmount: number): Promise<string> {
+    const redeemable_mint = this.getPda1(REDEEMABLE_MINT_SEED);
+    const userCollateralATA = getAssociatedTokenAddressSync(collateral, this.provider.publicKey);
+    const userRedeemATA = getAssociatedTokenAddressSync(redeemable_mint, this.provider.publicKey);
+    const { pdAddress } = await this.getUserLoanByToken(this.provider.publicKey, collateral);
+    const collateralAmount = new BN(0 * 1e9);
+    const usdaiAmount = new BN(borrowAmount * 1e6);
+    const controller = this.getPda1(CONTROLLER_SEED);
+    const depository = this.getPda2(DEPOSITORY_SEED, collateral);
+    const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
+
+    const transaction = await this.program.methods
+      .interactWithType0Depository(collateralAmount, usdaiAmount, false, true)
+      .accountsPartial({
+        user: this.provider.publicKey,
+        collateral: collateral,
+        userCollateral: userCollateralATA,
+        redeemableMint: redeemable_mint,
+        userRedeemable: userRedeemATA,
+        controller: controller,
+        depository: depository,
+        depositoryVault: depositoryVault,
+        oracle: ctrAdsSolana.oracle,
+        loanAccount: pdAddress,
+      })
+      .transaction();
+
+    const transactionHash = await this.sendTransaction(transaction);
+
+    return transactionHash;
   }
 }
