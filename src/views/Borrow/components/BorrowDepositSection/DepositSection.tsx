@@ -1,15 +1,14 @@
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
 import { PlusIcon } from 'src/assets/icons';
 import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/Common/TooltipInfo/TooltipInfo';
-import BorrowCustomInput from 'src/components/CustomForm/InputCustom/BorrowCustomInput';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { defaultBorrowValue } from '../../constant';
 import { useBorrowSubmitState, useDepositState } from '../../state/hooks';
-import { convertToUsd } from '../../utils';
+import { convertToUsd, validateDepositItem } from '../../utils';
+import DepositItem from './DepositItem';
 
 const DepositSection = () => {
   const [depositItems, setDepositState] = useDepositState();
@@ -25,7 +24,7 @@ const DepositSection = () => {
   };
 
   const handleAddItem = () => {
-    if (depositItems.length <= 10) {
+    if (depositItems.length < 6) {
       setDepositState((prev) => [...prev, defaultBorrowValue]);
     }
   };
@@ -45,7 +44,7 @@ const DepositSection = () => {
   const handleChangeInput = (index: number, value: string) => {
     const cloneArr = depositItems.map((item, arrIndex) => {
       if (arrIndex === index) {
-        return { ...item, value: value, price: convertToUsd(item.address, value, listPrice) };
+        return { ...item, value: value, price: convertToUsd(item.address, value, listPrice), error: validateDepositItem(Number(value)) };
       }
 
       return item;
@@ -74,7 +73,7 @@ const DepositSection = () => {
                 },
               },
             }}
-            disabled={isSubmitted}
+            disabled={isSubmitted || depositItems.length >= 6}
             onClick={handleAddItem}
           >
             <Typography variant="body2" alignItems="center" display="flex" gap={1} fontWeight={700}>
@@ -89,23 +88,12 @@ const DepositSection = () => {
         <Box>
           {depositItems.map((item, index) => {
             return (
-              <BorrowCustomInput
-                readonly={isSubmitted}
-                inputProps={{
-                  onChange: (e) => handleChangeInput(index, e.target.value),
-                  value: item.value,
-                }}
-                selectProps={{
-                  onChange: (e) => handleChangeSelectInput(index, e.target.value),
-                  value: item.address,
-                }}
-                key={index}
-                endAdornment={
-                  <IconButton onClick={() => handleRemoveItem(index)} sx={{ display: isSubmitted ? 'none' : 'block' }} hidden={isSubmitted}>
-                    <CloseOutlinedIcon fontSize="large" />
-                  </IconButton>
-                }
-                subValue={item.price}
+              <DepositItem
+                item={item}
+                index={index}
+                handleChangeInput={handleChangeInput}
+                handleChangeSelectInput={handleChangeSelectInput}
+                handleRemoveItem={handleRemoveItem}
               />
             );
           })}

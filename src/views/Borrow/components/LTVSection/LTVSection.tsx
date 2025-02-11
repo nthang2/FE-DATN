@@ -22,9 +22,9 @@ const LTVSection = () => {
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
 
   const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item.price, 0), [depositItems]);
+  const markList = useMemo(() => [...marks, { value: maxLtv || 100 }], [maxLtv]);
   const borrowPercent = useMemo(() => {
     if (borrowState.price > totalDepositValue) return -1;
-
     return (borrowState.price / totalDepositValue) * 100;
   }, [borrowState.price, totalDepositValue]);
 
@@ -74,7 +74,7 @@ const LTVSection = () => {
 
       <Box mt={3.5}>
         <Slider
-          marks={marks}
+          marks={markList}
           min={minZoom}
           max={maxZoom}
           value={sliderValue}
@@ -96,19 +96,19 @@ const LTVSection = () => {
 
         {/* Label */}
         <Stack width="100%" sx={{ alignItems: 'center', textAlign: 'center' }}>
-          {marks.map((mark, index) => {
+          {markList.map((mark, index) => {
             let width = mark.value;
             if (index !== 0) {
-              if (index !== marks.length - 1) {
-                width = marks[index].value - marks[index - 1].value;
+              if (index !== markList.length - 1) {
+                width = markList[index].value - markList[index - 1].value;
               } else {
-                width = 100 - marks[index - 1].value;
+                width = 100 - markList[index - 1].value;
               }
             }
 
             return (
               <Typography key={mark.value} width={`${width}%`}>
-                {labelMark[index].label}
+                {labelMark[index]?.label}
               </Typography>
             );
           })}

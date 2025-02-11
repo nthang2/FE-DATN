@@ -10,9 +10,6 @@ export const marks = [
   {
     value: 80,
   },
-  {
-    value: 30,
-  },
 ];
 
 export const labelMark = [

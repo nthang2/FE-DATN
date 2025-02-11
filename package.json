@@ -26,7 +26,7 @@
     "bignumber.js": "^9.1.2",
     "buffer": "^6.0.3",
     "chain-registry": "^1.69.88",
-    "crypto-token-icon": "^0.0.35",
+    "crypto-token-icon": "^0.0.36",
     "date-fns": "^4.1.0",
     "highcharts": "^12.1.2",
     "highcharts-react-official": "^3.2.1",

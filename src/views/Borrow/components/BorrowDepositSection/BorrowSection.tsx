@@ -1,11 +1,11 @@
-import { Box, SelectChangeEvent, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
 import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
-import BorrowCustomInput from 'src/components/CustomForm/InputCustom/BorrowCustomInput';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { useBorrowState, useBorrowSubmitState } from '../../state/hooks';
-import { convertToUsd } from '../../utils';
+import { convertToUsd, validateDepositItem } from '../../utils';
+import DepositCustomInput from '../InputCustom/DepositCustomInput';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
@@ -15,11 +15,12 @@ const BorrowSection = () => {
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    setBorrowState({ ...borrowState, value: value, price: convertToUsd(borrowState.address, value, listPrice) });
-  };
-
-  const handleChangeSelectInput = (event: SelectChangeEvent<string>) => {
-    setBorrowState({ ...borrowState, address: event.target.value });
+    setBorrowState({
+      ...borrowState,
+      value: value,
+      price: convertToUsd(borrowState.address, value, listPrice),
+      error: validateDepositItem(Number(value)),
+    });
   };
 
   return (
@@ -29,17 +30,24 @@ const BorrowSection = () => {
           Borrow
         </Typography>
         <Box>
-          <BorrowCustomInput
+          <DepositCustomInput
             readonly={isSubmitted}
             inputProps={{
               onChange: handleChangeInput,
               value: borrowState.value,
             }}
             selectProps={{
-              onChange: handleChangeSelectInput,
               value: borrowState.address,
+              disabled: true,
+              renderValue: () => (
+                <Stack sx={{ alignItems: 'center' }}>
+                  <Icon tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
+                  <Typography variant="body2">USDAI</Typography>
+                </Stack>
+              ),
             }}
             subValue={borrowState.price}
+            error={borrowState.error}
           />
         </Box>
       </BoxCustom>
