@@ -3,11 +3,13 @@ import ButtonLoading from 'src/components/Common/ButtonLoading/ButtonLoading';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import { TBorrowItem } from '../../state/types';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 interface IProps {
   index: number;
   depositItem: TBorrowItem;
   onClick: () => Promise<void>;
+  actionStatus: boolean;
 }
 
 const DepositTableRow = (props: IProps) => {
@@ -15,9 +17,9 @@ const DepositTableRow = (props: IProps) => {
     index,
     depositItem: { value, address },
     onClick,
+    actionStatus,
   } = props;
   const { asyncExecute, loading } = useAsyncExecute();
-
   const tokenInfo = findTokenInfoByToken(address);
 
   return (
@@ -32,10 +34,14 @@ const DepositTableRow = (props: IProps) => {
           </Typography>
         </Stack>
       </TableCell>
-      <TableCell>
-        <ButtonLoading loading={loading} variant="contained" onClick={() => asyncExecute({ fn: onClick })}>
-          Deposit
-        </ButtonLoading>
+      <TableCell align="center">
+        {actionStatus ? (
+          <CheckCircleIcon fontSize="large" color="success" />
+        ) : (
+          <ButtonLoading loading={loading} variant="contained" onClick={() => asyncExecute({ fn: onClick })}>
+            Deposit
+          </ButtonLoading>
+        )}
       </TableCell>
     </TableRow>
   );

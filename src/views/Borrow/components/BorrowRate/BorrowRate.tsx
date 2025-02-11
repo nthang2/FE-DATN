@@ -1,6 +1,9 @@
 import { Box, Typography } from '@mui/material';
+import useBorrowRate from '../../hooks/useBorrowRate';
 
 const BorrowRate = () => {
+  const { borrowRate } = useBorrowRate();
+
   return (
     <Box
       sx={{
@@ -19,7 +22,7 @@ const BorrowRate = () => {
         Borrow Rate
       </Typography>
       <Typography variant="h2" fontWeight={700}>
-        8%
+        {borrowRate || 3}%
       </Typography>
 
       <Typography variant="body2">Borrow USDAI from jpow.ai for the best rates</Typography>
