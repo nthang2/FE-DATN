@@ -1,5 +1,5 @@
 import { Stack, TableCell, TableRow, Typography } from '@mui/material';
-import ButtonLoading from 'src/components/Common/ButtonLoading/ButtonLoading';
+import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import { TBorrowItem } from '../../state/types';

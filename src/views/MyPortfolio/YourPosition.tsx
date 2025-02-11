@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
-import { BoxCustom } from 'src/components/common/BoxCustom/BoxCustom';
-import ValueWithStatus from 'src/components/common/ValueWithStatus/ValueWithStatus';
+import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
+import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { FetchStatus } from 'src/constants';
 import { formatNumber } from 'src/utils/format';
 import SliderCustom from './components/SliderCustom';

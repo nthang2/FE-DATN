@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useState } from 'react';
-import { BoxCustom } from 'src/components/common/BoxCustom/BoxCustom';
+import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import { mapNameToInfoSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet/mapNameToInfoSolanaDevnet';
 import useQueryYourBorrow from 'src/hooks/useQueryYourBorrow';
 

@@ -1,8 +1,8 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
 import { PlusIcon } from 'src/assets/icons';
-import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
-import TooltipInfo from 'src/components/Common/TooltipInfo/TooltipInfo';
+import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
+import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { defaultBorrowValue } from '../../constant';

@@ -1,7 +1,7 @@
 import { Table, TableBody, TableContainer, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useState } from 'react';
-import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
+import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import BorrowTableRow from './BorrowTableRow';

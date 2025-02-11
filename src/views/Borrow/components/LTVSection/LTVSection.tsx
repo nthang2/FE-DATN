@@ -1,6 +1,6 @@
 import { Box, Slider, Stack, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
-import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
+import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { labelMark, marks } from '../../constant';
 import useMaxLtv from '../../hooks/useMaxLtv';

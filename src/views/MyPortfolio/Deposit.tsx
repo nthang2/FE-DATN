@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { TokenName } from 'crypto-token-icon';
-import { BoxCustom } from 'src/components/common/BoxCustom/BoxCustom';
-import ButtonLoading from 'src/components/Common/ButtonLoading/ButtonLoading';
+import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
+import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { mapNameToInfoSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet/mapNameToInfoSolanaDevnet';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';

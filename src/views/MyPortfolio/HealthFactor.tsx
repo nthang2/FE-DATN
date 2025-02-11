@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
-import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
-import TooltipInfo from 'src/components/Common/TooltipInfo/TooltipInfo';
+import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
+import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 
 export default function HealthFactor() {
   return (
