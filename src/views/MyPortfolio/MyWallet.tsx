@@ -39,39 +39,42 @@ export default function MyWallet() {
     }
   }, [balance]);
 
-  const options = useDonutChartConfig({
-    chart: {
-      height: 300,
-    },
-    title: {
-      text: '',
-    },
-    yAxis: {
+  const options = useDonutChartConfig(
+    {
+      chart: {
+        height: 300,
+      },
       title: {
-        text: undefined,
+        text: '',
       },
-    },
-    legend: {
-      enabled: false,
-    },
-    tooltip: {
-      formatter: function () {
-        return `${this.name}: <b>${this.y != undefined && compactNumber(this.y)}</b>`;
+      yAxis: {
+        title: {
+          text: undefined,
+        },
       },
-    },
-    series: [
-      {
-        // states: {
-        //   inactive: {
-        //     opacity: 0.2,
-        //     enabled: true,
-        //   },
-        // },
-        type: 'pie',
-        data: chartData,
+      legend: {
+        enabled: false,
       },
-    ],
-  });
+      tooltip: {
+        formatter: function () {
+          return `${this.name}: <b>${this.y != undefined && compactNumber(this.y)}</b>`;
+        },
+      },
+      series: [
+        {
+          // states: {
+          //   inactive: {
+          //     opacity: 0.2,
+          //     enabled: true,
+          //   },
+          // },
+          type: 'pie',
+          data: chartData,
+        },
+      ],
+    },
+    [chartData]
+  );
 
   return (
     <BoxCustom sx={{}}>
