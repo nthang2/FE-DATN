@@ -6,6 +6,7 @@ import { LendingContract } from 'src/contracts/solana/contracts/LendingContract'
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import BorrowTableRow from './BorrowTableRow';
 import DepositTableRow from './DepositTableRow';
+import { TBorrowItem } from '../../state/types';
 
 const ActionSection = () => {
   const wallet = useWallet();
@@ -23,17 +24,17 @@ const ActionSection = () => {
     setActionStatus(cloneArr);
   };
 
-  const handleDeposit = async (depositValue: number, index: number) => {
+  const handleDeposit = async (depositItem: TBorrowItem, index: number) => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
-    await lendingContract.deposit(depositValue);
+    await lendingContract.deposit(Number(depositItem.value), depositItem.address);
     handChangeActionStatus(index);
   };
 
   const handleBorrow = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
-    await lendingContract.borrow(Number(borrowState.value));
+    await lendingContract.borrow(Number(borrowState.value), borrowState.address);
     handChangeActionStatus(actionStatus.length);
   };
 
@@ -51,7 +52,7 @@ const ActionSection = () => {
                 index={index + 1}
                 key={index}
                 depositItem={item}
-                onClick={() => handleDeposit(Number(item.value), index)}
+                onClick={() => handleDeposit(item, index)}
               />
             ))}
             <BorrowTableRow

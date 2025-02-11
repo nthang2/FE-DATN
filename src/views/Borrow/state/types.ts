@@ -2,6 +2,7 @@ export type TBorrowItem = {
   address: string;
   value: string;
   price: number;
+  error?: string;
 };
 
 export type TBorrowFunctionName = 'setBorrowState';

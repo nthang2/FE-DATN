@@ -1,4 +1,5 @@
 import { Avatar, Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+<<<<<<< HEAD
 import { TokenName } from 'crypto-token-icon';
 import { BoxCustom } from 'src/components/common/BoxCustom/BoxCustom';
 import ButtonLoading from 'src/components/Common/ButtonLoading/ButtonLoading';
@@ -10,7 +11,10 @@ import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hoo
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
 import { compactNumber } from '../../utils/format';
+=======
+>>>>>>> 8cac7844e3663a8deb0d4888a9797e1e328a731c
 import SwitchCustom from './components/SwitchCustom';
+import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
 
 export default function Deposit() {
   const { loading } = useAsyncExecute();

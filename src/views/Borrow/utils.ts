@@ -8,3 +8,12 @@ export const convertToUsd = (address: string, value: string, listPrice?: TPriceL
 
   return Number(value) * tokenPrice;
 };
+
+export const validateDepositItem = (value: number) => {
+  let error;
+  if (Number(value) <= 0) {
+    error = 'Deposit value must greater than 0';
+  }
+
+  return error;
+};
