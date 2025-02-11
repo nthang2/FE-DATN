@@ -1,22 +1,27 @@
 import { Table, TableBody, TableContainer, Typography } from '@mui/material';
-import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
-import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
-import DepositTableRow from './DepositTableRow';
-import BorrowTableRow from './BorrowTableRow';
-import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { BoxCustom } from 'src/components/Common/CustomBox/CustomBox';
+import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
+import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
+import BorrowTableRow from './BorrowTableRow';
+import DepositTableRow from './DepositTableRow';
 
 const ActionSection = () => {
+  const wallet = useWallet();
   const [borrowState] = useBorrowState();
   const [depositItems] = useDepositState();
   const [isSubmitted] = useBorrowSubmitState();
-  const wallet = useWallet();
 
-  const handleDeposit = async () => {
+  const handleDeposit = async (depositValue: number) => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
-    await lendingContract.initialize();
-    // lendingContract.program.methods.liquidate
+    await lendingContract.deposit(depositValue);
+  };
+
+  const handleBorrow = async () => {
+    if (!wallet || !wallet.wallet?.adapter.publicKey) return;
+    const lendingContract = new LendingContract(wallet);
+    await lendingContract.borrow(Number(borrowState.value));
   };
 
   return (
@@ -29,9 +34,9 @@ const ActionSection = () => {
         <Table>
           <TableBody>
             {depositItems.map((item, index) => (
-              <DepositTableRow index={index + 1} key={index} depositItem={item} onClick={handleDeposit} />
+              <DepositTableRow index={index + 1} key={index} depositItem={item} onClick={() => handleDeposit(Number(item.value))} />
             ))}
-            <BorrowTableRow index={depositItems.length + 1} borrowItem={borrowState} />
+            <BorrowTableRow index={depositItems.length + 1} borrowItem={borrowState} onClick={handleBorrow} />
           </TableBody>
         </Table>
       </TableContainer>

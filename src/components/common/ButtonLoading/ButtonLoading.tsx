@@ -8,9 +8,9 @@ type Props = {
 export default function ButtonLoading({ loading, textLoading, ...muiButtonProps }: Props) {
   return (
     <Button
-      {...muiButtonProps}
-      startIcon={loading ? <CircularProgress /> : muiButtonProps.startIcon}
+      startIcon={loading ? <CircularProgress size={18} /> : muiButtonProps.startIcon}
       disabled={loading || muiButtonProps.disabled}
+      {...muiButtonProps}
     >
       {loading ? textLoading || 'Executing...' : muiButtonProps.children}
     </Button>
