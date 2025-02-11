@@ -1,8 +1,10 @@
 import { Box } from '@mui/material';
 
 const CustomMark = ({ ...props }) => {
+  // console.log('🚀 ~ CustomMark ~ props:', props);
   const dataIndex = props['data-index'];
   const bgcolor = dataIndex > 1 ? '#FCFFD8' : '#666662';
+  const isMaxValueMark = dataIndex === 3;
 
   return (
     <Box
@@ -22,7 +24,11 @@ const CustomMark = ({ ...props }) => {
         display: props.markActive ? 'none' : 'block',
       }}
       {...props}
-    />
+    >
+      <Box position="relative" height="100%">
+        {isMaxValueMark && <Box position="absolute"></Box>}
+      </Box>
+    </Box>
   );
 };
 

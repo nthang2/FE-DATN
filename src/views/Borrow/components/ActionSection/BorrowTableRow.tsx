@@ -1,18 +1,22 @@
-import { Button, Stack, TableCell, TableRow, Typography } from '@mui/material';
+import { Stack, TableCell, TableRow, Typography } from '@mui/material';
+import ButtonLoading from 'src/components/Common/ButtonLoading/ButtonLoading';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import { TBorrowItem } from '../../state/types';
 
 interface IProps {
   index: number;
   borrowItem: TBorrowItem;
+  onClick: () => Promise<void>;
 }
 
 const BorrowTableRow = (props: IProps) => {
   const {
     index,
     borrowItem: { value, address },
+    onClick,
   } = props;
-
+  const { asyncExecute, loading } = useAsyncExecute();
   const tokenInfo = findTokenInfoByToken(address);
 
   return (
@@ -28,9 +32,9 @@ const BorrowTableRow = (props: IProps) => {
         </Stack>
       </TableCell>
       <TableCell>
-        <Button variant="contained" disabled>
+        <ButtonLoading loading={loading} variant="contained" onClick={() => asyncExecute({ fn: onClick })}>
           Borrow
-        </Button>
+        </ButtonLoading>
       </TableCell>
     </TableRow>
   );
