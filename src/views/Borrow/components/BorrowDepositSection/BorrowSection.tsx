@@ -21,7 +21,6 @@ const BorrowSection = () => {
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    console.log('🚀 ~ handleChangeInput ~ value:', value);
     const price = convertToUsd(borrowState.address, value, listPrice);
     const borrowPercent = (price / totalDepositValue) * 100;
     const error = validateBorrowItem(Number(value), borrowPercent, maxLtv);

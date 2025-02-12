@@ -4,7 +4,7 @@ import { TPriceList } from 'src/services/HandleApi/getPriceToken/getPriceToken';
 export const convertToUsd = (address: string, value: string, listPrice?: TPriceList) => {
   const tokenInfo = findTokenInfoByToken(address);
   if (!tokenInfo || !listPrice) return 0;
-  const tokenPrice = listPrice[tokenInfo.symbol].price || 1;
+  const tokenPrice = listPrice?.[tokenInfo.symbol]?.price || 1;
 
   return Number(value) * tokenPrice;
 };
