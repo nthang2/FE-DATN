@@ -1,7 +1,9 @@
 import { Box, FormHelperText, MenuItem, Select, SelectProps, Skeleton, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
 import { ReactNode } from 'react';
-import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { optionSelectValue } from '../../constant';
+import { roundNumber } from 'src/utils/format';
 
 type Props = {
   subValue?: string | ReactNode;
@@ -18,7 +20,8 @@ type Props = {
 
 export default function DepositCustomInput(props: Props) {
   const { subValue, readonly = false, onClickMax, loading, maxValue, endAdornment, inputProps, selectProps, error, selectOptions } = props;
-  const options = selectOptions || Object.values(mapNameToInfoSolana).map((item) => item.address);
+  const options = selectOptions || Object.values(optionSelectValue).map((item) => item.address);
+  const inputValue = inputProps?.value ? roundNumber(Number(inputProps.value), 3) : undefined;
 
   return (
     <Box mb={1}>
@@ -84,6 +87,7 @@ export default function DepositCustomInput(props: Props) {
                 readOnly={readonly}
                 type="number"
                 {...inputProps}
+                value={inputValue}
                 style={{
                   display: 'block',
                   border: 'none',
@@ -99,7 +103,7 @@ export default function DepositCustomInput(props: Props) {
               />
               {subValue ? (
                 <Typography variant="body3" sx={{ color: 'text.secondary' }}>
-                  ${subValue}
+                  ${Number(subValue).toFixed(6)}
                 </Typography>
               ) : null}
             </>
@@ -119,7 +123,7 @@ export default function DepositCustomInput(props: Props) {
         </Box>
       </Box>
       <FormHelperText sx={{ px: 1, py: 0, minHeight: '20px' }} error>
-        {error}
+        <Typography variant="body3">{error}</Typography>
       </FormHelperText>
     </Box>
   );

@@ -1,4 +1,4 @@
-import { SliderThumb } from '@mui/material';
+import { Box, SliderThumb } from '@mui/material';
 import SlideThumb from '/images/SlideThumb.png';
 import { ReactNode } from 'react';
 
@@ -10,7 +10,15 @@ const CustomThumb = ({ children, ...props }: IProps) => {
   return (
     <SliderThumb {...props}>
       {children}
-      <img src={SlideThumb} alt="slider_thumb" width="30px" height="30px" />
+      <Box
+        component="img"
+        src={SlideThumb}
+        alt="slider_thumb"
+        sx={{
+          width: { xs: '42px', lg: '30px' },
+          aspectRatio: 1,
+        }}
+      />
     </SliderThumb>
   );
 };

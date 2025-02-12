@@ -123,3 +123,16 @@ export const formatDate = {
     return fd(date, 'MM/dd/yyyy, h:mm a');
   },
 };
+
+export function roundNumber(num: number | string, scale: number) {
+  if (!('' + num).includes('e')) {
+    return +(Math.round(Number(num + 'e+' + scale)) + 'e-' + scale);
+  } else {
+    const arr = ('' + num).split('e');
+    let sig = '';
+    if (+arr[1] + scale > 0) {
+      sig = '+';
+    }
+    return +(Math.round(Number(+arr[0] + 'e' + sig + (+arr[1] + scale))) + 'e-' + scale);
+  }
+}

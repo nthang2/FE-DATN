@@ -5,8 +5,11 @@ import BorrowSection from './components/BorrowDepositSection/BorrowSection';
 import DepositSection from './components/BorrowDepositSection/DepositSection';
 import BorrowRate from './components/BorrowRate/BorrowRate';
 import LTVSection from './components/LTVSection/LTVSection';
+import { useBorrowSubmitState } from './state/hooks';
 
 const Borrow = () => {
+  const [isSubmitted] = useBorrowSubmitState();
+
   return (
     <Box width="100%" my={4}>
       <Typography variant="h5" mb={1.5} fontWeight={700}>
@@ -32,7 +35,7 @@ const Borrow = () => {
             </Stack>
 
             <LTVSection />
-            <ActionSection />
+            {isSubmitted && <ActionSection />}
           </Box>
 
           <BorrowButton />

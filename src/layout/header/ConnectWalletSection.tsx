@@ -42,7 +42,7 @@ const ConnectWalletSection = () => {
             <WalletConnectIcon Icon={walletIcon} />
             <Stack sx={{ background: '#282825', p: 1, gap: 1, borderRadius: '11px', cursor: 'pointer' }} onClick={handleOpenAnchor}>
               <WalletIcon />
-              {formatAddress(address)}
+              <Typography sx={{ display: { xs: 'none', md: 'block' } }}>{formatAddress(address)}</Typography>
               <ArrowDown />
             </Stack>
 
@@ -64,7 +64,7 @@ const ConnectWalletSection = () => {
                 sx={{
                   p: 2,
                   cursor: 'pointer',
-                  width: anchorEl?.offsetWidth,
+                  width: { xs: '180px', md: anchorEl?.offsetWidth },
                 }}
               >
                 <Typography onClick={() => copyTextToClipboard(address)} mb={2}>
