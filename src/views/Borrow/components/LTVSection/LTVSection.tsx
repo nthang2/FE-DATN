@@ -23,7 +23,7 @@ const LTVSection = () => {
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
 
   const markList = useMemo(() => [...marks, { value: maxLtv || 100 }], [maxLtv]);
-  const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item.price, 0), [depositItems]);
+  const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item?.price, 0), [depositItems]);
   const borrowPercent = useMemo(() => {
     return (borrowState.price / totalDepositValue) * 100;
   }, [borrowState.price, totalDepositValue]);

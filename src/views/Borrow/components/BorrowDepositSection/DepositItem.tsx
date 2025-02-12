@@ -35,7 +35,7 @@ const DepositItem = (props: IProps) => {
           <CloseOutlinedIcon fontSize="large" />
         </IconButton>
       }
-      subValue={item.price}
+      subValue={item?.price}
       error={item.error}
     />
   );

@@ -17,10 +17,11 @@ const BorrowSection = () => {
   const [depositItems] = useDepositState();
 
   const tokenInfo = findTokenInfoByToken(borrowState.address);
-  const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item.price, 0), [depositItems]);
+  const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item?.price, 0), [depositItems]);
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
+    console.log('🚀 ~ handleChangeInput ~ value:', value);
     const price = convertToUsd(borrowState.address, value, listPrice);
     const borrowPercent = (price / totalDepositValue) * 100;
     const error = validateBorrowItem(Number(value), borrowPercent, maxLtv);
@@ -56,7 +57,7 @@ const BorrowSection = () => {
                 </Stack>
               ),
             }}
-            subValue={borrowState.price}
+            subValue={borrowState?.price}
             error={borrowState.error}
           />
         </Box>
