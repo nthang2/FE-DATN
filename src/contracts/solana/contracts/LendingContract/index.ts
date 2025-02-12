@@ -2,7 +2,7 @@
 import { BN } from '@coral-xyz/anchor';
 import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
+import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { queryClient } from 'src/layout/Layout';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
@@ -59,20 +59,9 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     });
   }
 
-  async getAmountDeposit(userLoanPDAAddress: PublicKey) {
+  async getLoanType0(userLoanPDAAddress: PublicKey) {
     try {
-      const result = await this.program.account.loanType0.fetch(userLoanPDAAddress);
-      return result.collateralAmount.toString();
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  }
-
-  async getYourBorrow(userLoanPDAAddress: PublicKey) {
-    try {
-      const result = await this.program.account.loanType0.fetch(userLoanPDAAddress);
-      return result.mintedAmount.toString();
+      return await this.program.account.loanType0.fetch(userLoanPDAAddress);
     } catch (error) {
       console.log(error);
       throw error;
@@ -139,19 +128,30 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     return transactionHash;
   }
 
-  async getMaxLtv(): Promise<number> {
-    const { depositoryPda } = this.getUserLoanByToken(this.provider.publicKey, defaultCollateral);
+  async getMaxLtv(address = defaultCollateral, decimal = 1e9): Promise<number> {
+    const { depositoryPda } = this.getUserLoanByToken(this.provider.publicKey, address);
     const ratio = (await this.getAccountType0Depository(depositoryPda)).collateralizationRatio;
-    const result = 1e9 / ratio.toNumber();
+    const result = decimal / ratio.toNumber();
 
     return result;
   }
 
-  async getBorrowRate(): Promise<number> {
-    const { depositoryPda } = this.getUserLoanByToken(this.provider.publicKey, defaultCollateral);
+  async getBorrowRate(address = defaultCollateral, decimal = 1e9 - 1): Promise<number> {
+    const { depositoryPda } = this.getUserLoanByToken(this.provider.publicKey, address);
     const rate = (await this.getAccountType0Depository(depositoryPda)).rate;
-    const result = rate.toNumber() / 1e9 - 1;
+    const result = rate.toNumber() / decimal;
 
     return result;
+  }
+
+  async checkIfPdaExist(address: PublicKey) {
+    try {
+      const rpcDevnet = clusterApiUrl('devnet');
+      const account = await new Connection(rpcDevnet, 'confirmed').getAccountInfo(address, undefined);
+      return account;
+    } catch (e: unknown) {
+      console.log(e, address.toString());
+      throw e;
+    }
   }
 }

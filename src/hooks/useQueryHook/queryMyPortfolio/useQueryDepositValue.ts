@@ -14,6 +14,7 @@ export default function useQueryDepositValue() {
       const arrAddress = Object.keys(mapNameToInfoSolana).map((item) => {
         // const account = await getAccount(connection, pda, undefined, lending.programId)
         const key = item as keyof typeof mapNameToInfoSolana;
+
         return mapNameToInfoSolana[key].address;
       });
       // eslint-disable-next-line @typescript-eslint/no-unused-vars, prefer-const
@@ -22,8 +23,12 @@ export default function useQueryDepositValue() {
         arrAddress.forEach(async (add) => {
           if (wallet.publicKey !== null) {
             const userLoan = lendingContract.getUserLoanByToken(wallet.publicKey, new PublicKey(add));
-            const _valueDeposit = await lendingContract.getAmountDeposit(userLoan.pdAddress);
-            depositValue[add] = BN(_valueDeposit)
+            const _add = await lendingContract.checkIfPdaExist(new PublicKey(userLoan.pdAddress));
+            if (!_add) {
+              return;
+            }
+            const _valueDeposit = await lendingContract.getLoanType0(userLoan.pdAddress);
+            depositValue[add] = BN(_valueDeposit.collateralAmount)
               .dividedBy(BN(10).pow(findTokenInfoByToken(add)?.decimals ?? 9))
               .toString();
           }

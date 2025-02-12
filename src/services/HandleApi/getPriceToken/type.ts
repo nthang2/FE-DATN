@@ -1,7 +1,5 @@
-import { Address } from 'src/constants';
-
 export type TokenPriceInfo = {
-  address: Address;
+  address: string;
   type: string;
   name: string;
   price: number;
