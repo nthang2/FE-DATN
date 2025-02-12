@@ -3,29 +3,39 @@ import { Icon, TokenName } from 'crypto-token-icon';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import { useBorrowState, useBorrowSubmitState } from '../../state/hooks';
-import { convertToUsd, validateDepositItem } from '../../utils';
+import useMaxLtv from '../../hooks/useMaxLtv';
+import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
+import { convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
+import { useMemo } from 'react';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
   const [borrowState, setBorrowState] = useBorrowState();
   const [isSubmitted] = useBorrowSubmitState();
+  const { maxLtv } = useMaxLtv();
+  const [depositItems] = useDepositState();
+
   const tokenInfo = findTokenInfoByToken(borrowState.address);
+  const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item.price, 0), [depositItems]);
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
+    const price = convertToUsd(borrowState.address, value, listPrice);
+    const borrowPercent = (price / totalDepositValue) * 100;
+    const error = validateBorrowItem(Number(value), borrowPercent, maxLtv);
+
     setBorrowState({
       ...borrowState,
       value: value,
-      price: convertToUsd(borrowState.address, value, listPrice),
-      error: validateDepositItem(Number(value)),
+      price: price,
+      error: error,
     });
   };
 
   return (
     <Box>
-      <BoxCustom sx={{ flex: 1 }}>
+      <BoxCustom sx={{ flex: 1, borderRadius: '16px 16px 0px 0px' }}>
         <Typography variant="h6" alignItems="center" display="flex" gap={1} fontWeight={700} minHeight="44px" mb={3.5}>
           Borrow
         </Typography>

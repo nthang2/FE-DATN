@@ -1,11 +1,12 @@
 import { Box, Slider, Stack, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
+import FormatSmallNumber from 'src/components/General/FormatSmallNumber/FormatSmallNumber';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { labelMark, marks } from '../../constant';
 import useMaxLtv from '../../hooks/useMaxLtv';
 import { useBorrowState, useDepositState } from '../../state/hooks';
-import { convertToUsd } from '../../utils';
+import { convertToAmountToken } from '../../utils';
 import CustomMark from '../BorrowSlide/CustomMark';
 import CustomThumb from '../BorrowSlide/CustomThumb';
 import CustomTrack from '../BorrowSlide/CustomTrack';
@@ -21,10 +22,9 @@ const LTVSection = () => {
 
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
 
-  const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item.price, 0), [depositItems]);
   const markList = useMemo(() => [...marks, { value: maxLtv || 100 }], [maxLtv]);
+  const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item.price, 0), [depositItems]);
   const borrowPercent = useMemo(() => {
-    if (borrowState.price > totalDepositValue) return -1;
     return (borrowState.price / totalDepositValue) * 100;
   }, [borrowState.price, totalDepositValue]);
 
@@ -34,10 +34,11 @@ const LTVSection = () => {
     }
 
     const borrowValue = (Number(value) / 100) * totalDepositValue;
+    const borrowAmount = convertToAmountToken(borrowState.address, borrowValue.toString(), listPrice);
     setBorrowState({
       ...borrowState,
-      value: borrowValue.toString(),
-      price: convertToUsd(borrowState.address, borrowValue.toString(), listPrice),
+      value: borrowAmount.toString(),
+      price: borrowValue,
     });
   };
 
@@ -63,7 +64,7 @@ const LTVSection = () => {
           Loan to Value (LTV)
         </Typography>
         <Typography variant="h6" fontWeight={700}>
-          {Number(sliderValue).toFixed(2)}%
+          <FormatSmallNumber value={Number(sliderValue)} />%
         </Typography>
       </Stack>
 
@@ -95,7 +96,7 @@ const LTVSection = () => {
         />
 
         {/* Label */}
-        <Stack width="100%" sx={{ alignItems: 'center', textAlign: 'center' }}>
+        <Stack width="100%" sx={{ alignItems: 'center', textAlign: 'center', display: { xs: 'none', md: 'flex' } }}>
           {markList.map((mark, index) => {
             let width = mark.value;
             if (index !== 0) {

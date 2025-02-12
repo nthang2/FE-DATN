@@ -55,7 +55,7 @@ const DepositSection = () => {
 
   return (
     <Box>
-      <BoxCustom sx={{ flex: 1 }}>
+      <BoxCustom sx={{ flex: 1, borderRadius: '16px 16px 0px 0px' }}>
         <Stack justifyContent="space-between" width="100%" mb={3.5}>
           <Typography variant="h6" alignItems="center" display="flex" gap={1} fontWeight={700}>
             Deposit

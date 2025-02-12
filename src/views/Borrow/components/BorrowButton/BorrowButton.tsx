@@ -11,15 +11,18 @@ const BorrowButton = () => {
 
   const isValidBorrow = useMemo(() => {
     if (borrowState.value === '0') return false;
-    const totalDepositValue = depositItems.reduce((total, item) => total + item.price, 0);
+    const borrowError = !borrowState.error;
+    const depositError = depositItems.every((item) => !item.error && Number(item.value) !== 0);
 
-    if (totalDepositValue === 0) return false;
-
-    return totalDepositValue > borrowState.price;
-  }, [borrowState.price, borrowState.value, depositItems]);
+    return borrowError && depositError;
+  }, [borrowState.error, borrowState.value, depositItems]);
 
   if (isSubmitted) {
-    return <></>;
+    return (
+      <Button variant="contained" onClick={() => setIsSubmitted(false)} fullWidth sx={{ mt: 2 }}>
+        Cancel
+      </Button>
+    );
   }
 
   return (
