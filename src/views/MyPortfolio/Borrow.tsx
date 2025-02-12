@@ -2,11 +2,14 @@ import { Avatar, Box, Button, Table, TableBody, TableCell, TableContainer, Table
 import { useState } from 'react';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import { mapNameToInfoSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet/mapNameToInfoSolanaDevnet';
-import useQueryYourBorrow from 'src/hooks/useQueryYourBorrow';
+import useQueryBorrowRate from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryBorrowRate';
+import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 
 export default function Borrow() {
   const [eMode, setEMode] = useState<boolean>(false);
   const { data: yourBorrow } = useQueryYourBorrow();
+  const { data: borrowRate } = useQueryBorrowRate();
+  console.log('🚀 ~ Borrow ~ borrowRates:', borrowRate);
 
   const tableHead = ['Asset', 'Available', 'your borrow', 'APY', ''];
 

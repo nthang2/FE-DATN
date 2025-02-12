@@ -1,14 +1,13 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useQuery } from '@tanstack/react-query';
-import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
-import { BN } from 'src/utils';
 
-export default function useQueryYourBorrow() {
+export default function useQueryBorrowRate() {
   const wallet = useWallet();
   return useQuery({
-    queryKey: ['yourBorrow'],
+    queryKey: ['borrowRate'],
     queryFn: async () => {
       const lendingContract = new LendingContract(wallet);
       const arrAddress = Object.keys(mapNameToInfoSolana).map((item) => {
@@ -17,19 +16,21 @@ export default function useQueryYourBorrow() {
         return mapNameToInfoSolana[key].address;
       });
       // eslint-disable-next-line @typescript-eslint/no-unused-vars, prefer-const
-      let depositValue = {} as { [key: string]: string };
+      let borrowRate = {} as { [key: string]: string };
       await Promise.all([
         arrAddress.forEach(async (add) => {
           if (wallet.publicKey !== null) {
+            // const _add = await lendingContract.checkIfPdaExist(new PublicKey(add));
+            // if (_add) {
             const userLoan = lendingContract.getUserLoanByToken(wallet.publicKey, new PublicKey(add));
-            const _valueDeposit = await lendingContract.getYourBorrow(userLoan.pdAddress);
-            depositValue[add] = BN(_valueDeposit)
-              .dividedBy(BN(10).pow(findTokenInfoByToken(add)?.decimals ?? 9))
-              .toString();
+            const _borrowRate = await lendingContract.getBorrowRate(userLoan.pdAddress);
+            borrowRate[add] = _borrowRate.toString();
+            // }
           }
         }),
       ]);
-      return depositValue;
+
+      return borrowRate;
     },
     staleTime: 1000 * 60 * 10,
     enabled: Boolean(wallet.publicKey),

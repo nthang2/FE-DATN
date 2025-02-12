@@ -4,24 +4,36 @@ import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { mapNameToInfoSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet/mapNameToInfoSolanaDevnet';
+import { SolanaDevnetTokenInfo } from 'src/constants/tokens/solana-ecosystem/solana-devnet/SolanaDevnetTokenInfo';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
-import useQueryDepositValue from 'src/hooks/useQueryDepositValue';
+import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
+import { useModalFunction } from 'src/states/modal/hooks';
 import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
 import { compactNumber } from '../../utils/format';
+import DepositModal from './components/DepositModal';
 import SwitchCustom from './components/SwitchCustom';
 
 export default function Deposit() {
   const { loading } = useAsyncExecute();
   const { address } = useSummarySolanaConnect();
   const { data: depositValue } = useQueryDepositValue();
+  const modalFunction = useModalFunction();
+
   const balance = useSolanaBalanceTokens(
     address,
     Object.keys(mapNameToInfoSolana) as Array<TokenName.TRUMP | TokenName.MAX | TokenName.AI16Z>
   );
 
   const tableHead = ['Asset', 'In Wallet', 'Deposit', 'APY', 'Collateral', ''];
+
+  const handleDeposit = (token: SolanaDevnetTokenInfo) => {
+    modalFunction({
+      type: 'openModal',
+      data: { content: <DepositModal token={token} />, title: `Deposit ${token.symbol}`, modalProps: { maxWidth: 'xs' } },
+    });
+  };
 
   return (
     <BoxCustom sx={{ mt: 2 }}>
@@ -75,7 +87,7 @@ export default function Deposit() {
                     </Box>
                   </TableCell>
                   <TableCell align="right">
-                    <Button variant="contained" size="small">
+                    <Button variant="contained" size="small" onClick={() => handleDeposit(row)}>
                       <Typography variant="body2" sx={{ fontWeight: '500' }}>
                         Deposit
                       </Typography>

@@ -7,6 +7,7 @@ const initData: TModalData = {
   modalProps: undefined,
   conditionOpen: true,
   content: <></>,
+  isShowCloseModal: true,
 };
 
 export const modal = atom(initData);
