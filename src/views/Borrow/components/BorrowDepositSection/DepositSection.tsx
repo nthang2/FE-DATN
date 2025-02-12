@@ -42,6 +42,7 @@ const DepositSection = () => {
   };
 
   const handleChangeInput = (index: number, value: string) => {
+    console.log('🚀 ~ handleChangeInput ~ value:', value);
     const cloneArr = depositItems.map((item, arrIndex) => {
       if (arrIndex === index) {
         return { ...item, value: value, price: convertToUsd(item.address, value, listPrice), error: validateDepositItem(Number(value)) };
@@ -91,6 +92,7 @@ const DepositSection = () => {
               <DepositItem
                 item={item}
                 index={index}
+                key={index}
                 handleChangeInput={handleChangeInput}
                 handleChangeSelectInput={handleChangeSelectInput}
                 handleRemoveItem={handleRemoveItem}
