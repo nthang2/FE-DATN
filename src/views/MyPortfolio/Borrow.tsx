@@ -2,19 +2,29 @@ import { Avatar, Box, Button, Table, TableBody, TableCell, TableContainer, Table
 import { useState } from 'react';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import { mapNameToInfoSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet/mapNameToInfoSolanaDevnet';
+import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useQueryBorrowRate from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryBorrowRate';
 import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
+import { useModalFunction } from 'src/states/modal/hooks';
+import RepayModal from './components/RepayModal';
 
 export default function Borrow() {
   const [eMode, setEMode] = useState<boolean>(false);
   const { data: yourBorrow } = useQueryYourBorrow();
   const { data: borrowRate } = useQueryBorrowRate();
-  console.log('🚀 ~ Borrow ~ borrowRates:', borrowRate);
+  const modalFunction = useModalFunction();
 
   const tableHead = ['Asset', 'Available', 'your borrow', 'APY', ''];
 
   const handleChangeMode = () => {
     setEMode(!eMode);
+  };
+
+  const handleRepay = (token: SolanaEcosystemTokenInfo) => {
+    modalFunction({
+      type: 'openModal',
+      data: { content: <RepayModal token={token} />, title: `Repay ${token.symbol}`, modalProps: { maxWidth: 'xs' } },
+    });
   };
 
   return (
@@ -81,7 +91,14 @@ export default function Borrow() {
                       Borrow
                     </Typography>
                   </Button>
-                  <Button sx={{ ml: 1 }} size="small" variant="outlined">
+                  <Button
+                    sx={{ ml: 1 }}
+                    size="small"
+                    variant="outlined"
+                    onClick={() => {
+                      handleRepay(row);
+                    }}
+                  >
                     Repay
                   </Button>
                 </TableCell>

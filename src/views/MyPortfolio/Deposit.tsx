@@ -4,7 +4,7 @@ import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { mapNameToInfoSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet/mapNameToInfoSolanaDevnet';
-import { SolanaDevnetTokenInfo } from 'src/constants/tokens/solana-ecosystem/solana-devnet/SolanaDevnetTokenInfo';
+import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import { useModalFunction } from 'src/states/modal/hooks';
@@ -14,6 +14,7 @@ import { BN } from 'src/utils';
 import { compactNumber } from '../../utils/format';
 import DepositModal from './components/DepositModal';
 import SwitchCustom from './components/SwitchCustom';
+import WithdrawModal from './components/WithdrawModal';
 
 export default function Deposit() {
   const { loading } = useAsyncExecute();
@@ -28,10 +29,17 @@ export default function Deposit() {
 
   const tableHead = ['Asset', 'In Wallet', 'Deposit', 'APY', 'Collateral', ''];
 
-  const handleDeposit = (token: SolanaDevnetTokenInfo) => {
+  const handleDeposit = (token: SolanaEcosystemTokenInfo) => {
     modalFunction({
       type: 'openModal',
       data: { content: <DepositModal token={token} />, title: `Deposit ${token.symbol}`, modalProps: { maxWidth: 'xs' } },
+    });
+  };
+
+  const handleWithdraw = (token: SolanaEcosystemTokenInfo) => {
+    modalFunction({
+      type: 'openModal',
+      data: { content: <WithdrawModal token={token} />, title: `Withdraw ${token.symbol}`, modalProps: { maxWidth: 'xs' } },
     });
   };
 
@@ -92,7 +100,15 @@ export default function Deposit() {
                         Deposit
                       </Typography>
                     </Button>
-                    <ButtonLoading sx={{ ml: 1 }} loading={loading} size="small" variant="outlined">
+                    <ButtonLoading
+                      sx={{ ml: 1 }}
+                      loading={loading}
+                      size="small"
+                      variant="outlined"
+                      onClick={() => {
+                        handleWithdraw(row);
+                      }}
+                    >
                       Withdraw
                     </ButtonLoading>
                   </TableCell>
