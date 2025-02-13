@@ -25,7 +25,7 @@ export default function Borrow() {
             Borrow
           </Typography>
           <Box sx={{ bgcolor: '#30302e', px: 1, py: 0.5, height: '24px', borderRadius: '6px' }}>
-            <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880' }}>
+            <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main' }}>
               E-Mode {eMode ? 'On' : 'Off'}
             </Typography>
           </Box>
@@ -42,7 +42,7 @@ export default function Borrow() {
             <TableRow>
               {tableHead.map((h, i) => (
                 <TableCell key={i} align={i == 0 ? 'left' : 'right'}>
-                  <Typography variant="caption2" sx={{ color: '#888880' }}>
+                  <Typography variant="caption2" sx={{ color: 'info.main' }}>
                     {h}
                   </Typography>
                 </TableCell>

@@ -13,11 +13,7 @@ export const menu: TMenu[] = [
     url: '/',
   },
   {
-    title: 'Lend',
-    url: '/lend',
-  },
-  {
-    title: 'Docs',
-    url: '/docs',
+    title: 'Vaults',
+    url: '/vaults',
   },
 ];
