@@ -7,12 +7,16 @@ import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../sta
 import BorrowTableRow from './BorrowTableRow';
 import DepositTableRow from './DepositTableRow';
 import { TBorrowItem } from '../../state/types';
+import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
+import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 
 const ActionSection = () => {
   const wallet = useWallet();
   const [borrowState] = useBorrowState();
   const [depositItems] = useDepositState();
   const [isSubmitted] = useBorrowSubmitState();
+  const { refetch: refetchDeposited } = useQueryDepositValue();
+  const { refetch: refetchYourBorrow } = useQueryYourBorrow();
 
   const [actionStatus, setActionStatus] = useState<boolean[]>(() => {
     return Array(depositItems.length + 1).fill(false);
@@ -28,6 +32,7 @@ const ActionSection = () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
     await lendingContract.deposit(Number(depositItem.value), depositItem.address);
+    await refetchDeposited();
     handChangeActionStatus(index);
   };
 
@@ -35,6 +40,7 @@ const ActionSection = () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
     await lendingContract.borrow(Number(borrowState.value), borrowState.address);
+    await refetchYourBorrow();
     handChangeActionStatus(actionStatus.length);
   };
 

@@ -1,23 +1,31 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
+import { useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import useMaxLtv from '../../hooks/useMaxLtv';
+import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
+import useMaxLtv from '../../../../hooks/useQueryHook/queryBorrow/useMaxLtv';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
-import { useMemo } from 'react';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
   const [borrowState, setBorrowState] = useBorrowState();
   const [isSubmitted] = useBorrowSubmitState();
   const { maxLtv } = useMaxLtv();
+  const { data: yourBorrow } = useQueryYourBorrow();
   const [depositItems] = useDepositState();
 
   const tokenInfo = findTokenInfoByToken(borrowState.address);
   const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item?.price, 0), [depositItems]);
+  const totalYourBorrow = useMemo(() => {
+    if (!yourBorrow) return 0;
+
+    return Number(Object.values(yourBorrow)[0]);
+  }, [yourBorrow]);
+  const isShowYourBorrow = !!totalYourBorrow && Number(totalYourBorrow) > 0;
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -35,7 +43,7 @@ const BorrowSection = () => {
 
   return (
     <Box>
-      <BoxCustom sx={{ flex: 1, borderRadius: '16px 16px 0px 0px' }}>
+      <BoxCustom sx={{ flex: 1, borderRadius: isShowYourBorrow ? '16px 16px 0px 0px' : '16px' }}>
         <Typography variant="h6" alignItems="center" display="flex" gap={1} fontWeight={700} minHeight="44px" mb={3.5}>
           Borrow
         </Typography>
@@ -61,10 +69,13 @@ const BorrowSection = () => {
           />
         </Box>
       </BoxCustom>
-      <Stack bgcolor="#333331" p="16px 20px" borderRadius="0px 0px 16px 16px" alignItems="center">
-        <Icon tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: 1, width: '16px', height: '16px' }} />
-        <Typography variant="body1">Already borrowed ~ $6.30</Typography>
-      </Stack>
+
+      {isShowYourBorrow && (
+        <Stack bgcolor="#333331" p="16px 20px" borderRadius="0px 0px 16px 16px" alignItems="center">
+          <Icon tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: 1, width: '16px', height: '16px' }} />
+          <Typography variant="body1">Already borrowed ~ ${totalYourBorrow}</Typography>
+        </Stack>
+      )}
     </Box>
   );
 };
