@@ -103,7 +103,7 @@ export default function DepositCustomInput(props: Props) {
               />
               {subValue ? (
                 <Typography variant="body3" sx={{ color: 'text.secondary' }}>
-                  ${Number(subValue).toFixed(6)}
+                  ${roundNumber(Number(subValue), 6)}
                 </Typography>
               ) : null}
             </>

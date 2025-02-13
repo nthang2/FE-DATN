@@ -11,14 +11,13 @@ export const solTokenSolana = new SolanaMainnetTokenInfo({
   isNative: true,
 });
 
-export const wsolTokenSolana = new SolanaMainnetTokenInfo({
-  address: 'So11111111111111111111111111111111111111112',
-  decimals: 9,
-  symbol: TokenName.WSOL,
-  prettyName: 'Wrapped SOL',
-  coingeckoId: '',
-  isToken2022: false,
+export const usdaiSolanaMainnet = new SolanaMainnetTokenInfo({
+  address: '4Jvyn8RnkZHQzk98hEjjX3MTiQbSQtjriYuiJbjFhhdr',
+  decimals: 6,
+  symbol: TokenName.USDAI,
+  prettyName: 'USDAI',
   isNative: false,
+  isToken2022: false,
 });
 
 export const trumpTokenSolana = new SolanaMainnetTokenInfo({

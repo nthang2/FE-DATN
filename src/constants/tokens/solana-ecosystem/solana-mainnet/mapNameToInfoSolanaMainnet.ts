@@ -1,11 +1,12 @@
 import { TokenName } from 'crypto-token-icon';
-import { ai16zTokenSolana, maxTokenSolana, trumpTokenSolana, solTokenSolana } from '.';
+import { ai16zTokenSolana, maxTokenSolana, trumpTokenSolana, solTokenSolana, usdaiSolanaMainnet } from '.';
 
 export const mapNameToInfoSolanaMainnet = {
   [TokenName.TRUMP]: trumpTokenSolana,
   [TokenName.MAX]: maxTokenSolana,
   [TokenName.AI16Z]: ai16zTokenSolana,
   [TokenName.SOL]: solTokenSolana,
+  [TokenName.USDAI]: usdaiSolanaMainnet,
 };
 
 export type TSolanaMainnetToken = keyof typeof mapNameToInfoSolanaMainnet;
@@ -14,4 +15,5 @@ export const findTokenNameSolanaMainnet: Record<string, TSolanaMainnetToken | un
   [trumpTokenSolana.address]: TokenName.TRUMP,
   [maxTokenSolana.address]: TokenName.MAX,
   [ai16zTokenSolana.address]: TokenName.AI16Z,
+  [usdaiSolanaMainnet.address]: TokenName.USDAI,
 };
