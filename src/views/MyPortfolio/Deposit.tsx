@@ -11,7 +11,7 @@ import { useModalFunction } from 'src/states/modal/hooks';
 import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
-import { compactNumber } from '../../utils/format';
+import { compactNumber, formatNumber } from '../../utils/format';
 import DepositModal from './components/DepositModal';
 import SwitchCustom from './components/SwitchCustom';
 import WithdrawModal from './components/WithdrawModal';
@@ -39,7 +39,11 @@ export default function Deposit() {
   const handleWithdraw = (token: SolanaEcosystemTokenInfo) => {
     modalFunction({
       type: 'openModal',
-      data: { content: <WithdrawModal token={token} />, title: `Withdraw ${token.symbol}`, modalProps: { maxWidth: 'xs' } },
+      data: {
+        content: <WithdrawModal token={token} />,
+        title: `Withdraw ${token.symbol}`,
+        modalProps: { maxWidth: 'xs' },
+      },
     });
   };
 
@@ -81,7 +85,7 @@ export default function Deposit() {
                   </TableCell>
                   <TableCell align="right">
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {depositValue?.[row.address] ?? '--'}
+                      {depositValue?.[row.address] ? formatNumber(depositValue?.[row.address]) : '--'}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
@@ -108,6 +112,7 @@ export default function Deposit() {
                       onClick={() => {
                         handleWithdraw(row);
                       }}
+                      disabled={depositValue?.[row.address] == undefined}
                     >
                       Withdraw
                     </ButtonLoading>

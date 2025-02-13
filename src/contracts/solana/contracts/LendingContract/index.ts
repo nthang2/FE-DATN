@@ -139,6 +139,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   async getBorrowRate(address = defaultCollateral, decimal = 1e9 - 1): Promise<number> {
     const { depositoryPda } = this.getUserLoanByToken(this.provider.publicKey, address);
     const rate = (await this.getAccountType0Depository(depositoryPda)).rate;
+    console.log('🚀 ~ LendingContract ~ getBorrowRate ~ rate:', rate);
     const result = rate.toNumber() / decimal;
 
     return result;

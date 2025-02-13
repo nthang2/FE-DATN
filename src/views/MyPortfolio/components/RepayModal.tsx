@@ -1,49 +1,49 @@
 import { SettingsOutlined } from '@mui/icons-material';
-import { Avatar, Box, Divider, FormHelperText, Stack, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Divider, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
 import { Icon } from 'crypto-token-icon';
 import { useState } from 'react';
+import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
-import { TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
+import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
-  const { address } = useSummarySolanaConnect();
   const { data: tokensPrice } = useQueryAllTokensPrice();
-  const { balance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
   const { asyncExecute, loading } = useAsyncExecute();
+  const { data: yourBorrow } = useQueryYourBorrow();
 
-  const [valueDeposit, setValueDeposit] = useState<string>('');
+  const [valueRepay, setValueRepay] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
-  const [valueDepositHelpertext] = useState<string | undefined>(undefined);
+  const [valueRepayHelperText, setValueRepayHelperText] = useState<string | undefined>(undefined);
 
   const handleChangeValueDeposit = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setValueDeposit(e.target.value);
+    setValueRepay(e.target.value);
     if (!tokensPrice) return;
     const _valueInUSD = BN(e.target.value).times(BN(tokensPrice[token.address].price)).toString();
     setValueInUSD(_valueInUSD);
   };
 
   const handleMax = () => {
-    setValueDeposit(balance.toString());
-    if (!tokensPrice) return;
-    const _valueInUSD = BN(balance).times(BN(tokensPrice[token.address].price)).toString();
-    setValueInUSD(_valueInUSD);
+    if (yourBorrow?.[token.address] != undefined) {
+      setValueRepay(yourBorrow?.[token.address].toString());
+      if (!tokensPrice) return;
+      const _valueInUSD = BN(yourBorrow?.[token.address]).times(BN(tokensPrice[token.address].price)).toString();
+      setValueInUSD(_valueInUSD);
+    }
   };
 
   const handleRepay = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
-    await lendingContract.repay(Number(valueDeposit), token.address);
+    await lendingContract.repay(Number(valueRepay), token.address);
   };
 
   return (
@@ -57,7 +57,6 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
           borderRadius: '16px',
           alignItems: 'center',
           mt: 1,
-          // borderColor: error ? 'error.main' : '#666662',
           color: '#fff',
           px: 2,
         },
@@ -94,24 +93,25 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
           }}
         >
           <Box sx={{ py: 2 }}>
-            <TextField
+            <CustomTextField
               type="number"
               variant="filled"
               fullWidth
               focused={true}
-              value={valueDeposit}
+              value={valueRepay}
               sx={{
-                '& .MuiInputAdornment-root': {
-                  margin: 0, // Bỏ margin nếu có
+                '& .MuiOutlinedInput-root': {
+                  backgroundColor: 'background.secondary', // Đổi màu nền
                 },
                 '& .MuiInputBase-input': {
                   bgcolor: 'background.secondary',
                   fontSize: '24px',
                   fontFamily: 'inherit',
+                  outline: 'none',
                   fontWeight: '700',
-                  ml: '-12px',
-                  py: 0,
-                  my: 0,
+                  padding: 0,
+                  mr: '12px',
+                  // py: 0,
                   color: '#fff',
                   '&::placeholder': {
                     color: 'text.tertiary',
@@ -120,14 +120,21 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
                   width: '100%',
                 },
                 '& .MuiFilledInput-root': {
-                  MyPortfolio: 0,
-                  backgroundColor: 'transparent',
+                  backgroundColor: 'background.secondary',
                   '&:before, &:after': {
                     display: 'none',
                   },
                 },
+                '& .MuiFilledInput-root.Mui-focused': {
+                  backgroundColor: 'background.secondary',
+                },
               }}
+              rule={{ min: { min: 0 }, max: { max: Number(yourBorrow?.[token.address]) } }}
               onChange={handleChangeValueDeposit}
+              helperText={undefined}
+              _onError={(e) => {
+                setValueRepayHelperText(e);
+              }}
             />
             {valueInUSD ? (
               <Typography variant="body3" sx={{ color: 'text.secondary' }}>
@@ -141,10 +148,10 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
             Max
           </Typography>
         </Box>
-        <FormHelperText sx={{ px: 1, py: 0, minHeight: '16px' }} error>
-          {valueDepositHelpertext}
-        </FormHelperText>
       </Box>
+      <FormHelperText sx={{ px: 1, py: 0, minHeight: '16px' }} error>
+        {valueRepayHelperText}
+      </FormHelperText>
       <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880', mt: 3 }}>
         Transaction overview
       </Typography>
@@ -200,10 +207,10 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
       <Box className={clsx(['box', 'flex-space-between'])} sx={{ border: '#666662 solid 1px', position: 'relative' }}>
         <Box className="flex-center">
           <Avatar sx={{ width: '20px', height: '20px' }} />
-          <Typography sx={{ ml: 1, fontWeight: 600 }}>Repay {token.symbol}</Typography>
+          <Typography sx={{ ml: 1, fontWeight: 600 }}>Redeem {token.symbol}</Typography>
         </Box>
         <ButtonLoading size="small" loading={loading} variant="contained" onClick={() => asyncExecute({ fn: handleRepay })}>
-          Repay
+          Redeem
         </ButtonLoading>
       </Box>
     </Box>

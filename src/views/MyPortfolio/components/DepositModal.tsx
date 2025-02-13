@@ -11,6 +11,7 @@ import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
@@ -22,10 +23,11 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
   const { data: tokensPrice } = useQueryAllTokensPrice();
   const { balance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
   const { asyncExecute, loading } = useAsyncExecute();
+  const { data: depositValue } = useQueryDepositValue();
 
   const [valueDeposit, setValueDeposit] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
-  const [valueDepositHelpertext, setValueDepositHelpertext] = useState<string | undefined>(undefined);
+  const [valueDepositHelperText, setValueDepositHelperText] = useState<string | undefined>(undefined);
 
   const handleChangeValueDeposit = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValueDeposit(e.target.value);
@@ -102,17 +104,18 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
               focused={true}
               value={valueDeposit}
               sx={{
-                '& .MuiInputAdornment-root': {
-                  margin: 0, // Bỏ margin nếu có
+                '& .MuiOutlinedInput-root': {
+                  backgroundColor: 'background.secondary', // Đổi màu nền
                 },
                 '& .MuiInputBase-input': {
                   bgcolor: 'background.secondary',
                   fontSize: '24px',
                   fontFamily: 'inherit',
+                  outline: 'none',
                   fontWeight: '700',
-                  ml: '-12px',
-                  py: 0,
-                  // my: 0,
+                  padding: 0,
+                  mr: '12px',
+                  // py: 0,
                   color: '#fff',
                   '&::placeholder': {
                     color: 'text.tertiary',
@@ -121,18 +124,20 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
                   width: '100%',
                 },
                 '& .MuiFilledInput-root': {
-                  MyPortfolio: 0,
-                  backgroundColor: 'transparent',
+                  backgroundColor: 'background.secondary',
                   '&:before, &:after': {
                     display: 'none',
                   },
                 },
+                '& .MuiFilledInput-root.Mui-focused': {
+                  backgroundColor: 'background.secondary',
+                },
               }}
-              rule={{ min: { min: 0 }, max: { max: BN(balance).times(BN(tokensPrice?.[token.address].price)).toNumber() } }}
+              rule={{ min: { min: 0 }, max: { max: BN(balance).toNumber() } }}
               onChange={handleChangeValueDeposit}
               helperText={undefined}
               _onError={(e) => {
-                setValueDepositHelpertext(e);
+                setValueDepositHelperText(e);
               }}
             />
             {valueInUSD ? (
@@ -149,7 +154,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
         </Box>
       </Box>
       <FormHelperText sx={{ px: 1, py: 0, minHeight: '16px' }} error>
-        {valueDepositHelpertext}
+        {valueDepositHelperText}
       </FormHelperText>
       <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880', mt: 3 }}>
         Transaction overview

@@ -6,26 +6,21 @@ import { LendingContract } from 'src/contracts/solana/contracts/LendingContract'
 
 export default function useQueryBorrowRate() {
   const wallet = useWallet();
+  const arrAddress = Object.keys(mapNameToInfoSolana).map((item) => {
+    const key = item as keyof typeof mapNameToInfoSolana;
+    return mapNameToInfoSolana[key].address;
+  });
   return useQuery({
-    queryKey: ['borrowRate'],
+    queryKey: ['borrowRate', wallet.publicKey, arrAddress],
     queryFn: async () => {
       const lendingContract = new LendingContract(wallet);
-      const arrAddress = Object.keys(mapNameToInfoSolana).map((item) => {
-        const key = item as keyof typeof mapNameToInfoSolana;
-        return mapNameToInfoSolana[key].address;
-      });
+
       const borrowRate = {} as { [key: string]: string };
       await Promise.allSettled(
         arrAddress.map(async (add) => {
           if (wallet.publicKey !== null) {
-            const userLoan = lendingContract.getUserLoanByToken(wallet.publicKey, new PublicKey(add));
-            const _add = await lendingContract.checkIfPdaExist(new PublicKey(userLoan.pdAddress));
-            if (!_add) {
-              return;
-            } else {
-              const _borrowRate = await lendingContract.getBorrowRate(userLoan.pdAddress);
-              borrowRate[add] = _borrowRate.toString();
-            }
+            const _borrowRate = await lendingContract.getBorrowRate(new PublicKey(add));
+            borrowRate[add] = _borrowRate.toString();
           }
         })
       );

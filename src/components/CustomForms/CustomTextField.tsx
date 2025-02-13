@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { TOptionValidate, validate } from 'src/utils/validateForm';
 
 type TProp = TextFieldProps & {
-  _onError?: (error: string) => void;
+  _onError?: (error: string | undefined) => void;
   rule?: TOptionValidate;
 };
 
@@ -17,7 +17,7 @@ const CustomTextField = (props: TProp) => {
       const { error } = validate(event.target.value, rule);
       ref.current = error[0];
 
-      if (_onError && error[0]) {
+      if (_onError) {
         _onError(error[0]);
       }
     }
