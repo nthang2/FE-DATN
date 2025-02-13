@@ -15,8 +15,7 @@ export default function useQueryDepositValue() {
     queryKey: ['depositValue', wallet.publicKey, arrAddress],
     queryFn: async () => {
       const lendingContract = new LendingContract(wallet);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars, prefer-const
-      let depositValue = {} as { [key: string]: string };
+      const depositValue = {} as { [key: string]: string };
       await Promise.allSettled(
         arrAddress.map(async (add) => {
           if (wallet.publicKey !== null) {
@@ -33,6 +32,7 @@ export default function useQueryDepositValue() {
           }
         })
       );
+
       return depositValue;
     },
     staleTime: 1000 * 60 * 10,
