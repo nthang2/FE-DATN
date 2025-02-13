@@ -10,7 +10,9 @@ export default function SliderCustom() {
       {position.map((item, index) => {
         return (
           <Box key={index}>
-            <Box sx={{ width: '0.5px', height: '6px', bgcolor: '#888880', position: 'absolute', bottom: '-10px', left: `${item * 10}%` }} />
+            <Box
+              sx={{ width: '0.5px', height: '6px', bgcolor: 'info.main', position: 'absolute', bottom: '-10px', left: `${item * 10}%` }}
+            />
             {item % 2 === 0 && (
               <Typography
                 variant="caption2"
@@ -18,7 +20,7 @@ export default function SliderCustom() {
                   position: 'absolute',
                   bottom: '-27px',
                   left: index == 0 ? '0.2%' : index == 8 ? '97%' : `${item * 10 - 1}%`,
-                  color: '#888880',
+                  color: 'info.main',
                 }}
               >
                 {compactNumber(maxValue * item * 10)}

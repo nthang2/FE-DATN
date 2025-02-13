@@ -46,7 +46,7 @@ export default function Deposit() {
             <TableRow>
               {tableHead.map((h, i) => (
                 <TableCell key={i} align={i == 0 ? 'left' : 'right'}>
-                  <Typography variant="caption2" sx={{ color: '#888880' }}>
+                  <Typography variant="caption2" sx={{ color: 'info.main' }}>
                     {h}
                   </Typography>
                 </TableCell>
