@@ -34,6 +34,7 @@ export const validate = (value: string | number, rule: TOptionValidate) => {
   }
 
   const isError = result.every((item) => Boolean(item));
+  const error = result.filter((item) => Boolean(item));
 
-  return { isError: isError, error: result };
+  return { isError: isError, error: error };
 };

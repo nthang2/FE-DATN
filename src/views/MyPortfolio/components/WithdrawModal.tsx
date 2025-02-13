@@ -1,49 +1,56 @@
 import { SettingsOutlined } from '@mui/icons-material';
-import { Avatar, Box, FormHelperText, Stack, TextField, Typography } from '@mui/material';
+import { Avatar, Box, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
 import { Icon } from 'crypto-token-icon';
 import { useState } from 'react';
+import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
-import { TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
+import useQueryBorrowRate from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryBorrowRate';
+import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 
 export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
-  const { address } = useSummarySolanaConnect();
   const { data: tokensPrice } = useQueryAllTokensPrice();
-  const { balance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
   const { asyncExecute, loading } = useAsyncExecute();
+  const { data: borrowRate } = useQueryBorrowRate();
+  const { data: depositValue } = useQueryDepositValue();
 
-  const [valueDeposit, setValueDeposit] = useState<string>('');
+  const [valueWithdraw, setValueWithdraw] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
-  const [valueDepositHelpertext] = useState<string | undefined>(undefined);
+  const [valueWithdrawHelperText, setValueWithdrawHelperText] = useState<string | undefined>(undefined);
 
-  const handleChangeValueDeposit = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setValueDeposit(e.target.value);
+  const handleChangeValueWithdraw = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setValueWithdraw(e.target.value);
     if (!tokensPrice) return;
     const _valueInUSD = BN(e.target.value).times(BN(tokensPrice[token.address].price)).toString();
     setValueInUSD(_valueInUSD);
   };
 
   const handleMax = () => {
-    setValueDeposit(balance.toString());
-    if (!tokensPrice) return;
-    const _valueInUSD = BN(balance).times(BN(tokensPrice[token.address].price)).toString();
-    setValueInUSD(_valueInUSD);
+    if (depositValue?.[token.address] != undefined && borrowRate?.[token.address] != undefined) {
+      const maxValue = (
+        Number(depositValue?.[token.address]) -
+        Number(borrowRate?.[token.address]) / (Number(depositValue?.[token.address]) * 0.3)
+      ).toFixed(2);
+
+      setValueWithdraw(maxValue);
+      if (!tokensPrice) return;
+      const _valueInUSD = BN(maxValue).times(BN(tokensPrice[token.address].price)).toString();
+      setValueInUSD(_valueInUSD);
+    }
   };
 
   const handleWithdraw = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
-    await lendingContract.withdraw(Number(valueDeposit), token.address);
+    await lendingContract.withdraw(Number(valueWithdraw), token.address);
   };
 
   return (
@@ -94,24 +101,33 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
           }}
         >
           <Box sx={{ py: 2 }}>
-            <TextField
+            <CustomTextField
               type="number"
               variant="filled"
               fullWidth
               focused={true}
-              value={valueDeposit}
+              value={valueWithdraw}
+              rule={{
+                min: { min: 0 },
+                max: {
+                  max:
+                    Number(depositValue?.[token.address]) -
+                    Number(borrowRate?.[token.address]) / (Number(depositValue?.[token.address]) * 0.3),
+                },
+              }}
               sx={{
-                '& .MuiInputAdornment-root': {
-                  margin: 0, // Bỏ margin nếu có
+                '& .MuiOutlinedInput-root': {
+                  backgroundColor: 'background.secondary', // Đổi màu nền
                 },
                 '& .MuiInputBase-input': {
                   bgcolor: 'background.secondary',
                   fontSize: '24px',
                   fontFamily: 'inherit',
+                  outline: 'none',
                   fontWeight: '700',
-                  ml: '-12px',
-                  py: 0,
-                  my: 0,
+                  padding: 0,
+                  mr: '12px',
+                  // py: 0,
                   color: '#fff',
                   '&::placeholder': {
                     color: 'text.tertiary',
@@ -120,14 +136,20 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
                   width: '100%',
                 },
                 '& .MuiFilledInput-root': {
-                  MyPortfolio: 0,
-                  backgroundColor: 'transparent',
+                  backgroundColor: 'background.secondary',
                   '&:before, &:after': {
                     display: 'none',
                   },
                 },
+                '& .MuiFilledInput-root.Mui-focused': {
+                  backgroundColor: 'background.secondary',
+                },
               }}
-              onChange={handleChangeValueDeposit}
+              _onError={(e) => {
+                setValueWithdrawHelperText(e);
+              }}
+              helperText={undefined}
+              onChange={handleChangeValueWithdraw}
             />
             {valueInUSD ? (
               <Typography variant="body3" sx={{ color: 'text.secondary' }}>
@@ -141,10 +163,10 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
             Max
           </Typography>
         </Box>
-        <FormHelperText sx={{ px: 1, py: 0, minHeight: '16px' }} error>
-          {valueDepositHelpertext}
-        </FormHelperText>
       </Box>
+      <FormHelperText sx={{ px: 1, py: 0, minHeight: '16px' }} error>
+        {valueWithdrawHelperText}
+      </FormHelperText>
       <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880', mt: 3 }}>
         Transaction overview
       </Typography>

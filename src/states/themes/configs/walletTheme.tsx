@@ -359,7 +359,7 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
               borderColor: 'var(--focusedOutlineInputBorderColor)',
             },
             '& .MuiInputBase-input': {
-              padding: 'var(--filledInputPadding)',
+              px: 'var(--filledInputPadding)',
             },
           },
           error: {
@@ -388,7 +388,7 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
               display: 'none',
             },
             '& .MuiInputBase-input': {
-              padding: 'var(--filledInputPadding)',
+              px: 'var(--filledInputPadding)',
             },
           },
           error: {

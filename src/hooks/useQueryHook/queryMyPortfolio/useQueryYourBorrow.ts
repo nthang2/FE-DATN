@@ -7,14 +7,15 @@ import { BN } from 'src/utils';
 
 export default function useQueryYourBorrow() {
   const wallet = useWallet();
+  const arrAddress = Object.keys(mapNameToInfoSolana).map((item) => {
+    const key = item as keyof typeof mapNameToInfoSolana;
+    return mapNameToInfoSolana[key].address;
+  });
   return useQuery({
-    queryKey: ['yourBorrow'],
+    queryKey: ['yourBorrow', wallet.publicKey, arrAddress],
     queryFn: async () => {
       const lendingContract = new LendingContract(wallet);
-      const arrAddress = Object.keys(mapNameToInfoSolana).map((item) => {
-        const key = item as keyof typeof mapNameToInfoSolana;
-        return mapNameToInfoSolana[key].address;
-      });
+
       const yourBorrow = {} as { [key: string]: string };
       await Promise.allSettled(
         arrAddress.map(async (add) => {

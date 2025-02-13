@@ -1,20 +1,25 @@
 import { Avatar, Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import { mapNameToInfoSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet/mapNameToInfoSolanaDevnet';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useQueryBorrowRate from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryBorrowRate';
+import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import { useModalFunction } from 'src/states/modal/hooks';
+import { formatNumber } from 'src/utils/format';
 import RepayModal from './components/RepayModal';
 
 export default function Borrow() {
   const [eMode, setEMode] = useState<boolean>(false);
   const { data: yourBorrow } = useQueryYourBorrow();
   const { data: borrowRate } = useQueryBorrowRate();
+  const { data: depositValue } = useQueryDepositValue();
   const modalFunction = useModalFunction();
+  const navigate = useNavigate();
 
-  const tableHead = ['Asset', 'Available', 'your borrow', 'APY', ''];
+  const tableHead = ['Asset', 'Available', 'Your borrow', 'Borrow rate', ''];
 
   const handleChangeMode = () => {
     setEMode(!eMode);
@@ -23,8 +28,12 @@ export default function Borrow() {
   const handleRepay = (token: SolanaEcosystemTokenInfo) => {
     modalFunction({
       type: 'openModal',
-      data: { content: <RepayModal token={token} />, title: `Repay ${token.symbol}`, modalProps: { maxWidth: 'xs' } },
+      data: { content: <RepayModal token={token} />, title: `Redeem ${token.symbol}`, modalProps: { maxWidth: 'xs' } },
     });
+  };
+
+  const handleMint = () => {
+    navigate('/');
   };
 
   return (
@@ -72,7 +81,7 @@ export default function Borrow() {
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    --
+                    {depositValue?.[row.address] ? formatNumber(Number(depositValue?.[row.address]) * 0.3) : '--'}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
@@ -82,13 +91,13 @@ export default function Borrow() {
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    --
+                    {borrowRate?.[row.address] ? formatNumber(borrowRate?.[row.address], { fractionDigits: 2 }) : '--'}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
-                  <Button variant="contained" size="small">
+                  <Button variant="contained" size="small" onClick={handleMint}>
                     <Typography variant="body2" sx={{ fontWeight: '500' }}>
-                      Borrow
+                      Mint
                     </Typography>
                   </Button>
                   <Button
@@ -98,8 +107,9 @@ export default function Borrow() {
                     onClick={() => {
                       handleRepay(row);
                     }}
+                    disabled={yourBorrow?.[row.address] == undefined}
                   >
-                    Repay
+                    Redeem
                   </Button>
                 </TableCell>
               </TableRow>

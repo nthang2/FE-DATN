@@ -1,8 +1,7 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Skeleton, Typography } from '@mui/material';
 import { compactNumber } from 'src/utils/format';
 
-export default function SliderCustom() {
-  const maxValue = 100000;
+export default function SliderCustom({ maxValue, value }: { maxValue: number | undefined; value: number | undefined }) {
   const position = [0, 2, 3, 4, 5, 6, 7, 8, 10];
 
   return (
@@ -23,12 +22,27 @@ export default function SliderCustom() {
                   color: 'info.main',
                 }}
               >
-                {compactNumber(maxValue * item * 10)}
+                {maxValue != undefined ? (
+                  compactNumber(maxValue != undefined ? (maxValue / 10) * item : 0 * item * 10)
+                ) : (
+                  <Skeleton sx={{ width: '20px' }} />
+                )}
               </Typography>
             )}
           </Box>
         );
       })}
+      {maxValue != undefined && value != undefined && (
+        <Box
+          sx={{
+            bgcolor: '#FCFFD8',
+            height: '24px',
+            borderRadius: '1000px',
+            border: '0.5px solid #919283',
+            width: `${(value / maxValue) * 100}%`,
+          }}
+        />
+      )}
     </Box>
   );
 }

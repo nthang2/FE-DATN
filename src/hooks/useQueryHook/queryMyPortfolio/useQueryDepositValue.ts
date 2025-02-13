@@ -32,6 +32,7 @@ export default function useQueryDepositValue() {
           }
         })
       );
+      // const totalDepositValue = Object.values(depositValue).reduce((a, b) => a + Number(b), 0);
 
       return depositValue;
     },
