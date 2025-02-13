@@ -11,7 +11,6 @@ import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
@@ -23,7 +22,6 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
   const { data: tokensPrice } = useQueryAllTokensPrice();
   const { balance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
   const { asyncExecute, loading } = useAsyncExecute();
-  const { data: depositValue } = useQueryDepositValue();
 
   const [valueDeposit, setValueDeposit] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');

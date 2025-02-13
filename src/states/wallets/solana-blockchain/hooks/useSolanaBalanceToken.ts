@@ -1,5 +1,5 @@
 import { TokenName } from 'crypto-token-icon';
-import { TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { mapNameToInfoSolana, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { BN } from 'src/utils';
 import useFetchAllSolTokenBalances from './useFetchAllSolTokenBalances';
 
@@ -21,9 +21,10 @@ export const useSolanaBalanceTokens = (userAddress: string, tokens: TSolanaToken
   const { allSlpTokenBalances, native } = useFetchAllSolTokenBalances(userAddress);
   return tokens.map((token) => {
     if (token === TokenName.SOL) {
-      return native.SOL;
+      return { ...native.SOL, address: '' };
     } else {
       return {
+        address: mapNameToInfoSolana[token]?.address,
         balance: allSlpTokenBalances.data?.[token] || BN(0),
         isLoading: allSlpTokenBalances.isLoading,
         isRefetching: allSlpTokenBalances.isFetching,
