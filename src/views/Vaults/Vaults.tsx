@@ -1,10 +1,10 @@
-import { Box, Container } from '@mui/material';
+import { Box } from '@mui/material';
 import VaultBanner from './components/VaultBanner/VaultBanner';
 import VaultContent from './components/VaultContent/VaultContent';
 
 const Vaults = () => {
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
+    <Box sx={{ mt: 4, maxWidth: '900px', mx: 'auto' }}>
       <VaultBanner />
 
       <Box
@@ -15,11 +15,12 @@ const Vaults = () => {
           flexDirection: 'column',
           gap: 2.5,
           borderRadius: '14px',
+          m: 'auto',
         }}
       >
         <VaultContent />
       </Box>
-    </Container>
+    </Box>
   );
 };
 
