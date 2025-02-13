@@ -1,8 +1,12 @@
-import { Box, Button, Stack, TextField, Typography } from '@mui/material';
-import CustomSlider from '../CustomSlider/Slider';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
+import CustomTextField from 'src/components/CustomForms/CustomTextField';
+import CustomSlider from '../CustomSlider/Slider';
+import { useState } from 'react';
 
 const DepositSection = () => {
+  const [inputValue, setInputValue] = useState(0);
+
   return (
     <Box>
       <Stack justifyContent="space-between" mb={0.5}>
@@ -10,7 +14,7 @@ const DepositSection = () => {
         <Typography>Max: 0.00</Typography>
       </Stack>
 
-      <TextField
+      <CustomTextField
         fullWidth
         variant="filled"
         type="number"
@@ -28,6 +32,11 @@ const DepositSection = () => {
         }}
         inputProps={{ style: { padding: 0 } }}
         sx={{ borderRadius: '16px' }}
+        onChange={(event) => setInputValue(Number(event.target.value))}
+        value={inputValue}
+        rule={{
+          min: { min: 1 },
+        }}
       />
 
       <CustomSlider sx={{ mt: 2.5 }} />

@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import useBorrowRate from '../../hooks/useBorrowRate';
+import { roundNumber } from 'src/utils/format';
 
 const BorrowRate = () => {
   const { borrowRate } = useBorrowRate();
@@ -22,7 +23,8 @@ const BorrowRate = () => {
         Borrow Rate
       </Typography>
       <Typography variant="h2" fontWeight={700}>
-        {borrowRate || 3}%
+        {/* {roundNumber(borrowRate || 3, 2)}% */}
+        3%
       </Typography>
 
       <Typography variant="body2">Borrow USDAI from jpow.ai for the best rates</Typography>
