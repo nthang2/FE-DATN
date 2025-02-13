@@ -4,7 +4,7 @@ import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import FormatSmallNumber from 'src/components/General/FormatSmallNumber/FormatSmallNumber';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { labelMark, marks } from '../../constant';
-import useMaxLtv from '../../hooks/useMaxLtv';
+import useMaxLtv from '../../../../hooks/useQueryHook/queryBorrow/useMaxLtv';
 import { useBorrowState, useDepositState } from '../../state/hooks';
 import { convertToAmountToken } from '../../utils';
 import CustomMark from '../BorrowSlide/CustomMark';

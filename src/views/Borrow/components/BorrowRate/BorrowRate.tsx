@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import useBorrowRate from '../../hooks/useBorrowRate';
+import useBorrowRate from '../../../../hooks/useQueryHook/queryBorrow/useBorrowRate';
 import { roundNumber } from 'src/utils/format';
 
 const BorrowRate = () => {
