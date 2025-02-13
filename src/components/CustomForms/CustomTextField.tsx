@@ -3,12 +3,12 @@ import { useRef } from 'react';
 import { TOptionValidate, validate } from 'src/utils/validateForm';
 
 type TProp = TextFieldProps & {
-  onError?: (error: string | string[]) => void;
+  _onError?: (error: string) => void;
   rule?: TOptionValidate;
 };
 
 const CustomTextField = (props: TProp) => {
-  const { onError, onChange, rule, ...rest } = props;
+  const { _onError, onChange, rule, ...rest } = props;
   const ref = useRef<string | undefined>(undefined);
 
   const handleOnChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -17,8 +17,8 @@ const CustomTextField = (props: TProp) => {
       const { error } = validate(event.target.value, rule);
       ref.current = error[0];
 
-      if (onError && error[0]) {
-        onError(error[0]);
+      if (_onError && error[0]) {
+        _onError(error[0]);
       }
     }
 

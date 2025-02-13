@@ -1,9 +1,10 @@
 import { SettingsOutlined } from '@mui/icons-material';
-import { Avatar, Box, FormHelperText, Stack, TextField, Typography } from '@mui/material';
+import { Avatar, Box, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
 import { Icon } from 'crypto-token-icon';
 import { useState } from 'react';
+import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import { TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
@@ -24,7 +25,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
 
   const [valueDeposit, setValueDeposit] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
-  const [valueDepositHelpertext] = useState<string | undefined>(undefined);
+  const [valueDepositHelpertext, setValueDepositHelpertext] = useState<string | undefined>(undefined);
 
   const handleChangeValueDeposit = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValueDeposit(e.target.value);
@@ -94,7 +95,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
           }}
         >
           <Box sx={{ py: 2 }}>
-            <TextField
+            <CustomTextField
               type="number"
               variant="filled"
               fullWidth
@@ -127,7 +128,12 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
                   },
                 },
               }}
+              rule={{ min: { min: 0 }, max: { max: BN(balance).times(BN(tokensPrice?.[token.address].price)).toNumber() } }}
               onChange={handleChangeValueDeposit}
+              helperText={undefined}
+              _onError={(e) => {
+                setValueDepositHelpertext(e);
+              }}
             />
             {valueInUSD ? (
               <Typography variant="body3" sx={{ color: 'text.secondary' }}>
@@ -141,10 +147,10 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
             Max
           </Typography>
         </Box>
-        <FormHelperText sx={{ px: 1, py: 0, minHeight: '16px' }} error>
-          {valueDepositHelpertext}
-        </FormHelperText>
       </Box>
+      <FormHelperText sx={{ px: 1, py: 0, minHeight: '16px' }} error>
+        {valueDepositHelpertext}
+      </FormHelperText>
       <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880', mt: 3 }}>
         Transaction overview
       </Typography>

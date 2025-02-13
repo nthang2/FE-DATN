@@ -12,27 +12,29 @@ export default function useQueryYourBorrow() {
     queryFn: async () => {
       const lendingContract = new LendingContract(wallet);
       const arrAddress = Object.keys(mapNameToInfoSolana).map((item) => {
-        // const account = await getAccount(connection, pda, undefined, lending.programId)
         const key = item as keyof typeof mapNameToInfoSolana;
         return mapNameToInfoSolana[key].address;
       });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars, prefer-const
-      let depositValue = {} as { [key: string]: string };
-      await Promise.all([
-        arrAddress.forEach(async (add) => {
+      const yourBorrow = {} as { [key: string]: string };
+      await Promise.allSettled(
+        arrAddress.map(async (add) => {
           if (wallet.publicKey !== null) {
-            // const _add = await lendingContract.checkIfPdaExist(new PublicKey(add));
-            // if (_add) {
             const userLoan = lendingContract.getUserLoanByToken(wallet.publicKey, new PublicKey(add));
-            const _valueDeposit = await lendingContract.getLoanType0(userLoan.pdAddress);
-            depositValue[add] = BN(_valueDeposit.mintedAmount)
-              .dividedBy(BN(10).pow(findTokenInfoByToken(add)?.decimals ?? 9))
-              .toString();
-            // }
+            const _add = await lendingContract.checkIfPdaExist(new PublicKey(userLoan.pdAddress));
+            if (!_add) {
+              return;
+            } else {
+              const userLoan = lendingContract.getUserLoanByToken(wallet.publicKey, new PublicKey(add));
+              const _valueDeposit = await lendingContract.getLoanType0(userLoan.pdAddress);
+              yourBorrow[add] = BN(_valueDeposit.mintedAmount)
+                .dividedBy(BN(10).pow(findTokenInfoByToken(add)?.decimals ?? 9))
+                .toString();
+            }
           }
-        }),
-      ]);
-      return depositValue;
+        })
+      );
+
+      return yourBorrow;
     },
     staleTime: 1000 * 60 * 10,
     enabled: Boolean(wallet.publicKey),
