@@ -18,10 +18,18 @@ export default function MyWallet() {
     address,
     Object.keys(mapNameToInfoSolana) as Array<TokenName.TRUMP | TokenName.MAX | TokenName.AI16Z>
   );
-  const price = useQueryAllTokensPrice();
+  const { data: tokensPrice } = useQueryAllTokensPrice();
   const totalPrice = useMemo(() => {
-    return 30000000;
-  }, [price]);
+    if (tokensPrice != undefined)
+      return Object.values(balance).reduce((a, b) => {
+        if (tokensPrice[b.address] && tokensPrice[b.address].price != null) {
+          const price = tokensPrice[b.address] != undefined ? Number(tokensPrice[b.address]?.price) : 1;
+          return a + Number(b.balance.toString()) * price;
+        }
+        return a;
+      }, 0);
+    else return 0;
+  }, [tokensPrice, balance]);
 
   const chartData = useMemo(() => {
     // eslint-disable-next-line prefer-const
@@ -99,7 +107,7 @@ export default function MyWallet() {
             Total
           </Typography>
           <Typography variant="h5" sx={{ fontWeight: 700, textAlign: 'center' }}>
-            ${compactNumber(totalPrice)}
+            ${totalPrice != undefined ? compactNumber(totalPrice) : '--'}
           </Typography>
         </Box>
       </Box>
