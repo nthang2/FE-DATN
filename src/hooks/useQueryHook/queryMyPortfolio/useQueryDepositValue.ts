@@ -7,33 +7,32 @@ import { BN } from 'src/utils';
 
 export default function useQueryDepositValue() {
   const wallet = useWallet();
+  const arrAddress = Object.keys(mapNameToInfoSolana).map((item) => {
+    const key = item as keyof typeof mapNameToInfoSolana;
+    return mapNameToInfoSolana[key].address;
+  });
   return useQuery({
-    queryKey: ['depositValue'],
+    queryKey: ['depositValue', wallet.publicKey, arrAddress],
     queryFn: async () => {
       const lendingContract = new LendingContract(wallet);
-      const arrAddress = Object.keys(mapNameToInfoSolana).map((item) => {
-        // const account = await getAccount(connection, pda, undefined, lending.programId)
-        const key = item as keyof typeof mapNameToInfoSolana;
-
-        return mapNameToInfoSolana[key].address;
-      });
       // eslint-disable-next-line @typescript-eslint/no-unused-vars, prefer-const
       let depositValue = {} as { [key: string]: string };
-      await Promise.all([
-        arrAddress.forEach(async (add) => {
+      await Promise.allSettled(
+        arrAddress.map(async (add) => {
           if (wallet.publicKey !== null) {
             const userLoan = lendingContract.getUserLoanByToken(wallet.publicKey, new PublicKey(add));
             const _add = await lendingContract.checkIfPdaExist(new PublicKey(userLoan.pdAddress));
             if (!_add) {
               return;
+            } else {
+              const _valueDeposit = await lendingContract.getLoanType0(userLoan.pdAddress);
+              depositValue[add] = BN(_valueDeposit.collateralAmount)
+                .dividedBy(BN(10).pow(findTokenInfoByToken(add)?.decimals ?? 9))
+                .toString();
             }
-            const _valueDeposit = await lendingContract.getLoanType0(userLoan.pdAddress);
-            depositValue[add] = BN(_valueDeposit.collateralAmount)
-              .dividedBy(BN(10).pow(findTokenInfoByToken(add)?.decimals ?? 9))
-              .toString();
           }
-        }),
-      ]);
+        })
+      );
       return depositValue;
     },
     staleTime: 1000 * 60 * 10,
