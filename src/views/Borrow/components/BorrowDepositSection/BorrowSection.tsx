@@ -5,7 +5,6 @@ import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
-import useMaxLtv from '../../../../hooks/useQueryHook/queryBorrow/useMaxLtv';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
@@ -14,7 +13,6 @@ const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
   const [borrowState, setBorrowState] = useBorrowState();
   const [isSubmitted] = useBorrowSubmitState();
-  const { maxLtv } = useMaxLtv();
   const { data: yourBorrow } = useQueryYourBorrow();
   const [depositItems] = useDepositState();
 
@@ -25,6 +23,15 @@ const BorrowSection = () => {
 
     return Number(Object.values(yourBorrow)[0]);
   }, [yourBorrow]);
+  const maxLtv = useMemo(() => {
+    if (depositItems[0]) {
+      const tokenInfo = findTokenInfoByToken(depositItems[0].address);
+
+      return Number(tokenInfo?.ratio) * 100;
+    }
+
+    return 30;
+  }, [depositItems]);
   const isShowYourBorrow = !!totalYourBorrow && Number(totalYourBorrow) > 0;
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
