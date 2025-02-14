@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { format as fd } from 'date-fns';
 import { FormatNumberOptions } from 'src/global.config';
 import { isNumeric } from '.';
-import { format as fd } from 'date-fns';
 
 /**
  *
@@ -24,7 +24,7 @@ export function formatAddress(address: string, first = 6, last = 4): string {
  * @returns A string representing a number in formatted, `option.fallback` will be returned if `number` is invalid
  */
 export function formatNumber(number: any, options?: FormatNumberOptions): string | FormatNumberOptions['fallback'] {
-  const { fallback = '0.00', fractionDigits, delimiter, padZero, prefix, suffix, onlyPositive } = options ?? {};
+  const { fallback = '0.00', fractionDigits = 2, delimiter, padZero, prefix, suffix, onlyPositive } = options ?? {};
 
   if (!isNumeric(number)) {
     return fallback;

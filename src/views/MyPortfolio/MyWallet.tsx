@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import { mapNameToInfoSolana, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useDonutChartConfig from 'src/hooks/useHighcharts/useDonutChartConfig';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
@@ -15,7 +15,7 @@ import { compactNumber, formatNumber } from 'src/utils/format';
 
 export default function MyWallet() {
   const { address } = useSummarySolanaConnect();
-  const balance = useSolanaBalanceTokens(address, Object.keys(mapNameToInfoSolana) as Array<TSolanaToken>);
+  const balance = useSolanaBalanceTokens(address, Object.keys(listTokenAvailable) as Array<TSolanaToken>);
   const { data: tokensPrice, status: queryAllTokensPriceStatus } = useQueryAllTokensPrice();
   const { data: depositValue, status: queryDepositValueStatus } = useQueryDepositValue();
 
@@ -48,8 +48,8 @@ export default function MyWallet() {
         balance.forEach((item, index) => {
           result.push({
             id: index.toString(),
-            name: Object.keys(mapNameToInfoSolana)[index],
-            y: Number(item.balance.toString()),
+            name: Object.keys(listTokenAvailable)[index],
+            y: Number(item.balance.toString()) + Number(depositValue[item.address]),
             value: Number(item.balance.toString()) + Number(depositValue[item.address]),
           });
         });
@@ -57,7 +57,7 @@ export default function MyWallet() {
         balance.forEach((item, index) => {
           result.push({
             id: index.toString(),
-            name: Object.keys(mapNameToInfoSolana)[index],
+            name: Object.keys(listTokenAvailable)[index],
             y: Number(item.balance.toString()),
             value: Number(item.balance.toString()),
           });
@@ -117,7 +117,7 @@ export default function MyWallet() {
           <Typography variant="caption2" sx={{ color: 'text.secondary' }}>
             Include deposits
           </Typography>
-          <Switch sx={{ ml: 1 }} onChange={() => setIncludeDeposits(!includeDeposits)} />
+          <Switch sx={{ ml: 1 }} value={includeDeposits} onChange={() => setIncludeDeposits(!includeDeposits)} />
         </Box>
       </Box>
       <Box sx={{ position: 'relative' }}>

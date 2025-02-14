@@ -1,4 +1,4 @@
-import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 
 export const marks = [
   {
@@ -28,7 +28,7 @@ export const labelMark = [
 ];
 
 export const defaultBorrowValue = {
-  address: mapNameToInfoSolana.TRUMP.address,
+  address: Object.values(listTokenAvailable)[0]?.address as string,
   value: '0',
   price: 0,
 };

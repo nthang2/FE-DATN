@@ -1,5 +1,5 @@
 import { SettingsOutlined } from '@mui/icons-material';
-import { Avatar, Box, FormHelperText, Stack, Typography } from '@mui/material';
+import { Box, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
 import { Icon } from 'crypto-token-icon';
@@ -17,6 +17,7 @@ import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/us
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
+import CheckHealthFactor from './CheckHealthFactor';
 
 export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
@@ -189,14 +190,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
         <Typography variant="body2" sx={{ color: '#888880' }}>
           Health factor:
         </Typography>
-        <Box className="flex-center">
-          <Box sx={{ height: '24px', borderRadius: '99px', bgcolor: '#08DBA4', ml: 4, p: '5px 8px' }} className="flex-center">
-            <Typography variant="body3" sx={{ color: 'background.default' }}>
-              Healthy
-            </Typography>
-          </Box>
-          <Typography sx={{ fontWeight: 600, ml: 1 }}>--</Typography>
-        </Box>
+        <CheckHealthFactor token={token} />
       </Box>
       <Box>
         <Box className="flex-space-between" sx={{ mt: 3 }}>
@@ -207,7 +201,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
         </Box>
         <Box className={clsx(['box', 'flex-space-between'])} sx={{ border: '#666662 solid 1px', position: 'relative' }}>
           <Box className="flex-center">
-            <Avatar sx={{ width: '20px', height: '20px' }} />
+            <Icon tokenName={token.symbol} />
             <Typography sx={{ ml: 1, fontWeight: 600 }}>Withdraw {token.symbol}</Typography>
           </Box>
           <ButtonLoading
