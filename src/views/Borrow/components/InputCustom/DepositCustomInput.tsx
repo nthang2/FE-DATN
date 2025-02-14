@@ -1,8 +1,7 @@
 import { Box, FormHelperText, MenuItem, Select, SelectProps, Skeleton, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
 import { ReactNode } from 'react';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import { optionSelectValue } from '../../constant';
+import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { roundNumber } from 'src/utils/format';
 
 type Props = {
@@ -20,7 +19,7 @@ type Props = {
 
 export default function DepositCustomInput(props: Props) {
   const { subValue, readonly = false, onClickMax, loading, maxValue, endAdornment, inputProps, selectProps, error, selectOptions } = props;
-  const options = selectOptions || Object.values(optionSelectValue).map((item) => item.address);
+  const options = selectOptions || Object.values(listTokenAvailable).map((item) => item.address);
   const inputValue = inputProps?.value ? roundNumber(Number(inputProps.value), 3) : undefined;
 
   return (

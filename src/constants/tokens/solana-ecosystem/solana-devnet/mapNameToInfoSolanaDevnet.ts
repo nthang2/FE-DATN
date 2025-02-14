@@ -1,5 +1,13 @@
 import { TokenName } from 'crypto-token-icon';
-import { token1SolanaDevnet, token2SolanaDevnet, token3SolanaDevnet, solanaDevnet, usdaiSolanaDevnet } from '.';
+import {
+  token1SolanaDevnet,
+  token2SolanaDevnet,
+  token3SolanaDevnet,
+  solanaDevnet,
+  usdaiSolanaDevnet,
+  usdcDevSolanaDevnet,
+  oraiSolanaDevnet,
+} from '.';
 
 export const mapNameToInfoSolanaDevnet = {
   [TokenName.MAX]: token1SolanaDevnet,
@@ -7,6 +15,8 @@ export const mapNameToInfoSolanaDevnet = {
   [TokenName.AI16Z]: token3SolanaDevnet,
   [TokenName.SOL]: solanaDevnet,
   [TokenName.USDAI]: usdaiSolanaDevnet,
+  [TokenName.USDC]: usdcDevSolanaDevnet,
+  [TokenName.ORAI]: oraiSolanaDevnet,
 };
 
 export type TSolanaDevnetToken = keyof typeof mapNameToInfoSolanaDevnet;
