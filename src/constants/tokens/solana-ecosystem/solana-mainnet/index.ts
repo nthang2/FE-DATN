@@ -27,7 +27,7 @@ export const oraiSolanaMainnet = new SolanaMainnetTokenInfo({
   prettyName: 'ORAI',
   isNative: false,
   isToken2022: false,
-  oracle: '56YXkoHyCn2aRTc6RCi7nMRGXwNuSdF7p4pe2s5AjHoP',
+  oracle: 'Fjqvpsvz9tGCB8td2pDHcvKSKgkUmbJzhcqS3g6rhEhr',
   ratio: '0.4',
 });
 
