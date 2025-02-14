@@ -39,7 +39,7 @@ const ActionSection = () => {
   const handleBorrow = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
-    await lendingContract.borrow(Number(borrowState.value), borrowState.address);
+    await lendingContract.borrow(Number(borrowState.value), depositItems[0].address);
     await refetchYourBorrow();
     handChangeActionStatus(actionStatus.length);
   };
