@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
+import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryBorrowRate from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryBorrowRate';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
@@ -16,6 +17,7 @@ export default function Borrow() {
   const { data: yourBorrow } = useQueryYourBorrow();
   const { data: borrowRate } = useQueryBorrowRate();
   const { data: depositValue } = useQueryDepositValue();
+  const { data: tokensPrice } = useQueryAllTokensPrice();
   const modalFunction = useModalFunction();
   const navigate = useNavigate();
 
@@ -81,12 +83,17 @@ export default function Borrow() {
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {depositValue?.[row.address] ? formatNumber(Number(depositValue?.[row.address]) * 0.3, { fractionDigits: 2 }) : '--'}
+                    {depositValue?.[row.address] && tokensPrice
+                      ? formatNumber(Number(depositValue?.[row.address]) * 0.3 * Number(tokensPrice[row.address].price), {
+                          fractionDigits: 2,
+                          prefix: '$',
+                        })
+                      : '--'}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {yourBorrow?.[row.address] ? formatNumber(Number(yourBorrow?.[row.address]), { fractionDigits: 2 }) : '--'}
+                    {yourBorrow?.[row.address] ? formatNumber(Number(yourBorrow?.[row.address]), { fractionDigits: 2, prefix: '$' }) : '--'}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">

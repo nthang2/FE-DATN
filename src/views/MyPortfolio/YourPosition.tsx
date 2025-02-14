@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
+import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import { formatNumber } from 'src/utils/format';
@@ -10,12 +11,13 @@ import SliderCustom from './components/SliderCustom';
 export default function YourPosition() {
   const { data: depositValueData, status } = useQueryDepositValue();
   const { data: yourBorrowData } = useQueryYourBorrow();
+  const { data: tokensPrice } = useQueryAllTokensPrice();
 
   const totalDepositValue = useMemo(() => {
-    if (depositValueData && Object.keys(depositValueData).length > 0) {
-      return Object.values(depositValueData).reduce((a, b) => a + Number(b), 0);
+    if (depositValueData && Object.keys(depositValueData).length > 0 && tokensPrice) {
+      return Object.entries(depositValueData).reduce((a, [k, v]) => a + Number(v) * Number(tokensPrice[k].price), 0);
     }
-  }, [depositValueData]);
+  }, [depositValueData, tokensPrice]);
 
   const totalYourBorrowValue = useMemo(() => {
     if (yourBorrowData && Object.keys(yourBorrowData).length > 0) {
@@ -33,7 +35,7 @@ export default function YourPosition() {
             status={[status]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                {formatNumber(totalDepositValue)}
+                {formatNumber(totalDepositValue, { fractionDigits: 2, prefix: '$' })}
               </Typography>
             }
           />
@@ -47,7 +49,9 @@ export default function YourPosition() {
             status={[status]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                {totalDepositValue != undefined ? formatNumber(totalDepositValue * 0.3) : formatNumber(totalDepositValue)}
+                {totalDepositValue != undefined
+                  ? formatNumber(totalDepositValue * 0.3, { fractionDigits: 2, prefix: '$' })
+                  : formatNumber(totalDepositValue, { fractionDigits: 2, prefix: '$' })}
               </Typography>
             }
           />

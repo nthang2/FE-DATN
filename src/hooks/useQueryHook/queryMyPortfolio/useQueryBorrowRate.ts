@@ -19,7 +19,7 @@ export default function useQueryBorrowRate() {
       await Promise.allSettled(
         arrAddress.map(async (add) => {
           if (wallet.publicKey !== null && add) {
-            const _borrowRate = await lendingContract.getBorrowRate(new PublicKey(add));
+            const _borrowRate = await lendingContract.getBorrowRate(new PublicKey(add), 1e12);
             borrowRate[add] = _borrowRate.toString();
           }
         })
