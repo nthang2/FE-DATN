@@ -3,16 +3,26 @@ import { Icon, TokenName } from 'crypto-token-icon';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import CustomSlider from '../CustomSlider/Slider';
 import { useEffect, useState } from 'react';
+import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const maxAmount = 500;
 
 const DepositSection = () => {
   const [inputValue, setInputValue] = useState(0);
   const [sliderValue, setSliderValue] = useState(0);
+  const wallet = useWallet();
 
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
     const amount = (Number(value) / 100) * maxAmount;
     setInputValue(amount);
+  };
+
+  const handleDeposit = async () => {
+    if (!wallet) return;
+
+    const vaultContract = new VaultContract(wallet);
+    await vaultContract.deposit();
   };
 
   useEffect(() => {
@@ -55,7 +65,7 @@ const DepositSection = () => {
 
       <CustomSlider value={sliderValue} max={100} min={0} onChange={handleChangeSlider} sx={{ mt: 2.5 }} />
 
-      <Button variant="contained" sx={{ mt: 2.5 }} fullWidth>
+      <Button variant="contained" sx={{ mt: 2.5 }} fullWidth onClick={handleDeposit}>
         Deposit
       </Button>
     </Box>

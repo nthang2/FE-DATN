@@ -1,6 +1,37 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { TokenName } from 'crypto-token-icon';
+import { useCallback, useEffect } from 'react';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
+import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
+
+const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
 
 const VaultBanner = () => {
+  const wallet = useWallet();
+  const { allSlpTokenBalances } = useSolanaBalanceToken(usdaiInfo.address, TokenName.USDAI);
+
+  const handleClaimReward = async () => {
+    if (!wallet) return;
+
+    const vaultContract = new VaultContract(wallet);
+    await vaultContract.claimReward();
+  };
+
+  const handleGetStakedInfo = useCallback(async () => {
+    if (!wallet) return;
+
+    const vaultContract = new VaultContract(wallet);
+    const { amount, pendingReward } = await vaultContract.getStakedAmount();
+    console.log('🚀 ~ handleGetStakedInfo ~ amount:', amount.toString());
+    console.log('🚀 ~ handleGetStakedInfo ~ pendingReward:', pendingReward.toString());
+  }, [wallet]);
+
+  useEffect(() => {
+    handleGetStakedInfo();
+  }, [handleGetStakedInfo]);
+
   return (
     <Stack
       sx={{
@@ -45,6 +76,7 @@ const VaultBanner = () => {
             boxShadow: 'none',
           },
         }}
+        onClick={handleClaimReward}
       >
         Claim Rewards
       </Button>

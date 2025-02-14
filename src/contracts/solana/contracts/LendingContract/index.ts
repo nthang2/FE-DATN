@@ -78,7 +78,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const collateralAmount = new BN(depositAmount * 1e9);
     const usdaiAmount = new BN(0 * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
-
     const transaction = await this.program.methods
       .interactWithType0Depository(collateralAmount, usdaiAmount, true, true)
       .accountsPartial(accountsPartial)
