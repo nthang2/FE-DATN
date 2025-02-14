@@ -30,7 +30,7 @@ export default function YourPosition() {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="subtitle2">Collateral Deposited</Typography>
           <ValueWithStatus
-            status={status}
+            status={[status]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
                 {formatNumber(totalDepositValue)}
@@ -44,10 +44,10 @@ export default function YourPosition() {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="subtitle2">Borrow</Typography>
           <ValueWithStatus
-            status={status}
+            status={[status]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                {totalDepositValue != undefined && formatNumber(totalDepositValue * 0.3)}
+                {totalDepositValue != undefined ? formatNumber(totalDepositValue * 0.3) : formatNumber(totalDepositValue)}
               </Typography>
             }
           />
