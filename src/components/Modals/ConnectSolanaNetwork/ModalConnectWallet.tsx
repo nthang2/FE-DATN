@@ -11,7 +11,7 @@ const ModalConnectWallet = (props: IProps) => {
   const { open, onClose } = props;
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} onTransitionExited={onClose}>
       <DialogTitle>
         <Stack justifyContent={'space-between'} alignItems="center">
           <Typography variant="h5">Connect Wallet</Typography>

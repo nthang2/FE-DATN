@@ -1,4 +1,5 @@
-import { Box, CircularProgress, Typography, TypographyProps } from '@mui/material';
+import { Box, Typography, TypographyProps } from '@mui/material';
+import LoadingIcon from 'src/assets/LoadingIcon';
 
 export default function ThornLoading({
   size = '100px',
@@ -20,7 +21,7 @@ export default function ThornLoading({
         alignItems: 'center',
       }}
     >
-      <CircularProgress sx={{ fontSize: size }} />
+      <LoadingIcon sx={{ width: size, height: size }} />
       {showTitle && (
         <Typography fontWeight={500} variant="caption2" mt={1} whiteSpace={'nowrap'} {...titleProps}>
           {title}

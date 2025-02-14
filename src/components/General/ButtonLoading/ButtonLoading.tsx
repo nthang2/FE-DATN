@@ -1,4 +1,5 @@
-import { Button, ButtonProps, CircularProgress } from '@mui/material';
+import { Button, ButtonProps } from '@mui/material';
+import LoadingIcon from 'src/assets/LoadingIcon';
 
 type Props = {
   loading?: boolean;
@@ -8,7 +9,7 @@ type Props = {
 export default function ButtonLoading({ loading, textLoading, ...muiButtonProps }: Props) {
   return (
     <Button
-      startIcon={loading ? <CircularProgress size={18} /> : muiButtonProps.startIcon}
+      startIcon={loading ? <LoadingIcon /> : muiButtonProps.startIcon}
       disabled={loading || muiButtonProps.disabled}
       {...muiButtonProps}
     >
