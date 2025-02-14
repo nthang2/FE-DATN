@@ -2,6 +2,8 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
+import { queryClient } from 'src/layout/Layout';
+import { compactNumber, numberWithCommas } from 'src/utils/format';
 
 const VaultBanner = () => {
   const wallet = useWallet();
@@ -12,6 +14,7 @@ const VaultBanner = () => {
 
     const vaultContract = new VaultContract(wallet);
     await vaultContract.claimReward();
+    await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
   };
 
   return (
@@ -33,9 +36,9 @@ const VaultBanner = () => {
           Staked Amount
         </Typography>
         <Typography variant="h2" fontWeight={700} fontSize="42px">
-          ${stakeInfo?.amount}
+          ${compactNumber(stakeInfo?.amount || 0)}
         </Typography>
-        <Typography variant="body2">596.15 USDAI</Typography>
+        <Typography variant="body2">{stakeInfo?.amount} USDAI</Typography>
       </Box>
 
       <Box display={'flex'} flexDirection={'column'} gap={1}>
@@ -43,7 +46,7 @@ const VaultBanner = () => {
           Claimable Rewards
         </Typography>
         <Typography variant="h2" fontWeight={700} fontSize="42px">
-          ${stakeInfo?.pendingReward}
+          ${numberWithCommas(stakeInfo?.pendingReward || 0)}
         </Typography>
         <Typography variant="body2">0 Asset</Typography>
       </Box>
