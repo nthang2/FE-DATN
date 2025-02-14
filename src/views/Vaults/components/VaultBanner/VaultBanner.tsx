@@ -1,17 +1,10 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { TokenName } from 'crypto-token-icon';
-import { useCallback, useEffect } from 'react';
-import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
-import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
-
-const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
 
 const VaultBanner = () => {
   const wallet = useWallet();
-  const { allSlpTokenBalances } = useSolanaBalanceToken(usdaiInfo.address, TokenName.USDAI);
   const { stakeInfo } = useStakedInfo();
 
   const handleClaimReward = async () => {
@@ -31,6 +24,8 @@ const VaultBanner = () => {
         padding: '36px 32px 24px 32px',
         justifyContent: 'space-between',
         mb: 2,
+        flexDirection: { xs: 'column', md: 'row' },
+        gap: 2,
       }}
     >
       <Box display={'flex'} flexDirection={'column'} gap={1}>
@@ -38,7 +33,7 @@ const VaultBanner = () => {
           Staked Amount
         </Typography>
         <Typography variant="h2" fontWeight={700} fontSize="42px">
-          $0.293
+          ${stakeInfo?.amount}
         </Typography>
         <Typography variant="body2">596.15 USDAI</Typography>
       </Box>
@@ -48,7 +43,7 @@ const VaultBanner = () => {
           Claimable Rewards
         </Typography>
         <Typography variant="h2" fontWeight={700} fontSize="42px">
-          $-
+          ${stakeInfo?.pendingReward}
         </Typography>
         <Typography variant="body2">0 Asset</Typography>
       </Box>
