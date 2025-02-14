@@ -12,7 +12,7 @@ export const SYSTEM_PROGRAM_ID = new PublicKey('11111111111111111111111111111111
 
 // const rpc2 = 'https://solana-woker.distilled.ai';
 // const rpcDevnet = clusterApiUrl('devnet');
-const rpc2 = 'https://long-side-pool.solana-mainnet.quiknode.pro/8aaf937c425502838140ffe866be292624fc5fb2';
+export const rpc2 = 'https://long-side-pool.solana-mainnet.quiknode.pro/8aaf937c425502838140ffe866be292624fc5fb2';
 
 export const solNetworkSelect = WalletAdapterNetwork.Mainnet;
 export const publicClientSol = new Connection(rpc2, 'confirmed');

@@ -27,7 +27,7 @@ const BorrowButton = () => {
 
   return (
     <Button variant="contained" onClick={() => setIsSubmitted(true)} disabled={!address || !isValidBorrow} fullWidth sx={{ mt: 2 }}>
-      Borrow
+      Mint
     </Button>
   );
 };
