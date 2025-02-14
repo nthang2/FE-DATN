@@ -2,9 +2,9 @@ import { Box, Slider, Stack, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import FormatSmallNumber from 'src/components/General/FormatSmallNumber/FormatSmallNumber';
+import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { labelMark, marks } from '../../constant';
-import useMaxLtv from '../../../../hooks/useQueryHook/queryBorrow/useMaxLtv';
 import { useBorrowState, useDepositState } from '../../state/hooks';
 import { convertToAmountToken } from '../../utils';
 import CustomMark from '../BorrowSlide/CustomMark';
@@ -18,9 +18,19 @@ const LTVSection = () => {
   const [borrowState, setBorrowState] = useBorrowState();
   const [depositItems] = useDepositState();
   const { data: listPrice } = useQueryAllTokensPrice();
-  const { maxLtv } = useMaxLtv();
+  // const { maxLtv } = useMaxLtv();
 
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
+
+  const maxLtv = useMemo(() => {
+    if (depositItems[0]) {
+      const tokenInfo = findTokenInfoByToken(depositItems[0].address);
+
+      return Number(tokenInfo?.ratio) * 100;
+    }
+
+    return 30;
+  }, [depositItems]);
 
   const markList = useMemo(() => [...marks, { value: maxLtv || 100 }], [maxLtv]);
   const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item?.price, 0), [depositItems]);
