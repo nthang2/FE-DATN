@@ -1,17 +1,22 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { Icon, TokenName } from 'crypto-token-icon';
-import CustomTextField from 'src/components/CustomForms/CustomTextField';
-import CustomSlider from '../CustomSlider/Slider';
-import { useEffect, useState } from 'react';
-import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { Icon, TokenName } from 'crypto-token-icon';
+import { useEffect, useState } from 'react';
+import CustomTextField from 'src/components/CustomForms/CustomTextField';
+import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
+import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
+import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
+import CustomSlider from '../CustomSlider/Slider';
 
 const maxAmount = 500;
 
 const DepositSection = () => {
+  const wallet = useWallet();
+  const { address } = useSummarySolanaConnect();
+  const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
+
   const [inputValue, setInputValue] = useState(0);
   const [sliderValue, setSliderValue] = useState(0);
-  const wallet = useWallet();
 
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
     const amount = (Number(value) / 100) * maxAmount;
@@ -26,15 +31,15 @@ const DepositSection = () => {
   };
 
   useEffect(() => {
-    const sliderPercent = (inputValue / maxAmount) * 100;
+    const sliderPercent = (inputValue / balance.toNumber()) * 100;
     setSliderValue(sliderPercent);
-  }, [inputValue]);
+  }, [balance, inputValue]);
 
   return (
     <Box>
       <Stack justifyContent="space-between" mb={0.5}>
         <Typography>Amount</Typography>
-        <Typography>Max: {maxAmount}</Typography>
+        <Typography>Max: {balance.toFixed(2)}</Typography>
       </Stack>
 
       <CustomTextField

@@ -20,6 +20,24 @@ export const usdaiSolanaMainnet = new SolanaMainnetTokenInfo({
   isToken2022: false,
 });
 
+export const oraiSolanaMainnet = new SolanaMainnetTokenInfo({
+  address: 'oraiyuR7hz6h7ApC56mb52CJjPZBB34USTjzaELoaPk',
+  decimals: 6,
+  symbol: TokenName.ORAI,
+  prettyName: 'ORAI',
+  isNative: false,
+  isToken2022: false,
+});
+
+export const usdcSolanaMainnet = new SolanaMainnetTokenInfo({
+  address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  decimals: 6,
+  symbol: TokenName.USDC,
+  prettyName: 'USDC',
+  isNative: false,
+  isToken2022: false,
+});
+
 export const trumpTokenSolana = new SolanaMainnetTokenInfo({
   address: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
   decimals: 6,

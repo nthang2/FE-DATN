@@ -1,5 +1,8 @@
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { Stack } from '@mui/material';
 import React from 'react';
 import { Id, toast } from 'react-toastify';
+import { copyTextToClipboard } from 'src/utils';
 
 interface IAsyncExecute<T> {
   fn: (notify: (msg: string) => void, idToast: Id) => Promise<T>;
@@ -33,7 +36,11 @@ export default function useAsyncExecute() {
       console.log(error);
       onError?.(error as Error);
       toast.update(idToast, {
-        render: (error as Error).message,
+        render: (
+          <Stack alignItems="center">
+            Executing Fail <ContentCopyIcon fontSize="medium" onClick={() => copyTextToClipboard((error as Error).message)} />
+          </Stack>
+        ),
         type: 'error',
         position: 'top-right',
         isLoading: false,
