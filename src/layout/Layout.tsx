@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { Container } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ModalCustom from 'src/components/Modals/ModalCustom';

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { Box, Typography } from '@mui/material';
 import React, { ReactNode } from 'react';
 import { FontOxanium } from 'src/constants';

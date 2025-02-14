@@ -22,8 +22,10 @@ declare module '@mui/material/styles/createPalette' {
     tertiary: string;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Palette {}
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface PaletteOptions {}
 }
 
