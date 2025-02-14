@@ -12,7 +12,7 @@ export const convertToUsd = (address: string, value: string, listPrice?: TPriceL
 export const convertToAmountToken = (address: string, value: string, listPrice?: TPriceList) => {
   const tokenInfo = findTokenInfoByToken(address);
   if (!tokenInfo || !listPrice) return 0;
-  const tokenPrice = listPrice[address].price || 1;
+  const tokenPrice = listPrice[address]?.price || 1;
 
   return Number(value) / tokenPrice;
 };
