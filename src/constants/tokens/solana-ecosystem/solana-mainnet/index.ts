@@ -27,6 +27,7 @@ export const oraiSolanaMainnet = new SolanaMainnetTokenInfo({
   prettyName: 'ORAI',
   isNative: false,
   isToken2022: false,
+  oracle: '56YXkoHyCn2aRTc6RCi7nMRGXwNuSdF7p4pe2s5AjHoP',
 });
 
 export const usdcSolanaMainnet = new SolanaMainnetTokenInfo({
@@ -36,6 +37,7 @@ export const usdcSolanaMainnet = new SolanaMainnetTokenInfo({
   prettyName: 'USDC',
   isNative: false,
   isToken2022: false,
+  oracle: 'GVVBXQmnQW1bggzegakxSBoioVsbHCvCrnY2LwvZkvFu',
 });
 
 export const trumpTokenSolana = new SolanaMainnetTokenInfo({
