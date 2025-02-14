@@ -8,6 +8,7 @@ import { queryClient } from 'src/layout/Layout';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { CONTROLLER_SEED, collateral as defaultCollateral, DEPOSITORY_SEED, REDEEMABLE_MINT_SEED } from './constant';
+import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -30,6 +31,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const controller = this.getPda(CONTROLLER_SEED);
     const depository = this.getPda(DEPOSITORY_SEED, collateral);
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
+    const oracle = findTokenInfoByToken(tokenAddress)?.oracle;
 
     return {
       user: this.provider.publicKey,
@@ -40,7 +42,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       controller: controller,
       depository: depository,
       depositoryVault: depositoryVault,
-      oracle: ctrAdsSolana.oracle,
+      oracle: oracle || ctrAdsSolana.oracle,
       loanAccount: pdAddress,
     };
   }

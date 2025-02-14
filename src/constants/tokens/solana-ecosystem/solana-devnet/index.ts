@@ -35,6 +35,7 @@ export const token1SolanaDevnet = new SolanaDevnetTokenInfo({
   prettyName: 'MAX',
   isNative: false,
   isToken2022: false,
+  oracle: '56YXkoHyCn2aRTc6RCi7nMRGXwNuSdF7p4pe2s5AjHoP',
 });
 
 export const token2SolanaDevnet = new SolanaDevnetTokenInfo({
@@ -44,6 +45,7 @@ export const token2SolanaDevnet = new SolanaDevnetTokenInfo({
   prettyName: 'TRUMP',
   isNative: false,
   isToken2022: false,
+  oracle: 'CsRhK1jeEih7oMHD3m8PL2b9jMw6xDzrHvDgP6sz6xer',
 });
 
 export const token3SolanaDevnet = new SolanaDevnetTokenInfo({
@@ -53,6 +55,7 @@ export const token3SolanaDevnet = new SolanaDevnetTokenInfo({
   prettyName: 'ai16z',
   isNative: false,
   isToken2022: false,
+  oracle: '95Af7sxjVyunTTikaJQymK3rVwDtEVBtbnStXGMSR9wE',
 });
 
 //TOKEN_1=3eURz91ZVhdVBghyet6wcDwsBTcsGxeMA2ovMkWku3Y8

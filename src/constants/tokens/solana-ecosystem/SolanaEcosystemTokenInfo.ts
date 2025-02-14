@@ -12,8 +12,9 @@ export class SolanaEcosystemTokenInfo extends BaseTokenInfo {
     isNative: boolean;
     coingeckoId?: string;
     isToken2022: boolean;
+    oracle?: string;
   }) {
-    super(input.prettyName, input.symbol, input.decimals, input.address, input.network, input.isNative, input.coingeckoId);
+    super(input.prettyName, input.symbol, input.decimals, input.address, input.network, input.isNative, input.coingeckoId, input.oracle);
     this.isToken2022 = input.isToken2022;
   }
 }

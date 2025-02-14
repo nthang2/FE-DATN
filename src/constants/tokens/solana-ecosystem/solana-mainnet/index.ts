@@ -28,6 +28,7 @@ export const trumpTokenSolana = new SolanaMainnetTokenInfo({
   coingeckoId: 'official-trump',
   isToken2022: false,
   isNative: false,
+  oracle: 'CsRhK1jeEih7oMHD3m8PL2b9jMw6xDzrHvDgP6sz6xer',
 });
 
 export const maxTokenSolana = new SolanaMainnetTokenInfo({
@@ -38,6 +39,7 @@ export const maxTokenSolana = new SolanaMainnetTokenInfo({
   coingeckoId: 'max-2',
   isToken2022: false,
   isNative: false,
+  oracle: '56YXkoHyCn2aRTc6RCi7nMRGXwNuSdF7p4pe2s5AjHoP',
 });
 
 export const ai16zTokenSolana = new SolanaMainnetTokenInfo({
@@ -48,4 +50,5 @@ export const ai16zTokenSolana = new SolanaMainnetTokenInfo({
   coingeckoId: 'ai16z',
   isToken2022: true,
   isNative: false,
+  oracle: '95Af7sxjVyunTTikaJQymK3rVwDtEVBtbnStXGMSR9wE',
 });
