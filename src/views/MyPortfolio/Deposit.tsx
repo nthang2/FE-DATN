@@ -1,9 +1,8 @@
-import { Avatar, Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { TokenName } from 'crypto-token-icon';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Icon } from 'crypto-token-icon';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
-import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import { mapNameToInfoSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet/mapNameToInfoSolanaDevnet';
+import { listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
@@ -22,10 +21,7 @@ export default function Deposit() {
   const { data: depositValue } = useQueryDepositValue();
   const modalFunction = useModalFunction();
 
-  const balance = useSolanaBalanceTokens(
-    address,
-    Object.keys(mapNameToInfoSolana) as Array<TokenName.TRUMP | TokenName.MAX | TokenName.AI16Z>
-  );
+  const balance = useSolanaBalanceTokens(address, Object.keys(listTokenAvailable) as Array<TSolanaToken>);
 
   const tableHead = ['Asset', 'In Wallet', 'Deposit', 'APY', 'Collateral', ''];
 
@@ -35,6 +31,12 @@ export default function Deposit() {
       data: { content: <DepositModal token={token} />, title: `Deposit ${token.symbol}`, modalProps: { maxWidth: 'xs' } },
     });
   };
+
+  // const tokens = useMemo(() => {
+  //   return Object.values(mapNameToInfoSolana).filter((item) => item.address && balance.find((item) => BN(item.balance).isGreaterThan(0)));
+  // }, [balance]);
+
+  const tokens = Object.values(listTokenAvailable);
 
   const handleWithdraw = (token: SolanaEcosystemTokenInfo) => {
     modalFunction({
@@ -66,59 +68,62 @@ export default function Deposit() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.values(mapNameToInfoSolanaDevnet)
-              .filter((item) => item.address && balance.find((item) => BN(item.balance).isGreaterThan(0)))
-              .map((row, index) => (
-                <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                  <TableCell component="th" scope="row">
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Avatar sx={{ height: '24px', width: '24px', mr: 1.5 }} />
-                      <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary' }}>
-                        {row.symbol}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {compactNumber(balance[index].balance.toString())}
+            {tokens.map((row, index) => (
+              <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableCell component="th" scope="row">
+                  <Box className="flex-start">
+                    <Icon tokenName={row.symbol} />
+                    <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 1 }}>
+                      {row.symbol}
                     </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {depositValue?.[row.address] ? formatNumber(depositValue?.[row.address]) : '--'}
+                  </Box>
+                </TableCell>
+                <TableCell align="right">
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    {compactNumber(balance[index].balance.toString())}
+                  </Typography>
+                </TableCell>
+                <TableCell align="right">
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    {depositValue?.[row.address] ? formatNumber(depositValue?.[row.address]) : '--'}
+                  </Typography>
+                </TableCell>
+                <TableCell align="right">
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    --
+                  </Typography>
+                </TableCell>
+                <TableCell align="right">
+                  <Box sx={{ display: 'flex', justifyContent: 'end' }}>
+                    <SwitchCustom _checked={true} />
+                  </Box>
+                </TableCell>
+                <TableCell align="right">
+                  <Button
+                    disabled={BN(balance[index].balance).isLessThanOrEqualTo(0)}
+                    variant="contained"
+                    size="small"
+                    onClick={() => handleDeposit(row)}
+                  >
+                    <Typography variant="body2" sx={{ fontWeight: '500' }}>
+                      Deposit
                     </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      --
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-                      <SwitchCustom _checked={true} />
-                    </Box>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Button variant="contained" size="small" onClick={() => handleDeposit(row)}>
-                      <Typography variant="body2" sx={{ fontWeight: '500' }}>
-                        Deposit
-                      </Typography>
-                    </Button>
-                    <ButtonLoading
-                      sx={{ ml: 1 }}
-                      loading={loading}
-                      size="small"
-                      variant="outlined"
-                      onClick={() => {
-                        handleWithdraw(row);
-                      }}
-                      disabled={depositValue?.[row.address] == undefined}
-                    >
-                      Withdraw
-                    </ButtonLoading>
-                  </TableCell>
-                </TableRow>
-              ))}
+                  </Button>
+                  <ButtonLoading
+                    sx={{ ml: 1 }}
+                    loading={loading}
+                    size="small"
+                    variant="outlined"
+                    onClick={() => {
+                      handleWithdraw(row);
+                    }}
+                    disabled={depositValue?.[row.address] == undefined}
+                  >
+                    Withdraw
+                  </ButtonLoading>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>

@@ -1,5 +1,5 @@
 import { SettingsOutlined } from '@mui/icons-material';
-import { Avatar, Box, Divider, FormHelperText, Stack, Typography } from '@mui/material';
+import { Box, Divider, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
 import { Icon } from 'crypto-token-icon';
@@ -14,6 +14,7 @@ import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQue
 import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
+import CheckHealthFactor from './CheckHealthFactor';
 
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
@@ -167,7 +168,6 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
           sx={{
             bgcolor: 'background.secondary',
             height: '72px',
-            // borderColor: error ? 'error.main' : '#666662',
           }}
         >
           <Typography variant="body2" sx={{ color: '#888880', minWidth: '100px' }}>
@@ -176,9 +176,16 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
           <Box className="flex-center" sx={{ ml: 4 }}>
             <Icon tokenName={token.symbol} sx={{ mr: 1 }} />
             <Box>
-              <Typography sx={{ fontWeight: 600, ml: 1 }}>--</Typography>
+              <Typography sx={{ fontWeight: 600, ml: 1 }}>
+                {formatNumber(BN(yourBorrow?.[token.address]).plus(Number(valueRepay) || 0))}
+              </Typography>
               <Typography variant="body3" sx={{ fontWeight: 600, ml: 1, color: '#888880' }}>
-                --
+                {formatNumber(
+                  BN(yourBorrow?.[token.address])
+                    .plus(Number(valueRepay) || 0)
+                    .times(BN(tokensPrice?.[token.address].price)),
+                  { fractionDigits: 0, prefix: '$' }
+                )}
               </Typography>
             </Box>
           </Box>
@@ -194,14 +201,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
           <Typography variant="body2" sx={{ color: '#888880', minWidth: '100px' }}>
             Health factor:
           </Typography>
-          <Box className="flex-center">
-            <Box sx={{ height: '24px', borderRadius: '99px', bgcolor: '#08DBA4', ml: 4, p: '5px 8px' }} className="flex-center">
-              <Typography variant="body3" sx={{ color: 'background.default' }}>
-                Healthy
-              </Typography>
-            </Box>
-            <Typography sx={{ fontWeight: 600, ml: 1 }}>--</Typography>
-          </Box>
+          <CheckHealthFactor token={token} />
         </Box>
       </Box>
       <Box className="flex-space-between" sx={{ mt: 3 }}>
@@ -212,10 +212,16 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
       </Box>
       <Box className={clsx(['box', 'flex-space-between'])} sx={{ border: '#666662 solid 1px', position: 'relative' }}>
         <Box className="flex-center">
-          <Avatar sx={{ width: '20px', height: '20px' }} />
+          <Icon tokenName={token.symbol} />
           <Typography sx={{ ml: 1, fontWeight: 600 }}>Redeem {token.symbol}</Typography>
         </Box>
-        <ButtonLoading size="small" loading={loading} variant="contained" onClick={() => asyncExecute({ fn: handleRepay })}>
+        <ButtonLoading
+          disabled={valueRepayHelperText != undefined || !Number(valueRepay)}
+          size="small"
+          loading={loading}
+          variant="contained"
+          onClick={() => asyncExecute({ fn: handleRepay })}
+        >
           Redeem
         </ButtonLoading>
       </Box>

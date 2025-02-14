@@ -1,7 +1,7 @@
-import { NETWORK } from 'src/constants';
-import { findTokenNameSolanaMainnet, mapNameToInfoSolanaMainnet } from './solana-mainnet/mapNameToInfoSolanaMainnet';
-import { findTokenNameSolanaDevnet, mapNameToInfoSolanaDevnet } from './solana-devnet/mapNameToInfoSolanaDevnet';
 import { TokenName } from 'crypto-token-icon';
+import { NETWORK } from 'src/constants';
+import { findTokenNameSolanaDevnet, mapNameToInfoSolanaDevnet } from './solana-devnet/mapNameToInfoSolanaDevnet';
+import { findTokenNameSolanaMainnet, mapNameToInfoSolanaMainnet } from './solana-mainnet/mapNameToInfoSolanaMainnet';
 
 export const isDevNet = NETWORK === 'devnet';
 

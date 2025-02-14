@@ -1,7 +1,7 @@
 import { Box, Typography, TypographyProps } from '@mui/material';
 import LoadingIcon from 'src/assets/LoadingIcon';
 
-export default function ThornLoading({
+export default function JPowLoading({
   size = '100px',
   showTitle,
   title = 'Loading data',

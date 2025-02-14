@@ -1,5 +1,5 @@
 import { SettingsOutlined } from '@mui/icons-material';
-import { Avatar, Box, FormHelperText, Stack, Typography } from '@mui/material';
+import { Box, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
 import { Icon } from 'crypto-token-icon';
@@ -12,10 +12,12 @@ import { LendingContract } from 'src/contracts/solana/contracts/LendingContract'
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
+import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
+import CheckHealthFactor from './CheckHealthFactor';
 
 export default function DepositModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
@@ -23,6 +25,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
   const { data: tokensPrice } = useQueryAllTokensPrice();
   const { balance, refetch: refetchBalance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
   const { refetch: refetchDepositValue } = useQueryDepositValue();
+  const { refetch: refetchYourBorrow } = useQueryYourBorrow();
   const { asyncExecute, loading } = useAsyncExecute();
 
   const [valueDeposit, setValueDeposit] = useState<string>('');
@@ -51,6 +54,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
     setValueInUSD('0');
     refetchBalance();
     refetchDepositValue();
+    refetchYourBorrow();
   };
 
   return (
@@ -64,7 +68,6 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
           borderRadius: '16px',
           alignItems: 'center',
           mt: 1,
-          // borderColor: error ? 'error.main' : '#666662',
           color: '#fff',
           px: 2,
         },
@@ -95,7 +98,6 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
         </Stack>
         <Box
           sx={{
-            //  width: '-webkit-fill-available',
             display: 'flex',
             alignItems: 'center',
           }}
@@ -119,7 +121,6 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
                   fontWeight: '700',
                   padding: 0,
                   mr: '12px',
-                  // py: 0,
                   color: '#fff',
                   '&::placeholder': {
                     color: 'text.tertiary',
@@ -167,20 +168,12 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
         className="box"
         sx={{
           bgcolor: 'background.secondary',
-          // borderColor: error ? 'error.main' : '#666662',
         }}
       >
         <Typography variant="body2" sx={{ color: '#888880' }}>
           Health factor:
         </Typography>
-        <Box className="flex-center">
-          <Box sx={{ height: '24px', borderRadius: '99px', bgcolor: '#08DBA4', ml: 4, p: '5px 8px' }} className="flex-center">
-            <Typography variant="body3" sx={{ color: 'background.default' }}>
-              Healthy
-            </Typography>
-          </Box>
-          <Typography sx={{ fontWeight: 600, ml: 1 }}>--</Typography>
-        </Box>
+        <CheckHealthFactor token={token} />
       </Box>
       <Box>
         <Box className="flex-space-between" sx={{ mt: 3 }}>
@@ -191,7 +184,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
         </Box>
         <Box className={clsx(['box', 'flex-space-between'])} sx={{ border: '#666662 solid 1px', position: 'relative' }}>
           <Box className="flex-center">
-            <Avatar sx={{ width: '20px', height: '20px' }} />
+            <Icon tokenName={token.symbol} />
             <Typography sx={{ ml: 1, fontWeight: 600 }}>Deposit {token.symbol}</Typography>
           </Box>
           <ButtonLoading

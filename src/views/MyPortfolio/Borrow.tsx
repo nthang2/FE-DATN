@@ -1,8 +1,8 @@
-import { Avatar, Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { useState } from 'react';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Icon } from 'crypto-token-icon';
 import { useNavigate } from 'react-router-dom';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
-import { mapNameToInfoSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet/mapNameToInfoSolanaDevnet';
+import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useQueryBorrowRate from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryBorrowRate';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
@@ -12,7 +12,7 @@ import { formatNumber } from 'src/utils/format';
 import RepayModal from './components/RepayModal';
 
 export default function Borrow() {
-  const [eMode, setEMode] = useState<boolean>(false);
+  // const [eMode, setEMode] = useState<boolean>(false);
   const { data: yourBorrow } = useQueryYourBorrow();
   const { data: borrowRate } = useQueryBorrowRate();
   const { data: depositValue } = useQueryDepositValue();
@@ -21,9 +21,9 @@ export default function Borrow() {
 
   const tableHead = ['Asset', 'Available', 'Your borrow', 'Borrow rate', ''];
 
-  const handleChangeMode = () => {
-    setEMode(!eMode);
-  };
+  // const handleChangeMode = () => {
+  //   setEMode(!eMode);
+  // };
 
   const handleRepay = (token: SolanaEcosystemTokenInfo) => {
     modalFunction({
@@ -43,17 +43,17 @@ export default function Borrow() {
           <Typography variant="h5" sx={{ fontWeight: 700, mr: 4 }}>
             Borrow
           </Typography>
-          <Box sx={{ bgcolor: '#30302e', px: 1, py: 0.5, height: '24px', borderRadius: '6px' }}>
+          {/* <Box sx={{ bgcolor: '#30302e', px: 1, py: 0.5, height: '24px', borderRadius: '6px' }}>
             <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main' }}>
               E-Mode {eMode ? 'On' : 'Off'}
             </Typography>
-          </Box>
+          </Box> */}
         </Box>
-        <Button onClick={handleChangeMode} variant="outlined" size="small">
+        {/* <Button onClick={handleChangeMode} variant="outlined" size="small">
           <Typography variant="body2" sx={{ fontWeight: '500' }}>
             Change E-Mode
           </Typography>
-        </Button>
+        </Button> */}
       </Box>
       <TableContainer sx={{ bgcolor: 'background.content' }}>
         <Table>
@@ -69,12 +69,12 @@ export default function Borrow() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.values(mapNameToInfoSolanaDevnet).map((row) => (
+            {Object.values(listTokenAvailable).map((row) => (
               <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell component="th" scope="row">
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar sx={{ height: '24px', width: '24px', mr: 1.5 }} />
-                    <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary' }}>
+                  <Box className="flex-start">
+                    <Icon tokenName={row.symbol} />
+                    <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 1 }}>
                       {row.symbol}
                     </Typography>
                   </Box>
