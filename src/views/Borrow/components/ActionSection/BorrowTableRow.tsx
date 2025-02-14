@@ -4,6 +4,7 @@ import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapN
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import { TBorrowItem } from '../../state/types';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { formatNumber } from 'src/utils/format';
 
 interface IProps {
   index: number;
@@ -28,7 +29,7 @@ const BorrowTableRow = (props: IProps) => {
       <TableCell width={200}>Mint {tokenInfo?.symbol}</TableCell>
       <TableCell width={400}>
         <Stack gap={0.5}>
-          <Typography variant="body1">{value}</Typography>
+          <Typography variant="body1">{formatNumber(value)}</Typography>
           <Typography variant="body1" color="secondary">
             {tokenInfo?.symbol}
           </Typography>

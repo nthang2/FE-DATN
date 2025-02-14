@@ -23,7 +23,7 @@ export default function Deposit() {
 
   const balance = useSolanaBalanceTokens(address, Object.keys(listTokenAvailable) as Array<TSolanaToken>);
 
-  const tableHead = ['Asset', 'In Wallet', 'Deposit', 'APY', 'Collateral', ''];
+  const tableHead = ['Asset', 'In Wallet', 'Deposit', 'Collateral', ''];
 
   const handleDeposit = (token: SolanaEcosystemTokenInfo) => {
     modalFunction({
@@ -86,11 +86,6 @@ export default function Deposit() {
                 <TableCell align="right">
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                     {depositValue?.[row.address] ? formatNumber(depositValue?.[row.address]) : '--'}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    --
                   </Typography>
                 </TableCell>
                 <TableCell align="right">

@@ -80,7 +80,7 @@ const BorrowSection = () => {
       {isShowYourBorrow && (
         <Stack bgcolor="#333331" p="16px 20px" borderRadius="0px 0px 16px 16px" alignItems="center">
           <Icon tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: 1, width: '16px', height: '16px' }} />
-          <Typography variant="body1">Already borrowed ~ ${totalYourBorrow}</Typography>
+          <Typography variant="body1">Already minted ~ ${totalYourBorrow}</Typography>
         </Stack>
       )}
     </Box>

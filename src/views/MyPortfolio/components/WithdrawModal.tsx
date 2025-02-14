@@ -41,10 +41,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
 
   const handleMax = () => {
     if (depositValue?.[token.address] != undefined && borrowRate?.[token.address] != undefined) {
-      const maxValue = (
-        Number(depositValue?.[token.address]) -
-        Number(borrowRate?.[token.address]) / (Number(depositValue?.[token.address]) * Number(token.ratio ?? 1))
-      ).toFixed(2);
+      const maxValue = (Number(depositValue?.[token.address]) - Number(borrowRate?.[token.address]) / Number(token.ratio ?? 1)).toFixed(2);
 
       setValueWithdraw(maxValue);
       if (!tokensPrice) return;

@@ -79,7 +79,7 @@ const LTVSection = () => {
       </Stack>
 
       <Stack justifyContent="space-between" mt={1.5}>
-        <Typography variant="body2">Ratio of the collateral value to the borrowed value</Typography>
+        <Typography variant="body2">Ratio of the collateral value to the minted value</Typography>
         <Typography variant="body2">max {maxLtv?.toFixed(2)}%</Typography>
       </Stack>
 
