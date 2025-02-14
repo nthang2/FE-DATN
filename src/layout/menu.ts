@@ -9,7 +9,7 @@ export const menu: TMenu[] = [
     url: '/my-portfolio',
   },
   {
-    title: 'Borrow',
+    title: 'Mint',
     url: '/',
   },
   // {

@@ -13,7 +13,7 @@ const Borrow = () => {
   return (
     <Box width="100%" my={4}>
       <Typography variant="h5" mb={1.5} fontWeight={700}>
-        Borrow USDAI
+        Mint USDAI
       </Typography>
 
       <Stack gap={2} sx={{ flexDirection: { xs: 'column-reverse', md: 'row' } }}>
