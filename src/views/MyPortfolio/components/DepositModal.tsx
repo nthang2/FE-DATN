@@ -11,6 +11,7 @@ import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
@@ -20,7 +21,8 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
   const wallet = useWallet();
   const { address } = useSummarySolanaConnect();
   const { data: tokensPrice } = useQueryAllTokensPrice();
-  const { balance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
+  const { balance, refetch: refetchBalance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
+  const { refetch: refetchDepositValue } = useQueryDepositValue();
   const { asyncExecute, loading } = useAsyncExecute();
 
   const [valueDeposit, setValueDeposit] = useState<string>('');
@@ -45,6 +47,10 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
     await lendingContract.deposit(Number(valueDeposit), token.address);
+    setValueDeposit('');
+    setValueInUSD('0');
+    refetchBalance();
+    refetchDepositValue();
   };
 
   return (
@@ -188,7 +194,13 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
             <Avatar sx={{ width: '20px', height: '20px' }} />
             <Typography sx={{ ml: 1, fontWeight: 600 }}>Deposit {token.symbol}</Typography>
           </Box>
-          <ButtonLoading size="small" loading={loading} variant="contained" onClick={() => asyncExecute({ fn: handleDeposit })}>
+          <ButtonLoading
+            disabled={valueDepositHelperText != undefined || !Number(valueDeposit)}
+            size="small"
+            loading={loading}
+            variant="contained"
+            onClick={() => asyncExecute({ fn: handleDeposit })}
+          >
             Deposit
           </ButtonLoading>
         </Box>

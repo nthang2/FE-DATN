@@ -10,6 +10,7 @@ import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
@@ -18,7 +19,8 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
   const wallet = useWallet();
   const { data: tokensPrice } = useQueryAllTokensPrice();
   const { asyncExecute, loading } = useAsyncExecute();
-  const { data: yourBorrow } = useQueryYourBorrow();
+  const { data: yourBorrow, refetch: refetchYourBorrow } = useQueryYourBorrow();
+  const { refetch: refetchDepositValue } = useQueryDepositValue();
 
   const [valueRepay, setValueRepay] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
@@ -44,6 +46,10 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
     await lendingContract.repay(Number(valueRepay), token.address);
+    setValueRepay('');
+    setValueInUSD('0');
+    refetchYourBorrow();
+    refetchDepositValue();
   };
 
   return (
