@@ -28,6 +28,7 @@ export const oraiSolanaMainnet = new SolanaMainnetTokenInfo({
   isNative: false,
   isToken2022: false,
   oracle: '56YXkoHyCn2aRTc6RCi7nMRGXwNuSdF7p4pe2s5AjHoP',
+  ratio: '0.4',
 });
 
 export const usdcSolanaMainnet = new SolanaMainnetTokenInfo({
@@ -38,6 +39,7 @@ export const usdcSolanaMainnet = new SolanaMainnetTokenInfo({
   isNative: false,
   isToken2022: false,
   oracle: 'GVVBXQmnQW1bggzegakxSBoioVsbHCvCrnY2LwvZkvFu',
+  ratio: '0.95',
 });
 
 export const trumpTokenSolana = new SolanaMainnetTokenInfo({
@@ -60,6 +62,7 @@ export const maxTokenSolana = new SolanaMainnetTokenInfo({
   isToken2022: false,
   isNative: false,
   oracle: '56YXkoHyCn2aRTc6RCi7nMRGXwNuSdF7p4pe2s5AjHoP',
+  ratio: '0.3',
 });
 
 export const ai16zTokenSolana = new SolanaMainnetTokenInfo({

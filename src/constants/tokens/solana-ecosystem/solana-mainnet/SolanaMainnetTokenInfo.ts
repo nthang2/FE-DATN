@@ -12,6 +12,7 @@ export class SolanaMainnetTokenInfo extends SolanaEcosystemTokenInfo {
     coingeckoId?: string;
     isToken2022: boolean;
     oracle?: string;
+    ratio?: string;
   }) {
     super({
       prettyName: input.prettyName,
@@ -23,6 +24,7 @@ export class SolanaMainnetTokenInfo extends SolanaEcosystemTokenInfo {
       coingeckoId: input.coingeckoId,
       isToken2022: input.isToken2022,
       oracle: input.oracle,
+      ratio: input.ratio,
     });
   }
 }

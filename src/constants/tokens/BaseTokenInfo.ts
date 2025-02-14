@@ -9,6 +9,7 @@ export class BaseTokenInfo {
     public network: { id: string | number; name: string },
     public isNative: boolean,
     public coingeckoId?: string,
-    public oracle?: string
+    public oracle?: string,
+    public ratio?: string
   ) {}
 }

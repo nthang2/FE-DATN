@@ -18,7 +18,7 @@ const useMaxLtv = () => {
   });
 
   //change maxLtv = query.data later
-  return { maxLtv: 30, ...query };
+  return { maxLtv: query.data, ...query };
 };
 
 export default useMaxLtv;
