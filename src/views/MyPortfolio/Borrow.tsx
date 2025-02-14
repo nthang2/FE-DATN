@@ -84,7 +84,7 @@ export default function Borrow() {
                 <TableCell align="right">
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                     {depositValue?.[row.address] && tokensPrice
-                      ? formatNumber(Number(depositValue?.[row.address]) * 0.3 * Number(tokensPrice[row.address].price), {
+                      ? formatNumber(Number(depositValue?.[row.address]) * row.ratio * Number(tokensPrice[row.address].price), {
                           fractionDigits: 2,
                           prefix: '$',
                         })

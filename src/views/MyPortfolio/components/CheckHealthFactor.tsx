@@ -13,7 +13,10 @@ export default function CheckHealthFactor({ token }: { token: SolanaEcosystemTok
   const healthFactor = useMemo(() => {
     if (depositValueData && yourBorrowData) {
       const ratio = BN(yourBorrowData[token.address]).div(BN(depositValueData[token.address])).toString();
-      const healthFactor = BN(depositValueData[token.address]).times(0.3).div(yourBorrowData[token.address]).toString();
+      const healthFactor = BN(depositValueData[token.address])
+        .times(token.ratio ?? 1)
+        .div(yourBorrowData[token.address])
+        .toString();
       return { ratio: ratio, healthFactor: healthFactor };
     }
   }, [depositValueData, yourBorrowData, token.address]);

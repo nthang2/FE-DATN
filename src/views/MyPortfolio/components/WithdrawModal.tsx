@@ -43,7 +43,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
     if (depositValue?.[token.address] != undefined && borrowRate?.[token.address] != undefined) {
       const maxValue = (
         Number(depositValue?.[token.address]) -
-        Number(borrowRate?.[token.address]) / (Number(depositValue?.[token.address]) * 0.3)
+        Number(borrowRate?.[token.address]) / (Number(depositValue?.[token.address]) * Number(token.ratio ?? 1))
       ).toFixed(2);
 
       setValueWithdraw(maxValue);
@@ -122,7 +122,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
                 max: {
                   max:
                     Number(depositValue?.[token.address]) -
-                    Number(borrowRate?.[token.address]) / (Number(depositValue?.[token.address]) * 0.3),
+                    Number(borrowRate?.[token.address]) / (Number(depositValue?.[token.address]) * Number(token.ratio ?? 1)),
                 },
               }}
               sx={{
