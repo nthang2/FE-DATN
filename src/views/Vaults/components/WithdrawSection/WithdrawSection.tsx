@@ -3,6 +3,8 @@ import { Icon, TokenName } from 'crypto-token-icon';
 import { ReactNode } from 'react';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import CustomSlider from '../CustomSlider/Slider';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
 
 const TokenUSDAIAmount = ({ children }: { children: ReactNode }) => (
   <Typography variant="body2" display="flex" alignItems="center" gap={1}>
@@ -11,6 +13,15 @@ const TokenUSDAIAmount = ({ children }: { children: ReactNode }) => (
 );
 
 const WithdrawSection = () => {
+  const wallet = useWallet();
+
+  const handleWithdraw = async () => {
+    if (!wallet) return;
+
+    const vaultContract = new VaultContract(wallet);
+    await vaultContract.deposit();
+  };
+
   return (
     <Box display="flex" flexDirection="column" gap={2.5} sx={{ color: 'info.main' }}>
       <Stack justifyContent="space-between" alignItems="center">
@@ -36,7 +47,7 @@ const WithdrawSection = () => {
         <TokenUSDAIAmount children={0} />
       </Stack>
 
-      <Button variant="contained" fullWidth>
+      <Button variant="contained" fullWidth onClick={handleWithdraw}>
         Withdraw
       </Button>
     </Box>
