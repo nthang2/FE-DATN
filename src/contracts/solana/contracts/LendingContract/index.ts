@@ -33,6 +33,19 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
     const oracle = findTokenInfoByToken(tokenAddress)?.oracle;
 
+    console.log({
+      user: this.provider.publicKey.toString(),
+      collateral: collateral.toString(),
+      userCollateral: userCollateralATA.toString(),
+      redeemableMint: redeemable_mint.toString(),
+      userRedeemable: userRedeemATA.toString(),
+      controller: controller.toString(),
+      depository: depository.toString(),
+      depositoryVault: depositoryVault.toString(),
+      oracle: oracle || ctrAdsSolana.oracle.toString(),
+      loanAccount: pdAddress.toString(),
+    });
+
     return {
       user: this.provider.publicKey,
       collateral: collateral,
@@ -75,10 +88,10 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async deposit(depositAmount: number, tokenAddress: string): Promise<string> {
+    console.log('🚀 ~ LendingContract ~ deposit ~ tokenAddress:', tokenAddress);
     const collateralAmount = new BN(depositAmount * 1e9);
     const usdaiAmount = new BN(0 * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
-
     const transaction = await this.program.methods
       .interactWithType0Depository(collateralAmount, usdaiAmount, true, true)
       .accountsPartial(accountsPartial)

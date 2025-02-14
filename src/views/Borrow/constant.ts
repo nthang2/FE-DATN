@@ -39,5 +39,3 @@ export const optionSelectValue = {
   [TokenName.MAX]: mapNameToInfoSolana[TokenName.MAX],
   [TokenName.AI16Z]: mapNameToInfoSolana[TokenName.AI16Z],
 };
-
-export const lendingContractAddress = 'FHHjnmtVgT5QJqU8Jt4kw2aVse6W982Esih2xZUfLtBq';
