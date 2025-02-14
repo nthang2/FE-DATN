@@ -2,16 +2,29 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import CustomSlider from '../CustomSlider/Slider';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+const maxAmount = 500;
 
 const DepositSection = () => {
   const [inputValue, setInputValue] = useState(0);
+  const [sliderValue, setSliderValue] = useState(10);
+
+  const handleChangeSlider = (_event: Event, value: number | number[]) => {
+    const amount = (Number(value) / 100) * maxAmount;
+    setInputValue(amount);
+  };
+
+  useEffect(() => {
+    const sliderPercent = (inputValue / maxAmount) * 100;
+    setSliderValue(sliderPercent);
+  }, [inputValue]);
 
   return (
     <Box>
       <Stack justifyContent="space-between" mb={0.5}>
         <Typography>Amount</Typography>
-        <Typography>Max: 0.00</Typography>
+        <Typography>Max: {maxAmount}</Typography>
       </Stack>
 
       <CustomTextField
@@ -35,11 +48,12 @@ const DepositSection = () => {
         onChange={(event) => setInputValue(Number(event.target.value))}
         value={inputValue}
         rule={{
-          min: { min: 1 },
+          min: { min: 0 },
+          max: { max: maxAmount },
         }}
       />
 
-      <CustomSlider sx={{ mt: 2.5 }} />
+      <CustomSlider value={sliderValue} max={100} min={0} onChange={handleChangeSlider} sx={{ mt: 2.5 }} />
 
       <Button variant="contained" sx={{ mt: 2.5 }} fullWidth>
         Deposit

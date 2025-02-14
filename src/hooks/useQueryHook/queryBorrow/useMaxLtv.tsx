@@ -17,7 +17,8 @@ const useMaxLtv = () => {
     enabled: Boolean(wallet),
   });
 
-  return { maxLtv: query.data || 30, ...query };
+  //change maxLtv = query.data later
+  return { maxLtv: 30, ...query };
 };
 
 export default useMaxLtv;

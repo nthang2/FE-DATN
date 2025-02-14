@@ -1,5 +1,5 @@
 export type IdlLending = {
-  address: 'Gpc1tWMi1ZCgb7CDyKdtBQ7Hmkv2B1FuNPY8xHryiH58';
+  address: 'HtSzqFJCFwpRKarN8PBfk2kEXwUzJLUJvhiG52sKpZWZ';
   metadata: {
     name: 'lending';
     version: '0.1.0';
@@ -1425,7 +1425,7 @@ export type IdlLending = {
 };
 
 export const idlLending: IdlLending = {
-  address: 'Gpc1tWMi1ZCgb7CDyKdtBQ7Hmkv2B1FuNPY8xHryiH58',
+  address: 'HtSzqFJCFwpRKarN8PBfk2kEXwUzJLUJvhiG52sKpZWZ',
   metadata: {
     name: 'lending',
     version: '0.1.0',
