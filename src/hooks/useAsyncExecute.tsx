@@ -35,7 +35,7 @@ export default function useAsyncExecute() {
       toast.update(idToast, {
         render: (error as Error).message,
         type: 'error',
-        position: 'top-center',
+        position: 'top-right',
         isLoading: false,
         autoClose: 5000,
         hideProgressBar: false,
