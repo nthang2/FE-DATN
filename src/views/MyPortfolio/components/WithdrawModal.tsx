@@ -6,21 +6,26 @@ import { Icon } from 'crypto-token-icon';
 import { useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
+import { TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryBorrowRate from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryBorrowRate';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
+import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
+import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 
 export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
+  const { address } = useSummarySolanaConnect();
   const { data: tokensPrice } = useQueryAllTokensPrice();
   const { asyncExecute, loading } = useAsyncExecute();
   const { data: borrowRate } = useQueryBorrowRate();
-  const { data: depositValue } = useQueryDepositValue();
+  const { data: depositValue, refetch: refetchDepositValue } = useQueryDepositValue();
+  const { refetch: refetchBalance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
 
   const [valueWithdraw, setValueWithdraw] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
@@ -51,6 +56,10 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
     await lendingContract.withdraw(Number(valueWithdraw), token.address);
+    setValueWithdraw('');
+    setValueInUSD('0');
+    refetchDepositValue();
+    refetchBalance();
   };
 
   return (
@@ -201,7 +210,13 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
             <Avatar sx={{ width: '20px', height: '20px' }} />
             <Typography sx={{ ml: 1, fontWeight: 600 }}>Withdraw {token.symbol}</Typography>
           </Box>
-          <ButtonLoading size="small" loading={loading} variant="contained" onClick={() => asyncExecute({ fn: handleWithdraw })}>
+          <ButtonLoading
+            disabled={valueWithdrawHelperText != undefined || !Number(valueWithdraw)}
+            size="small"
+            loading={loading}
+            variant="contained"
+            onClick={() => asyncExecute({ fn: handleWithdraw })}
+          >
             Withdraw
           </ButtonLoading>
         </Box>

@@ -1,24 +1,25 @@
 import { Box, Switch, Typography } from '@mui/material';
-import { TokenName } from 'crypto-token-icon';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
-import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { mapNameToInfoSolana, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useDonutChartConfig from 'src/hooks/useHighcharts/useDonutChartConfig';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
-import { compactNumber } from 'src/utils/format';
+import { compactNumber, formatNumber } from 'src/utils/format';
 
 export default function MyWallet() {
   const { address } = useSummarySolanaConnect();
-  const balance = useSolanaBalanceTokens(
-    address,
-    Object.keys(mapNameToInfoSolana) as Array<TokenName.TRUMP | TokenName.MAX | TokenName.AI16Z>
-  );
+  const balance = useSolanaBalanceTokens(address, Object.keys(mapNameToInfoSolana) as Array<TSolanaToken>);
   const { data: tokensPrice } = useQueryAllTokensPrice();
+  const { data: depositValue } = useQueryDepositValue();
+
+  const [includeDeposits, setIncludeDeposits] = useState<boolean>(false);
+
   const totalPrice = useMemo(() => {
     if (tokensPrice != undefined)
       return Object.values(balance).reduce((a, b) => {
@@ -35,17 +36,28 @@ export default function MyWallet() {
     // eslint-disable-next-line prefer-const
     let result = [] as Array<{ id: string; name: string; y: number; value: number }>;
     if (balance) {
-      balance.forEach((item, index) => {
-        result.push({
-          id: index.toString(),
-          name: Object.keys(mapNameToInfoSolana)[index],
-          y: Number(item.balance.toString()),
-          value: Number(item.balance.toString()),
+      if (includeDeposits && depositValue) {
+        balance.forEach((item, index) => {
+          result.push({
+            id: index.toString(),
+            name: Object.keys(mapNameToInfoSolana)[index],
+            y: Number(item.balance.toString()),
+            value: Number(item.balance.toString()) + Number(depositValue[item.address]),
+          });
         });
-      });
+      } else {
+        balance.forEach((item, index) => {
+          result.push({
+            id: index.toString(),
+            name: Object.keys(mapNameToInfoSolana)[index],
+            y: Number(item.balance.toString()),
+            value: Number(item.balance.toString()),
+          });
+        });
+      }
       return result;
     }
-  }, [balance]);
+  }, [balance, depositValue, includeDeposits]);
 
   const options = useDonutChartConfig(
     {
@@ -65,7 +77,7 @@ export default function MyWallet() {
       },
       tooltip: {
         formatter: function () {
-          return `${this.name}: <b>${this.y != undefined && compactNumber(this.y)}</b>`;
+          return `${this.name}: <b>${this.y != undefined && formatNumber(this.y)}</b>`;
         },
       },
       series: [
@@ -97,7 +109,7 @@ export default function MyWallet() {
           <Typography variant="caption2" sx={{ color: 'text.secondary' }}>
             Include deposits
           </Typography>
-          <Switch sx={{ ml: 1 }} />
+          <Switch sx={{ ml: 1 }} onChange={() => setIncludeDeposits(!includeDeposits)} />
         </Box>
       </Box>
       <Box sx={{ position: 'relative' }}>

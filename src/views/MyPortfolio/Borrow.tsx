@@ -81,12 +81,12 @@ export default function Borrow() {
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {depositValue?.[row.address] ? formatNumber(Number(depositValue?.[row.address]) * 0.3) : '--'}
+                    {depositValue?.[row.address] ? formatNumber(Number(depositValue?.[row.address]) * 0.3, { fractionDigits: 2 }) : '--'}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {yourBorrow?.[row.address] ?? '--'}
+                    {yourBorrow?.[row.address] ? formatNumber(Number(yourBorrow?.[row.address]), { fractionDigits: 2 }) : '--'}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
