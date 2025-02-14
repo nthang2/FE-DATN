@@ -54,7 +54,7 @@ export default function YourPosition() {
       </Box>
       <Box sx={{ mb: 4, mt: 8 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="subtitle2">Borrow</Typography>
+          <Typography variant="subtitle2">Mint</Typography>
           <ValueWithStatus
             status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
             value={
