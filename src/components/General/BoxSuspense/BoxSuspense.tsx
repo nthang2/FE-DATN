@@ -1,13 +1,13 @@
-import { Box, CircularProgress } from '@mui/material';
+import { Box } from '@mui/material';
 import React, { Suspense } from 'react';
-// import { IconLoading } from 'src/assets/icons/IconLoading';
+import LoadingIcon from 'src/assets/LoadingIcon';
 
 export default function BoxSuspense({ children }: { children: React.ReactNode }) {
   return (
     <Suspense
       fallback={
         <Box pt={6}>
-          <CircularProgress sx={{ fontSize: '100px' }} />
+          <LoadingIcon sx={{ width: '100px', height: '100px' }} />
         </Box>
       }
     >

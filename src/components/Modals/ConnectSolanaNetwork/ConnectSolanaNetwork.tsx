@@ -1,7 +1,8 @@
-import { Box, CircularProgress, Grid2 as Grid } from '@mui/material';
+import { Box, Grid2 as Grid } from '@mui/material';
 import { Adapter, WalletReadyState } from '@solana/wallet-adapter-base';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { toast } from 'react-toastify';
+import LoadingIcon from 'src/assets/LoadingIcon';
 import BoxOptionWallet from 'src/components/General/BoxOptionWallet/BoxOptionWallet';
 import ButtonCustom from 'src/components/General/ButtonCustom/ButtonCustom';
 import { TWalletStatus } from 'src/states/wallets/types';
@@ -42,7 +43,7 @@ export default function ConnectSolanaNetwork() {
             backdropFilter: 'blur(2px)',
           }}
         >
-          <CircularProgress sx={{ fontSize: '100px' }} />
+          <LoadingIcon sx={{ width: '100px', height: '100px' }} />
         </Box>
       )}
       {wallets.map((wallet, index) => {

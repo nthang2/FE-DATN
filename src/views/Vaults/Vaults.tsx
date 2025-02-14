@@ -1,8 +1,16 @@
 import { Box } from '@mui/material';
 import VaultBanner from './components/VaultBanner/VaultBanner';
 import VaultContent from './components/VaultContent/VaultContent';
+import { useWallet } from '@solana/wallet-adapter-react';
+import Lockout from 'src/components/StatusData/Lockout';
 
 const Vaults = () => {
+  const { connected } = useWallet();
+
+  if (!connected) {
+    return <Lockout />;
+  }
+
   return (
     <Box sx={{ mt: 4, maxWidth: '900px', mx: 'auto' }}>
       <VaultBanner />

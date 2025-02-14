@@ -23,8 +23,8 @@ const ConnectWalletSection = () => {
   };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false);
     setAnchorEl(null);
+    setOpenDialog(false);
   };
 
   return (

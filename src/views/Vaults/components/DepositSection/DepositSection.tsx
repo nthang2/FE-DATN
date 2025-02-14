@@ -8,7 +8,7 @@ const maxAmount = 500;
 
 const DepositSection = () => {
   const [inputValue, setInputValue] = useState(0);
-  const [sliderValue, setSliderValue] = useState(10);
+  const [sliderValue, setSliderValue] = useState(0);
 
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
     const amount = (Number(value) / 100) * maxAmount;
