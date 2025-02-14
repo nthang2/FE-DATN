@@ -89,7 +89,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async borrow(borrowAmount: number, tokenAddress: string): Promise<string> {
-    const collateralAmount = new BN(0 * 1e9);
+    const collateralAmount = new BN(0 * 1e6);
     const usdaiAmount = new BN(borrowAmount * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 
@@ -103,7 +103,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async repay(debtAmount: number, tokenAddress: string): Promise<string> {
-    const collateralAmount = new BN(0 * 1e9);
+    const collateralAmount = new BN(0 * 1e6);
     const usdaiAmount = new BN(debtAmount * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 
@@ -117,7 +117,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async withdraw(depositAmount: number, tokenAddress: string): Promise<string> {
-    const collateralAmount = new BN(depositAmount * 1e9);
+    const collateralAmount = new BN(depositAmount * 1e6);
     const usdaiAmount = new BN(0 * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 
