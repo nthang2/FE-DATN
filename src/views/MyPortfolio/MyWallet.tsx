@@ -4,6 +4,7 @@ import HighchartsReact from 'highcharts-react-official';
 import { useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
+import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { mapNameToInfoSolana, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useDonutChartConfig from 'src/hooks/useHighcharts/useDonutChartConfig';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
@@ -15,8 +16,8 @@ import { compactNumber, formatNumber } from 'src/utils/format';
 export default function MyWallet() {
   const { address } = useSummarySolanaConnect();
   const balance = useSolanaBalanceTokens(address, Object.keys(mapNameToInfoSolana) as Array<TSolanaToken>);
-  const { data: tokensPrice } = useQueryAllTokensPrice();
-  const { data: depositValue } = useQueryDepositValue();
+  const { data: tokensPrice, status: queryAllTokensPriceStatus } = useQueryAllTokensPrice();
+  const { data: depositValue, status: queryDepositValueStatus } = useQueryDepositValue();
 
   const [includeDeposits, setIncludeDeposits] = useState<boolean>(false);
 
@@ -31,6 +32,13 @@ export default function MyWallet() {
       }, 0);
     else return 0;
   }, [tokensPrice, balance]);
+
+  const balanceStatus = useMemo(() => {
+    const statusTokens = balance.map((item) => {
+      return item.isLoading ? 'error' : 'success';
+    });
+    return statusTokens;
+  }, [balance]);
 
   const chartData = useMemo(() => {
     // eslint-disable-next-line prefer-const
@@ -118,9 +126,14 @@ export default function MyWallet() {
           <Typography variant="h6" sx={{ fontWeight: 400, textAlign: 'center' }}>
             Total
           </Typography>
-          <Typography variant="h5" sx={{ fontWeight: 700, textAlign: 'center' }}>
-            ${totalPrice != undefined ? compactNumber(totalPrice) : '--'}
-          </Typography>
+          <ValueWithStatus
+            status={[...[queryAllTokensPriceStatus, includeDeposits ? queryDepositValueStatus : 'success'], ...balanceStatus]}
+            value={
+              <Typography variant="h5" sx={{ fontWeight: 700, textAlign: 'center' }}>
+                ${totalPrice != undefined && compactNumber(totalPrice)}
+              </Typography>
+            }
+          />
         </Box>
       </Box>
     </BoxCustom>

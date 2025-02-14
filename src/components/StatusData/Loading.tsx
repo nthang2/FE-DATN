@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Typography, TypographyProps } from '@mui/material';
 
-export default function ThornLoading({
+export default function JPowLoading({
   size = '100px',
   showTitle,
   title = 'Loading data',

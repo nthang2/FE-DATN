@@ -17,9 +17,10 @@ export default function SliderCustom({ maxValue, value }: { maxValue: number | u
                 variant="caption2"
                 sx={{
                   position: 'absolute',
-                  bottom: '-27px',
-                  left: index == 0 ? '0.2%' : index == 8 ? '97%' : `${item * 10 - 1}%`,
+                  bottom: '-30px',
+                  left: index == 0 ? '1%' : index == 8 ? '99%' : `${item * 10}%`,
                   color: 'info.main',
+                  transform: 'translateX(-50%)',
                 }}
               >
                 {maxValue != undefined ? (

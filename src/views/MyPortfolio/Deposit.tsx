@@ -1,9 +1,9 @@
 import { Avatar, Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { TokenName } from 'crypto-token-icon';
+import { useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
-import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import { mapNameToInfoSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet/mapNameToInfoSolanaDevnet';
+import NoData from 'src/components/StatusData/NoData';
+import { mapNameToInfoSolana, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
@@ -22,10 +22,7 @@ export default function Deposit() {
   const { data: depositValue } = useQueryDepositValue();
   const modalFunction = useModalFunction();
 
-  const balance = useSolanaBalanceTokens(
-    address,
-    Object.keys(mapNameToInfoSolana) as Array<TokenName.TRUMP | TokenName.MAX | TokenName.AI16Z>
-  );
+  const balance = useSolanaBalanceTokens(address, Object.keys(mapNameToInfoSolana) as Array<TSolanaToken>);
 
   const tableHead = ['Asset', 'In Wallet', 'Deposit', 'APY', 'Collateral', ''];
 
@@ -35,6 +32,10 @@ export default function Deposit() {
       data: { content: <DepositModal token={token} />, title: `Deposit ${token.symbol}`, modalProps: { maxWidth: 'xs' } },
     });
   };
+
+  const tokens = useMemo(() => {
+    return Object.values(mapNameToInfoSolana).filter((item) => item.address && balance.find((item) => BN(item.balance).isGreaterThan(0)));
+  }, [mapNameToInfoSolana, balance]);
 
   const handleWithdraw = (token: SolanaEcosystemTokenInfo) => {
     modalFunction({
@@ -66,9 +67,8 @@ export default function Deposit() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.values(mapNameToInfoSolanaDevnet)
-              .filter((item) => item.address && balance.find((item) => BN(item.balance).isGreaterThan(0)))
-              .map((row, index) => (
+            {tokens.length > 0 &&
+              tokens.map((row, index) => (
                 <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell component="th" scope="row">
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -121,6 +121,11 @@ export default function Deposit() {
               ))}
           </TableBody>
         </Table>
+        {tokens.length == 0 && (
+          <Box className={'flex-center'} sx={{ mt: 2 }}>
+            <NoData />
+          </Box>
+        )}
       </TableContainer>
     </BoxCustom>
   );
