@@ -73,7 +73,7 @@ const DepositSection = () => {
   return (
     <Box>
       <BoxCustom sx={{ flex: 1, borderRadius: isHasDeposited ? '16px 16px 0px 0px' : '16px' }}>
-        <Stack justifyContent="space-between" width="100%" mb={3.5}>
+        <Stack justifyContent="space-between" width="100%" mb={4.5}>
           <Typography variant="h6" alignItems="center" display="flex" gap={1} fontWeight={700}>
             Deposit
             <TooltipInfo title="info" />
@@ -89,6 +89,7 @@ const DepositSection = () => {
                   fill: '#000',
                 },
               },
+              display: 'none',
             }}
             disabled={isSubmitted || depositItems.length >= 6}
             onClick={handleAddItem}
