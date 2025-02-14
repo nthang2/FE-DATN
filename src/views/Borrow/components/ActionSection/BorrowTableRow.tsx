@@ -25,7 +25,7 @@ const BorrowTableRow = (props: IProps) => {
   return (
     <TableRow sx={{ padding: 3 }}>
       <TableCell width={100}>{index}</TableCell>
-      <TableCell width={200}>Borrow {tokenInfo?.symbol}</TableCell>
+      <TableCell width={200}>Mint {tokenInfo?.symbol}</TableCell>
       <TableCell width={400}>
         <Stack gap={0.5}>
           <Typography variant="body1">{value}</Typography>
@@ -39,7 +39,7 @@ const BorrowTableRow = (props: IProps) => {
           <CheckCircleIcon fontSize="large" color="success" />
         ) : (
           <ButtonLoading loading={loading} variant="contained" onClick={() => asyncExecute({ fn: onClick })}>
-            Borrow
+            Mint
           </ButtonLoading>
         )}
       </TableCell>

@@ -2,10 +2,11 @@
 import { BN } from '@coral-xyz/anchor';
 import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { queryClient } from 'src/layout/Layout';
+import { rpc2 } from 'src/states/wallets/solana-blockchain/configs';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { CONTROLLER_SEED, collateral as defaultCollateral, DEPOSITORY_SEED, REDEEMABLE_MINT_SEED } from './constant';
@@ -75,7 +76,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async deposit(depositAmount: number, tokenAddress: string): Promise<string> {
-    const collateralAmount = new BN(depositAmount * 1e9);
+    const collateralAmount = new BN(depositAmount * 1e6);
     const usdaiAmount = new BN(0 * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
     const transaction = await this.program.methods
@@ -147,7 +148,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
 
   async checkIfPdaExist(address: PublicKey) {
     try {
-      const rpcDevnet = clusterApiUrl('devnet');
+      const rpcDevnet = rpc2;
       const account = await new Connection(rpcDevnet, 'confirmed').getAccountInfo(address, undefined);
       return account;
     } catch (e: unknown) {
