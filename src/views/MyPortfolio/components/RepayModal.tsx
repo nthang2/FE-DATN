@@ -204,7 +204,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
       <Box className={clsx(['box', 'flex-space-between'])} sx={{ border: '#666662 solid 1px', position: 'relative' }}>
         <Box className="flex-center">
           <Icon tokenName={token.symbol} />
-          <Typography sx={{ ml: 1, fontWeight: 600 }}>Redeem {token.symbol}</Typography>
+          <Typography sx={{ ml: 1, fontWeight: 600 }}>Redeem {TokenName.USDAI}</Typography>
         </Box>
         <ButtonLoading
           disabled={valueRepayHelperText != undefined || !Number(valueRepay)}

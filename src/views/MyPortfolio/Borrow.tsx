@@ -1,5 +1,5 @@
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { Icon } from 'crypto-token-icon';
+import { Icon, TokenName } from 'crypto-token-icon';
 import { useNavigate } from 'react-router-dom';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
@@ -30,7 +30,7 @@ export default function Borrow() {
   const handleRepay = (token: SolanaEcosystemTokenInfo) => {
     modalFunction({
       type: 'openModal',
-      data: { content: <RepayModal token={token} />, title: `Redeem ${token.symbol}`, modalProps: { maxWidth: 'xs' } },
+      data: { content: <RepayModal token={token} />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
     });
   };
 
