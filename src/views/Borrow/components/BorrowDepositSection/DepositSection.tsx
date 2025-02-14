@@ -7,7 +7,6 @@ import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
-import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import { defaultBorrowValue } from '../../constant';
 import { useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToUsd, validateDepositItem } from '../../utils';
@@ -18,20 +17,19 @@ const DepositSection = () => {
   const [isSubmitted] = useBorrowSubmitState();
   const { data: listPrice } = useQueryAllTokensPrice();
   const { data: depositedValue } = useQueryDepositValue();
-  const { data: yourBorrow } = useQueryYourBorrow();
 
   const totalDepositedValue = useMemo(() => {
-    const item = depositItems[0];
-    const tokenItem = findTokenInfoByToken(item.address);
-    if (depositedValue?.[item.address] && listPrice && yourBorrow?.[item.address] && tokenItem?.ratio) {
-      return (
-        Number(depositedValue?.[item.address]) * Number(tokenItem.ratio) * Number(listPrice[item.address].price) -
-        Number(yourBorrow[item.address])
-      );
-    }
+    if (!depositedValue || !listPrice) return 0;
+    const result = Object.keys(depositedValue).reduce((total, key) => {
+      if (listPrice[key]) {
+        return convertToUsd(key, depositedValue[key], listPrice);
+      }
 
-    return 0;
-  }, [depositItems, depositedValue, listPrice, yourBorrow]);
+      return total;
+    }, 0);
+
+    return result;
+  }, [depositedValue, listPrice]);
 
   const isHasDeposited = Boolean(totalDepositedValue) || totalDepositedValue > 0;
 
