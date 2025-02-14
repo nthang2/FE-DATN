@@ -58,7 +58,6 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
       [Buffer.from(STAKER_INFO_SEED), stakeCurrencyMint.toBytes(), this.provider.publicKey.toBytes()],
       this.program.programId
     );
-
     const { amount, pendingReward } = await this.program.account.stakerInfo.fetch(user1Pda);
 
     return { amount, pendingReward };

@@ -1,5 +1,5 @@
 export type IdlLending = {
-  address: 'FNRK9q5DE5j78qepNEG5zRKxkoeVNzZ7ds6fW5232CfE';
+  address: '5vLjP1n7CwibWWJbcywvGjoN3D3KPdWTXgdnt36cTHzC';
   metadata: {
     name: 'lending';
     version: '0.1.0';
@@ -238,12 +238,6 @@ export type IdlLending = {
         {
           name: 'dust';
           type: 'u64';
-        },
-        {
-          name: 'limitedLoanEach';
-          type: {
-            option: 'u64';
-          };
         }
       ];
     },
@@ -1579,12 +1573,6 @@ export type IdlLending = {
           {
             name: 'isPaused';
             type: 'bool';
-          },
-          {
-            name: 'limitedLoanEach';
-            type: {
-              option: 'u64';
-            };
           }
         ];
       };
@@ -1593,7 +1581,7 @@ export type IdlLending = {
 };
 
 export const idlLending: IdlLending = {
-  address: 'FNRK9q5DE5j78qepNEG5zRKxkoeVNzZ7ds6fW5232CfE',
+  address: '5vLjP1n7CwibWWJbcywvGjoN3D3KPdWTXgdnt36cTHzC',
   metadata: {
     name: 'lending',
     version: '0.1.0',
@@ -1832,12 +1820,6 @@ export const idlLending: IdlLending = {
         {
           name: 'dust',
           type: 'u64',
-        },
-        {
-          name: 'limitedLoanEach',
-          type: {
-            option: 'u64',
-          },
         },
       ],
     },
@@ -3053,12 +3035,6 @@ export const idlLending: IdlLending = {
           {
             name: 'isPaused',
             type: 'bool',
-          },
-          {
-            name: 'limitedLoanEach',
-            type: {
-              option: 'u64',
-            },
           },
         ],
       },
