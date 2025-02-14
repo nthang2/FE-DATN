@@ -1,35 +1,38 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
+import { useMemo } from 'react';
 import { PlusIcon } from 'src/assets/icons';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
+import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import { defaultBorrowValue } from '../../constant';
 import { useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToUsd, validateDepositItem } from '../../utils';
 import DepositItem from './DepositItem';
-import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
-import { useMemo } from 'react';
 
 const DepositSection = () => {
   const [depositItems, setDepositState] = useDepositState();
   const [isSubmitted] = useBorrowSubmitState();
   const { data: listPrice } = useQueryAllTokensPrice();
   const { data: depositedValue } = useQueryDepositValue();
+  const { data: yourBorrow } = useQueryYourBorrow();
 
   const totalDepositedValue = useMemo(() => {
-    if (!depositedValue || !listPrice) return 0;
-    const result = Object.keys(depositedValue).reduce((total, key) => {
-      if (listPrice[key]) {
-        return convertToUsd(key, depositedValue[key], listPrice);
-      }
+    const item = depositItems[0];
+    const tokenItem = findTokenInfoByToken(item.address);
+    if (depositedValue?.[item.address] && listPrice && yourBorrow?.[item.address] && tokenItem?.ratio) {
+      return (
+        Number(depositedValue?.[item.address]) * Number(tokenItem.ratio) * Number(listPrice[item.address].price) -
+        Number(yourBorrow[item.address])
+      );
+    }
 
-      return total;
-    }, 0);
+    return 0;
+  }, [depositItems, depositedValue, listPrice, yourBorrow]);
 
-    return result;
-  }, [depositedValue, listPrice]);
   const isHasDeposited = Boolean(totalDepositedValue) || totalDepositedValue > 0;
 
   const handleRemoveItem = (index: number) => {
@@ -131,7 +134,7 @@ const DepositSection = () => {
           </Stack>
 
           <Typography ml={1} variant="body1">
-            Already deposited ~ ${totalDepositedValue.toFixed(2)}
+            Total deposited ~ ${totalDepositedValue.toFixed(2)}
           </Typography>
         </Stack>
       )}
