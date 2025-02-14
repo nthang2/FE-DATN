@@ -18,6 +18,7 @@ const VaultContent = () => {
   const [toggleValue, setToggleValue] = useState<string>('deposit');
 
   const handleToggle = (_e: React.MouseEvent<HTMLElement>, newAlignment: string) => {
+    if (newAlignment === null) return;
     setToggleValue(newAlignment);
   };
 

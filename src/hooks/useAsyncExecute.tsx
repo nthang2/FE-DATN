@@ -37,7 +37,7 @@ export default function useAsyncExecute() {
       onError?.(error as Error);
       toast.update(idToast, {
         render: (
-          <Stack alignItems="center">
+          <Stack alignItems="center" gap={0.5}>
             Executing Fail <ContentCopyIcon fontSize="medium" onClick={() => copyTextToClipboard((error as Error).message)} />
           </Stack>
         ),

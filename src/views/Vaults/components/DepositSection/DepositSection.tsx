@@ -7,6 +7,7 @@ import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/Vaul
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import CustomSlider from '../CustomSlider/Slider';
+import { queryClient } from 'src/layout/Layout';
 
 const maxAmount = 500;
 
@@ -19,7 +20,7 @@ const DepositSection = () => {
   const [sliderValue, setSliderValue] = useState(0);
 
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
-    const amount = (Number(value) / 100) * maxAmount;
+    const amount = (Number(value) / 100) * balance.toNumber();
     setInputValue(amount);
   };
 
@@ -28,6 +29,7 @@ const DepositSection = () => {
 
     const vaultContract = new VaultContract(wallet);
     await vaultContract.deposit();
+    await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
   };
 
   useEffect(() => {
@@ -61,7 +63,7 @@ const DepositSection = () => {
         inputProps={{ style: { padding: 0 } }}
         sx={{ borderRadius: '16px' }}
         onChange={(event) => setInputValue(Number(event.target.value))}
-        value={inputValue}
+        value={Number(inputValue.toFixed(2))}
         rule={{
           min: { min: 0 },
           max: { max: maxAmount },
