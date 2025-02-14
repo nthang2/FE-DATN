@@ -2,14 +2,13 @@ import { SettingsOutlined } from '@mui/icons-material';
 import { Box, Divider, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
-import { Icon } from 'crypto-token-icon';
+import { Icon, TokenName } from 'crypto-token-icon';
 import { useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
-import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import { BN } from 'src/utils';
@@ -18,7 +17,6 @@ import CheckHealthFactor from './CheckHealthFactor';
 
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
-  const { data: tokensPrice } = useQueryAllTokensPrice();
   const { asyncExecute, loading } = useAsyncExecute();
   const { data: yourBorrow, refetch: refetchYourBorrow } = useQueryYourBorrow();
   const { refetch: refetchDepositValue } = useQueryDepositValue();
@@ -29,16 +27,14 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
 
   const handleChangeValueDeposit = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValueRepay(e.target.value);
-    if (!tokensPrice) return;
-    const _valueInUSD = BN(e.target.value).times(BN(tokensPrice[token.address].price)).toString();
+    const _valueInUSD = BN(e.target.value).toString();
     setValueInUSD(_valueInUSD);
   };
 
   const handleMax = () => {
     if (yourBorrow?.[token.address] != undefined) {
       setValueRepay(yourBorrow?.[token.address].toString());
-      if (!tokensPrice) return;
-      const _valueInUSD = BN(yourBorrow?.[token.address]).times(BN(tokensPrice[token.address].price)).toString();
+      const _valueInUSD = BN(yourBorrow?.[token.address]).toString();
       setValueInUSD(_valueInUSD);
     }
   };
@@ -89,8 +85,8 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
             bgcolor: 'secondary.dark',
           }}
         >
-          <Icon tokenName={token.symbol} sx={{ mr: 1 }} />
-          <Typography variant="body2">{token.symbol}</Typography>
+          <Icon tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
+          <Typography variant="body2">{TokenName.USDAI}</Typography>
         </Stack>
         <Box
           sx={{
@@ -177,15 +173,10 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
             <Icon tokenName={token.symbol} sx={{ mr: 1 }} />
             <Box>
               <Typography sx={{ fontWeight: 600, ml: 1 }}>
-                {formatNumber(BN(yourBorrow?.[token.address]).plus(Number(valueRepay) || 0))}
+                {formatNumber(BN(yourBorrow?.[token.address]).minus(Number(valueRepay) || 0))}
               </Typography>
               <Typography variant="body3" sx={{ fontWeight: 600, ml: 1, color: '#888880' }}>
-                {formatNumber(
-                  BN(yourBorrow?.[token.address])
-                    .plus(Number(valueRepay) || 0)
-                    .times(BN(tokensPrice?.[token.address].price)),
-                  { fractionDigits: 0, prefix: '$' }
-                )}
+                {formatNumber(BN(yourBorrow?.[token.address]).minus(Number(valueRepay) || 0), { fractionDigits: 0, prefix: '$' })}
               </Typography>
             </Box>
           </Box>

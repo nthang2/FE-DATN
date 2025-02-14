@@ -4,11 +4,11 @@ import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
+import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { queryClient } from 'src/layout/Layout';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { CONTROLLER_SEED, collateral as defaultCollateral, DEPOSITORY_SEED, REDEEMABLE_MINT_SEED } from './constant';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -88,7 +88,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async deposit(depositAmount: number, tokenAddress: string): Promise<string> {
-    console.log('🚀 ~ LendingContract ~ deposit ~ tokenAddress:', tokenAddress);
     const collateralAmount = new BN(depositAmount * 1e9);
     const usdaiAmount = new BN(0 * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
@@ -121,7 +120,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 
     const transaction = await this.program.methods
-      .interactWithType0Depository(collateralAmount, usdaiAmount, false, true)
+      .interactWithType0Depository(collateralAmount, usdaiAmount, false, false)
       .accountsPartial(accountsPartial)
       .transaction();
     const transactionHash = await this.sendTransaction(transaction);

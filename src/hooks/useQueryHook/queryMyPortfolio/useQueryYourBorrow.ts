@@ -1,7 +1,7 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useQuery } from '@tanstack/react-query';
-import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import { BN } from 'src/utils';
 
@@ -27,9 +27,7 @@ export default function useQueryYourBorrow() {
             } else {
               const userLoan = lendingContract.getUserLoanByToken(wallet.publicKey, new PublicKey(add));
               const _valueDeposit = await lendingContract.getLoanType0(userLoan.pdAddress);
-              yourBorrow[add] = BN(_valueDeposit.mintedAmount)
-                .dividedBy(BN(10).pow(findTokenInfoByToken(add)?.decimals ?? 9))
-                .toString();
+              yourBorrow[add] = BN(_valueDeposit.mintedAmount).dividedBy(BN(10).pow(6)).toString();
             }
           }
         })
