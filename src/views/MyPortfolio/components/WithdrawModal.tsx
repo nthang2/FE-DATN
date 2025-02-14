@@ -18,6 +18,7 @@ import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import CheckHealthFactor from './CheckHealthFactor';
+import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 
 export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
@@ -25,6 +26,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const { data: tokensPrice } = useQueryAllTokensPrice();
   const { asyncExecute, loading } = useAsyncExecute();
   const { data: borrowRate } = useQueryBorrowRate();
+  const { data: yourBorrow } = useQueryYourBorrow();
   const { data: depositValue, refetch: refetchDepositValue } = useQueryDepositValue();
   const { refetch: refetchBalance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
 
@@ -40,8 +42,16 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   };
 
   const handleMax = () => {
-    if (depositValue?.[token.address] != undefined && borrowRate?.[token.address] != undefined) {
-      const maxValue = (Number(depositValue?.[token.address]) - Number(borrowRate?.[token.address]) / Number(token.ratio ?? 1)).toFixed(2);
+    if (
+      depositValue?.[token.address] != undefined &&
+      yourBorrow?.[token.address] != undefined &&
+      tokensPrice !== undefined &&
+      tokensPrice[token.address]
+    ) {
+      const maxValue = (
+        Number(depositValue?.[token.address]) -
+        Number(yourBorrow?.[token.address]) / Number(token.ratio ?? 1) / tokensPrice[token.address].price
+      ).toFixed(2);
 
       setValueWithdraw(maxValue);
       if (!tokensPrice) return;
