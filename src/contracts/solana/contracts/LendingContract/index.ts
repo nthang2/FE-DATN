@@ -33,19 +33,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
     const oracle = findTokenInfoByToken(tokenAddress)?.oracle;
 
-    console.log({
-      user: this.provider.publicKey.toString(),
-      collateral: collateral.toString(),
-      userCollateral: userCollateralATA.toString(),
-      redeemableMint: redeemable_mint.toString(),
-      userRedeemable: userRedeemATA.toString(),
-      controller: controller.toString(),
-      depository: depository.toString(),
-      depositoryVault: depositoryVault.toString(),
-      oracle: oracle || ctrAdsSolana.oracle.toString(),
-      loanAccount: pdAddress.toString(),
-    });
-
     return {
       user: this.provider.publicKey,
       collateral: collateral,
