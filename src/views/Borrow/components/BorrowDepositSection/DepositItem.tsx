@@ -1,5 +1,5 @@
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import { IconButton } from '@mui/material';
+// import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+// import { IconButton } from '@mui/material';
 import { useBorrowSubmitState } from '../../state/hooks';
 import { TBorrowItem } from '../../state/types';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
@@ -13,7 +13,7 @@ interface IProps {
 }
 
 const DepositItem = (props: IProps) => {
-  const { item, handleChangeInput, handleChangeSelectInput, index, handleRemoveItem } = props;
+  const { item, handleChangeInput, handleChangeSelectInput, index } = props;
   const [isSubmitted] = useBorrowSubmitState();
 
   return (
@@ -30,11 +30,11 @@ const DepositItem = (props: IProps) => {
         value: item.address,
       }}
       key={index}
-      endAdornment={
-        <IconButton onClick={() => handleRemoveItem(index)} sx={{ display: isSubmitted ? 'none' : 'flex' }} hidden={isSubmitted}>
-          <CloseOutlinedIcon fontSize="large" />
-        </IconButton>
-      }
+      // endAdornment={
+      //   <IconButton onClick={() => handleRemoveItem(index)} sx={{ display: isSubmitted ? 'none' : 'flex' }} hidden={isSubmitted}>
+      //     <CloseOutlinedIcon fontSize="large" />
+      //   </IconButton>
+      // }
       subValue={item?.price}
       error={item.error}
     />

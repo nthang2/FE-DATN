@@ -10,6 +10,7 @@ import { rpc2 } from 'src/states/wallets/solana-blockchain/configs';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { CONTROLLER_SEED, collateral as defaultCollateral, DEPOSITORY_SEED, REDEEMABLE_MINT_SEED } from './constant';
+import { getDecimalToken } from 'src/utils';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -76,7 +77,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async deposit(depositAmount: number, tokenAddress: string): Promise<string> {
-    const collateralAmount = new BN(depositAmount * 1e6);
+    const decimal = getDecimalToken(tokenAddress);
+    const collateralAmount = new BN(depositAmount * decimal);
     const usdaiAmount = new BN(0 * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
     const transaction = await this.program.methods
@@ -89,7 +91,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async borrow(borrowAmount: number, tokenAddress: string): Promise<string> {
-    const collateralAmount = new BN(0 * 1e6);
+    const decimal = getDecimalToken(tokenAddress);
+    const collateralAmount = new BN(0 * decimal);
     const usdaiAmount = new BN(borrowAmount * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 
@@ -103,7 +106,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async repay(debtAmount: number, tokenAddress: string): Promise<string> {
-    const collateralAmount = new BN(0 * 1e6);
+    const decimal = getDecimalToken(tokenAddress);
+    const collateralAmount = new BN(0 * decimal);
     const usdaiAmount = new BN(debtAmount * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 
@@ -117,7 +121,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async withdraw(depositAmount: number, tokenAddress: string): Promise<string> {
-    const collateralAmount = new BN(depositAmount * 1e6);
+    const decimal = getDecimalToken(tokenAddress);
+    const collateralAmount = new BN(depositAmount * decimal);
     const usdaiAmount = new BN(0 * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 

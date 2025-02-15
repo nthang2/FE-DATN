@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { Buffer } from 'buffer';
 import { toast, ToastOptions } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
+import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 
 export const uuid = uuidv4;
 
@@ -111,3 +112,10 @@ export function detectMobile() {
     return navigator.userAgent.match(toMatchItem);
   });
 }
+
+export const getDecimalToken = (address: string) => {
+  const tokenInfo = findTokenInfoByToken(address);
+  const decimal = Number(`1e${tokenInfo?.decimals || 6}`);
+
+  return decimal;
+};

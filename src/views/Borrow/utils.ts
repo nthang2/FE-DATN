@@ -28,6 +28,7 @@ export const validateDepositItem = (value: number) => {
 
 export const validateBorrowItem = (value: number, borrowPercent: number, maxLtv: number) => {
   let error;
+  if (value === 0) return error;
   if (Number(value) <= 0) {
     error = 'Deposit value must greater than 0';
   }
