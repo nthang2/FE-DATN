@@ -26,7 +26,6 @@ const BorrowSection = () => {
   const maxLtv = useMemo(() => {
     if (depositItems[0]) {
       const tokenInfo = findTokenInfoByToken(depositItems[0].address);
-
       return Number(tokenInfo?.ratio) * 100;
     }
 
@@ -34,8 +33,7 @@ const BorrowSection = () => {
   }, [depositItems]);
   const isShowYourBorrow = !!totalYourBorrow && Number(totalYourBorrow) > 0;
 
-  const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+  const handleChangeInput = (value: string) => {
     const price = convertToUsd(borrowState.address, value, listPrice);
     const borrowPercent = (price / totalDepositValue) * 100;
     const error = validateBorrowItem(Number(value), borrowPercent, maxLtv);
@@ -58,7 +56,7 @@ const BorrowSection = () => {
           <DepositCustomInput
             readonly={isSubmitted}
             inputProps={{
-              onChange: handleChangeInput,
+              onChange: (e) => handleChangeInput(e.target.value),
               value: borrowState.value,
             }}
             selectProps={{
@@ -73,6 +71,7 @@ const BorrowSection = () => {
             }}
             subValue={borrowState?.price}
             error={borrowState.error}
+            selectOptions={[borrowState.address]}
           />
         </Box>
       </BoxCustom>

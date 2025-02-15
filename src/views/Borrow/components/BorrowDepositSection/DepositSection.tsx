@@ -18,19 +18,26 @@ const DepositSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
   const { data: depositedValue } = useQueryDepositValue();
 
+  // const totalDepositedValue = useMemo(() => {
+  //   if (!depositedValue || !listPrice) return 0;
+  //   const result = Object.keys(depositedValue).reduce((total, key) => {
+  //     if (listPrice[key]) {
+  //       return convertToUsd(key, depositedValue[key], listPrice);
+  //     }
+
+  //     return total;
+  //   }, 0);
+
+  //   return result;
+  // }, [depositedValue, listPrice]);
+
   const totalDepositedValue = useMemo(() => {
     if (!depositedValue || !listPrice) return 0;
-    const result = Object.keys(depositedValue).reduce((total, key) => {
-      if (listPrice[key]) {
-        return convertToUsd(key, depositedValue[key], listPrice);
-      }
+    const depositAddress = depositItems[0].address;
+    const result = convertToUsd(depositAddress, depositedValue[depositAddress], listPrice);
 
-      return total;
-    }, 0);
-
-    return result;
-  }, [depositedValue, listPrice]);
-
+    return Number(result);
+  }, [depositItems, depositedValue, listPrice]);
   const isHasDeposited = Boolean(totalDepositedValue) || totalDepositedValue > 0;
 
   const handleRemoveItem = (index: number) => {
@@ -50,7 +57,7 @@ const DepositSection = () => {
   const handleChangeSelectInput = (index: number, value: string) => {
     const cloneArr = depositItems.map((item, arrIndex) => {
       if (arrIndex === index) {
-        return { ...item, address: value };
+        return { ...item, address: value, price: convertToUsd(value, item.value, listPrice) };
       }
 
       return item;
