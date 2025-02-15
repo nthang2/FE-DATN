@@ -95,7 +95,7 @@ const LTVSection = () => {
       </Stack>
 
       <Stack justifyContent="space-between" mt={1.5}>
-        <Typography variant="body2">Ratio of the collateral value to the minted value</Typography>
+        <Typography variant="body2">Ratio of the minted value to the collateral value</Typography>
         <Typography variant="body2">max {maxLtv?.toFixed(2)}%</Typography>
       </Stack>
 
@@ -118,12 +118,11 @@ const LTVSection = () => {
               transform: `translate(${Number(sliderValue) > 1 ? '-120%' : '-50%'}, -50%)`,
             },
           }}
-          onChangeCommitted={(e, value) => console.log(value)}
           disabled={borrowSubmitted || borrowPercent < 0}
         />
 
         {/* Label */}
-        <Stack width="100%" sx={{ alignItems: 'center', textAlign: 'center', display: { xs: 'none', md: 'flex' } }}>
+        <Stack width="100%" sx={{ alignItems: 'center', textAlign: 'center', display: { xs: 'none', md: 'none' } }}>
           {markList.map((mark, index) => {
             let width = mark.value;
             if (index !== 0) {

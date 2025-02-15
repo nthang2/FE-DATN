@@ -15,7 +15,7 @@ const CustomThumb = ({ children, ...props }: IProps) => {
         src={SlideThumb}
         alt="slider_thumb"
         sx={{
-          width: { xs: '42px', lg: '28px' },
+          width: { xs: '42px', lg: '30px' },
           aspectRatio: 1,
         }}
       />

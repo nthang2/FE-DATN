@@ -21,7 +21,7 @@ const CustomMark = ({ ...props }) => {
         transform: 'translate(-1px, -50%)',
         bgcolor: bgcolor,
         height: '100%',
-        display: props.markActive && !isMaxValueMark ? 'none' : 'block',
+        display: !isMaxValueMark ? 'none' : 'block',
       }}
       {...props}
     >
