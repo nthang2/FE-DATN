@@ -56,7 +56,14 @@ const VaultBanner = () => {
         <Typography variant="body2">{roundNumber(Number(stakeInfo?.amount || 0), 6)} USDAI</Typography>
       </Box>
 
-      <Box display={'flex'} flexDirection={'column'} gap={1}>
+      <Box
+        display={'flex'}
+        flexDirection={'column'}
+        gap={1}
+        sx={{
+          '& span': { flex: 1, alignSelf: 'flex-start' },
+        }}
+      >
         <Typography variant="h6" fontWeight={600}>
           Claimable Rewards
         </Typography>
