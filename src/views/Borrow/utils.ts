@@ -19,10 +19,6 @@ export const convertToAmountToken = (address: string, value: string, listPrice?:
 
 export const validateDepositItem = (value: number, balance?: number) => {
   let error;
-  if (Number(value) <= 0) {
-    error = 'Deposit value must greater than 0';
-  }
-
   if (value > Number(balance || 0)) {
     error = 'Not enough balance to deposit';
   }
