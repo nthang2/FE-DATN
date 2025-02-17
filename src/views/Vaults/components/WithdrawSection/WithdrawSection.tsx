@@ -4,7 +4,7 @@ import { ReactNode, useMemo, useState } from 'react';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import CustomSlider from '../CustomSlider/Slider';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
+import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
 import { queryClient } from 'src/layout/Layout';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
