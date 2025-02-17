@@ -65,7 +65,7 @@ const VaultBanner = () => {
               ${compactNumber(stakeInfo?.amount || 0, 4)}
             </Typography>
           }
-          skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '100%' }}
+          skeletonStyle={{ bgcolor: '#c9c7c7', height: '60px', width: '100%' }}
         />
 
         <Typography variant="body2">{roundNumber(reward || 0, 6)} USDAI</Typography>
