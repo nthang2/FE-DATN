@@ -80,7 +80,7 @@ const LTVSection = () => {
 
     setBorrowState({
       ...borrowState,
-      value: borrowAmount.toString(),
+      value: borrowAmount ? borrowAmount.toString() : '0',
       price: minValue,
       error: error,
     });
@@ -106,7 +106,7 @@ const LTVSection = () => {
   useEffect(() => {
     //Update slider when change address deposit
     const price = convertToUsd(borrowState.address, borrowState.value, listPrice);
-    const borrowPercent = (price / totalDepositValue) * 100;
+    const borrowPercent = ((price + yourBorrowByAddress) / totalDepositValue) * 100;
     if (borrowPercent > maxLtv) {
       handleChangeSlider(0);
     } else {
