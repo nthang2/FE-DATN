@@ -4,6 +4,7 @@ import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapN
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import { TBorrowItem } from '../../state/types';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { roundNumber } from 'src/utils/format';
 
 interface IProps {
   index: number;
@@ -32,7 +33,7 @@ const DepositTableRow = (props: IProps) => {
       <TableCell width={200}>Deposit {tokenInfo?.symbol}</TableCell>
       <TableCell width={400}>
         <Stack gap={0.5}>
-          <Typography variant="body1">{value}</Typography>
+          <Typography variant="body1">{roundNumber(value, 4)}</Typography>
           <Typography variant="body1" color="secondary">
             {tokenInfo?.symbol}
           </Typography>

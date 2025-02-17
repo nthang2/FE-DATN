@@ -69,7 +69,7 @@ const VaultBanner = () => {
 
       <Box display={'flex'} flexDirection={'column'} gap={1}>
         <Typography variant="h6" fontWeight={600}>
-          APR
+          Min APR
         </Typography>
         <Typography variant="h2" fontWeight={700} fontSize="42px">
           20%

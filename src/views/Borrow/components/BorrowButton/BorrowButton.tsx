@@ -31,8 +31,9 @@ const BorrowButton = () => {
     const totalDeposit = depositItems[0].price + depositedByAddress;
     const totalMint = yourBorrowByAddress + borrowState.price;
     const borrowError = !borrowState.error;
+    const depositError = depositItems.every((item) => Boolean(item.error));
 
-    return borrowError && totalDeposit > 0 && totalMint > 0;
+    return borrowError && !depositError && totalDeposit > 0 && totalMint > 0;
   }, [borrowState.error, borrowState.price, depositItems, depositedByAddress, yourBorrowByAddress]);
 
   if (isSubmitted) {
