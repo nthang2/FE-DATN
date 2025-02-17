@@ -47,7 +47,7 @@ const WithdrawSection = () => {
     await asyncExecute({
       fn: async () => {
         const vaultContract = new VaultContract(wallet);
-        await vaultContract.withdraw(Number(removeAmount));
+        await vaultContract.withdraw((sliderValue / 100) * Number(stakeInfo?.amount));
         await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
         setSliderValue(0);
       },
