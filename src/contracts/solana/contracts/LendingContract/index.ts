@@ -7,6 +7,7 @@ import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { queryClient } from 'src/layout/Layout';
 import { rpc } from 'src/states/wallets/solana-blockchain/configs';
+import { getDecimalToken } from 'src/utils';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { CONTROLLER_SEED, collateral as defaultCollateral, DEPOSITORY_SEED, REDEEMABLE_MINT_SEED } from './constant';

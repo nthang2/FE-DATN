@@ -49,8 +49,8 @@ export default function MyWallet() {
           result.push({
             id: index.toString(),
             name: Object.keys(listTokenAvailable)[index],
-            y: Number(item.balance.toString()) + Number(depositValue[item.address]),
-            value: Number(item.balance.toString()) + Number(depositValue[item.address]),
+            y: Number(item.balance.toString()) + Number(depositValue[item.address] ?? 0),
+            value: Number(item.balance.toString()) + Number(depositValue[item.address] ?? 0),
           });
         });
       } else {
