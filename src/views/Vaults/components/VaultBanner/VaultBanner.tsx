@@ -2,6 +2,7 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
+import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
 import { queryClient } from 'src/layout/Layout';
 import { compactNumber, roundNumber } from 'src/utils/format';
@@ -9,13 +10,18 @@ import { compactNumber, roundNumber } from 'src/utils/format';
 const VaultBanner = () => {
   const wallet = useWallet();
   const { stakeInfo, status } = useStakedInfo();
+  const { asyncExecute } = useAsyncExecute();
 
   const handleClaimReward = async () => {
     if (!wallet) return;
 
-    const vaultContract = new VaultContract(wallet);
-    await vaultContract.claimReward();
-    await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
+    asyncExecute({
+      fn: async () => {
+        const vaultContract = new VaultContract(wallet);
+        await vaultContract.claimReward();
+        await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
+      },
+    });
   };
 
   return (
