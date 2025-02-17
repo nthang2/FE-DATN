@@ -18,6 +18,7 @@ export default function useFetchAllSolTokenBalances(addressUser: string) {
         isLoading: nativeSolBalance.isLoading,
         isRefetching: nativeSolBalance.isFetching,
         refetch: nativeSolBalance.refetch,
+        error: nativeSolBalance.error,
       },
     },
     allSlpTokenBalances,

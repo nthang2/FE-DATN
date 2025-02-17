@@ -1,4 +1,4 @@
-import { Box, Skeleton, SxProps } from '@mui/material';
+import { Skeleton, SxProps } from '@mui/material';
 import NAValue from 'src/components/StatusData/NAValue';
 
 interface IProps {
@@ -9,7 +9,7 @@ interface IProps {
 
 export default function ValueWithStatus({ status, value, skeletonStyle }: IProps) {
   return (
-    <Box className="flex-center">
+    <>
       {status.find((item) => item == 'pending') ? (
         <Skeleton variant="text" sx={{ width: '60px', height: '24px', ...skeletonStyle }} />
       ) : status.find((item) => item == 'error') ? (
@@ -17,6 +17,6 @@ export default function ValueWithStatus({ status, value, skeletonStyle }: IProps
       ) : (
         value != undefined && value
       )}
-    </Box>
+    </>
   );
 }
