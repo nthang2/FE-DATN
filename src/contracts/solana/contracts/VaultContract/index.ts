@@ -84,8 +84,8 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     const newestPendingReward = rps * passTime;
     const minRewardPerYear = (totalStaked * passTime * minAprBps) / new BN(10000 * 86400 * 365);
     const globalIndex = vaultGlobalIndex + Math.max(minRewardPerYear, newestPendingReward) / totalStaked;
-    const pendingReward = (globalIndex - index) * amount;
+    const pendingReward = (globalIndex - index) * amount + userPendingReward;
 
-    return { amount, pendingReward: Math.max(pendingReward, userPendingReward), index };
+    return { amount, pendingReward: pendingReward, index };
   }
 }
