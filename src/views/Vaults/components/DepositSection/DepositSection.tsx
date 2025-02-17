@@ -1,15 +1,13 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Icon, TokenName } from 'crypto-token-icon';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import CustomSlider from '../CustomSlider/Slider';
 import { queryClient } from 'src/layout/Layout';
-
-const maxAmount = 500;
 
 const DepositSection = () => {
   const wallet = useWallet();
@@ -18,6 +16,10 @@ const DepositSection = () => {
 
   const [inputValue, setInputValue] = useState(0);
   const [sliderValue, setSliderValue] = useState(0);
+
+  const isCanDeposit = useMemo(() => {
+    return inputValue <= balance.toNumber() && inputValue > 0;
+  }, [balance, inputValue]);
 
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
     const amount = (Number(value) / 100) * balance.toNumber();
@@ -66,13 +68,13 @@ const DepositSection = () => {
         value={Number(inputValue.toFixed(2))}
         rule={{
           min: { min: 0 },
-          max: { max: maxAmount },
+          max: { max: balance.toNumber(), message: 'Amount deposit must smaller then your balance' },
         }}
       />
 
       <CustomSlider value={sliderValue} max={100} min={0} onChange={handleChangeSlider} sx={{ mt: 2.5 }} />
 
-      <Button variant="contained" sx={{ mt: 2.5 }} fullWidth onClick={handleDeposit}>
+      <Button variant="contained" sx={{ mt: 2.5 }} fullWidth onClick={handleDeposit} disabled={!isCanDeposit}>
         Deposit
       </Button>
     </Box>

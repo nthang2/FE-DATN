@@ -12,7 +12,7 @@ export const solTokenSolana = new SolanaMainnetTokenInfo({
 });
 
 export const usdaiSolanaMainnet = new SolanaMainnetTokenInfo({
-  address: '3eURz91ZVhdVBghyet6wcDwsBTcsGxeMA2ovMkWku3Y8',
+  address: 'DYeTA4ZQhEwoJ5imjq1Q3zgwfTgkh4WmdfFHAq3jLrv3',
   decimals: 6,
   symbol: TokenName.USDAI,
   prettyName: 'USDAI',
