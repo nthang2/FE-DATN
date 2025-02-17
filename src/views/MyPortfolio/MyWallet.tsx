@@ -126,14 +126,16 @@ export default function MyWallet() {
           <Typography variant="h6" sx={{ fontWeight: 400, textAlign: 'center' }}>
             Total
           </Typography>
-          <ValueWithStatus
-            status={[...[queryAllTokensPriceStatus, includeDeposits ? queryDepositValueStatus : 'success'], ...balanceStatus]}
-            value={
-              <Typography variant="h5" sx={{ fontWeight: 700, textAlign: 'center' }}>
-                ${totalPrice != undefined && compactNumber(totalPrice)}
-              </Typography>
-            }
-          />
+          <Box className="flex-center">
+            <ValueWithStatus
+              status={[...[queryAllTokensPriceStatus, includeDeposits ? queryDepositValueStatus : 'success'], ...balanceStatus]}
+              value={
+                <Typography variant="h5" sx={{ fontWeight: 700, textAlign: 'center' }}>
+                  ${totalPrice != undefined && compactNumber(totalPrice)}
+                </Typography>
+              }
+            />
+          </Box>
         </Box>
       </Box>
     </BoxCustom>

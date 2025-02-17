@@ -50,7 +50,11 @@ export default function YourPosition() {
             }
           />
         </Box>
-        <SliderCustom maxValue={totalDepositValue} value={totalDepositValue} />
+        <SliderCustom
+          status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice, 'pending']}
+          maxValue={totalDepositValue}
+          value={totalDepositValue}
+        />
       </Box>
       <Box sx={{ mb: 4, mt: 8 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -66,7 +70,11 @@ export default function YourPosition() {
             }
           />
         </Box>
-        <SliderCustom value={totalYourBorrowValue} maxValue={totalDepositValue && Number(totalDepositValueRatio)} />
+        <SliderCustom
+          status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
+          value={totalYourBorrowValue}
+          maxValue={totalDepositValue && Number(totalDepositValueRatio)}
+        />
       </Box>
     </BoxCustom>
   );

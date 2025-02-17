@@ -19,19 +19,29 @@ export default function CheckHealthFactor({ token }: { token: SolanaEcosystemTok
         .toString();
       return { ratio: ratio, healthFactor: healthFactor };
     }
-  }, [depositValueData, yourBorrowData, token.address]);
+  }, [depositValueData, yourBorrowData, token.address, token.ratio]);
+
+  const checkRank = () => {
+    if (healthFactor) {
+      if (BN(healthFactor?.ratio).isLessThanOrEqualTo(1.2)) {
+        return { rank: 'Critical', color: 'red' };
+      } else if (BN(healthFactor?.ratio).isLessThanOrEqualTo(1.5)) {
+        return { rank: 'Risky', color: 'orange' };
+      } else if (BN(healthFactor?.ratio).isLessThanOrEqualTo(2)) {
+        return { rank: 'Moderate', color: 'yellow' };
+      } else {
+        return { rank: 'Healthy', color: 'green' };
+      }
+    } else {
+      return { rank: '--', color: 'text.primary' };
+    }
+  };
 
   return (
     <Box className="flex-center">
-      <Box sx={{ height: '24px', borderRadius: '99px', bgcolor: '#08DBA4', ml: 4, p: '5px 8px' }} className="flex-center">
+      <Box sx={{ height: '24px', borderRadius: '99px', ml: 4, p: '5px 8px', bgcolor: checkRank().color }} className="flex-center">
         <Typography variant="body3" sx={{ color: 'background.default' }}>
-          {healthFactor?.ratio
-            ? BN(healthFactor?.ratio).isLessThanOrEqualTo(0.1)
-              ? 'Conservative'
-              : BN(healthFactor?.ratio).isGreaterThan(0.2)
-              ? 'Aggressive'
-              : 'Moderate'
-            : '--'}
+          {checkRank().rank}
         </Typography>
       </Box>
       <Typography sx={{ fontWeight: 600, ml: 1 }}>{healthFactor ? formatNumber(healthFactor.healthFactor) : '--'}</Typography>

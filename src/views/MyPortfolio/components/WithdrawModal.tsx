@@ -3,9 +3,10 @@ import { Box, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
 import { Icon } from 'crypto-token-icon';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
+import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
@@ -13,21 +14,21 @@ import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryBorrowRate from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryBorrowRate';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
+import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import CheckHealthFactor from './CheckHealthFactor';
-import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 
 export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
   const { address } = useSummarySolanaConnect();
-  const { data: tokensPrice } = useQueryAllTokensPrice();
+  const { data: tokensPrice, status: statusQueryAllTokensPrice } = useQueryAllTokensPrice();
   const { asyncExecute, loading } = useAsyncExecute();
   const { data: borrowRate } = useQueryBorrowRate();
-  const { data: yourBorrow } = useQueryYourBorrow();
-  const { data: depositValue, refetch: refetchDepositValue } = useQueryDepositValue();
+  const { data: yourBorrow, status: statusQueryYourBorrow } = useQueryYourBorrow();
+  const { data: depositValue, refetch: refetchDepositValue, status: statusQueryDepositValue } = useQueryDepositValue();
   const { refetch: refetchBalance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
 
   const [valueWithdraw, setValueWithdraw] = useState<string>('');
@@ -41,6 +42,22 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
     setValueInUSD(_valueInUSD);
   };
 
+  const maxValue = useMemo(() => {
+    if (
+      depositValue?.[token.address] != undefined &&
+      yourBorrow?.[token.address] != undefined &&
+      tokensPrice !== undefined &&
+      tokensPrice[token.address]
+    ) {
+      const _maxValue = (
+        Number(depositValue?.[token.address]) -
+        Number(yourBorrow?.[token.address]) / Number(token.ratio ?? 1) / tokensPrice[token.address].price
+      ).toFixed(2);
+      return _maxValue;
+    }
+    return '';
+  }, [depositValue, token.address, token.ratio, yourBorrow, tokensPrice]);
+
   const handleMax = () => {
     if (
       depositValue?.[token.address] != undefined &&
@@ -48,11 +65,6 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
       tokensPrice !== undefined &&
       tokensPrice[token.address]
     ) {
-      const maxValue = (
-        Number(depositValue?.[token.address]) -
-        Number(yourBorrow?.[token.address]) / Number(token.ratio ?? 1) / tokensPrice[token.address].price
-      ).toFixed(2);
-
       setValueWithdraw(maxValue);
       if (!tokensPrice) return;
       const _valueInUSD = BN(maxValue).times(BN(tokensPrice[token.address].price)).toString();
@@ -87,9 +99,19 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
         },
       }}
     >
-      <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880' }}>
-        Amount
-      </Typography>
+      <Box className="flex-space-between">
+        <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880' }}>
+          Amount
+        </Typography>
+        <ValueWithStatus
+          status={[statusQueryAllTokensPrice, statusQueryYourBorrow, statusQueryDepositValue]}
+          value={
+            <Typography variant="body3" sx={{ color: 'text.secondary' }}>
+              Max: {formatNumber(maxValue)}
+            </Typography>
+          }
+        />
+      </Box>
       <Box
         className="box"
         sx={{
@@ -163,7 +185,11 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
                 },
               }}
               _onError={(e) => {
-                setValueWithdrawHelperText(e);
+                if (Number(maxValue) && Number(maxValue) < 0) {
+                  setValueWithdrawHelperText('You cannot withdraw due to LTV constraint');
+                } else {
+                  setValueWithdrawHelperText(e);
+                }
               }}
               helperText={undefined}
               onChange={handleChangeValueWithdraw}

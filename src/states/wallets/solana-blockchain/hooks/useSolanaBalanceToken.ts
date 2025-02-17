@@ -14,6 +14,7 @@ export default function useSolanaBalanceToken(address: string, tokenName: TSolan
     isLoading: allSlpTokenBalances.isLoading,
     isRefetching: allSlpTokenBalances.isFetching,
     refetch: allSlpTokenBalances.refetch,
+    error: allSlpTokenBalances.error,
   };
 }
 
@@ -29,6 +30,7 @@ export const useSolanaBalanceTokens = (userAddress: string, tokens: TSolanaToken
         isLoading: allSlpTokenBalances.isLoading,
         isRefetching: allSlpTokenBalances.isFetching,
         refetch: allSlpTokenBalances.refetch,
+        error: allSlpTokenBalances.error,
       };
     }
   });
