@@ -6,6 +6,7 @@ import { Icon } from 'crypto-token-icon';
 import { useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
+import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
@@ -23,7 +24,12 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
   const wallet = useWallet();
   const { address } = useSummarySolanaConnect();
   const { data: tokensPrice } = useQueryAllTokensPrice();
-  const { balance, refetch: refetchBalance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
+  const {
+    balance,
+    refetch: refetchBalance,
+    isLoading: isLoadingBalance,
+    error: errorBalance,
+  } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
   const { refetch: refetchDepositValue } = useQueryDepositValue();
   const { refetch: refetchYourBorrow } = useQueryYourBorrow();
   const { asyncExecute, loading } = useAsyncExecute();
@@ -73,9 +79,19 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
         },
       }}
     >
-      <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880' }}>
-        Amount
-      </Typography>
+      <Box className="flex-space-between">
+        <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880' }}>
+          Amount
+        </Typography>
+        <ValueWithStatus
+          status={[isLoadingBalance ? 'pending' : 'success', errorBalance ? 'error' : 'success']}
+          value={
+            <Typography variant="body3" sx={{ color: 'text.secondary' }}>
+              Balance: {formatNumber(balance)}
+            </Typography>
+          }
+        />
+      </Box>
       <Box
         className="box"
         sx={{

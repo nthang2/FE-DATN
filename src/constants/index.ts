@@ -16,4 +16,4 @@ export enum FetchStatus {
 
 export type Address = `0x${string}`;
 
-export const NETWORK: 'mainnet' | 'devnet' = 'mainnet'; //change to mainnet later
+export const NETWORK: 'mainnet' | 'devnet' = 'devnet'; //change to mainnet later

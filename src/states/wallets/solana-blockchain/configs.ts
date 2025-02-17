@@ -1,7 +1,7 @@
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
-import { TSolanaNetworkId } from './types';
 import { NETWORK } from 'src/constants';
+import { TSolanaNetworkId } from './types';
 
 export const solNetworkIds: Record<TSolanaNetworkId, WalletAdapterNetwork> = {
   sol_devnet: WalletAdapterNetwork.Devnet,
