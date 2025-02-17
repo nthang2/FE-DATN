@@ -22,14 +22,6 @@ const WithdrawSection = () => {
 
   const [sliderValue, setSliderValue] = useState(0);
 
-  const handleWithdraw = async () => {
-    if (!wallet) return;
-
-    const vaultContract = new VaultContract(wallet);
-    await vaultContract.deposit();
-    await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
-  };
-
   const removeAmount = useMemo(() => {
     return ((sliderValue / 100) * balance.toNumber()).toFixed(2);
   }, [balance, sliderValue]);
@@ -41,6 +33,14 @@ const WithdrawSection = () => {
   const isCanWithdraw = useMemo(() => {
     return Number(removeAmount) > 0;
   }, [removeAmount]);
+
+  const handleWithdraw = async () => {
+    if (!wallet) return;
+
+    const vaultContract = new VaultContract(wallet);
+    await vaultContract.deposit(Number(removeAmount));
+    await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
+  };
 
   return (
     <Box display="flex" flexDirection="column" gap={2.5} sx={{ color: 'info.main' }}>

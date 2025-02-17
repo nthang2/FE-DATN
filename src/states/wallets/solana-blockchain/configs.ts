@@ -18,5 +18,5 @@ export const rpc =
     ? clusterApiUrl('devnet')
     : 'https://long-side-pool.solana-mainnet.quiknode.pro/8aaf937c425502838140ffe866be292624fc5fb2';
 
-export const solNetworkSelect = WalletAdapterNetwork.Mainnet;
+export const solNetworkSelect = NETWORK === 'devnet' ? WalletAdapterNetwork.Devnet : WalletAdapterNetwork.Mainnet;
 export const publicClientSol = new Connection(rpc, 'confirmed');
