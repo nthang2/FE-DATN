@@ -5,7 +5,7 @@ import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
 import { queryClient } from 'src/layout/Layout';
 import { getDecimalToken } from 'src/utils';
-import { compactNumber } from 'src/utils/format';
+import { compactNumber, roundNumber } from 'src/utils/format';
 
 const VaultBanner = () => {
   const wallet = useWallet();
@@ -42,7 +42,7 @@ const VaultBanner = () => {
         <Typography variant="h2" fontWeight={700} fontSize="42px">
           ${compactNumber(stakeInfo?.amount || 0, 4)}
         </Typography>
-        <Typography variant="body2">{stakeInfo?.amount} USDAI</Typography>
+        <Typography variant="body2">{roundNumber(Number(stakeInfo?.amount || 0), 6)} USDAI</Typography>
       </Box>
 
       <Box display={'flex'} flexDirection={'column'} gap={1}>
@@ -50,9 +50,9 @@ const VaultBanner = () => {
           Claimable Rewards
         </Typography>
         <Typography variant="h2" fontWeight={700} fontSize="42px">
-          ${reward?.toFixed(4) || 0}
+          ${roundNumber(reward || 0, 4)}
         </Typography>
-        <Typography variant="body2">0 USDAI</Typography>
+        <Typography variant="body2">{roundNumber(reward || 0, 6)} USDAI</Typography>
       </Box>
 
       <Button
