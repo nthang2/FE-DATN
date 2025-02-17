@@ -1,20 +1,27 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
+import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
+import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
+import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
 import { queryClient } from 'src/layout/Layout';
-import { compactNumber, numberWithCommas } from 'src/utils/format';
+import { compactNumber, roundNumber } from 'src/utils/format';
 
 const VaultBanner = () => {
   const wallet = useWallet();
-  const { stakeInfo } = useStakedInfo();
+  const { stakeInfo, status } = useStakedInfo();
+  const { asyncExecute } = useAsyncExecute();
 
   const handleClaimReward = async () => {
     if (!wallet) return;
 
-    const vaultContract = new VaultContract(wallet);
-    await vaultContract.claimReward();
-    await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
+    asyncExecute({
+      fn: async () => {
+        const vaultContract = new VaultContract(wallet);
+        await vaultContract.claimReward();
+        await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
+      },
+    });
   };
 
   return (
@@ -36,19 +43,43 @@ const VaultBanner = () => {
           Staked Amount
         </Typography>
         <Typography variant="h2" fontWeight={700} fontSize="42px">
-          ${compactNumber(stakeInfo?.amount || 0)}
+          <ValueWithStatus
+            status={[status]}
+            value={
+              <Typography variant="h2" fontWeight={700} fontSize="42px">
+                ${compactNumber(stakeInfo?.amount || 0, 4)}
+              </Typography>
+            }
+            skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '100%' }}
+          />
         </Typography>
-        <Typography variant="body2">{stakeInfo?.amount} USDAI</Typography>
+        <Typography variant="body2">{roundNumber(Number(stakeInfo?.amount || 0), 6)} USDAI</Typography>
       </Box>
 
       <Box display={'flex'} flexDirection={'column'} gap={1}>
         <Typography variant="h6" fontWeight={600}>
           Claimable Rewards
         </Typography>
-        <Typography variant="h2" fontWeight={700} fontSize="42px">
-          ${numberWithCommas(stakeInfo?.pendingReward || 0)}
+        <ValueWithStatus
+          status={[status]}
+          value={
+            <Typography variant="h2" fontWeight={700} fontSize="42px" flex={1}>
+              ${roundNumber(stakeInfo?.pendingReward || 0, 4)}
+            </Typography>
+          }
+          skeletonStyle={{ bgcolor: '#c9c7c7', height: '60px', width: '100%' }}
+        />
+
+        <Typography variant="body2">{roundNumber(stakeInfo?.pendingReward || 0, 6)} USDAI</Typography>
+      </Box>
+
+      <Box display={'flex'} flexDirection={'column'} gap={1}>
+        <Typography variant="h6" fontWeight={600}>
+          Min APR
         </Typography>
-        <Typography variant="body2">0 Asset</Typography>
+        <Typography variant="h2" fontWeight={700} fontSize="42px">
+          20%
+        </Typography>
       </Box>
 
       <Button

@@ -3,9 +3,10 @@ import { Box, Divider, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
 import { Icon, TokenName } from 'crypto-token-icon';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
+import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
@@ -18,7 +19,7 @@ import CheckHealthFactor from './CheckHealthFactor';
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
   const { asyncExecute, loading } = useAsyncExecute();
-  const { data: yourBorrow, refetch: refetchYourBorrow } = useQueryYourBorrow();
+  const { data: yourBorrow, refetch: refetchYourBorrow, status: statusQueryYourBorrow } = useQueryYourBorrow();
   const { refetch: refetchDepositValue } = useQueryDepositValue();
 
   const [valueRepay, setValueRepay] = useState<string>('');
@@ -31,9 +32,15 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
     setValueInUSD(_valueInUSD);
   };
 
+  const maxValue = useMemo(() => {
+    if (yourBorrow?.[token.address] != undefined) {
+      return yourBorrow?.[token.address].toString();
+    } else return '';
+  }, [yourBorrow, token.address]);
+
   const handleMax = () => {
     if (yourBorrow?.[token.address] != undefined) {
-      setValueRepay(yourBorrow?.[token.address].toString());
+      setValueRepay(maxValue);
       const _valueInUSD = BN(yourBorrow?.[token.address]).toString();
       setValueInUSD(_valueInUSD);
     }
@@ -65,9 +72,19 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
         },
       }}
     >
-      <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880' }}>
-        Amount
-      </Typography>
+      <Box className="flex-space-between">
+        <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880' }}>
+          Amount
+        </Typography>
+        <ValueWithStatus
+          status={[statusQueryYourBorrow]}
+          value={
+            <Typography variant="body3" sx={{ color: 'text.secondary' }}>
+              Max: {formatNumber(maxValue)}
+            </Typography>
+          }
+        />
+      </Box>
       <Box
         className="box"
         sx={{
@@ -170,7 +187,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
             Debt
           </Typography>
           <Box className="flex-center" sx={{ ml: 4 }}>
-            <Icon tokenName={token.symbol} sx={{ mr: 1 }} />
+            <Icon tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
             <Box>
               <Typography sx={{ fontWeight: 600, ml: 1 }}>
                 {formatNumber(BN(yourBorrow?.[token.address]).minus(Number(valueRepay) || 0))}
@@ -203,7 +220,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
       </Box>
       <Box className={clsx(['box', 'flex-space-between'])} sx={{ border: '#666662 solid 1px', position: 'relative' }}>
         <Box className="flex-center">
-          <Icon tokenName={token.symbol} />
+          <Icon tokenName={TokenName.USDAI} />
           <Typography sx={{ ml: 1, fontWeight: 600 }}>Redeem {TokenName.USDAI}</Typography>
         </Box>
         <ButtonLoading

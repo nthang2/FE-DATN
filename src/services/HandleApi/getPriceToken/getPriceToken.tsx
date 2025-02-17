@@ -20,7 +20,7 @@ export async function getTokenPrice(tokenAddress: string[]): Promise<TPriceList>
       const key = item.address;
 
       if (key) {
-        return { ...prev, [key]: item };
+        return { ...prev, [key]: { ...item, price: item.price || 1 } };
       }
 
       return prev;

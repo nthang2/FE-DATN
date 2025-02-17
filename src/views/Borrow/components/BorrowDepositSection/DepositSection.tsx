@@ -4,32 +4,24 @@ import { useMemo } from 'react';
 import { PlusIcon } from 'src/assets/icons';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken, listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
+import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
+import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { defaultBorrowValue } from '../../constant';
 import { useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToUsd, validateDepositItem } from '../../utils';
 import DepositItem from './DepositItem';
+import { roundNumber } from 'src/utils/format';
 
 const DepositSection = () => {
   const [depositItems, setDepositState] = useDepositState();
   const [isSubmitted] = useBorrowSubmitState();
   const { data: listPrice } = useQueryAllTokensPrice();
   const { data: depositedValue } = useQueryDepositValue();
-
-  // const totalDepositedValue = useMemo(() => {
-  //   if (!depositedValue || !listPrice) return 0;
-  //   const result = Object.keys(depositedValue).reduce((total, key) => {
-  //     if (listPrice[key]) {
-  //       return convertToUsd(key, depositedValue[key], listPrice);
-  //     }
-
-  //     return total;
-  //   }, 0);
-
-  //   return result;
-  // }, [depositedValue, listPrice]);
+  const { address } = useSummarySolanaConnect();
+  const balance = useSolanaBalanceTokens(address, Object.keys(listTokenAvailable) as Array<TSolanaToken>);
 
   const totalDepositedValue = useMemo(() => {
     if (!depositedValue || !listPrice) return 0;
@@ -39,6 +31,9 @@ const DepositSection = () => {
     return Number(result);
   }, [depositItems, depositedValue, listPrice]);
   const isHasDeposited = Boolean(totalDepositedValue) || totalDepositedValue > 0;
+  const depositItemBalance = useMemo(() => {
+    return balance.find((item) => item.address === depositItems[0].address)?.balance.toFixed(4);
+  }, [balance, depositItems]);
 
   const handleRemoveItem = (index: number) => {
     if (depositItems.length === 1) return;
@@ -55,9 +50,15 @@ const DepositSection = () => {
   };
 
   const handleChangeSelectInput = (index: number, value: string) => {
+    const newBalance = balance.find((item) => item.address === value)?.balance.toFixed(4);
     const cloneArr = depositItems.map((item, arrIndex) => {
       if (arrIndex === index) {
-        return { ...item, address: value, price: convertToUsd(value, item.value, listPrice) };
+        return {
+          ...item,
+          address: value,
+          price: convertToUsd(value, item.value, listPrice),
+          error: validateDepositItem(Number(item.value), Number(newBalance)),
+        };
       }
 
       return item;
@@ -69,7 +70,12 @@ const DepositSection = () => {
   const handleChangeInput = (index: number, value: string) => {
     const cloneArr = depositItems.map((item, arrIndex) => {
       if (arrIndex === index) {
-        return { ...item, value: value, price: convertToUsd(item.address, value, listPrice), error: validateDepositItem(Number(value)) };
+        return {
+          ...item,
+          value: value,
+          price: convertToUsd(item.address, value, listPrice),
+          error: validateDepositItem(Number(value), Number(depositItemBalance)),
+        };
       }
 
       return item;
@@ -81,7 +87,7 @@ const DepositSection = () => {
   return (
     <Box>
       <BoxCustom sx={{ flex: 1, borderRadius: isHasDeposited ? '16px 16px 0px 0px' : '16px' }}>
-        <Stack justifyContent="space-between" width="100%" mb={4.5}>
+        <Stack justifyContent="space-between" width="100%" mb={'18px'}>
           <Typography variant="h6" alignItems="center" display="flex" gap={1} fontWeight={700}>
             Deposit
             <TooltipInfo title="info" />
@@ -110,6 +116,10 @@ const DepositSection = () => {
             </Typography>
           </Button>
         </Stack>
+
+        <Typography variant="body2" mb={0.5}>
+          Your Balance: {roundNumber(depositItemBalance || 0, 4)}
+        </Typography>
 
         <Box>
           {depositItems.map((item, index) => {

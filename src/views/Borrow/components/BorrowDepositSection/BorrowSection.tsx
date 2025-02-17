@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
@@ -20,9 +20,10 @@ const BorrowSection = () => {
   const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item?.price, 0), [depositItems]);
   const totalYourBorrow = useMemo(() => {
     if (!yourBorrow) return 0;
+    const currAdd = depositItems[0].address;
 
-    return Number(Object.values(yourBorrow)[0]);
-  }, [yourBorrow]);
+    return Number(yourBorrow[currAdd]);
+  }, [depositItems, yourBorrow]);
   const maxLtv = useMemo(() => {
     if (depositItems[0]) {
       const tokenInfo = findTokenInfoByToken(depositItems[0].address);
@@ -45,6 +46,11 @@ const BorrowSection = () => {
       error: error,
     });
   };
+
+  useEffect(() => {
+    handleChangeInput(borrowState.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [depositItems]);
 
   return (
     <Box>

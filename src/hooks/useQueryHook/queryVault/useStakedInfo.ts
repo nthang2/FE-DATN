@@ -1,7 +1,8 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
-import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
-import { BN } from 'src/utils';
+import { usdaiSolanaMainnet } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
+import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
+import { BN, getDecimalToken } from 'src/utils';
 
 const useStakedInfo = () => {
   const wallet = useWallet();
@@ -20,11 +21,13 @@ const useStakedInfo = () => {
       const { amount, pendingReward } = await vaultContract.getStakedAmount();
 
       return {
-        amount: BN(amount).dividedBy(1e6).toString(),
-        pendingReward: BN(pendingReward).toString(),
+        amount: BN(amount).dividedBy(getDecimalToken(usdaiSolanaMainnet.address)).toString(),
+        pendingReward: BN(pendingReward).dividedBy(getDecimalToken(usdaiSolanaMainnet.address)).toString(),
       };
     },
     enabled: Boolean(wallet.publicKey),
+    refetchInterval: 1000 * 60 * 5,
+    staleTime: Infinity,
   });
 
   return { stakeInfo: query.data, ...query };
