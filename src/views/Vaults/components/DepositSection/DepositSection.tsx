@@ -1,18 +1,21 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Icon, TokenName } from 'crypto-token-icon';
 import { useEffect, useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
+import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
+import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import { queryClient } from 'src/layout/Layout';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import CustomSlider from '../CustomSlider/Slider';
-import { queryClient } from 'src/layout/Layout';
 
 const DepositSection = () => {
   const wallet = useWallet();
   const { address } = useSummarySolanaConnect();
   const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
+  const { asyncExecute, loading } = useAsyncExecute();
 
   const [inputValue, setInputValue] = useState(0);
   const [sliderValue, setSliderValue] = useState(0);
@@ -30,8 +33,14 @@ const DepositSection = () => {
     if (!wallet) return;
 
     const vaultContract = new VaultContract(wallet);
-    await vaultContract.deposit();
-    await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
+    await asyncExecute({
+      fn: async () => {
+        await vaultContract.deposit(inputValue);
+        await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
+      },
+    });
+    setInputValue(0);
+    setSliderValue(0);
   };
 
   useEffect(() => {
@@ -65,18 +74,17 @@ const DepositSection = () => {
         inputProps={{ style: { padding: 0 } }}
         sx={{ borderRadius: '16px' }}
         onChange={(event) => setInputValue(Number(event.target.value))}
-        value={Number(inputValue.toFixed(2))}
+        value={Number(inputValue.toFixed(8))}
         rule={{
-          min: { min: 0 },
           max: { max: balance.toNumber(), message: 'Amount deposit must smaller then your balance' },
         }}
       />
 
       <CustomSlider value={sliderValue} max={100} min={0} onChange={handleChangeSlider} sx={{ mt: 2.5 }} />
 
-      <Button variant="contained" sx={{ mt: 2.5 }} fullWidth onClick={handleDeposit} disabled={!isCanDeposit}>
+      <ButtonLoading loading={loading} variant="contained" sx={{ mt: 2.5 }} fullWidth onClick={handleDeposit} disabled={!isCanDeposit}>
         Deposit
-      </Button>
+      </ButtonLoading>
     </Box>
   );
 };

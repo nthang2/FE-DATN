@@ -39,9 +39,8 @@ const LTVSection = () => {
   //Already minted by deposit address
   const yourBorrowByAddress = useMemo(() => {
     const mintedByAddress = yourBorrow ? yourBorrow[depositItems[0].address] : 0;
-    const mintedPrice = mintedByAddress ? Number(mintedByAddress) : 0;
 
-    return mintedPrice;
+    return mintedByAddress ? Number(mintedByAddress) : 0;
   }, [depositItems, yourBorrow]);
 
   //Already deposit by deposit address
@@ -49,13 +48,13 @@ const LTVSection = () => {
     if (!depositedValue || !listPrice) return 0;
     const depositAddress = depositItems[0].address;
     const deposited = convertToUsd(depositAddress, depositedValue[depositAddress], listPrice) || 0;
+
     return deposited;
   }, [depositItems, depositedValue, listPrice]);
 
   //Total deposit include already deposit amount and input amount
   const totalDepositValue = useMemo(() => {
-    const inputDeposit = depositItems[0].price;
-    return inputDeposit + depositedByAddress;
+    return depositItems[0].price + depositedByAddress;
   }, [depositItems, depositedByAddress]);
 
   //Total borrow include already mint amount and input amount
