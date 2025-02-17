@@ -8,6 +8,7 @@ import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQuery
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
+import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
@@ -15,9 +16,26 @@ const BorrowSection = () => {
   const [isSubmitted] = useBorrowSubmitState();
   const { data: yourBorrow } = useQueryYourBorrow();
   const [depositItems] = useDepositState();
+  const { data: depositedValue } = useQueryDepositValue();
 
   const tokenInfo = findTokenInfoByToken(borrowState.address);
-  const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item?.price, 0), [depositItems]);
+  const depositedByAddress = useMemo(() => {
+    if (!depositedValue || !listPrice) return 0;
+    const depositAddress = depositItems[0].address;
+    const deposited = convertToUsd(depositAddress, depositedValue[depositAddress], listPrice) || 0;
+
+    return deposited;
+  }, [depositItems, depositedValue, listPrice]);
+  const totalDepositValue = useMemo(() => {
+    const currDepositValue = depositItems.reduce((total, item) => total + item?.price, 0);
+    return currDepositValue + depositedByAddress;
+  }, [depositItems, depositedByAddress]);
+  //Already minted by deposit address
+  const yourBorrowByAddress = useMemo(() => {
+    const mintedByAddress = yourBorrow ? yourBorrow[depositItems[0].address] : 0;
+
+    return mintedByAddress ? Number(mintedByAddress) : 0;
+  }, [depositItems, yourBorrow]);
   const totalYourBorrow = useMemo(() => {
     if (!yourBorrow) return 0;
     const currAdd = depositItems[0].address;
@@ -36,7 +54,7 @@ const BorrowSection = () => {
 
   const handleChangeInput = (value: string) => {
     const price = convertToUsd(borrowState.address, value, listPrice);
-    const borrowPercent = (price / totalDepositValue) * 100;
+    const borrowPercent = ((price + yourBorrowByAddress) / totalDepositValue) * 100;
     const error = validateBorrowItem(Number(value), borrowPercent, maxLtv);
 
     setBorrowState({
