@@ -3,7 +3,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { Icon, TokenName } from 'crypto-token-icon';
 import { useEffect, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
-import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
+import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import CustomSlider from '../CustomSlider/Slider';

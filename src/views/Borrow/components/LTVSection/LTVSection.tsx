@@ -10,6 +10,8 @@ import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../ut
 import CustomMark from '../BorrowSlide/CustomMark';
 import CustomThumb from '../BorrowSlide/CustomThumb';
 import CustomTrack from '../BorrowSlide/CustomTrack';
+import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
+import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 
 const minZoom = 0;
 const maxZoom = 100;
@@ -19,25 +21,52 @@ const LTVSection = () => {
   const [depositItems] = useDepositState();
   const { data: listPrice } = useQueryAllTokensPrice();
   const [borrowSubmitted] = useBorrowSubmitState();
-  // const { maxLtv } = useMaxLtv();
+  const { data: depositedValue } = useQueryDepositValue();
+  const { data: yourBorrow } = useQueryYourBorrow();
 
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
 
   const maxLtv = useMemo(() => {
     if (depositItems[0]) {
       const tokenInfo = findTokenInfoByToken(depositItems[0].address);
-
       return Number(tokenInfo?.ratio) * 100;
     }
 
     return 30;
   }, [depositItems]);
-
   const markList = useMemo(() => [...marks, { value: maxLtv || 100 }], [maxLtv]);
-  const totalDepositValue = useMemo(() => depositItems.reduce((total, item) => total + item?.price, 0), [depositItems]);
+
+  //Already minted by deposit address
+  const yourBorrowByAddress = useMemo(() => {
+    const mintedByAddress = yourBorrow ? yourBorrow[depositItems[0].address] : 0;
+    const mintedPrice = mintedByAddress ? Number(mintedByAddress) : 0;
+
+    return mintedPrice;
+  }, [depositItems, yourBorrow]);
+
+  //Already deposit by deposit address
+  const depositedByAddress = useMemo(() => {
+    if (!depositedValue || !listPrice) return 0;
+    const depositAddress = depositItems[0].address;
+    const deposited = convertToUsd(depositAddress, depositedValue[depositAddress], listPrice) || 0;
+    return deposited;
+  }, [depositItems, depositedValue, listPrice]);
+
+  //Total deposit include already deposit amount and input amount
+  const totalDepositValue = useMemo(() => {
+    const inputDeposit = depositItems[0].price;
+    return inputDeposit + depositedByAddress;
+  }, [depositItems, depositedByAddress]);
+
+  //Total borrow include already mint amount and input amount
   const borrowPercent = useMemo(() => {
-    return (borrowState.price / totalDepositValue) * 100;
-  }, [borrowState.price, totalDepositValue]);
+    return ((borrowState.price + yourBorrowByAddress) / totalDepositValue) * 100;
+  }, [borrowState.price, totalDepositValue, yourBorrowByAddress]);
+
+  //Min ltv for mint field not smaller than 0
+  const minLTV = useMemo(() => {
+    return (yourBorrowByAddress / depositedByAddress) * 100;
+  }, [depositedByAddress, yourBorrowByAddress]);
 
   const handleChangeSlider = (value: number | number[]) => {
     let sliderCommitValue = value;
@@ -45,19 +74,22 @@ const LTVSection = () => {
       sliderCommitValue = maxLtv;
     }
 
-    const borrowValue = (Number(sliderCommitValue) / 100) * totalDepositValue;
-    const borrowAmount = convertToAmountToken(borrowState.address, borrowValue.toString(), listPrice);
+    const borrowValue = (Number(sliderCommitValue) / 100) * totalDepositValue - yourBorrowByAddress;
+    const minValue = borrowValue < 0 ? 0 : borrowValue;
+    const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), listPrice);
     const error = validateBorrowItem(Number(borrowAmount), borrowPercent, maxLtv);
 
     setBorrowState({
       ...borrowState,
       value: borrowAmount.toString(),
-      price: borrowValue,
+      price: minValue,
       error: error,
     });
   };
 
   useEffect(() => {
+    //Update slider when change mint input or change slider input
+    //Slider input do not change directly SliderValue state it change borrowState and this eff change SliderValue state
     if (!maxLtv) return;
     if (!borrowPercent) {
       setSliderValue(0);
@@ -70,9 +102,10 @@ const LTVSection = () => {
     }
 
     setSliderValue(borrowPercent);
-  }, [borrowState, borrowPercent, maxLtv]);
+  }, [borrowState, borrowPercent, maxLtv, minLTV]);
 
   useEffect(() => {
+    //Update slider when change address deposit
     const price = convertToUsd(borrowState.address, borrowState.value, listPrice);
     const borrowPercent = (price / totalDepositValue) * 100;
     if (borrowPercent > maxLtv) {

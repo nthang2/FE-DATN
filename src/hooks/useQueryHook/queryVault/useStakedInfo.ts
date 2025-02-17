@@ -1,6 +1,6 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
-import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
+import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
 import { BN } from 'src/utils';
 
 const useStakedInfo = () => {

@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
+import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
 import { queryClient } from 'src/layout/Layout';
 import { compactNumber, numberWithCommas } from 'src/utils/format';

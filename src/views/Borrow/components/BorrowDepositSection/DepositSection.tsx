@@ -9,7 +9,7 @@ import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import { defaultBorrowValue } from '../../constant';
 import { useBorrowSubmitState, useDepositState } from '../../state/hooks';
-import { convertToUsd, validateDepositItem } from '../../utils';
+import { convertToUsd } from '../../utils';
 import DepositItem from './DepositItem';
 
 const DepositSection = () => {
@@ -17,19 +17,6 @@ const DepositSection = () => {
   const [isSubmitted] = useBorrowSubmitState();
   const { data: listPrice } = useQueryAllTokensPrice();
   const { data: depositedValue } = useQueryDepositValue();
-
-  // const totalDepositedValue = useMemo(() => {
-  //   if (!depositedValue || !listPrice) return 0;
-  //   const result = Object.keys(depositedValue).reduce((total, key) => {
-  //     if (listPrice[key]) {
-  //       return convertToUsd(key, depositedValue[key], listPrice);
-  //     }
-
-  //     return total;
-  //   }, 0);
-
-  //   return result;
-  // }, [depositedValue, listPrice]);
 
   const totalDepositedValue = useMemo(() => {
     if (!depositedValue || !listPrice) return 0;
@@ -69,7 +56,7 @@ const DepositSection = () => {
   const handleChangeInput = (index: number, value: string) => {
     const cloneArr = depositItems.map((item, arrIndex) => {
       if (arrIndex === index) {
-        return { ...item, value: value, price: convertToUsd(item.address, value, listPrice), error: validateDepositItem(Number(value)) };
+        return { ...item, value: value, price: convertToUsd(item.address, value, listPrice) };
       }
 
       return item;
