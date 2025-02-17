@@ -38,6 +38,10 @@ const WithdrawSection = () => {
     return balance.minus(removeAmount).toNumber().toFixed(2);
   }, [balance, removeAmount]);
 
+  const isCanWithdraw = useMemo(() => {
+    return Number(removeAmount) > 0;
+  }, [removeAmount]);
+
   return (
     <Box display="flex" flexDirection="column" gap={2.5} sx={{ color: 'info.main' }}>
       <Stack justifyContent="space-between" alignItems="center">
@@ -63,7 +67,7 @@ const WithdrawSection = () => {
         <TokenUSDAIAmount children={remainingAmount} />
       </Stack>
 
-      <Button variant="contained" fullWidth onClick={handleWithdraw}>
+      <Button variant="contained" fullWidth onClick={handleWithdraw} disabled={!isCanWithdraw}>
         Withdraw
       </Button>
     </Box>

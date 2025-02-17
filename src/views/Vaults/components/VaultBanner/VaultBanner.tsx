@@ -48,7 +48,7 @@ const VaultBanner = () => {
         <Typography variant="h2" fontWeight={700} fontSize="42px">
           ${numberWithCommas(stakeInfo?.pendingReward || 0)}
         </Typography>
-        <Typography variant="body2">0 Asset</Typography>
+        <Typography variant="body2">0 USDAI</Typography>
       </Box>
 
       <Button
