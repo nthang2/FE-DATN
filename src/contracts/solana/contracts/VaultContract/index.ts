@@ -9,6 +9,7 @@ import { STAKER_INFO_SEED } from './constant';
 import { usdaiSolanaMainnet } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { NETWORK } from 'src/constants';
 import { usdaiSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
+import { getDecimalToken } from 'src/utils';
 
 const usdaiInfo = NETWORK === 'devnet' ? usdaiSolanaDevnet : usdaiSolanaMainnet;
 const usdaiAddress = usdaiInfo.address;
@@ -24,7 +25,7 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
 
   async deposit(amount: number): Promise<void> {
     const trans = await this.program.methods
-      .stake(new BN(amount * usdaiInfo.decimals))
+      .stake(new BN(amount * getDecimalToken(usdaiAddress)))
       .accounts({
         signer: this.provider.wallet.publicKey,
         stakeCurrencyMint: new PublicKey(usdaiAddress),
@@ -36,15 +37,14 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
 
   async withdraw(amount: number): Promise<void> {
     const trans = await this.program.methods
-      .unstake(new BN(amount * usdaiInfo.decimals))
+      .unstake(new BN(amount * getDecimalToken(usdaiAddress)))
       .accounts({
         signer: this.provider.publicKey,
         stakeCurrencyMint: new PublicKey(usdaiAddress),
       })
       .transaction();
 
-    const hash = await this.sendTransaction(trans);
-    console.log('🚀 ~ VaultContract ~ withdraw ~ hash:', hash);
+    await this.sendTransaction(trans);
   }
 
   async claimReward(): Promise<void> {
@@ -55,8 +55,7 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
         stakeCurrencyMint: new PublicKey(usdaiAddress),
       })
       .transaction();
-    const hash = await this.sendTransaction(trans);
-    console.log('🚀 ~ VaultContract ~ withdraw ~ hash:', hash);
+    await this.sendTransaction(trans);
   }
 
   async getStakedAmount(): Promise<{ amount: BN; pendingReward: BN }> {

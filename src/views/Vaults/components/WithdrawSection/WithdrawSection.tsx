@@ -1,13 +1,14 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { Icon, TokenName } from 'crypto-token-icon';
 import { ReactNode, useMemo, useState } from 'react';
+import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
-import CustomSlider from '../CustomSlider/Slider';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
+import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
 import { queryClient } from 'src/layout/Layout';
-import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
+import CustomSlider from '../CustomSlider/Slider';
 
 const TokenUSDAIAmount = ({ children }: { children: ReactNode }) => (
   <Typography variant="body2" display="flex" alignItems="center" gap={1}>
@@ -17,18 +18,18 @@ const TokenUSDAIAmount = ({ children }: { children: ReactNode }) => (
 
 const WithdrawSection = () => {
   const wallet = useWallet();
-  const { address } = useSummarySolanaConnect();
-  const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
+  const { stakeInfo } = useStakedInfo();
+  const { asyncExecute, loading } = useAsyncExecute();
 
   const [sliderValue, setSliderValue] = useState(0);
 
   const removeAmount = useMemo(() => {
-    return ((sliderValue / 100) * balance.toNumber()).toFixed(2);
-  }, [balance, sliderValue]);
+    return ((sliderValue / 100) * Number(stakeInfo?.amount)).toFixed(4);
+  }, [stakeInfo, sliderValue]);
 
   const remainingAmount = useMemo(() => {
-    return balance.minus(removeAmount).toNumber().toFixed(2);
-  }, [balance, removeAmount]);
+    return (Number(stakeInfo?.amount) - Number(removeAmount)).toFixed(4);
+  }, [stakeInfo, removeAmount]);
 
   const isCanWithdraw = useMemo(() => {
     return Number(removeAmount) > 0;
@@ -36,10 +37,16 @@ const WithdrawSection = () => {
 
   const handleWithdraw = async () => {
     if (!wallet) return;
-
     const vaultContract = new VaultContract(wallet);
-    await vaultContract.deposit(Number(removeAmount));
-    await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
+
+    await asyncExecute({
+      fn: async () => {
+        await vaultContract.withdraw(Number(removeAmount));
+        await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
+      },
+    });
+
+    setSliderValue(0);
   };
 
   return (
@@ -50,7 +57,7 @@ const WithdrawSection = () => {
           <TooltipInfo title="title info" />
         </Typography>
 
-        <TokenUSDAIAmount children={balance.toFixed(2)} />
+        <TokenUSDAIAmount children={Number(stakeInfo?.amount)} />
       </Stack>
 
       <Stack justifyContent="space-between" alignItems="center">
@@ -67,9 +74,9 @@ const WithdrawSection = () => {
         <TokenUSDAIAmount children={remainingAmount} />
       </Stack>
 
-      <Button variant="contained" fullWidth onClick={handleWithdraw} disabled={!isCanWithdraw}>
+      <ButtonLoading loading={loading} variant="contained" fullWidth onClick={handleWithdraw} disabled={!isCanWithdraw}>
         Withdraw
-      </Button>
+      </ButtonLoading>
     </Box>
   );
 };
