@@ -30,8 +30,8 @@ const WithdrawSection = () => {
   }, [stakeInfo, sliderValue]);
 
   const remainingAmount = useMemo(() => {
-    return (Number(stakeInfo?.amount) - Number(removeAmount)).toFixed(4);
-  }, [stakeInfo, removeAmount]);
+    return (Number(stakeInfo?.amount) - Number((sliderValue / 100) * Number(stakeInfo?.amount))).toFixed(4);
+  }, [stakeInfo?.amount, sliderValue]);
 
   const isCanWithdraw = useMemo(() => {
     return Number(removeAmount) > 0;
@@ -93,7 +93,7 @@ const WithdrawSection = () => {
           inputProps={{ style: { padding: 0 } }}
           sx={{ borderRadius: '16px' }}
           onChange={(event) => setInputValue(Number(event.target.value))}
-          value={Number(inputValue?.toFixed(8))}
+          value={inputValue}
           rule={{
             max: { max: Number(stakeInfo?.amount), message: 'Amount deposit must smaller then your balance' },
           }}

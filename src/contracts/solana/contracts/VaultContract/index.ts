@@ -63,7 +63,7 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
       [Buffer.from(STAKER_INFO_SEED), new PublicKey(usdaiAddress).toBytes(), this.provider.publicKey.toBytes()],
       this.program.programId
     );
-    const { amount, index } = await this.program.account.stakerInfo.fetch(user1Pda);
+    const { amount, index, pendingReward: userPendingReward } = await this.program.account.stakerInfo.fetch(user1Pda);
 
     const slot = await this.provider.connection.getSlot();
     const timestamp = await this.provider.connection.getBlockTime(slot);
@@ -86,6 +86,6 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     const globalIndex = vaultGlobalIndex + Math.max(minRewardPerYear, newestPendingReward) / totalStaked;
     const pendingReward = (globalIndex - index) * amount;
 
-    return { amount, pendingReward: pendingReward, index };
+    return { amount, pendingReward: Math.max(pendingReward, userPendingReward), index };
   }
 }
