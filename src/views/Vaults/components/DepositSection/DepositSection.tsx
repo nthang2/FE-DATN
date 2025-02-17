@@ -17,10 +17,11 @@ const DepositSection = () => {
   const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
   const { asyncExecute, loading } = useAsyncExecute();
 
-  const [inputValue, setInputValue] = useState(0);
+  const [inputValue, setInputValue] = useState<number>();
   const [sliderValue, setSliderValue] = useState(0);
 
   const isCanDeposit = useMemo(() => {
+    if (!inputValue) return false;
     return inputValue <= balance.toNumber() && inputValue > 0;
   }, [balance, inputValue]);
 
@@ -30,7 +31,7 @@ const DepositSection = () => {
   };
 
   const handleDeposit = async () => {
-    if (!wallet) return;
+    if (!wallet || !inputValue) return;
 
     const vaultContract = new VaultContract(wallet);
     await asyncExecute({
@@ -44,7 +45,7 @@ const DepositSection = () => {
   };
 
   useEffect(() => {
-    const sliderPercent = (inputValue / balance.toNumber()) * 100;
+    const sliderPercent = ((inputValue || 0) / balance.toNumber()) * 100;
     setSliderValue(sliderPercent);
   }, [balance, inputValue]);
 
@@ -59,6 +60,7 @@ const DepositSection = () => {
         fullWidth
         variant="filled"
         type="number"
+        placeholder="0"
         InputProps={{
           disableUnderline: true,
           endAdornment: (
@@ -74,7 +76,7 @@ const DepositSection = () => {
         inputProps={{ style: { padding: 0 } }}
         sx={{ borderRadius: '16px' }}
         onChange={(event) => setInputValue(Number(event.target.value))}
-        value={Number(inputValue.toFixed(8))}
+        value={Number(inputValue?.toFixed(8))}
         rule={{
           max: { max: balance.toNumber(), message: 'Amount deposit must smaller then your balance' },
         }}

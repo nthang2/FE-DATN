@@ -25,6 +25,8 @@ const useStakedInfo = () => {
       };
     },
     enabled: Boolean(wallet.publicKey),
+    refetchInterval: 1000 * 60 * 5,
+    staleTime: Infinity,
   });
 
   return { stakeInfo: query.data, ...query };
