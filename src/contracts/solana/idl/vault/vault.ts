@@ -1,5 +1,5 @@
 export type IdlVault = {
-  address: 'BCaAj6hcBtKYVKUm1RnEyvE29Y1iu5ieLTq7CueN3vD3';
+  address: 'GtTBznMzJiND5niGV3az8LLnUbNLphqkJVHDKuCt2VYy';
   metadata: {
     name: 'vaultStaking';
     version: '0.1.0';
@@ -1301,7 +1301,7 @@ export type IdlVault = {
 };
 
 export const idlVault: IdlVault = {
-  address: 'BCaAj6hcBtKYVKUm1RnEyvE29Y1iu5ieLTq7CueN3vD3',
+  address: 'GtTBznMzJiND5niGV3az8LLnUbNLphqkJVHDKuCt2VYy',
   metadata: {
     name: 'vaultStaking',
     version: '0.1.0',

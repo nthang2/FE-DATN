@@ -6,8 +6,7 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { queryClient } from 'src/layout/Layout';
-import { rpc2 } from 'src/states/wallets/solana-blockchain/configs';
-import { getDecimalToken } from 'src/utils';
+import { rpc } from 'src/states/wallets/solana-blockchain/configs';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { CONTROLLER_SEED, collateral as defaultCollateral, DEPOSITORY_SEED, REDEEMABLE_MINT_SEED } from './constant';
@@ -153,8 +152,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
 
   async checkIfPdaExist(address: PublicKey) {
     try {
-      const rpcDevnet = rpc2;
-      const account = await new Connection(rpcDevnet, 'confirmed').getAccountInfo(address, undefined);
+      const account = await new Connection(rpc, 'confirmed').getAccountInfo(address, undefined);
       return account;
     } catch (e: unknown) {
       console.log(e, address.toString());

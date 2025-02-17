@@ -1,6 +1,6 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
-import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
+import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
 import { BN } from 'src/utils';
 
 const useStakedInfo = () => {
@@ -25,6 +25,8 @@ const useStakedInfo = () => {
       };
     },
     enabled: Boolean(wallet.publicKey),
+    refetchInterval: 1000 * 60 * 5,
+    staleTime: Infinity,
   });
 
   return { stakeInfo: query.data, ...query };

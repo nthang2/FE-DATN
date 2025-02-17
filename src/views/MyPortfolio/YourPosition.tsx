@@ -51,7 +51,7 @@ export default function YourPosition() {
           />
         </Box>
         <SliderCustom
-          status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice, 'pending']}
+          status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
           maxValue={totalDepositValue}
           value={totalDepositValue}
         />

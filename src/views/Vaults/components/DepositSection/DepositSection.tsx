@@ -1,23 +1,29 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Icon, TokenName } from 'crypto-token-icon';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
-import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
+import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
+import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
+import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import { queryClient } from 'src/layout/Layout';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import CustomSlider from '../CustomSlider/Slider';
-import { queryClient } from 'src/layout/Layout';
-
-const maxAmount = 500;
 
 const DepositSection = () => {
   const wallet = useWallet();
   const { address } = useSummarySolanaConnect();
   const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
+  const { asyncExecute, loading } = useAsyncExecute();
 
-  const [inputValue, setInputValue] = useState(0);
+  const [inputValue, setInputValue] = useState<number>();
   const [sliderValue, setSliderValue] = useState(0);
+
+  const isCanDeposit = useMemo(() => {
+    if (!inputValue) return false;
+    return inputValue <= balance.toNumber() && inputValue > 0;
+  }, [balance, inputValue]);
 
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
     const amount = (Number(value) / 100) * balance.toNumber();
@@ -25,15 +31,21 @@ const DepositSection = () => {
   };
 
   const handleDeposit = async () => {
-    if (!wallet) return;
+    if (!wallet || !inputValue) return;
 
     const vaultContract = new VaultContract(wallet);
-    await vaultContract.deposit();
-    await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
+    await asyncExecute({
+      fn: async () => {
+        await vaultContract.deposit(inputValue);
+        await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
+      },
+    });
+    setInputValue(0);
+    setSliderValue(0);
   };
 
   useEffect(() => {
-    const sliderPercent = (inputValue / balance.toNumber()) * 100;
+    const sliderPercent = ((inputValue || 0) / balance.toNumber()) * 100;
     setSliderValue(sliderPercent);
   }, [balance, inputValue]);
 
@@ -48,6 +60,7 @@ const DepositSection = () => {
         fullWidth
         variant="filled"
         type="number"
+        placeholder="0"
         InputProps={{
           disableUnderline: true,
           endAdornment: (
@@ -63,18 +76,17 @@ const DepositSection = () => {
         inputProps={{ style: { padding: 0 } }}
         sx={{ borderRadius: '16px' }}
         onChange={(event) => setInputValue(Number(event.target.value))}
-        value={Number(inputValue.toFixed(2))}
+        value={Number(inputValue?.toFixed(8))}
         rule={{
-          min: { min: 0 },
-          max: { max: maxAmount },
+          max: { max: balance.toNumber(), message: 'Amount deposit must smaller then your balance' },
         }}
       />
 
       <CustomSlider value={sliderValue} max={100} min={0} onChange={handleChangeSlider} sx={{ mt: 2.5 }} />
 
-      <Button variant="contained" sx={{ mt: 2.5 }} fullWidth onClick={handleDeposit}>
+      <ButtonLoading loading={loading} variant="contained" sx={{ mt: 2.5 }} fullWidth onClick={handleDeposit} disabled={!isCanDeposit}>
         Deposit
-      </Button>
+      </ButtonLoading>
     </Box>
   );
 };

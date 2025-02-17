@@ -1,5 +1,6 @@
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
+import { NETWORK } from 'src/constants';
 import { TSolanaNetworkId } from './types';
 
 export const solNetworkIds: Record<TSolanaNetworkId, WalletAdapterNetwork> = {
@@ -11,8 +12,11 @@ export const solNetworkIds: Record<TSolanaNetworkId, WalletAdapterNetwork> = {
 export const SYSTEM_PROGRAM_ID = new PublicKey('11111111111111111111111111111111'); // địa chỉ thu phí
 
 // const rpc2 = 'https://solana-woker.distilled.ai';
-export const rpc2 = clusterApiUrl('devnet');
-// export const rpc2 = 'https://long-side-pool.solana-mainnet.quiknode.pro/8aaf937c425502838140ffe866be292624fc5fb2';
+// const rpcDevnet = clusterApiUrl('devnet');
+export const rpc =
+  NETWORK === 'devnet'
+    ? clusterApiUrl('devnet')
+    : 'https://long-side-pool.solana-mainnet.quiknode.pro/8aaf937c425502838140ffe866be292624fc5fb2';
 
-export const solNetworkSelect = WalletAdapterNetwork.Devnet;
-export const publicClientSol = new Connection(rpc2, 'confirmed');
+export const solNetworkSelect = NETWORK === 'devnet' ? WalletAdapterNetwork.Devnet : WalletAdapterNetwork.Mainnet;
+export const publicClientSol = new Connection(rpc, 'confirmed');

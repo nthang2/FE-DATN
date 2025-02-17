@@ -5,7 +5,7 @@ export default function ValueWithStatus({ status, value }: { status: Array<'pend
   return (
     <>
       {status.find((item) => item == 'pending') ? (
-        <Skeleton variant="text" sx={{ width: '60px', height: '24px' }} />
+        <Skeleton variant="text" sx={{ width: '40px', height: '24px' }} />
       ) : status.find((item) => item == 'error') ? (
         <NAValue />
       ) : (

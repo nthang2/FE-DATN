@@ -1,9 +1,11 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { VaultContract } from 'src/contracts/solana/contracts/VaultContract/VaultContract';
+import { usdaiSolanaMainnet } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
+import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
 import { queryClient } from 'src/layout/Layout';
-import { compactNumber, numberWithCommas } from 'src/utils/format';
+import { getDecimalToken } from 'src/utils';
+import { compactNumber, roundNumber } from 'src/utils/format';
 
 const VaultBanner = () => {
   const wallet = useWallet();
@@ -16,6 +18,8 @@ const VaultBanner = () => {
     await vaultContract.claimReward();
     await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
   };
+
+  const reward = Number(stakeInfo?.pendingReward) / getDecimalToken(usdaiSolanaMainnet.address);
 
   return (
     <Stack
@@ -36,9 +40,9 @@ const VaultBanner = () => {
           Staked Amount
         </Typography>
         <Typography variant="h2" fontWeight={700} fontSize="42px">
-          ${compactNumber(stakeInfo?.amount || 0)}
+          ${compactNumber(stakeInfo?.amount || 0, 4)}
         </Typography>
-        <Typography variant="body2">{stakeInfo?.amount} USDAI</Typography>
+        <Typography variant="body2">{roundNumber(Number(stakeInfo?.amount || 0), 6)} USDAI</Typography>
       </Box>
 
       <Box display={'flex'} flexDirection={'column'} gap={1}>
@@ -46,9 +50,9 @@ const VaultBanner = () => {
           Claimable Rewards
         </Typography>
         <Typography variant="h2" fontWeight={700} fontSize="42px">
-          ${numberWithCommas(stakeInfo?.pendingReward || 0)}
+          ${roundNumber(reward || 0, 4)}
         </Typography>
-        <Typography variant="body2">0 Asset</Typography>
+        <Typography variant="body2">{roundNumber(reward || 0, 6)} USDAI</Typography>
       </Box>
 
       <Button

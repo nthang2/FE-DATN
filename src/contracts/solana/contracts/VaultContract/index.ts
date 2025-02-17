@@ -5,7 +5,14 @@ import { PublicKey } from '@solana/web3.js';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { IdlVault, idlVault } from '../../idl/vault/vault';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
-import { stakeCurrencyMint, STAKER_INFO_SEED } from './constant';
+import { STAKER_INFO_SEED } from './constant';
+import { usdaiSolanaMainnet } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
+import { NETWORK } from 'src/constants';
+import { usdaiSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
+import { getDecimalToken } from 'src/utils';
+
+const usdaiInfo = NETWORK === 'devnet' ? usdaiSolanaDevnet : usdaiSolanaMainnet;
+const usdaiAddress = usdaiInfo.address;
 
 export class VaultContract extends SolanaContractAbstract<IdlVault> {
   constructor(wallet: WalletContextState) {
@@ -16,29 +23,28 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     return '';
   }
 
-  async deposit(): Promise<void> {
+  async deposit(amount: number): Promise<void> {
     const trans = await this.program.methods
-      .stake(new BN(100000 * 1e6))
+      .stake(new BN(amount * getDecimalToken(usdaiAddress)))
       .accounts({
         signer: this.provider.wallet.publicKey,
-        stakeCurrencyMint: stakeCurrencyMint,
+        stakeCurrencyMint: new PublicKey(usdaiAddress),
       })
       .transaction();
 
     await this.sendTransaction(trans);
   }
 
-  async withdraw(): Promise<void> {
+  async withdraw(amount: number): Promise<void> {
     const trans = await this.program.methods
-      .unstake(new BN(0.5 * 1e6))
+      .unstake(new BN(amount * getDecimalToken(usdaiAddress)))
       .accounts({
         signer: this.provider.publicKey,
-        stakeCurrencyMint: stakeCurrencyMint,
+        stakeCurrencyMint: new PublicKey(usdaiAddress),
       })
       .transaction();
 
-    const hash = await this.sendTransaction(trans);
-    console.log('🚀 ~ VaultContract ~ withdraw ~ hash:', hash);
+    await this.sendTransaction(trans);
   }
 
   async claimReward(): Promise<void> {
@@ -46,16 +52,15 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
       .claimReward()
       .accounts({
         signer: this.provider.publicKey,
-        stakeCurrencyMint: stakeCurrencyMint,
+        stakeCurrencyMint: new PublicKey(usdaiAddress),
       })
       .transaction();
-    const hash = await this.sendTransaction(trans);
-    console.log('🚀 ~ VaultContract ~ withdraw ~ hash:', hash);
+    await this.sendTransaction(trans);
   }
 
   async getStakedAmount(): Promise<{ amount: BN; pendingReward: BN }> {
     const [user1Pda] = PublicKey.findProgramAddressSync(
-      [Buffer.from(STAKER_INFO_SEED), stakeCurrencyMint.toBytes(), this.provider.publicKey.toBytes()],
+      [Buffer.from(STAKER_INFO_SEED), new PublicKey(usdaiAddress).toBytes(), this.provider.publicKey.toBytes()],
       this.program.programId
     );
     const { amount, pendingReward } = await this.program.account.stakerInfo.fetch(user1Pda);
