@@ -105,7 +105,7 @@ const WithdrawSection = () => {
       <Stack justifyContent="space-between" alignItems="center">
         <Typography variant="body2">Remaining Amount</Typography>
 
-        <TokenUSDAIAmount children={remainingAmount} />
+        <TokenUSDAIAmount children={Number(remainingAmount) || 0} />
       </Stack>
 
       <ButtonLoading loading={loading} variant="contained" fullWidth onClick={handleWithdraw} disabled={!isCanWithdraw}>
