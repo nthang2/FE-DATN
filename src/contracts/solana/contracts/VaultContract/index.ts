@@ -5,7 +5,7 @@ import { PublicKey } from '@solana/web3.js';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { IdlVault, idlVault } from '../../idl/vault/vault';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
-import { STAKER_INFO_SEED } from './constant';
+import { STAKER_INFO_SEED, VAULT_CONFIG_SEED, VAULT_SEED } from './constant';
 import { usdaiSolanaMainnet } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { NETWORK } from 'src/constants';
 import { usdaiSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
@@ -58,13 +58,34 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     await this.sendTransaction(trans);
   }
 
-  async getStakedAmount(): Promise<{ amount: BN; pendingReward: BN }> {
+  async getStakedAmount(): Promise<{ amount: BN; pendingReward: BN; index: number }> {
     const [user1Pda] = PublicKey.findProgramAddressSync(
       [Buffer.from(STAKER_INFO_SEED), new PublicKey(usdaiAddress).toBytes(), this.provider.publicKey.toBytes()],
       this.program.programId
     );
-    const { amount, pendingReward } = await this.program.account.stakerInfo.fetch(user1Pda);
+    const { amount, index } = await this.program.account.stakerInfo.fetch(user1Pda);
 
-    return { amount, pendingReward };
+    const slot = await this.provider.connection.getSlot();
+    const timestamp = await this.provider.connection.getBlockTime(slot);
+
+    const [vaultConfigPda] = PublicKey.findProgramAddressSync(
+      [Buffer.from(VAULT_CONFIG_SEED), new PublicKey(usdaiAddress).toBytes()],
+      this.program.programId
+    );
+
+    const [vaultPda] = PublicKey.findProgramAddressSync(
+      [Buffer.from(VAULT_SEED), new PublicKey(usdaiAddress).toBytes()],
+      this.program.programId
+    );
+
+    const { totalStaked, lastUpdated, globalIndex: vaultGlobalIndex } = await this.program.account.vault.fetch(vaultPda);
+    const passTime = new BN(new BN(timestamp) - lastUpdated);
+    const { rps, minAprBps } = await this.program.account.vaultConfig.fetch(vaultConfigPda);
+    const newestPendingReward = rps * passTime;
+    const minRewardPerYear = (totalStaked * passTime * minAprBps) / new BN(10000 * 86400 * 365);
+    const globalIndex = vaultGlobalIndex + Math.max(minRewardPerYear, newestPendingReward) / totalStaked;
+    const pendingReward = (globalIndex - index) * amount;
+
+    return { amount, pendingReward: pendingReward, index };
   }
 }

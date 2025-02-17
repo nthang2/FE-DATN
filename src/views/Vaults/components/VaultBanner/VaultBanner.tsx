@@ -1,5 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
+import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { usdaiSolanaMainnet } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
@@ -9,7 +10,7 @@ import { compactNumber, roundNumber } from 'src/utils/format';
 
 const VaultBanner = () => {
   const wallet = useWallet();
-  const { stakeInfo } = useStakedInfo();
+  const { stakeInfo, status } = useStakedInfo();
 
   const handleClaimReward = async () => {
     if (!wallet) return;
@@ -40,7 +41,14 @@ const VaultBanner = () => {
           Staked Amount
         </Typography>
         <Typography variant="h2" fontWeight={700} fontSize="42px">
-          ${compactNumber(stakeInfo?.amount || 0, 4)}
+          <ValueWithStatus
+            status={[status]}
+            value={
+              <Typography variant="h2" fontWeight={700} fontSize="42px">
+                ${compactNumber(stakeInfo?.amount || 0, 4)}
+              </Typography>
+            }
+          />
         </Typography>
         <Typography variant="body2">{roundNumber(Number(stakeInfo?.amount || 0), 6)} USDAI</Typography>
       </Box>
@@ -49,10 +57,25 @@ const VaultBanner = () => {
         <Typography variant="h6" fontWeight={600}>
           Claimable Rewards
         </Typography>
-        <Typography variant="h2" fontWeight={700} fontSize="42px">
-          ${roundNumber(reward || 0, 4)}
-        </Typography>
+        <ValueWithStatus
+          status={[status]}
+          value={
+            <Typography variant="h2" fontWeight={700} fontSize="42px">
+              ${compactNumber(stakeInfo?.amount || 0, 4)}
+            </Typography>
+          }
+        />
+
         <Typography variant="body2">{roundNumber(reward || 0, 6)} USDAI</Typography>
+      </Box>
+
+      <Box display={'flex'} flexDirection={'column'} gap={1}>
+        <Typography variant="h6" fontWeight={600}>
+          APR
+        </Typography>
+        <Typography variant="h2" fontWeight={700} fontSize="42px">
+          20%
+        </Typography>
       </Box>
 
       <Button
