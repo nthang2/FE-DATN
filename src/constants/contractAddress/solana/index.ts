@@ -1,9 +1,9 @@
 import { PublicKey } from '@solana/web3.js';
 import { NETWORK } from 'src/constants';
 
-const vaultProgramId =
+export const vaultProgramId =
   NETWORK === 'devnet' ? 'BCaAj6hcBtKYVKUm1RnEyvE29Y1iu5ieLTq7CueN3vD3' : 'GtTBznMzJiND5niGV3az8LLnUbNLphqkJVHDKuCt2VYy';
-const lendingProgramId =
+export const lendingProgramId =
   NETWORK === 'devnet' ? 'HtSzqFJCFwpRKarN8PBfk2kEXwUzJLUJvhiG52sKpZWZ' : '3APJcbC2iHEFGv4y6a8Fi5nQ5u75ML85TQreSr7cpRDs';
 
 export const ctrAdsSolana = {

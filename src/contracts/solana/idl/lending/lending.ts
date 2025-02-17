@@ -1,5 +1,7 @@
+import { lendingProgramId } from 'src/constants/contractAddress/solana';
+
 export type IdlLending = {
-  address: 'HtSzqFJCFwpRKarN8PBfk2kEXwUzJLUJvhiG52sKpZWZ';
+  address: typeof lendingProgramId;
   metadata: {
     name: 'lending';
     version: '0.1.0';
@@ -1426,7 +1428,7 @@ export type IdlLending = {
 };
 
 export const idlLending: IdlLending = {
-  address: 'HtSzqFJCFwpRKarN8PBfk2kEXwUzJLUJvhiG52sKpZWZ',
+  address: lendingProgramId,
   metadata: {
     name: 'lending',
     version: '0.1.0',
