@@ -111,7 +111,7 @@ export default function Borrow() {
                     onClick={() => {
                       handleRepay(row);
                     }}
-                    // disabled={yourBorrow?.[row.address] == undefined}
+                    disabled={yourBorrow?.[row.address] == undefined}
                   >
                     Redeem
                   </Button>
