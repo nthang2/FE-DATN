@@ -9,7 +9,7 @@ import { formatNumber } from 'src/utils/format';
 interface IProps {
   index: number;
   borrowItem: TBorrowItem;
-  onClick: () => Promise<void>;
+  onClick: () => Promise<string | undefined>;
   actionStatus: boolean;
 }
 
@@ -23,7 +23,7 @@ const BorrowTableRow = (props: IProps) => {
   const { asyncExecute, loading } = useAsyncExecute();
   const tokenInfo = findTokenInfoByToken(address);
 
-  if (value === '0' && !value) {
+  if (value === '0' || !value) {
     return null;
   }
 

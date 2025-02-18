@@ -167,7 +167,7 @@ const DepositSection = () => {
           </Stack>
 
           <Typography ml={1} variant="body1">
-            Total deposited ~ ${totalDepositedValue.toFixed(2)}
+            Your deposited ~ ${totalDepositedValue.toFixed(2)}
           </Typography>
         </Stack>
       )}

@@ -19,8 +19,10 @@ const ClaimableReward = () => {
     asyncExecute({
       fn: async () => {
         const vaultContract = new VaultContract(wallet);
-        await vaultContract.claimReward();
+        const hash = await vaultContract.claimReward();
         await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
+
+        return hash;
       },
     });
   };

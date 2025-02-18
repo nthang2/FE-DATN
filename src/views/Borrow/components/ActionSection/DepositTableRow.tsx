@@ -9,7 +9,7 @@ import { roundNumber } from 'src/utils/format';
 interface IProps {
   index: number;
   depositItem: TBorrowItem;
-  onClick: () => Promise<void>;
+  onClick: () => Promise<string | undefined>;
   actionStatus: boolean;
 }
 

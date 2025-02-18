@@ -41,17 +41,21 @@ const ActionSection = () => {
   const handleDeposit = async (depositItem: TBorrowItem, index: number) => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
-    await lendingContract.deposit(Number(depositItem.value), depositItem.address);
+    const transHash = await lendingContract.deposit(Number(depositItem.value), depositItem.address);
     await refetchDeposited();
     handChangeActionStatus(index);
+
+    return transHash;
   };
 
   const handleBorrow = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
-    await lendingContract.borrow(Number(borrowState.value), depositItems[0].address);
+    const transHash = await lendingContract.borrow(Number(borrowState.value), depositItems[0].address);
     await refetchYourBorrow();
     handChangeActionStatus(actionStatus.length - 1);
+
+    return transHash;
   };
 
   return (

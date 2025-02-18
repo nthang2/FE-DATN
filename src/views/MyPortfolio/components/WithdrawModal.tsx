@@ -75,11 +75,13 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const handleWithdraw = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
-    await lendingContract.withdraw(Number(valueWithdraw), token.address);
+    const hash = await lendingContract.withdraw(Number(valueWithdraw), token.address);
     setValueWithdraw('');
     setValueInUSD('0');
     refetchDepositValue();
     refetchBalance();
+
+    return hash;
   };
 
   return (

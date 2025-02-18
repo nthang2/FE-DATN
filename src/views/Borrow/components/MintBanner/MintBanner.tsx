@@ -1,5 +1,4 @@
 import { Box, Stack, Typography } from '@mui/material';
-import React from 'react';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import useLendingMetrics from 'src/hooks/useQueryHook/queryBorrow/useLendingMetrics';
 import { compactNumber } from 'src/utils/format';
@@ -31,7 +30,7 @@ const MintBanner = () => {
         <Typography variant="h6" fontWeight={600}>
           Total Deposited
         </Typography>
-        <Typography variant="h2" fontWeight={700} fontSize="42px">
+        <Typography variant="h2" fontWeight={700} fontSize="42px" sx={{ '& span': { flex: 1, margin: 'auto' } }}>
           <ValueWithStatus
             status={[status]}
             value={
@@ -55,7 +54,7 @@ const MintBanner = () => {
         <Typography variant="h6" fontWeight={600}>
           Total Borrow
         </Typography>
-        <Typography variant="h2" fontWeight={700} fontSize="42px">
+        <Typography variant="h2" fontWeight={700} fontSize="42px" sx={{ '& span': { flex: 1, margin: 'auto' } }}>
           <ValueWithStatus
             status={[status]}
             value={

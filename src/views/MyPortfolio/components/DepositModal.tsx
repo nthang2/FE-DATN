@@ -55,12 +55,14 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
   const handleDeposit = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
-    await lendingContract.deposit(Number(valueDeposit), token.address);
+    const hash = await lendingContract.deposit(Number(valueDeposit), token.address);
     setValueDeposit('');
     setValueInUSD('0');
     refetchBalance();
     refetchDepositValue();
     refetchYourBorrow();
+
+    return hash;
   };
 
   return (

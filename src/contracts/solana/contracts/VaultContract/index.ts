@@ -23,7 +23,7 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     return '';
   }
 
-  async deposit(amount: number): Promise<void> {
+  async deposit(amount: number): Promise<string> {
     const trans = await this.program.methods
       .stake(new BN(amount * getDecimalToken(usdaiAddress)))
       .accounts({
@@ -32,10 +32,11 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
       })
       .transaction();
 
-    await this.sendTransaction(trans);
+    const hash = await this.sendTransaction(trans);
+    return hash;
   }
 
-  async withdraw(amount: number): Promise<void> {
+  async withdraw(amount: number): Promise<string> {
     const trans = await this.program.methods
       .unstake(new BN(amount * getDecimalToken(usdaiAddress)))
       .accounts({
@@ -44,10 +45,11 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
       })
       .transaction();
 
-    await this.sendTransaction(trans);
+    const hash = await this.sendTransaction(trans);
+    return hash;
   }
 
-  async claimReward(): Promise<void> {
+  async claimReward(): Promise<string> {
     const trans = await this.program.methods
       .claimReward()
       .accounts({
@@ -55,7 +57,9 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
         stakeCurrencyMint: new PublicKey(usdaiAddress),
       })
       .transaction();
-    await this.sendTransaction(trans);
+    const hash = await this.sendTransaction(trans);
+    console.log('🚀 ~ VaultContract ~ claimReward ~ hash:', hash);
+    return hash;
   }
 
   async getStakedAmount(): Promise<{ amount: BN; pendingReward: BN; index: number }> {
