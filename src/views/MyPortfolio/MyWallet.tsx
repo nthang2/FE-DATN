@@ -42,15 +42,14 @@ export default function MyWallet() {
 
   const chartData = useMemo(() => {
     // eslint-disable-next-line prefer-const
-    let result = [] as Array<{ id: string; name: string; y: number; value: number }>;
-    if (balance) {
+    let result = [] as Array<{ id: string; name: string; y: number }>;
+    if (balance && tokensPrice) {
       if (includeDeposits && depositValue) {
         balance.forEach((item, index) => {
           result.push({
             id: index.toString(),
             name: Object.keys(listTokenAvailable)[index],
-            y: Number(item.balance.toString()) + Number(depositValue[item.address] ?? 0),
-            value: Number(item.balance.toString()) + Number(depositValue[item.address] ?? 0),
+            y: (Number(item.balance.toString()) + Number(depositValue[item.address] ?? 0)) * Number(tokensPrice[item.address]?.price ?? 1),
           });
         });
       } else {
@@ -58,8 +57,7 @@ export default function MyWallet() {
           result.push({
             id: index.toString(),
             name: Object.keys(listTokenAvailable)[index],
-            y: Number(item.balance.toString()),
-            value: Number(item.balance.toString()),
+            y: Number(item.balance.toString()) * Number(tokensPrice[item.address]?.price ?? 1),
           });
         });
       }
@@ -85,7 +83,7 @@ export default function MyWallet() {
       },
       tooltip: {
         formatter: function () {
-          return `${this.name}: <b>${this.y != undefined && formatNumber(this.y)}</b>`;
+          return `${this.name}: <b>${this.y != undefined && formatNumber(this.y, { fractionDigits: 2, prefix: '$' })}</b>`;
         },
       },
       series: [
