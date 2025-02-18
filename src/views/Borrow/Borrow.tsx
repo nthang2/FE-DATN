@@ -41,7 +41,6 @@ const Borrow = () => {
 
         {/* <Box display="flex" flexDirection="column" gap={2}>
           <BorrowRate />
-          <TotalMintDeposited />
         </Box> */}
       </Stack>
     </Box>

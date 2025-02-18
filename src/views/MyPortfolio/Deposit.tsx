@@ -23,7 +23,7 @@ export default function Deposit() {
 
   const balance = useSolanaBalanceTokens(address, Object.keys(listTokenAvailable) as Array<TSolanaToken>);
 
-  const tableHead = ['Asset', 'In Wallet', 'Deposit', 'Collateral', ''];
+  const tableHead = ['Asset', 'In Wallet', 'Deposited', 'Collateral', ''];
 
   const handleDeposit = (token: SolanaEcosystemTokenInfo) => {
     modalFunction({

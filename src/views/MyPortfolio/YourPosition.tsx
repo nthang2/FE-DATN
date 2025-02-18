@@ -66,7 +66,7 @@ export default function YourPosition() {
       </Box>
       <Box sx={{ mb: 4, mt: 8 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="subtitle2">Mint</Typography>
+          <Typography variant="subtitle2">Minted</Typography>
           <ValueWithStatus
             status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
             value={
@@ -86,7 +86,7 @@ export default function YourPosition() {
       </Box>
       <Box sx={{ mb: 4, mt: 8 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="subtitle2">Stake</Typography>
+          <Typography variant="subtitle2">Staked</Typography>
           <ValueWithStatus
             status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
             value={

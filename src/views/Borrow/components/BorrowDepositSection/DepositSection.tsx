@@ -158,12 +158,10 @@ const DepositSection = () => {
       {isHasDeposited && (
         <Stack bgcolor="#333331" p="16px 20px" borderRadius="0px 0px 16px 16px" alignItems="center">
           <Stack>
-            {Object.keys(depositedValue || {})
-              .slice(0, 2)
-              .map((item, index) => {
-                const tokenInfo = findTokenInfoByToken(item);
-                return <Icon key={index} tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: '1px', width: '16px', height: '16px' }} />;
-              })}
+            {Object.keys(depositItems || {}).map((item, index) => {
+              const tokenInfo = findTokenInfoByToken(depositItems[0].address);
+              return <Icon key={index} tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: '1px', width: '16px', height: '16px' }} />;
+            })}
           </Stack>
 
           <Typography ml={1} variant="body1">
