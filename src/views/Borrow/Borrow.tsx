@@ -1,10 +1,10 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import ActionSection from './components/ActionSection/ActionSection';
 import BorrowButton from './components/BorrowButton/BorrowButton';
 import BorrowSection from './components/BorrowDepositSection/BorrowSection';
 import DepositSection from './components/BorrowDepositSection/DepositSection';
-import BorrowRate from './components/BorrowRate/BorrowRate';
 import LTVSection from './components/LTVSection/LTVSection';
+import MintBanner from './components/MintBanner/MintBanner';
 import { useBorrowSubmitState } from './state/hooks';
 
 const Borrow = () => {
@@ -12,12 +12,10 @@ const Borrow = () => {
 
   return (
     <Box width="100%" my={4}>
-      <Typography variant="h5" mb={1.5} fontWeight={700}>
-        Mint USDAI
-      </Typography>
+      <MintBanner />
 
       <Stack gap={2} sx={{ flexDirection: { xs: 'column-reverse', md: 'row' } }}>
-        <Box flex={1}>
+        <Box flex={1} alignItems="center">
           <Box
             sx={(theme) => ({
               bgcolor: theme.palette.background.paper,
@@ -41,7 +39,10 @@ const Borrow = () => {
           <BorrowButton />
         </Box>
 
-        <BorrowRate />
+        {/* <Box display="flex" flexDirection="column" gap={2}>
+          <BorrowRate />
+          <TotalMintDeposited />
+        </Box> */}
       </Stack>
     </Box>
   );
