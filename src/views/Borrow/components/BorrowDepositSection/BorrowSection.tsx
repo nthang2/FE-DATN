@@ -58,7 +58,7 @@ const BorrowSection = () => {
   }, [depositItems]);
 
   return (
-    <Box>
+    <Box flex={1}>
       <BoxCustom sx={{ flex: 1, borderRadius: isShowYourBorrow ? '16px 16px 0px 0px' : '16px' }}>
         <Typography variant="h6" alignItems="center" display="flex" gap={1} fontWeight={700} minHeight="44px" mb={3.5}>
           Mint

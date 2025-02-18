@@ -43,7 +43,7 @@ const ClaimableReward = () => {
         <ValueWithStatus
           status={[status]}
           value={
-            <Typography variant="h2" fontWeight={700} fontSize="42px" flex={1}>
+            <Typography variant="h2" fontWeight={700} fontSize="42px" flex={1} sx={{ color: 'primary.main' }}>
               ${roundNumber(stakeInfo?.pendingReward || 0, 4)}
             </Typography>
           }

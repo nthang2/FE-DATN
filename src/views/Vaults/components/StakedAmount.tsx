@@ -22,7 +22,7 @@ const StakedAmount = () => {
       <Typography variant="h6" fontWeight={600}>
         Staked Amount
       </Typography>
-      <Typography variant="h2" fontWeight={700} fontSize="42px">
+      <Typography variant="h2" fontWeight={700} fontSize="42px" sx={{ color: 'primary.main' }}>
         <ValueWithStatus
           status={[status]}
           value={
