@@ -52,7 +52,7 @@ const MintBanner = () => {
         borderRight={{ xs: 'none', md: '2px solid black' }}
       >
         <Typography variant="h6" fontWeight={600}>
-          Total Borrow
+          Total Minted
         </Typography>
         <Typography variant="h2" fontWeight={700} fontSize="42px" sx={{ '& span': { flex: 1, margin: 'auto' } }}>
           <ValueWithStatus

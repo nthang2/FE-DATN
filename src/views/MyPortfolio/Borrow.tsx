@@ -19,7 +19,7 @@ export default function Borrow() {
   const modalFunction = useModalFunction();
   const navigate = useNavigate();
 
-  const tableHead = ['Asset', 'Available', 'Your borrow', ''];
+  const tableHead = ['Asset', 'Available', 'USDAI Minted', ''];
 
   // const handleChangeMode = () => {
   //   setEMode(!eMode);
