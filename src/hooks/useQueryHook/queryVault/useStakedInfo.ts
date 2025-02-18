@@ -11,18 +11,17 @@ const useStakedInfo = () => {
     queryKey: ['useStakedInfo', wallet.publicKey],
     queryFn: async () => {
       if (!wallet) {
-        return {
-          amount: '0',
-          pendingReward: '0',
-        };
+        return undefined;
       }
 
       const vaultContract = new VaultContract(wallet);
-      const { amount, pendingReward } = await vaultContract.getStakedAmount();
+      const { amount, pendingReward, apr, tvl } = await vaultContract.getStakedAmount();
 
       return {
         amount: BN(amount).dividedBy(getDecimalToken(usdaiSolanaMainnet.address)).toString(),
         pendingReward: BN(pendingReward).dividedBy(getDecimalToken(usdaiSolanaMainnet.address)).toString(),
+        apr,
+        tvl,
       };
     },
     enabled: Boolean(wallet.publicKey),
