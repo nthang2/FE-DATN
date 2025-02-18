@@ -99,7 +99,7 @@ export default function YourPosition() {
         <SliderCustom
           status={[statusStakedInfo]}
           value={dataStakedInfo?.amount ? Number(dataStakedInfo?.amount) : 0}
-          maxValue={Number(balanceUSDAI.toString())}
+          maxValue={Number(balanceUSDAI.toString()) + (dataStakedInfo?.amount ? Number(dataStakedInfo?.amount) : 0)}
         />
       </Box>
     </BoxCustom>
