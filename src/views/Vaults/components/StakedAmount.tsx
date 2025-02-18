@@ -6,7 +6,6 @@ import { compactNumber, roundNumber } from 'src/utils/format';
 
 const StakedAmount = () => {
   const { stakeInfo, status } = useStakedInfo();
-  console.log('🚀 ~ StakedAmount ~ stakeInfo:', stakeInfo);
 
   return (
     <Box
