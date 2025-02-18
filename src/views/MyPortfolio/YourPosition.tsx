@@ -91,7 +91,9 @@ export default function YourPosition() {
             status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                {formatNumber(balanceUSDAI.toString(), { prefix: '$' })}
+                {formatNumber(Number(balanceUSDAI.toString()) + (dataStakedInfo?.amount ? Number(dataStakedInfo?.amount) : 0), {
+                  prefix: '$',
+                })}
               </Typography>
             }
           />
