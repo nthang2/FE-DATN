@@ -3,7 +3,9 @@ import { Stack } from '@mui/material';
 import React from 'react';
 import { Id, toast } from 'react-toastify';
 import { copyTextToClipboard } from 'src/utils';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
+const solScanUrl = 'https://solscan.io/tx';
 interface IAsyncExecute<T> {
   fn: (notify: (msg: string) => void, idToast: Id) => Promise<T>;
   onSuccess?: (data: T) => void;
@@ -22,11 +24,22 @@ export default function useAsyncExecute() {
       toast.update(idToast, { render: msg });
     }
 
+    const handleGoToSolScan = (hash: string | undefined) => {
+      if (hash) {
+        window.open(`${solScanUrl}/${hash}`);
+      }
+    };
+
     try {
       const response = await fn(notify, idToast);
       onSuccess?.(response);
       toast.update(idToast, {
-        render: 'Send transaction successful!',
+        render: (
+          <Stack alignItems="center" gap={0.5}>
+            Send transaction successful!{' '}
+            <OpenInNewIcon sx={{ ml: 1 }} fontSize="medium" onClick={() => handleGoToSolScan(response as string)} />
+          </Stack>
+        ),
         isLoading: false,
         type: 'success',
         autoClose: 3000,

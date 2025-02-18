@@ -11,10 +11,7 @@ const useStakedInfo = () => {
     queryKey: ['useStakedInfo', wallet.publicKey],
     queryFn: async () => {
       if (!wallet) {
-        return {
-          amount: '0',
-          pendingReward: '0',
-        };
+        return undefined;
       }
 
       const vaultContract = new VaultContract(wallet);

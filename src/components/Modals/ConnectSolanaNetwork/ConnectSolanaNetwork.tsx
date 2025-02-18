@@ -7,8 +7,13 @@ import BoxOptionWallet from 'src/components/General/BoxOptionWallet/BoxOptionWal
 import ButtonCustom from 'src/components/General/ButtonCustom/ButtonCustom';
 import { TWalletStatus } from 'src/states/wallets/types';
 
-export default function ConnectSolanaNetwork() {
+interface IProps {
+  onClose: () => void;
+}
+
+export default function ConnectSolanaNetwork(props: IProps) {
   const { connecting, disconnect, publicKey, select, wallet, wallets } = useWallet();
+  const { onClose } = props;
 
   async function handleConnect(adapter: Adapter) {
     try {
@@ -17,6 +22,7 @@ export default function ConnectSolanaNetwork() {
         await wallet.adapter.disconnect();
       }
       await select(adapter.name);
+      onClose();
       // await connect();
     } catch (error) {
       console.error(error);

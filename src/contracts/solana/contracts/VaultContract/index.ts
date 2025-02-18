@@ -2,17 +2,17 @@
 import { BN } from '@coral-xyz/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
+import { NETWORK } from 'src/constants';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
+import { usdaiSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
+import { usdaiSolanaMainnet } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
+import { getDecimalToken } from 'src/utils';
 import { IdlVault, idlVault } from '../../idl/vault/vault';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { STAKER_INFO_SEED, VAULT_CONFIG_SEED, VAULT_SEED } from './constant';
-import { usdaiSolanaMainnet } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
-import { NETWORK } from 'src/constants';
-import { usdaiSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
-import { getDecimalToken } from 'src/utils';
 
 const usdaiInfo = NETWORK === 'devnet' ? usdaiSolanaDevnet : usdaiSolanaMainnet;
-const usdaiAddress = usdaiInfo.address;
+export const usdaiAddress = usdaiInfo.address;
 
 export class VaultContract extends SolanaContractAbstract<IdlVault> {
   constructor(wallet: WalletContextState) {
@@ -23,7 +23,7 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     return '';
   }
 
-  async deposit(amount: number): Promise<void> {
+  async deposit(amount: number): Promise<string> {
     const trans = await this.program.methods
       .stake(new BN(amount * getDecimalToken(usdaiAddress)))
       .accounts({
@@ -32,10 +32,11 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
       })
       .transaction();
 
-    await this.sendTransaction(trans);
+    const hash = await this.sendTransaction(trans);
+    return hash;
   }
 
-  async withdraw(amount: number): Promise<void> {
+  async withdraw(amount: number): Promise<string> {
     const trans = await this.program.methods
       .unstake(new BN(amount * getDecimalToken(usdaiAddress)))
       .accounts({
@@ -44,10 +45,11 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
       })
       .transaction();
 
-    await this.sendTransaction(trans);
+    const hash = await this.sendTransaction(trans);
+    return hash;
   }
 
-  async claimReward(): Promise<void> {
+  async claimReward(): Promise<string> {
     const trans = await this.program.methods
       .claimReward()
       .accounts({
@@ -55,7 +57,9 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
         stakeCurrencyMint: new PublicKey(usdaiAddress),
       })
       .transaction();
-    await this.sendTransaction(trans);
+    const hash = await this.sendTransaction(trans);
+    console.log('🚀 ~ VaultContract ~ claimReward ~ hash:', hash);
+    return hash;
   }
 
   async getStakedAmount(): Promise<{ amount: BN; pendingReward: BN; index: number }> {
@@ -87,5 +91,23 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     const pendingReward = (globalIndex - index) * Number(amount) + Number(userPendingReward);
 
     return { amount, pendingReward: pendingReward, index };
+  }
+
+  async getBannerInfo(): Promise<{ apr: number; tvl: number }> {
+    const [vaultConfigPda] = PublicKey.findProgramAddressSync(
+      [Buffer.from(VAULT_CONFIG_SEED), new PublicKey(usdaiAddress).toBytes()],
+      this.program.programId
+    );
+
+    const [vaultPda] = PublicKey.findProgramAddressSync(
+      [Buffer.from(VAULT_SEED), new PublicKey(usdaiAddress).toBytes()],
+      this.program.programId
+    );
+
+    const { totalStaked } = await this.program.account.vault.fetch(vaultPda);
+    const { rps } = await this.program.account.vaultConfig.fetch(vaultConfigPda);
+    const apr = (rps / totalStaked) * new BN(86400 * 365 * 100);
+
+    return { apr, tvl: Number(totalStaked) / getDecimalToken(usdaiAddress) };
   }
 }

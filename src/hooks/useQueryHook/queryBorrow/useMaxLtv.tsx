@@ -2,6 +2,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 
+//This hook not use yet
 const useMaxLtv = () => {
   const wallet = useWallet();
 

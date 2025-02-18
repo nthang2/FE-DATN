@@ -19,7 +19,7 @@ const ModalConnectWallet = (props: IProps) => {
         </Stack>
       </DialogTitle>
       <DialogContent>
-        <ConnectSolanaNetwork />
+        <ConnectSolanaNetwork onClose={onClose} />
       </DialogContent>
     </Dialog>
   );

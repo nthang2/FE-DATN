@@ -36,8 +36,10 @@ const DepositSection = () => {
     const vaultContract = new VaultContract(wallet);
     await asyncExecute({
       fn: async () => {
-        await vaultContract.deposit(inputValue);
+        const hash = await vaultContract.deposit(inputValue);
         await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
+
+        return hash;
       },
     });
     setInputValue(0);

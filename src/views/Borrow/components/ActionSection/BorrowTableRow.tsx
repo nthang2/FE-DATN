@@ -9,7 +9,7 @@ import { formatNumber } from 'src/utils/format';
 interface IProps {
   index: number;
   borrowItem: TBorrowItem;
-  onClick: () => Promise<void>;
+  onClick: () => Promise<string | undefined>;
   actionStatus: boolean;
 }
 
@@ -23,17 +23,17 @@ const BorrowTableRow = (props: IProps) => {
   const { asyncExecute, loading } = useAsyncExecute();
   const tokenInfo = findTokenInfoByToken(address);
 
-  if (value === '0') {
+  if (value === '0' || !value) {
     return null;
   }
 
   return (
     <TableRow sx={{ padding: 3 }}>
-      <TableCell width={100}>{index}</TableCell>
+      <TableCell width={100}>{index + 1}</TableCell>
       <TableCell width={200}>Mint {tokenInfo?.symbol}</TableCell>
       <TableCell width={400}>
         <Stack gap={0.5}>
-          <Typography variant="body1">{formatNumber(value)}</Typography>
+          <Typography variant="body1">{formatNumber(value, { fractionDigits: 6 })}</Typography>
           <Typography variant="body1" color="secondary">
             {tokenInfo?.symbol}
           </Typography>

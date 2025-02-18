@@ -32,7 +32,7 @@ const DepositSection = () => {
   }, [depositItems, depositedValue, listPrice]);
   const isHasDeposited = Boolean(totalDepositedValue) || totalDepositedValue > 0;
   const depositItemBalance = useMemo(() => {
-    return balance.find((item) => item.address === depositItems[0].address)?.balance.toFixed(4);
+    return balance.find((item) => item.address === depositItems[0].address)?.balance.toNumber();
   }, [balance, depositItems]);
 
   const handleRemoveItem = (index: number) => {
@@ -84,13 +84,30 @@ const DepositSection = () => {
     setDepositState(cloneArr);
   };
 
+  const handleMax = (index: number) => {
+    const cloneArr = depositItems.map((item, arrIndex) => {
+      if (arrIndex === index) {
+        return {
+          ...item,
+          value: depositItemBalance?.toString() || '0',
+          price: convertToUsd(item.address, depositItemBalance?.toString() || '0', listPrice),
+          error: validateDepositItem(Number(depositItemBalance), Number(depositItemBalance)),
+        };
+      }
+
+      return item;
+    });
+
+    setDepositState(cloneArr);
+  };
+
   return (
-    <Box>
+    <Box flex={1}>
       <BoxCustom sx={{ flex: 1, borderRadius: isHasDeposited ? '16px 16px 0px 0px' : '16px' }}>
         <Stack justifyContent="space-between" width="100%" mb={'18px'}>
           <Typography variant="h6" alignItems="center" display="flex" gap={1} fontWeight={700}>
             Deposit
-            <TooltipInfo title="info" />
+            <TooltipInfo title="Deposit collateral to mint USDAI" />
           </Typography>
 
           <Button
@@ -131,6 +148,7 @@ const DepositSection = () => {
                 handleChangeInput={handleChangeInput}
                 handleChangeSelectInput={handleChangeSelectInput}
                 handleRemoveItem={handleRemoveItem}
+                handleMax={handleMax}
               />
             );
           })}
@@ -149,7 +167,7 @@ const DepositSection = () => {
           </Stack>
 
           <Typography ml={1} variant="body1">
-            Total deposited ~ ${totalDepositedValue.toFixed(2)}
+            Your deposited ~ ${totalDepositedValue.toFixed(2)}
           </Typography>
         </Stack>
       )}
