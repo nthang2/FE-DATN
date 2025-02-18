@@ -58,7 +58,7 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     await this.sendTransaction(trans);
   }
 
-  async getStakedAmount(): Promise<{ amount: BN; pendingReward: BN; index: number; apr: number; tvl: number }> {
+  async getStakedAmount(): Promise<{ amount: BN; pendingReward: BN; index: number }> {
     const [user1Pda] = PublicKey.findProgramAddressSync(
       [Buffer.from(STAKER_INFO_SEED), new PublicKey(usdaiAddress).toBytes(), this.provider.publicKey.toBytes()],
       this.program.programId
@@ -85,8 +85,25 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     const minRewardPerYear = (totalStaked * passTime * minAprBps) / new BN(10000 * 86400 * 365);
     const globalIndex = vaultGlobalIndex + Math.max(minRewardPerYear, newestPendingReward) / totalStaked;
     const pendingReward = (globalIndex - index) * Number(amount) + Number(userPendingReward);
+
+    return { amount, pendingReward: pendingReward, index };
+  }
+
+  async getBannerInfo(): Promise<{ apr: number; tvl: number }> {
+    const [vaultConfigPda] = PublicKey.findProgramAddressSync(
+      [Buffer.from(VAULT_CONFIG_SEED), new PublicKey(usdaiAddress).toBytes()],
+      this.program.programId
+    );
+
+    const [vaultPda] = PublicKey.findProgramAddressSync(
+      [Buffer.from(VAULT_SEED), new PublicKey(usdaiAddress).toBytes()],
+      this.program.programId
+    );
+
+    const { totalStaked } = await this.program.account.vault.fetch(vaultPda);
+    const { rps } = await this.program.account.vaultConfig.fetch(vaultConfigPda);
     const apr = (rps / totalStaked) * new BN(86400 * 365 * 100);
 
-    return { amount, pendingReward: pendingReward, index, apr, tvl: Number(totalStaked) };
+    return { apr, tvl: Number(totalStaked) / getDecimalToken(usdaiAddress) };
   }
 }

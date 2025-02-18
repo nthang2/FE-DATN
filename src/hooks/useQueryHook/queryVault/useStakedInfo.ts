@@ -15,13 +15,11 @@ const useStakedInfo = () => {
       }
 
       const vaultContract = new VaultContract(wallet);
-      const { amount, pendingReward, apr, tvl } = await vaultContract.getStakedAmount();
+      const { amount, pendingReward } = await vaultContract.getStakedAmount();
 
       return {
         amount: BN(amount).dividedBy(getDecimalToken(usdaiSolanaMainnet.address)).toString(),
         pendingReward: BN(pendingReward).dividedBy(getDecimalToken(usdaiSolanaMainnet.address)).toString(),
-        apr,
-        tvl,
       };
     },
     enabled: Boolean(wallet.publicKey),

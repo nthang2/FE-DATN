@@ -6,6 +6,7 @@ import { compactNumber, roundNumber } from 'src/utils/format';
 
 const StakedAmount = () => {
   const { stakeInfo, status } = useStakedInfo();
+  console.log('🚀 ~ StakedAmount ~ stakeInfo:', stakeInfo);
 
   return (
     <Box
@@ -30,7 +31,7 @@ const StakedAmount = () => {
               ${compactNumber(stakeInfo?.amount || 0, 4)}
             </Typography>
           }
-          skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '100%' }}
+          skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '50%' }}
         />
       </Typography>
       <Typography variant="body2" color="text.secondary">

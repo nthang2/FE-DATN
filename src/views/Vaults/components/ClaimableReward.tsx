@@ -11,7 +11,6 @@ import { roundNumber } from 'src/utils/format';
 const ClaimableReward = () => {
   const wallet = useWallet();
   const { stakeInfo, status } = useStakedInfo();
-  console.log('🚀 ~ ClaimableReward ~ stakeInfo:', stakeInfo);
   const { asyncExecute, loading } = useAsyncExecute();
 
   const handleClaimReward = async () => {
@@ -48,7 +47,7 @@ const ClaimableReward = () => {
               ${roundNumber(stakeInfo?.pendingReward || 0, 4)}
             </Typography>
           }
-          skeletonStyle={{ bgcolor: '#c9c7c7', height: '60px', width: '100%' }}
+          skeletonStyle={{ bgcolor: '#c9c7c7', height: '60px', width: '50%' }}
         />
 
         <Typography variant="body2" color="text.secondary">

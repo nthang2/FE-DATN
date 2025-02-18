@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from '@mui/material';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
+import useBannerInfo from 'src/hooks/useQueryHook/queryVault/useBannerInfo';
 import { compactNumber, roundNumber } from 'src/utils/format';
 
 const VaultBanner = () => {
-  const { stakeInfo, status } = useStakedInfo();
+  const { bannerInfo, status } = useBannerInfo();
 
   return (
     <Stack
@@ -35,10 +35,10 @@ const VaultBanner = () => {
             status={[status]}
             value={
               <Typography variant="h2" fontWeight={700} fontSize="42px">
-                ${compactNumber(stakeInfo?.tvl || 0, 2)}
+                ${compactNumber(bannerInfo?.tvl || 0, 2)}
               </Typography>
             }
-            skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '100%' }}
+            skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '50%', alignSelf: 'center', margin: 'auto' }}
           />
         </Typography>
       </Box>
@@ -51,7 +51,7 @@ const VaultBanner = () => {
         flex={1}
         borderRight={{ xs: 'none', md: '2px solid black' }}
         sx={{
-          '& span': { flex: 1, alignSelf: 'flex-start' },
+          '& span': { flex: 1 },
         }}
       >
         <Typography variant="h6" fontWeight={600}>
@@ -61,10 +61,10 @@ const VaultBanner = () => {
           status={[status]}
           value={
             <Typography variant="h2" fontWeight={700} fontSize="42px" flex={1}>
-              {roundNumber(stakeInfo?.apr || 0, 2)}%
+              {roundNumber(bannerInfo?.apr || 0, 2)}%
             </Typography>
           }
-          skeletonStyle={{ bgcolor: '#c9c7c7', height: '60px', width: '100%' }}
+          skeletonStyle={{ bgcolor: '#c9c7c7', height: '60px', width: '50%', alignSelf: 'center' }}
         />
       </Box>
 
