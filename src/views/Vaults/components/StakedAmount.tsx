@@ -30,7 +30,7 @@ const StakedAmount = () => {
               ${compactNumber(stakeInfo?.amount || 0, 4)}
             </Typography>
           }
-          skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '100%' }}
+          skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '50%' }}
         />
       </Typography>
       <Typography variant="body2" color="text.secondary">

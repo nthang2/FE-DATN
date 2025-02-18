@@ -38,7 +38,7 @@ const WithdrawSection = () => {
   }, [removeAmount]);
 
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
-    const amount = (Number(value) / 100) * Number(stakeInfo?.amount || 1);
+    const amount = (Number(value) / 100) * Number(stakeInfo?.amount || 0);
     setInputValue(amount);
   };
 
@@ -68,7 +68,7 @@ const WithdrawSection = () => {
           <TooltipInfo title="Amount deposited to the vault, not including rewards claimed." />
         </Typography>
 
-        <TokenUSDAIAmount children={Number(stakeInfo?.amount)} />
+        <TokenUSDAIAmount children={Number(stakeInfo?.amount || 0)} />
       </Stack>
 
       <Stack flexDirection="column" gap={1}>
