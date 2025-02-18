@@ -14,18 +14,28 @@ const ActionSection = () => {
   const wallet = useWallet();
   const [borrowState] = useBorrowState();
   const [depositItems] = useDepositState();
-  const [isSubmitted] = useBorrowSubmitState();
+  const [isSubmitted, setIsSubmitted] = useBorrowSubmitState();
   const { refetch: refetchDeposited } = useQueryDepositValue();
   const { refetch: refetchYourBorrow } = useQueryYourBorrow();
 
   const [actionStatus, setActionStatus] = useState<boolean[]>(() => {
-    return Array(depositItems.length + 1).fill(false);
+    const result = [...depositItems, borrowState].filter((item) => !!item.value && item.value !== '0');
+    return Array(result.length).fill(false);
   });
 
   const handChangeActionStatus = (index: number) => {
-    const cloneArr = [...actionStatus];
-    cloneArr.splice(index, 1, true);
-    setActionStatus(cloneArr);
+    const result = actionStatus.map((item, i) => {
+      if (index === i) {
+        return true;
+      }
+
+      return item;
+    });
+    const isAllActionDone = result.every((item) => item);
+    setActionStatus(result);
+    if (isAllActionDone) {
+      setIsSubmitted(false);
+    }
   };
 
   const handleDeposit = async (depositItem: TBorrowItem, index: number) => {
@@ -41,7 +51,7 @@ const ActionSection = () => {
     const lendingContract = new LendingContract(wallet);
     await lendingContract.borrow(Number(borrowState.value), depositItems[0].address);
     await refetchYourBorrow();
-    handChangeActionStatus(actionStatus.length);
+    handChangeActionStatus(actionStatus.length - 1);
   };
 
   return (
@@ -55,15 +65,15 @@ const ActionSection = () => {
             {depositItems.map((item, index) => (
               <DepositTableRow
                 actionStatus={actionStatus[index]}
-                index={index + 1}
+                index={index}
                 key={index}
                 depositItem={item}
                 onClick={() => handleDeposit(item, index)}
               />
             ))}
             <BorrowTableRow
-              actionStatus={actionStatus[depositItems.length + 1]}
-              index={depositItems.length + 1}
+              actionStatus={actionStatus[actionStatus.length - 1]}
+              index={actionStatus.length - 1}
               borrowItem={borrowState}
               onClick={handleBorrow}
             />

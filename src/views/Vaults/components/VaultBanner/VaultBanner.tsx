@@ -49,7 +49,6 @@ const VaultBanner = () => {
         gap={1}
         textAlign={'center'}
         flex={1}
-        borderRight={{ xs: 'none', md: '2px solid black' }}
         sx={{
           '& span': { flex: 1 },
         }}
@@ -66,15 +65,6 @@ const VaultBanner = () => {
           }
           skeletonStyle={{ bgcolor: '#c9c7c7', height: '60px', width: '50%', alignSelf: 'center' }}
         />
-      </Box>
-
-      <Box display={'flex'} flexDirection={'column'} gap={1} flex={1} textAlign={'center'}>
-        <Typography variant="h6" fontWeight={600}>
-          Min APR
-        </Typography>
-        <Typography variant="h2" fontWeight={700} fontSize="42px">
-          20%
-        </Typography>
       </Box>
     </Stack>
   );

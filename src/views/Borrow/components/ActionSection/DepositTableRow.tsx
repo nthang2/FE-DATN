@@ -23,13 +23,13 @@ const DepositTableRow = (props: IProps) => {
   const { asyncExecute, loading } = useAsyncExecute();
   const tokenInfo = findTokenInfoByToken(address);
 
-  if (value === '0') {
+  if (value === '0' || !value) {
     return null;
   }
 
   return (
     <TableRow sx={{ padding: 3 }}>
-      <TableCell width={100}>{index}</TableCell>
+      <TableCell width={100}>{index + 1}</TableCell>
       <TableCell width={200}>Deposit {tokenInfo?.symbol}</TableCell>
       <TableCell width={400}>
         <Stack gap={0.5}>
