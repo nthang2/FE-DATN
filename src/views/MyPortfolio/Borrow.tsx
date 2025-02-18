@@ -83,7 +83,7 @@ export default function Borrow() {
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                     {depositValue?.[row.address] && tokensPrice && yourBorrow?.[row.address]
                       ? formatNumber(
-                          Number(depositValue?.[row.address]) * row.ratio * Number(tokensPrice[row.address].price) -
+                          Number(depositValue?.[row.address]) * row.ratio * Number(tokensPrice[row.address]?.price ?? 1) -
                             Number(yourBorrow[row.address]),
                           {
                             fractionDigits: 2,

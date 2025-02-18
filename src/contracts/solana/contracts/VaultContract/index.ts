@@ -2,17 +2,17 @@
 import { BN } from '@coral-xyz/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
+import { NETWORK } from 'src/constants';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
+import { usdaiSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
+import { usdaiSolanaMainnet } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
+import { getDecimalToken } from 'src/utils';
 import { IdlVault, idlVault } from '../../idl/vault/vault';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { STAKER_INFO_SEED, VAULT_CONFIG_SEED, VAULT_SEED } from './constant';
-import { usdaiSolanaMainnet } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
-import { NETWORK } from 'src/constants';
-import { usdaiSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
-import { getDecimalToken } from 'src/utils';
 
 const usdaiInfo = NETWORK === 'devnet' ? usdaiSolanaDevnet : usdaiSolanaMainnet;
-const usdaiAddress = usdaiInfo.address;
+export const usdaiAddress = usdaiInfo.address;
 
 export class VaultContract extends SolanaContractAbstract<IdlVault> {
   constructor(wallet: WalletContextState) {

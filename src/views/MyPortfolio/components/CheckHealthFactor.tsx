@@ -13,17 +13,19 @@ export default function CheckHealthFactor({ token }: { token: SolanaEcosystemTok
   const healthFactor = useMemo(() => {
     if (depositValueData && yourBorrowData) {
       const ratio = BN(yourBorrowData[token.address]).div(BN(depositValueData[token.address])).toString();
-      const healthFactor = BN(depositValueData[token.address])
+      const _healthFactor = BN(depositValueData[token.address])
         .times(token.ratio ?? 1)
         .div(yourBorrowData[token.address])
         .toString();
-      return { ratio: ratio, healthFactor: healthFactor };
+      return { ratio: ratio, healthFactor: _healthFactor };
     }
   }, [depositValueData, yourBorrowData, token.address, token.ratio]);
 
   const checkRank = () => {
     if (healthFactor) {
-      if (BN(healthFactor?.ratio).isLessThanOrEqualTo(1.2)) {
+      if (healthFactor.healthFactor == 'Infinity') {
+        return { rank: 'Healthy', color: 'green' };
+      } else if (BN(healthFactor?.ratio).isLessThanOrEqualTo(1.2)) {
         return { rank: 'Critical', color: 'red' };
       } else if (BN(healthFactor?.ratio).isLessThanOrEqualTo(1.5)) {
         return { rank: 'Risky', color: 'orange' };
