@@ -4,11 +4,11 @@ import { useEffect, useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
-import { convertToUsd, validateBorrowItem } from '../../utils';
+import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
-import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
@@ -16,40 +16,15 @@ const BorrowSection = () => {
   const [isSubmitted] = useBorrowSubmitState();
   const { data: yourBorrow } = useQueryYourBorrow();
   const [depositItems] = useDepositState();
-  const { data: depositedValue } = useQueryDepositValue();
+  const { totalDepositValue, yourBorrowByAddress, maxLtv } = useInvestedValue();
 
   const tokenInfo = findTokenInfoByToken(borrowState.address);
-  const depositedByAddress = useMemo(() => {
-    if (!depositedValue || !listPrice) return 0;
-    const depositAddress = depositItems[0].address;
-    const deposited = convertToUsd(depositAddress, depositedValue[depositAddress], listPrice) || 0;
-
-    return deposited;
-  }, [depositItems, depositedValue, listPrice]);
-  const totalDepositValue = useMemo(() => {
-    const currDepositValue = depositItems.reduce((total, item) => total + item?.price, 0);
-    return currDepositValue + depositedByAddress;
-  }, [depositItems, depositedByAddress]);
-  //Already minted by deposit address
-  const yourBorrowByAddress = useMemo(() => {
-    const mintedByAddress = yourBorrow ? yourBorrow[depositItems[0].address] : 0;
-
-    return mintedByAddress ? Number(mintedByAddress) : 0;
-  }, [depositItems, yourBorrow]);
   const totalYourBorrow = useMemo(() => {
     if (!yourBorrow) return 0;
     const currAdd = depositItems[0].address;
 
     return Number(yourBorrow[currAdd]);
   }, [depositItems, yourBorrow]);
-  const maxLtv = useMemo(() => {
-    if (depositItems[0]) {
-      const tokenInfo = findTokenInfoByToken(depositItems[0].address);
-      return Number(tokenInfo?.ratio) * 100;
-    }
-
-    return 30;
-  }, [depositItems]);
   const isShowYourBorrow = !!totalYourBorrow && Number(totalYourBorrow) > 0;
 
   const handleChangeInput = (value: string) => {
@@ -62,6 +37,18 @@ const BorrowSection = () => {
       value: value,
       price: price,
       error: error,
+    });
+  };
+
+  const handleMax = () => {
+    const borrowPrice = (Number(maxLtv) / 100) * totalDepositValue - yourBorrowByAddress;
+    const minValue = borrowPrice < 0 ? 0 : borrowPrice;
+    const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), listPrice);
+
+    setBorrowState({
+      ...borrowState,
+      value: borrowAmount ? borrowAmount.toString() : '0',
+      price: minValue,
     });
   };
 
@@ -96,6 +83,13 @@ const BorrowSection = () => {
             subValue={borrowState?.price}
             error={borrowState.error}
             selectOptions={[borrowState.address]}
+            endAdornment={
+              <Box sx={{ alignItems: 'center', gap: 1.5, height: '100%', display: 'flex' }}>
+                <Typography variant="h5" sx={{ cursor: 'pointer', fontWeight: 600, color: '#FCFFD8' }} onClick={handleMax}>
+                  Max
+                </Typography>
+              </Box>
+            }
           />
         </Box>
       </BoxCustom>

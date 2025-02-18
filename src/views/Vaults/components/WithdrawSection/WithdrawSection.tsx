@@ -65,7 +65,7 @@ const WithdrawSection = () => {
       <Stack justifyContent="space-between" alignItems="center">
         <Typography variant="body2">
           Involving Amount
-          <TooltipInfo title="title info" />
+          <TooltipInfo title="Amount deposited to the vault, not including rewards claimed." />
         </Typography>
 
         <TokenUSDAIAmount children={Number(stakeInfo?.amount)} />

@@ -111,7 +111,7 @@ export default function MyWallet() {
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
             My Wallet
           </Typography>
-          <TooltipInfo title="My Wallet" />
+          <TooltipInfo title="Assets in my wallet" />
         </Box>
         <Box className="flex-end">
           <Typography variant="caption2" sx={{ color: 'text.secondary' }}>

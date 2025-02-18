@@ -2,16 +2,14 @@ import { Box, Slider, Stack, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import FormatSmallNumber from 'src/components/General/FormatSmallNumber/FormatSmallNumber';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import { labelMark, marks } from '../../constant';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import CustomMark from '../BorrowSlide/CustomMark';
 import CustomThumb from '../BorrowSlide/CustomThumb';
 import CustomTrack from '../BorrowSlide/CustomTrack';
-import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
-import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 
 const minZoom = 0;
 const maxZoom = 100;
@@ -21,42 +19,11 @@ const LTVSection = () => {
   const [depositItems] = useDepositState();
   const { data: listPrice } = useQueryAllTokensPrice();
   const [borrowSubmitted] = useBorrowSubmitState();
-  const { data: depositedValue } = useQueryDepositValue();
-  const { data: yourBorrow } = useQueryYourBorrow();
+  const { totalDepositValue, yourBorrowByAddress, maxLtv, depositedByAddress } = useInvestedValue();
 
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
 
-  const maxLtv = useMemo(() => {
-    if (depositItems[0]) {
-      const tokenInfo = findTokenInfoByToken(depositItems[0].address);
-      return Number(tokenInfo?.ratio) * 100;
-    }
-
-    return 30;
-  }, [depositItems]);
   const markList = useMemo(() => [...marks, { value: maxLtv || 100 }], [maxLtv]);
-
-  //Already minted by deposit address
-  const yourBorrowByAddress = useMemo(() => {
-    const mintedByAddress = yourBorrow ? yourBorrow[depositItems[0].address] : 0;
-
-    return mintedByAddress ? Number(mintedByAddress) : 0;
-  }, [depositItems, yourBorrow]);
-
-  //Already deposit by deposit address
-  const depositedByAddress = useMemo(() => {
-    if (!depositedValue || !listPrice) return 0;
-    const depositAddress = depositItems[0].address;
-    const deposited = convertToUsd(depositAddress, depositedValue[depositAddress], listPrice) || 0;
-
-    return deposited;
-  }, [depositItems, depositedValue, listPrice]);
-
-  //Total deposit include already deposit amount and input amount
-  const totalDepositValue = useMemo(() => {
-    return depositItems[0].price + depositedByAddress;
-  }, [depositItems, depositedByAddress]);
-
   //Total borrow include already mint amount and input amount
   const borrowPercent = useMemo(() => {
     return ((borrowState.price + yourBorrowByAddress) / totalDepositValue) * 100;
@@ -88,7 +55,7 @@ const LTVSection = () => {
 
   useEffect(() => {
     //Update slider when change mint input or change slider input
-    //Slider input do not change directly SliderValue state it change borrowState and this eff change SliderValue state
+    //Slider input do not change directly SliderValue state it change borrowState and this eff update SliderValue state
     if (!maxLtv) return;
     if (!borrowPercent) {
       setSliderValue(0);
@@ -113,7 +80,7 @@ const LTVSection = () => {
       handleChangeSlider(borrowPercent);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [depositItems[0].address]);
+  }, [depositItems[0].address, yourBorrowByAddress]);
 
   return (
     <BoxCustom>
