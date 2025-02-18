@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import BigNumber from 'bignumber.js';
 import { format as fd } from 'date-fns';
 import { FormatNumberOptions } from 'src/global.config';
 import { isNumeric } from '.';
@@ -135,4 +136,11 @@ export function roundNumber(num: number | string, scale: number) {
     }
     return +(Math.round(Number(+arr[0] + 'e' + sig + (+arr[1] + scale))) + 'e-' + scale);
   }
+}
+
+export function decimalFlood(num: string | number, precision: number) {
+  //lam tron xuong
+  const _precision = BigNumber('10').pow(precision);
+  const _bigNumber = BigNumber(num).multipliedBy(_precision);
+  return _bigNumber.integerValue(BigNumber.ROUND_FLOOR).div(_precision).toFixed();
 }
