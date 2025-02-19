@@ -63,6 +63,7 @@ const BorrowButton = () => {
 
         return transHash;
       },
+      onError: () => setBorrowState({ ...borrowState, value: '0', price: 0 }),
     });
   };
 
