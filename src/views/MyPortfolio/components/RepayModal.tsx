@@ -49,7 +49,10 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
   const handleRepay = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
-    const hash = await lendingContract.repay(Number(valueRepay), token.address);
+    const maxRepay = BN(yourBorrow?.[token.address]).toString();
+    const isMaxValue = Number(maxRepay) === Number(valueRepay);
+
+    const hash = await lendingContract.repay(Number(valueRepay), token.address, isMaxValue);
     setValueRepay('');
     setValueInUSD('0');
     refetchYourBorrow();
