@@ -3,12 +3,13 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
-import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
-import BorrowTableRow from './BorrowTableRow';
-import DepositTableRow from './DepositTableRow';
-import { TBorrowItem } from '../../state/types';
+import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
+import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
+import { TBorrowItem } from '../../state/types';
+import BorrowTableRow from './BorrowTableRow';
+import DepositTableRow from './DepositTableRow';
 
 const ActionSection = () => {
   const wallet = useWallet();
@@ -17,6 +18,7 @@ const ActionSection = () => {
   const [isSubmitted, setIsSubmitted] = useBorrowSubmitState();
   const { refetch: refetchDeposited } = useQueryDepositValue();
   const { refetch: refetchYourBorrow } = useQueryYourBorrow();
+  const { maxBorrowPrice } = useInvestedValue();
 
   const [actionStatus, setActionStatus] = useState<boolean[]>(() => {
     const result = [...depositItems, borrowState].filter((item) => !!item.value && item.value !== '0');
@@ -50,8 +52,9 @@ const ActionSection = () => {
 
   const handleBorrow = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
+    const isBorrowMaxValue = Number(borrowState.price) === maxBorrowPrice;
     const lendingContract = new LendingContract(wallet);
-    const transHash = await lendingContract.borrow(Number(borrowState.value), depositItems[0].address);
+    const transHash = await lendingContract.borrow(Number(borrowState.value), depositItems[0].address, isBorrowMaxValue);
     await refetchYourBorrow();
     handChangeActionStatus(actionStatus.length - 1);
 
