@@ -6,6 +6,8 @@ import { compactNumber, roundNumber } from 'src/utils/format';
 const VaultBanner = () => {
   const { bannerInfo, status } = useBannerInfo();
 
+  const apr = Number(bannerInfo?.apr || 0) <= 20 ? 20 : Number(bannerInfo?.apr);
+
   return (
     <Stack
       sx={{
@@ -60,7 +62,7 @@ const VaultBanner = () => {
           status={[status]}
           value={
             <Typography variant="h2" fontWeight={700} fontSize="42px" flex={1}>
-              {roundNumber(bannerInfo?.apr || 0, 2)}%
+              {roundNumber(apr, 2)}%
             </Typography>
           }
           skeletonStyle={{ bgcolor: '#c9c7c7', height: '60px', width: '50%', alignSelf: 'center' }}

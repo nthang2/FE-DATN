@@ -2,13 +2,13 @@ import { Box, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
 import { useEffect, useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
+import BorrowPreview from './BorrowPreview';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
@@ -18,14 +18,13 @@ const BorrowSection = () => {
   const [depositItems] = useDepositState();
   const { totalDepositValue, yourBorrowByAddress, maxLtv } = useInvestedValue();
 
-  const tokenInfo = findTokenInfoByToken(borrowState.address);
-  const totalYourBorrow = useMemo(() => {
+  const mintedValueUsd = useMemo(() => {
     if (!yourBorrow) return 0;
     const currAdd = depositItems[0].address;
 
     return Number(yourBorrow[currAdd]);
   }, [depositItems, yourBorrow]);
-  const isShowYourBorrow = !!totalYourBorrow && Number(totalYourBorrow) > 0;
+  const isShowYourBorrow = !!mintedValueUsd && Number(mintedValueUsd) > 0;
 
   const handleChangeInput = (value: string) => {
     const price = convertToUsd(borrowState.address, value, listPrice);
@@ -94,12 +93,7 @@ const BorrowSection = () => {
         </Box>
       </BoxCustom>
 
-      {isShowYourBorrow && (
-        <Stack bgcolor="#333331" p="16px 20px" borderRadius="0px 0px 16px 16px" alignItems="center">
-          <Icon tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: 1, width: '16px', height: '16px' }} />
-          <Typography variant="body1">Already minted ~ ${totalYourBorrow}</Typography>
-        </Stack>
-      )}
+      <BorrowPreview borrowItem={borrowState} isShowYourBorrow={isShowYourBorrow} mintedValueUsd={mintedValueUsd} />
     </Box>
   );
 };
