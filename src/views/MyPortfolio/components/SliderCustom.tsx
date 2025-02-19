@@ -52,8 +52,8 @@ export default function SliderCustom({
         <Box
           sx={{
             bgcolor: '#FCFFD8',
-            height: '24px',
-            borderRadius: '1000px',
+            height: '23px',
+            borderRadius: '1200px',
             border: '0.5px solid #919283',
             width: `${(value / maxValue) * 100}%`,
           }}
