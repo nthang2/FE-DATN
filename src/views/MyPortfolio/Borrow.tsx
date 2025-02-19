@@ -32,8 +32,8 @@ export default function Borrow() {
     });
   };
 
-  const handleMint = () => {
-    navigate('/');
+  const handleMint = (tokenId: string) => {
+    navigate(`/?deposit=${tokenId}`);
   };
 
   return (
@@ -99,7 +99,7 @@ export default function Borrow() {
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
-                  <Button variant="contained" size="small" onClick={handleMint}>
+                  <Button variant="contained" size="small" onClick={() => handleMint(row.address)}>
                     <Typography variant="body2" sx={{ fontWeight: '500' }}>
                       Mint
                     </Typography>
