@@ -109,10 +109,9 @@ const DepositSection = () => {
     const depositParams = searchParams.get('deposit');
     if (!depositParams) return;
     if (depositParams === depositItems[0].address) return;
-    searchParams.set('deposit', depositItems[0].address);
-    setSearchParams(searchParams);
+    handleChangeSelectInput(0, depositParams);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, setSearchParams]);
+  }, [searchParams]);
 
   return (
     <Box flex={1}>
