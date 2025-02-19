@@ -90,10 +90,10 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     return transactionHash;
   }
 
-  async borrow(borrowAmount: number, tokenAddress: string): Promise<string> {
+  async borrow(borrowAmount: number, tokenAddress: string, isMax?: boolean): Promise<string> {
     const decimal = getDecimalToken(tokenAddress);
     const collateralAmount = new BN(0 * decimal);
-    const usdaiAmount = new BN(borrowAmount * 1e6);
+    const usdaiAmount = !isMax ? new BN(borrowAmount * 1e6) : Math.pow(2, 64) - 1;
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 
     const transaction = await this.program.methods
@@ -143,7 +143,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     return result;
   }
 
-  async getBorrowRate(address = defaultCollateral, decimal = 1e9 - 1): Promise<number> {
+  async getBorrowRate(address = defaultCollateral, decimal = 1e12): Promise<number> {
     const { depositoryPda } = this.getUserLoanByToken(this.provider.publicKey, address);
     const rate = (await this.getAccountType0Depository(depositoryPda)).rate;
     const result = rate.toNumber() / decimal;

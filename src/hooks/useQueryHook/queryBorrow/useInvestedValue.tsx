@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
+import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { useDepositState } from 'src/views/Borrow/state/hooks';
 import { convertToUsd } from 'src/views/Borrow/utils';
 import useQueryDepositValue from '../queryMyPortfolio/useQueryDepositValue';
 import useQueryYourBorrow from '../queryMyPortfolio/useQueryYourBorrow';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 
 const useInvestedValue = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
@@ -42,11 +42,17 @@ const useInvestedValue = () => {
     return 30;
   }, [depositItems]);
 
+  const maxBorrowPrice = useMemo(() => {
+    const borrowPrice = (Number(maxLtv) / 100) * totalDepositValue - yourBorrowByAddress;
+    return borrowPrice;
+  }, [maxLtv, totalDepositValue, yourBorrowByAddress]);
+
   return {
     yourBorrowByAddress,
     depositedByAddress,
     totalDepositValue,
     maxLtv,
+    maxBorrowPrice,
   };
 };
 
