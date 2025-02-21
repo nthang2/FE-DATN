@@ -12,12 +12,11 @@ export default function CheckHealthFactor({ token }: { token: SolanaEcosystemTok
 
   const healthFactor = useMemo(() => {
     if (depositValueData && yourBorrowData) {
-      const ratio = BN(yourBorrowData[token.address]).div(BN(depositValueData[token.address])).toString();
       const _healthFactor = BN(depositValueData[token.address])
         .times(token.ratio ?? 1)
         .div(yourBorrowData[token.address])
         .toString();
-      return { ratio: ratio, healthFactor: _healthFactor };
+      return { healthFactor: BN(_healthFactor).isGreaterThan(100) ? '100' : _healthFactor };
     }
   }, [depositValueData, yourBorrowData, token.address, token.ratio]);
 
@@ -25,11 +24,11 @@ export default function CheckHealthFactor({ token }: { token: SolanaEcosystemTok
     if (healthFactor) {
       if (healthFactor.healthFactor == 'Infinity') {
         return { rank: 'Healthy', color: 'green' };
-      } else if (BN(healthFactor?.ratio).isLessThanOrEqualTo(1.2)) {
+      } else if (BN(healthFactor?.healthFactor).isLessThanOrEqualTo(1.2)) {
         return { rank: 'Critical', color: 'red' };
-      } else if (BN(healthFactor?.ratio).isLessThanOrEqualTo(1.5)) {
+      } else if (BN(healthFactor?.healthFactor).isLessThanOrEqualTo(1.5)) {
         return { rank: 'Risky', color: 'orange' };
-      } else if (BN(healthFactor?.ratio).isLessThanOrEqualTo(2)) {
+      } else if (BN(healthFactor?.healthFactor).isLessThanOrEqualTo(2)) {
         return { rank: 'Moderate', color: 'yellow' };
       } else {
         return { rank: 'Healthy', color: 'green' };
@@ -46,7 +45,14 @@ export default function CheckHealthFactor({ token }: { token: SolanaEcosystemTok
           {checkRank().rank}
         </Typography>
       </Box>
-      <Typography sx={{ fontWeight: 600, ml: 1 }}>{healthFactor ? formatNumber(healthFactor.healthFactor) : '--'}</Typography>
+      <Typography sx={{ fontWeight: 600, ml: 1 }}>
+        {healthFactor
+          ? formatNumber(healthFactor.healthFactor, {
+              fractionDigits: 2,
+              suffix: BN(healthFactor.healthFactor).isGreaterThanOrEqualTo(100) ? '+' : '',
+            })
+          : '--'}
+      </Typography>
     </Box>
   );
 }
