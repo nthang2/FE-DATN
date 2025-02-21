@@ -93,7 +93,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   async borrow(borrowAmount: number, tokenAddress: string, isMax?: boolean): Promise<string> {
     const decimal = getDecimalToken(tokenAddress);
     const collateralAmount = new BN(0 * decimal);
-    const usdaiAmount = isMax ? Math.pow(2, 64) - 1 : new BN(borrowAmount * 1e6);
+    // const usdaiAmount = isMax ? Math.pow(2, 64) - 1 : new BN(borrowAmount * 1e6);
+    const usdaiAmount = isMax ? new BN(borrowAmount * 1e6) : new BN(borrowAmount * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 
     const transaction = await this.program.methods
@@ -108,7 +109,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   async repay(debtAmount: number, tokenAddress: string, isMax?: boolean): Promise<string> {
     const decimal = getDecimalToken(tokenAddress);
     const collateralAmount = new BN(0 * decimal);
-    const usdaiAmount = isMax ? Math.pow(2, 64) - 1 : new BN(debtAmount * 1e6);
+    // const usdaiAmount = isMax ? Math.pow(2, 64) - 1 : new BN(debtAmount * 1e6);
+    const usdaiAmount = isMax ? new BN(debtAmount * 1e6) : new BN(debtAmount * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 
     const transaction = await this.program.methods
