@@ -4,6 +4,7 @@ import Borrow from './views/Borrow/Borrow';
 import MyPortfolio from './views/MyPortfolio/MyPortfolio';
 import NotFound from './views/NotFound/NotFound';
 import Vaults from './views/Vaults/Vaults';
+// import LiquidationLeaderboard from './views/LiquidationLeaderboard/LiquidationLeaderboard';
 
 export default function Routes() {
   return useRoutes([
@@ -14,6 +15,7 @@ export default function Routes() {
         { path: '/', element: <Borrow /> },
         { path: '/my-portfolio', element: <MyPortfolio /> },
         { path: '/vaults', element: <Vaults /> },
+        // { path: '/liquidation', element: <LiquidationLeaderboard /> },
       ],
     },
     {
