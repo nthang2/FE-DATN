@@ -11,6 +11,7 @@ import { getDecimalToken } from 'src/utils';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { CONTROLLER_SEED, collateral as defaultCollateral, DEPOSITORY_SEED, REDEEMABLE_MINT_SEED } from './constant';
+import { BN as utilBN } from 'src/utils/index';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -93,7 +94,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   async borrow(borrowAmount: number, tokenAddress: string, isMax?: boolean): Promise<string> {
     const decimal = getDecimalToken(tokenAddress);
     const collateralAmount = new BN(0 * decimal);
-    const usdaiAmount = isMax ? Math.pow(2, 64) - 1 : new BN(borrowAmount * 1e6);
+    const maxAmount = utilBN(2).pow(64).minus(1);
+    const usdaiAmount = isMax ? new BN(maxAmount.toString()) : new BN(borrowAmount * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 
     const transaction = await this.program.methods
@@ -108,7 +110,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   async repay(debtAmount: number, tokenAddress: string, isMax?: boolean): Promise<string> {
     const decimal = getDecimalToken(tokenAddress);
     const collateralAmount = new BN(0 * decimal);
-    const usdaiAmount = isMax ? Math.pow(2, 64) - 1 : new BN(debtAmount * 1e6);
+    const maxAmount = utilBN(2).pow(64).minus(1);
+    const usdaiAmount = isMax ? new BN(maxAmount.toString()) : new BN(debtAmount * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 
     const transaction = await this.program.methods

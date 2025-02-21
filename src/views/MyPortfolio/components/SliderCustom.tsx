@@ -39,7 +39,7 @@ export default function SliderCustom({
                         color: 'info.main',
                       }}
                     >
-                      {compactNumber(maxValue != undefined ? (maxValue / 10) * item : 0 * item * 10)}
+                      {compactNumber(maxValue != undefined ? (maxValue / 10) * item : 0 * item * 10, 2)}
                     </Typography>
                   }
                 />

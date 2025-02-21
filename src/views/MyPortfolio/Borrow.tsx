@@ -20,7 +20,6 @@ export default function Borrow() {
   const navigate = useNavigate();
 
   const tableHead = ['Asset', 'Available', 'USDAI Minted', ''];
-
   // const handleChangeMode = () => {
   //   setEMode(!eMode);
   // };
@@ -34,6 +33,18 @@ export default function Borrow() {
 
   const handleMint = (tokenId: string) => {
     navigate(`/?deposit=${tokenId}`);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const availableMint = (row: any) => {
+    if (tokensPrice && yourBorrow) {
+      const result =
+        Number(depositValue?.[row.address]) * row.ratio * Number(tokensPrice[row.address]?.price ?? 1) - Number(yourBorrow[row.address]);
+
+      return result < 0 ? 0 : result;
+    }
+
+    return 0;
   };
 
   return (
@@ -82,14 +93,10 @@ export default function Borrow() {
                 <TableCell align="right">
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                     {depositValue?.[row.address] && tokensPrice && yourBorrow?.[row.address]
-                      ? formatNumber(
-                          Number(depositValue?.[row.address]) * row.ratio * Number(tokensPrice[row.address]?.price ?? 1) -
-                            Number(yourBorrow[row.address]),
-                          {
-                            fractionDigits: 2,
-                            prefix: '$',
-                          }
-                        )
+                      ? formatNumber(availableMint(row), {
+                          fractionDigits: 2,
+                          prefix: '$',
+                        })
                       : '--'}
                   </Typography>
                 </TableCell>
