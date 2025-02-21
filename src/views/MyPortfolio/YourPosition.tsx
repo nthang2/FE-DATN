@@ -71,9 +71,7 @@ export default function YourPosition() {
             status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                {totalDepositValue != undefined
-                  ? formatNumber(totalDepositValueRatio, { fractionDigits: 2, prefix: '$' })
-                  : formatNumber(totalDepositValue, { fractionDigits: 2, prefix: '$' })}
+                {formatNumber(totalYourBorrowValue, { fractionDigits: 2, prefix: '$' })}
               </Typography>
             }
           />
@@ -91,7 +89,7 @@ export default function YourPosition() {
             status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                {formatNumber(Number(balanceUSDAI.toString()) + (dataStakedInfo?.amount ? Number(dataStakedInfo?.amount) : 0), {
+                {formatNumber(dataStakedInfo?.amount ? Number(dataStakedInfo?.amount) : 0, {
                   prefix: '$',
                 })}
               </Typography>

@@ -1,15 +1,16 @@
 import { Button } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useMemo } from 'react';
+import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
+import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToUsd } from '../../utils';
-import useAsyncExecute from 'src/hooks/useAsyncExecute';
-import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 
 const BorrowButton = () => {
   const wallet = useWallet();
@@ -19,13 +20,9 @@ const BorrowButton = () => {
   const { address } = useSummarySolanaConnect();
   const { data: listPrice } = useQueryAllTokensPrice();
   const { data: depositedValue } = useQueryDepositValue();
-  const { data: yourBorrow, refetch: refetchYourBorrow } = useQueryYourBorrow();
+  const { refetch: refetchYourBorrow } = useQueryYourBorrow();
   const { asyncExecute, loading } = useAsyncExecute();
-
-  const yourBorrowByAddress = useMemo(() => {
-    const mintedByAddress = yourBorrow ? yourBorrow[depositItems[0].address] : 0;
-    return mintedByAddress ? Number(mintedByAddress) : 0;
-  }, [depositItems, yourBorrow]);
+  const { maxBorrowPrice, yourBorrowByAddress } = useInvestedValue();
 
   const depositedByAddress = useMemo(() => {
     if (!depositedValue || !listPrice) return 0;
@@ -59,12 +56,14 @@ const BorrowButton = () => {
 
     await asyncExecute({
       fn: async () => {
+        const isBorrowMaxValue = Number(borrowState.price) === maxBorrowPrice;
         const lendingContract = new LendingContract(wallet);
-        const transHash = await lendingContract.borrow(Number(borrowState.value), depositItems[0].address);
+        const transHash = await lendingContract.borrow(Number(borrowState.value), depositItems[0].address, isBorrowMaxValue);
         await refetchYourBorrow();
 
         return transHash;
       },
+      onError: () => setBorrowState({ ...borrowState, value: '0', price: 0 }),
     });
   };
 

@@ -55,7 +55,7 @@ const DepositSection = () => {
     <Box>
       <Stack justifyContent="space-between" mb={0.5}>
         <Typography>Amount</Typography>
-        <Typography>Max: {balance.toFixed(2)}</Typography>
+        <Typography>Max: {balance.toFixed(4)}</Typography>
       </Stack>
 
       <CustomTextField
