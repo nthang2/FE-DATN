@@ -12,12 +12,11 @@ import { LendingContract } from 'src/contracts/solana/contracts/LendingContract'
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
+import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
+import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import CheckHealthFactor from './CheckHealthFactor';
-import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
-import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
@@ -25,7 +24,6 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
   const { address } = useSummarySolanaConnect();
   const { data: yourBorrow, refetch: refetchYourBorrow, status: statusQueryYourBorrow } = useQueryYourBorrow();
   const { refetch: refetchDepositValue } = useQueryDepositValue();
-  const { stakeInfo } = useStakedInfo();
   const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
 
   const [valueRepay, setValueRepay] = useState<string>('');
@@ -40,12 +38,12 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
 
   const maxValue = useMemo(() => {
     if (yourBorrow?.[token.address] != undefined) {
-      const currBorrow = Number(yourBorrow?.[token.address] || 0) - Number(stakeInfo?.amount || 0);
+      const currBorrow = Number(yourBorrow?.[token.address] || 0);
       const maxValueRepay = Math.min(currBorrow, balance.toNumber());
 
       return maxValueRepay.toString();
     } else return '';
-  }, [yourBorrow, token.address, stakeInfo?.amount, balance]);
+  }, [yourBorrow, token.address, balance]);
 
   const handleMax = () => {
     if (yourBorrow?.[token.address] != undefined) {
