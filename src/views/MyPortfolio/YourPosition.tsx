@@ -52,14 +52,6 @@ export default function YourPosition() {
     return Number(totalDepositValueRatio) || 0;
   }, [totalDepositValueRatio, totalYourBorrowValue]);
 
-  const valueHasMinted = useMemo(() => {
-    if (totalDepositValue && totalYourBorrowValue) {
-      return Number(totalDepositValueRatio) < totalYourBorrowValue ? totalDepositValueRatio : totalYourBorrowValue;
-    }
-
-    return totalYourBorrowValue;
-  }, [totalDepositValue, totalDepositValueRatio, totalYourBorrowValue]);
-
   return (
     <BoxCustom>
       <Typography variant="h5">Your Position</Typography>
@@ -95,7 +87,7 @@ export default function YourPosition() {
         </Box>
         <SliderCustom
           status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
-          value={valueHasMinted}
+          value={totalYourBorrowValue}
           maxValue={maxBorrowAbleValue}
         />
       </Box>
