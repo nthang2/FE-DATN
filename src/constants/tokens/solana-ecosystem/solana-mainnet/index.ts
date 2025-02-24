@@ -2,10 +2,10 @@ import { TokenName } from 'crypto-token-icon';
 import { SolanaMainnetTokenInfo } from './SolanaMainnetTokenInfo';
 
 export const solTokenSolana = new SolanaMainnetTokenInfo({
-  address: 'SolanaNative',
+  address: 'So11111111111111111111111111111111111111112',
   decimals: 9,
   symbol: TokenName.SOL,
-  prettyName: 'Salana',
+  prettyName: 'Solana',
   coingeckoId: 'solana',
   isToken2022: false,
   isNative: true,

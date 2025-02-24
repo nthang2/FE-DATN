@@ -12,17 +12,19 @@ export class SolanaDevnetTokenInfo extends SolanaEcosystemTokenInfo {
     coingeckoId?: string;
     isToken2022: boolean;
     oracle?: string;
+    ratio?: string;
   }) {
     super({
       prettyName: input.prettyName,
       symbol: input.symbol,
       decimals: input.decimals,
       address: input.address,
-      network: { id: WalletAdapterNetwork.Devnet, name: 'Solana Devnet' },
+      network: { id: WalletAdapterNetwork.Mainnet, name: 'Solana' },
       isNative: input.isNative,
       coingeckoId: input.coingeckoId,
       isToken2022: input.isToken2022,
       oracle: input.oracle,
+      ratio: input.ratio,
     });
   }
 }
