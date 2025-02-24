@@ -8,7 +8,7 @@ export const lendingProgramId =
 
 export const ctrAdsSolana = {
   //3APJcbC2iHEFGv4y6a8Fi5nQ5u75ML85TQreSr7cpRDs
-  oracle: new PublicKey('95Af7sxjVyunTTikaJQymK3rVwDtEVBtbnStXGMSR9wE'),
+  oracle: new PublicKey('GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k'),
   lending: new PublicKey(lendingProgramId),
   vault: new PublicKey(vaultProgramId),
 };
