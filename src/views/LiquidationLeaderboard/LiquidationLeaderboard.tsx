@@ -128,7 +128,7 @@ export default function LiquidationLeaderboard() {
           </FormControl>
         </Box>
       </Box>
-      <TableContainer sx={{ bgcolor: 'background.content', my: 2, borderRadius: '14px', p: 2 }}>
+      <TableContainer sx={{ bgcolor: 'background.content', mt: 2, borderRadius: '14px', p: 2 }}>
         <Table>
           <TableHead>
             <TableRow>
