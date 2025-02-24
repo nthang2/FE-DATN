@@ -10,6 +10,65 @@ export type IdlLending = {
   };
   instructions: [
     {
+      name: 'addMetadata';
+      discriminator: [231, 195, 40, 240, 67, 231, 53, 136];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'mint';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'controller';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'metadata';
+          writable: true;
+        },
+        {
+          name: 'metadataProgram';
+          writable: true;
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        }
+      ];
+      args: [
+        {
+          name: 'fields';
+          type: {
+            defined: {
+              name: 'metadataFields';
+            };
+          };
+        }
+      ];
+    },
+    {
       name: 'editController';
       discriminator: [132, 153, 227, 60, 132, 180, 226, 209];
       accounts: [
@@ -149,6 +208,14 @@ export type IdlLending = {
         {
           name: 'debtSupplyCap';
           type: 'u64';
+        },
+        {
+          name: 'reserve';
+          type: 'pubkey';
+        },
+        {
+          name: 'oracle';
+          type: 'pubkey';
         }
       ];
     },
@@ -407,6 +474,100 @@ export type IdlLending = {
           };
         },
         {
+          name: 'reserve';
+          writable: true;
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'reserve';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
           name: 'oracle';
           docs: ['Ensure the program calling this instruction verifies the account belongs', 'to the expected Oracle program.'];
         },
@@ -516,6 +677,100 @@ export type IdlLending = {
           writable: true;
         },
         {
+          name: 'reserve';
+          writable: true;
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'reserve';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'stablecoinMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
           name: 'oracle';
         },
         {
@@ -525,6 +780,10 @@ export type IdlLending = {
         {
           name: 'token2022Program';
           address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
         },
         {
           name: 'systemProgram';
@@ -554,6 +813,21 @@ export type IdlLending = {
       };
     },
     {
+      name: 'readPriceGroupAccount';
+      discriminator: [208, 151, 171, 124, 190, 226, 80, 161];
+      accounts: [
+        {
+          name: 'priceGroup';
+        }
+      ];
+      args: [];
+      returns: {
+        defined: {
+          name: 'priceGroup';
+        };
+      };
+    },
+    {
       name: 'updateAuthority';
       discriminator: [32, 46, 64, 28, 149, 75, 243, 88];
       accounts: [
@@ -578,8 +852,8 @@ export type IdlLending = {
       args: [];
     },
     {
-      name: 'updateRate';
-      discriminator: [24, 225, 53, 189, 72, 212, 225, 178];
+      name: 'updateMetadata';
+      discriminator: [170, 182, 43, 239, 97, 78, 225, 186];
       accounts: [
         {
           name: 'authority';
@@ -587,16 +861,7 @@ export type IdlLending = {
           signer: true;
         },
         {
-          name: 'depository';
-          writable: true;
-        },
-        {
-          name: 'controller';
-          writable: true;
-        },
-        {
-          name: 'redeemableMint';
-          writable: true;
+          name: 'mint';
           pda: {
             seeds: [
               {
@@ -607,19 +872,43 @@ export type IdlLending = {
           };
         },
         {
-          name: 'liquidatorRedeemable';
+          name: 'controller';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'metadata';
           writable: true;
+        },
+        {
+          name: 'metadataProgram';
+          writable: true;
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
         },
         {
           name: 'tokenProgram';
           address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
-        },
-        {
-          name: 'token2022Program';
-          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
         }
       ];
-      args: [];
+      args: [
+        {
+          name: 'fields';
+          type: {
+            defined: {
+              name: 'metadataFields';
+            };
+          };
+        }
+      ];
     }
   ];
   accounts: [
@@ -640,6 +929,10 @@ export type IdlLending = {
     {
       name: 'initializeControllerEvent';
       discriminator: [236, 159, 123, 225, 71, 177, 241, 0];
+    },
+    {
+      name: 'interactWithTypeODepositoryEvent';
+      discriminator: [125, 235, 2, 36, 55, 93, 10, 168];
     },
     {
       name: 'liquidationEvent';
@@ -1051,6 +1344,36 @@ export type IdlLending = {
       code: 6076;
       name: 'onlyOneLoanAccount';
       msg: 'Only 1 loan account to be liquidated';
+    },
+    {
+      code: 6077;
+      name: 'invalidCollateralizationRatio';
+      msg: 'Cannot liquidate to lower than Collateralization Ratio.';
+    },
+    {
+      code: 6078;
+      name: 'invalidReserveAccount';
+      msg: 'The provided reserve account is invalid';
+    },
+    {
+      code: 6079;
+      name: 'invalidAccountSize';
+      msg: 'The new size provided is not match the needed space for migration.';
+    },
+    {
+      code: 6080;
+      name: 'priceNotUpdate';
+      msg: "The price of this collateral hasn't been updated for 10 minute.";
+    },
+    {
+      code: 6081;
+      name: 'invalidMetadata';
+      msg: 'The provided metadata account is invalid.';
+    },
+    {
+      code: 6082;
+      name: 'tokenNotFound';
+      msg: 'Token not found in price group oracle.';
     }
   ];
   types: [
@@ -1090,6 +1413,14 @@ export type IdlLending = {
           {
             name: 'base';
             type: 'u64';
+          },
+          {
+            name: 'reserve';
+            type: 'pubkey';
+          },
+          {
+            name: 'redeemableOracle';
+            type: 'pubkey';
           }
         ];
       };
@@ -1115,6 +1446,18 @@ export type IdlLending = {
             name: 'base';
             type: {
               option: 'u64';
+            };
+          },
+          {
+            name: 'oracle';
+            type: {
+              option: 'pubkey';
+            };
+          },
+          {
+            name: 'reserve';
+            type: {
+              option: 'pubkey';
             };
           }
         ];
@@ -1172,6 +1515,20 @@ export type IdlLending = {
             type: {
               option: 'pubkey';
             };
+          },
+          {
+            name: 'pause';
+            type: {
+              option: 'bool';
+            };
+          },
+          {
+            name: 'limit';
+            type: {
+              option: {
+                option: 'u64';
+              };
+            };
           }
         ];
       };
@@ -1196,6 +1553,38 @@ export type IdlLending = {
             name: 'authority';
             docs: ['The authority.'];
             type: 'pubkey';
+          }
+        ];
+      };
+    },
+    {
+      name: 'interactWithTypeODepositoryEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'user';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateral';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateralAmount';
+            type: 'u64';
+          },
+          {
+            name: 'debtAmount';
+            type: 'u64';
+          },
+          {
+            name: 'collateralFlag';
+            type: 'bool';
+          },
+          {
+            name: 'loanFlag';
+            type: 'bool';
           }
         ];
       };
@@ -1232,6 +1621,75 @@ export type IdlLending = {
           {
             name: 'mintedAmount';
             type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'metadataFields';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'name';
+            type: 'string';
+          },
+          {
+            name: 'symbol';
+            type: 'string';
+          },
+          {
+            name: 'uri';
+            type: 'string';
+          },
+          {
+            name: 'sellerFeeBasisPoints';
+            type: 'u16';
+          }
+        ];
+      };
+    },
+    {
+      name: 'priceGroup';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'bump';
+            docs: ['Bump seed used to generate the program address / authority'];
+            type: {
+              array: ['u8', 1];
+            };
+          },
+          {
+            name: 'priceGroupData';
+            type: {
+              vec: {
+                defined: {
+                  name: 'priceGroupData';
+                };
+              };
+            };
+          },
+          {
+            name: 'updatedTimestamp';
+            type: 'i64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'priceGroupData';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'tokenMint';
+            type: 'pubkey';
+          },
+          {
+            name: 'price';
+            type: 'f64';
           }
         ];
       };
@@ -1420,6 +1878,10 @@ export type IdlLending = {
           {
             name: 'rate';
             type: 'u64';
+          },
+          {
+            name: 'isPaused';
+            type: 'bool';
           }
         ];
       };
@@ -1436,6 +1898,65 @@ export const idlLending: IdlLending = {
     description: 'Created with Anchor',
   },
   instructions: [
+    {
+      name: 'addMetadata',
+      discriminator: [231, 195, 40, 240, 67, 231, 53, 136],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'mint',
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'controller',
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'metadata',
+          writable: true,
+        },
+        {
+          name: 'metadataProgram',
+          writable: true,
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+      ],
+      args: [
+        {
+          name: 'fields',
+          type: {
+            defined: {
+              name: 'metadataFields',
+            },
+          },
+        },
+      ],
+    },
     {
       name: 'editController',
       discriminator: [132, 153, 227, 60, 132, 180, 226, 209],
@@ -1576,6 +2097,14 @@ export const idlLending: IdlLending = {
         {
           name: 'debtSupplyCap',
           type: 'u64',
+        },
+        {
+          name: 'reserve',
+          type: 'pubkey',
+        },
+        {
+          name: 'oracle',
+          type: 'pubkey',
         },
       ],
     },
@@ -1774,6 +2303,40 @@ export const idlLending: IdlLending = {
           },
         },
         {
+          name: 'reserve',
+          writable: true,
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'reserve',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
           name: 'oracle',
           docs: ['Ensure the program calling this instruction verifies the account belongs', 'to the expected Oracle program.'],
         },
@@ -1883,6 +2446,40 @@ export const idlLending: IdlLending = {
           writable: true,
         },
         {
+          name: 'reserve',
+          writable: true,
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'reserve',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'stablecoinMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
           name: 'oracle',
         },
         {
@@ -1892,6 +2489,10 @@ export const idlLending: IdlLending = {
         {
           name: 'token2022Program',
           address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
         },
         {
           name: 'systemProgram',
@@ -1921,6 +2522,21 @@ export const idlLending: IdlLending = {
       },
     },
     {
+      name: 'readPriceGroupAccount',
+      discriminator: [208, 151, 171, 124, 190, 226, 80, 161],
+      accounts: [
+        {
+          name: 'priceGroup',
+        },
+      ],
+      args: [],
+      returns: {
+        defined: {
+          name: 'priceGroup',
+        },
+      },
+    },
+    {
       name: 'updateAuthority',
       discriminator: [32, 46, 64, 28, 149, 75, 243, 88],
       accounts: [
@@ -1945,8 +2561,8 @@ export const idlLending: IdlLending = {
       args: [],
     },
     {
-      name: 'updateRate',
-      discriminator: [24, 225, 53, 189, 72, 212, 225, 178],
+      name: 'updateMetadata',
+      discriminator: [170, 182, 43, 239, 97, 78, 225, 186],
       accounts: [
         {
           name: 'authority',
@@ -1954,16 +2570,7 @@ export const idlLending: IdlLending = {
           signer: true,
         },
         {
-          name: 'depository',
-          writable: true,
-        },
-        {
-          name: 'controller',
-          writable: true,
-        },
-        {
-          name: 'redeemableMint',
-          writable: true,
+          name: 'mint',
           pda: {
             seeds: [
               {
@@ -1974,19 +2581,43 @@ export const idlLending: IdlLending = {
           },
         },
         {
-          name: 'liquidatorRedeemable',
+          name: 'controller',
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'metadata',
           writable: true,
+        },
+        {
+          name: 'metadataProgram',
+          writable: true,
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
         },
         {
           name: 'tokenProgram',
           address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
         },
+      ],
+      args: [
         {
-          name: 'token2022Program',
-          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+          name: 'fields',
+          type: {
+            defined: {
+              name: 'metadataFields',
+            },
+          },
         },
       ],
-      args: [],
     },
   ],
   accounts: [
@@ -2007,6 +2638,10 @@ export const idlLending: IdlLending = {
     {
       name: 'initializeControllerEvent',
       discriminator: [236, 159, 123, 225, 71, 177, 241, 0],
+    },
+    {
+      name: 'interactWithTypeODepositoryEvent',
+      discriminator: [125, 235, 2, 36, 55, 93, 10, 168],
     },
     {
       name: 'liquidationEvent',
@@ -2419,6 +3054,36 @@ export const idlLending: IdlLending = {
       name: 'onlyOneLoanAccount',
       msg: 'Only 1 loan account to be liquidated',
     },
+    {
+      code: 6077,
+      name: 'invalidCollateralizationRatio',
+      msg: 'Cannot liquidate to lower than Collateralization Ratio.',
+    },
+    {
+      code: 6078,
+      name: 'invalidReserveAccount',
+      msg: 'The provided reserve account is invalid',
+    },
+    {
+      code: 6079,
+      name: 'invalidAccountSize',
+      msg: 'The new size provided is not match the needed space for migration.',
+    },
+    {
+      code: 6080,
+      name: 'priceNotUpdate',
+      msg: "The price of this collateral hasn't been updated for 10 minute.",
+    },
+    {
+      code: 6081,
+      name: 'invalidMetadata',
+      msg: 'The provided metadata account is invalid.',
+    },
+    {
+      code: 6082,
+      name: 'tokenNotFound',
+      msg: 'Token not found in price group oracle.',
+    },
   ],
   types: [
     {
@@ -2458,6 +3123,14 @@ export const idlLending: IdlLending = {
             name: 'base',
             type: 'u64',
           },
+          {
+            name: 'reserve',
+            type: 'pubkey',
+          },
+          {
+            name: 'redeemableOracle',
+            type: 'pubkey',
+          },
         ],
       },
     },
@@ -2482,6 +3155,18 @@ export const idlLending: IdlLending = {
             name: 'base',
             type: {
               option: 'u64',
+            },
+          },
+          {
+            name: 'oracle',
+            type: {
+              option: 'pubkey',
+            },
+          },
+          {
+            name: 'reserve',
+            type: {
+              option: 'pubkey',
             },
           },
         ],
@@ -2540,6 +3225,20 @@ export const idlLending: IdlLending = {
               option: 'pubkey',
             },
           },
+          {
+            name: 'pause',
+            type: {
+              option: 'bool',
+            },
+          },
+          {
+            name: 'limit',
+            type: {
+              option: {
+                option: 'u64',
+              },
+            },
+          },
         ],
       },
     },
@@ -2563,6 +3262,38 @@ export const idlLending: IdlLending = {
             name: 'authority',
             docs: ['The authority.'],
             type: 'pubkey',
+          },
+        ],
+      },
+    },
+    {
+      name: 'interactWithTypeODepositoryEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'user',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateral',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateralAmount',
+            type: 'u64',
+          },
+          {
+            name: 'debtAmount',
+            type: 'u64',
+          },
+          {
+            name: 'collateralFlag',
+            type: 'bool',
+          },
+          {
+            name: 'loanFlag',
+            type: 'bool',
           },
         ],
       },
@@ -2599,6 +3330,75 @@ export const idlLending: IdlLending = {
           {
             name: 'mintedAmount',
             type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'metadataFields',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'name',
+            type: 'string',
+          },
+          {
+            name: 'symbol',
+            type: 'string',
+          },
+          {
+            name: 'uri',
+            type: 'string',
+          },
+          {
+            name: 'sellerFeeBasisPoints',
+            type: 'u16',
+          },
+        ],
+      },
+    },
+    {
+      name: 'priceGroup',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'bump',
+            docs: ['Bump seed used to generate the program address / authority'],
+            type: {
+              array: ['u8', 1],
+            },
+          },
+          {
+            name: 'priceGroupData',
+            type: {
+              vec: {
+                defined: {
+                  name: 'priceGroupData',
+                },
+              },
+            },
+          },
+          {
+            name: 'updatedTimestamp',
+            type: 'i64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'priceGroupData',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'tokenMint',
+            type: 'pubkey',
+          },
+          {
+            name: 'price',
+            type: 'f64',
           },
         ],
       },
@@ -2787,6 +3587,10 @@ export const idlLending: IdlLending = {
           {
             name: 'rate',
             type: 'u64',
+          },
+          {
+            name: 'isPaused',
+            type: 'bool',
           },
         ],
       },

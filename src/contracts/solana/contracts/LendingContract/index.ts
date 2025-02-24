@@ -18,7 +18,7 @@ import { rpc } from 'src/states/wallets/solana-blockchain/configs';
 import { getDecimalToken } from 'src/utils';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
-import { CONTROLLER_SEED, collateral as defaultCollateral, DEPOSITORY_SEED, REDEEMABLE_MINT_SEED } from './constant';
+import { CONTROLLER_SEED, collateral as defaultCollateral, DEPOSITORY_SEED, REDEEMABLE_MINT_SEED, RESERVE_ACCOUNT } from './constant';
 import { BN as utilBN } from 'src/utils/index';
 import { solTokenSolana } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
@@ -45,6 +45,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const depository = this.getPda(DEPOSITORY_SEED, collateral);
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
     const oracle = findTokenInfoByToken(tokenAddress)?.oracle;
+    const reserveTokenAccount = getAssociatedTokenAddressSync(redeemable_mint, RESERVE_ACCOUNT, true);
 
     return {
       user: this.provider.publicKey,
@@ -57,6 +58,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       depositoryVault: depositoryVault,
       oracle: oracle || ctrAdsSolana.oracle,
       loanAccount: pdAddress,
+      reserve: RESERVE_ACCOUNT,
+      reserveTokenAccount: reserveTokenAccount,
     };
   }
 
