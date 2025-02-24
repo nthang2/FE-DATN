@@ -106,11 +106,11 @@ export default function LiquidationLeaderboard() {
 
   return (
     <Box sx={{ mt: 4 }}>
-      <Box className="flex-space-between">
+      <Box sx={{ display: { xs: 'inherit', sm: 'flex' }, alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
           Liquidation Leaderboard
         </Typography>
-        <Box>
+        <Box className="flex-end" sx={{ mt: { xs: 4, sm: 0 } }}>
           <FormControl sx={{ m: 1 }} variant="standard">
             <Select
               labelId="path-select-label"
