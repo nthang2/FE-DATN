@@ -1,3 +1,4 @@
+import { ContentCopy } from '@mui/icons-material';
 import {
   Box,
   FormControl,
@@ -21,6 +22,7 @@ import NoData from 'src/components/StatusData/NoData';
 import { getLiquidationLeaderboardData } from 'src/services/HandleApi/getLeaderboard/getLeaderboard';
 import { TLiquidationLeaderboardApiResp } from 'src/services/HandleApi/getLeaderboard/type';
 import { formatAddress, formatNumber } from '../../utils/format';
+import { copyTextToClipboard } from '../../utils/index';
 import { checkStatus, filterLiquidationConfigs, liquidationTableHead } from './utils';
 
 const Input = styled(InputBase)(({ theme }) => ({
@@ -95,6 +97,7 @@ export default function LiquidationLeaderboard() {
     if (filterParams.address) {
       const timeout = setTimeout(() => {
         getData();
+        setPage(0);
       }, 350);
       return () => clearTimeout(timeout);
     }
@@ -103,11 +106,11 @@ export default function LiquidationLeaderboard() {
 
   return (
     <Box sx={{ mt: 4 }}>
-      <Box className="flex-space-between">
+      <Box sx={{ display: { xs: 'inherit', sm: 'flex' }, alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
           Liquidation Leaderboard
         </Typography>
-        <Box>
+        <Box className="flex-end" sx={{ mt: { xs: 4, sm: 0 } }}>
           <FormControl sx={{ m: 1 }} variant="standard">
             <Select
               labelId="path-select-label"
@@ -149,10 +152,16 @@ export default function LiquidationLeaderboard() {
                     {page * rowsPerPage + index + 1}
                   </TableCell>
                   <TableCell align="right">
-                    <Typography sx={{ color: 'text.disabled' }}>{formatAddress(row.user)}</Typography>
+                    <Box className="flex-end">
+                      <Typography sx={{ color: 'text.disabled', mr: 1 }}>{formatAddress(row.user)}</Typography>
+                      <ContentCopy color="secondary" fontSize="small" onClick={() => copyTextToClipboard(row.user)} />
+                    </Box>
                   </TableCell>
                   <TableCell align="right">
-                    <Typography sx={{ color: 'text.disabled' }}>{formatAddress(row.collateral)}</Typography>
+                    <Box className="flex-end">
+                      <Typography sx={{ color: 'text.disabled', mr: 1 }}>{formatAddress(row.collateral)}</Typography>
+                      <ContentCopy color="secondary" fontSize="small" onClick={() => copyTextToClipboard(row.collateral)} />
+                    </Box>
                   </TableCell>
                   <TableCell align="right">
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.collateralAmount)}</Typography>
