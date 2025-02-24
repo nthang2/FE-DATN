@@ -1,25 +1,20 @@
-export type TLeaderboardRow = {
-  debtor: string;
-  liquidator: string;
-  loanAccount: string;
+export type TLiquidationLeaderboardRow = {
+  user: string;
   collateral: string;
   collateralAmount: number;
-  repayAmount: number;
+  debtAmount: number;
   collateralValue: number;
-  repayValue: number;
-  transactionHash: string;
-  blockNumber: number;
-  timestamp: number;
+  debtValue: number;
+  healthFactor: number;
 };
 
-export type TLeaderboardApiResp = {
+export type TLiquidationLeaderboardApiResp = {
   numberOfDocs: number;
-  docs: TLeaderboardRow[];
+  docs: TLiquidationLeaderboardRow[];
 };
 
-export type TGetLeaderboardData = {
-  page: number;
-  debtor: string;
-  collateral: string;
-  itemPerPage: number;
+export type TLiquidationLeaderboardParams = {
+  user?: string;
+  collateral?: string;
+  healthFactorThreshold?: number;
 };

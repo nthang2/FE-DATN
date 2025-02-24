@@ -1,6 +1,7 @@
 import { useRoutes } from 'react-router-dom';
 import Layout from './layout/Layout';
 import Borrow from './views/Borrow/Borrow';
+// import LiquidationLeaderboard from './views/LiquidationLeaderboard/LiquidationLeaderboard';
 import MyPortfolio from './views/MyPortfolio/MyPortfolio';
 import NotFound from './views/NotFound/NotFound';
 import Vaults from './views/Vaults/Vaults';

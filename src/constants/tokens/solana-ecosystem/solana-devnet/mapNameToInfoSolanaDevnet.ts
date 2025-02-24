@@ -26,4 +26,5 @@ export const findTokenNameSolanaDevnet: Record<string, TSolanaDevnetToken | unde
   [token2SolanaDevnet.address]: TokenName.TRUMP,
   [token3SolanaDevnet.address]: TokenName.AI16Z,
   [usdaiSolanaDevnet.address]: TokenName.USDAI,
+  [solanaDevnet.address]: TokenName.SOL,
 };

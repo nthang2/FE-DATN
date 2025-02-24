@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { apiUrl } from 'src/services/apiUrl';
-import { TGetLeaderboardData, TLeaderboardApiResp } from './type';
+import { TLiquidationLeaderboardApiResp, TLiquidationLeaderboardParams } from './type';
 
-export const handleGetLeaderboardData = async (props: TGetLeaderboardData) => {
-  const { page, debtor, collateral, itemPerPage } = props;
-  const resp = await axios.get(apiUrl.getLeaderboard(page, debtor, collateral, itemPerPage));
+export const getLiquidationLeaderboardData = async (props: TLiquidationLeaderboardParams) => {
+  const { user, collateral, healthFactorThreshold } = props;
+  const resp = await axios.get(apiUrl.getLiquidationLeaderboard({ collateral, user, healthFactorThreshold }));
 
-  return resp.data as TLeaderboardApiResp;
+  return resp.data as TLiquidationLeaderboardApiResp;
 };

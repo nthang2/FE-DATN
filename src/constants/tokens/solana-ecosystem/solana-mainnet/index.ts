@@ -1,16 +1,6 @@
 import { TokenName } from 'crypto-token-icon';
 import { SolanaMainnetTokenInfo } from './SolanaMainnetTokenInfo';
 
-export const solTokenSolana = new SolanaMainnetTokenInfo({
-  address: 'SolanaNative',
-  decimals: 9,
-  symbol: TokenName.SOL,
-  prettyName: 'Salana',
-  coingeckoId: 'solana',
-  isToken2022: false,
-  isNative: true,
-});
-
 export const usdaiSolanaMainnet = new SolanaMainnetTokenInfo({
   address: 'DYeTA4ZQhEwoJ5imjq1Q3zgwfTgkh4WmdfFHAq3jLrv3',
   decimals: 6,
@@ -40,6 +30,17 @@ export const trumpTokenSolana = new SolanaMainnetTokenInfo({
   isToken2022: false,
   isNative: false,
   oracle: 'CsRhK1jeEih7oMHD3m8PL2b9jMw6xDzrHvDgP6sz6xer',
+});
+
+export const solTokenSolana = new SolanaMainnetTokenInfo({
+  address: 'So11111111111111111111111111111111111111112',
+  decimals: 9,
+  symbol: TokenName.SOL,
+  prettyName: 'Solana',
+  coingeckoId: 'solana',
+  isToken2022: false,
+  isNative: true,
+  ratio: '0.6',
 });
 
 export const maxTokenSolana = new SolanaMainnetTokenInfo({

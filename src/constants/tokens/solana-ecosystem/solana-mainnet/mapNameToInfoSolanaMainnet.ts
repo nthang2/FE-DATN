@@ -28,4 +28,5 @@ export const findTokenNameSolanaMainnet: Record<string, TSolanaMainnetToken | un
   [usdaiSolanaMainnet.address]: TokenName.USDAI,
   [oraiSolanaMainnet.address]: TokenName.ORAI,
   [usdcSolanaMainnet.address]: TokenName.USDC,
+  [solTokenSolana.address]: TokenName.SOL,
 };

@@ -1,8 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BN } from '@coral-xyz/anchor';
-import { getAssociatedTokenAddressSync } from '@solana/spl-token';
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  createAssociatedTokenAccountInstruction,
+  createSyncNativeInstruction,
+  getAccount,
+  getAssociatedTokenAddressSync,
+  NATIVE_MINT,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey } from '@solana/web3.js';
+import { Connection, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { queryClient } from 'src/layout/Layout';
@@ -10,8 +18,10 @@ import { rpc } from 'src/states/wallets/solana-blockchain/configs';
 import { getDecimalToken } from 'src/utils';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
-import { CONTROLLER_SEED, collateral as defaultCollateral, DEPOSITORY_SEED, REDEEMABLE_MINT_SEED } from './constant';
+import { CONTROLLER_SEED, collateral as defaultCollateral, DEPOSITORY_SEED, REDEEMABLE_MINT_SEED, RESERVE_ACCOUNT } from './constant';
 import { BN as utilBN } from 'src/utils/index';
+import { solTokenSolana } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
+import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -35,6 +45,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const depository = this.getPda(DEPOSITORY_SEED, collateral);
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
     const oracle = findTokenInfoByToken(tokenAddress)?.oracle;
+    const reserveTokenAccount = getAssociatedTokenAddressSync(redeemable_mint, RESERVE_ACCOUNT, true);
 
     return {
       user: this.provider.publicKey,
@@ -47,6 +58,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       depositoryVault: depositoryVault,
       oracle: oracle || ctrAdsSolana.oracle,
       loanAccount: pdAddress,
+      reserve: RESERVE_ACCOUNT,
+      reserveTokenAccount: reserveTokenAccount,
     };
   }
 
@@ -55,6 +68,22 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const pdAddress = this.getPda('LOAN', depositoryPda, user);
 
     return { pdAddress, depositoryPda };
+  }
+
+  private async _getOrCreateTokenAccountTx(mint: PublicKey, payer: PublicKey): Promise<Transaction> {
+    const tokenAccount = getAssociatedTokenAddressSync(mint, payer, true);
+    const transaction: Transaction = new Transaction();
+
+    try {
+      await getAccount(this.provider.connection, tokenAccount, 'confirmed');
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      transaction.add(
+        createAssociatedTokenAccountInstruction(payer, tokenAccount, payer, mint, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID)
+      );
+    }
+
+    return transaction;
   }
 
   async getAccountType0Depository(address: PublicKey) {
@@ -77,15 +106,44 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     return '';
   }
 
+  wrapNative(fromPubkey: PublicKey, amount: number): Transaction {
+    const fromTokenAccount = getAssociatedTokenAddressSync(NATIVE_MINT, fromPubkey);
+
+    const tx = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: fromPubkey,
+        toPubkey: fromTokenAccount,
+        lamports: amount,
+      }),
+      createSyncNativeInstruction(fromTokenAccount)
+    );
+    return tx;
+  }
+
+  wrapSol(inputToken: string, amount: number): Transaction {
+    if (inputToken === NATIVE_MINT.toBase58()) {
+      return this.wrapNative(this.provider.publicKey, amount);
+    }
+
+    return new Transaction();
+  }
+
   async deposit(depositAmount: number, tokenAddress: string): Promise<string> {
     const decimal = getDecimalToken(tokenAddress);
     const collateralAmount = new BN(depositAmount * decimal);
     const usdaiAmount = new BN(0 * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
-    const transaction = await this.program.methods
+    const transaction = await this._getOrCreateTokenAccountTx(new PublicKey(tokenAddress), this.provider.publicKey);
+
+    if (tokenAddress === (solTokenSolana.address || solanaDevnet.address)) {
+      transaction.add(this.wrapSol(tokenAddress, collateralAmount));
+    }
+
+    const depositTransaction = await this.program.methods
       .interactWithType0Depository(collateralAmount, usdaiAmount, true, true)
       .accountsPartial(accountsPartial)
       .transaction();
+    transaction.add(depositTransaction);
 
     const transactionHash = await this.sendTransaction(transaction);
     return transactionHash;
