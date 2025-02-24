@@ -11,7 +11,7 @@ export const usdcDevSolanaDevnet = new SolanaDevnetTokenInfo({
 });
 
 export const usdaiSolanaDevnet = new SolanaDevnetTokenInfo({
-  address: 'CkmxjQs8svkATMK7Z19h3qV9ogs89bp9F2EhRCxUVsWH',
+  address: '8XtWqQ5zbrxoRpic5Zavv5oqd2sFCEoBov9EydCLS3HE',
   decimals: 6,
   symbol: TokenName.USDAI,
   prettyName: 'USDAI',
@@ -20,12 +20,14 @@ export const usdaiSolanaDevnet = new SolanaDevnetTokenInfo({
 });
 
 export const solanaDevnet = new SolanaDevnetTokenInfo({
-  address: '',
-  decimals: 6,
+  address: 'So11111111111111111111111111111111111111112',
+  decimals: 9,
   symbol: TokenName.SOL,
   prettyName: 'Solana',
-  isNative: true,
+  coingeckoId: 'solana',
   isToken2022: false,
+  isNative: true,
+  ratio: '0.6',
 });
 
 export const oraiSolanaDevnet = new SolanaDevnetTokenInfo({
