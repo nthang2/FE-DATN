@@ -16,5 +16,7 @@ export type TLiquidationLeaderboardApiResp = {
 export type TLiquidationLeaderboardParams = {
   user?: string;
   collateral?: string;
-  healthFactorThreshold?: number;
+  healthFactorThreshold: number;
+  sortBy: string;
+  reverse: boolean;
 };
