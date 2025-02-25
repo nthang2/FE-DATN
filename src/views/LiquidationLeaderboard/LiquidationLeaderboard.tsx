@@ -2,54 +2,38 @@ import { ContentCopy } from '@mui/icons-material';
 import {
   Box,
   FormControl,
-  InputBase,
   MenuItem,
+  Pagination,
   Select,
-  styled,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
   Typography,
 } from '@mui/material';
+import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
 import Failed from 'src/components/StatusData/Failed';
 import JPowLoading from 'src/components/StatusData/Loading';
 import NoData from 'src/components/StatusData/NoData';
+import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { getLiquidationLeaderboardData } from 'src/services/HandleApi/getLeaderboard/getLeaderboard';
 import { TLiquidationLeaderboardApiResp } from 'src/services/HandleApi/getLeaderboard/type';
 import { formatAddress, formatNumber } from '../../utils/format';
 import { copyTextToClipboard } from '../../utils/index';
-import { checkStatus, filterLiquidationConfigs, liquidationTableHead } from './utils';
+import { Input } from './components/Input';
+import SortButton from './components/SortButton';
+import { checkStatus, filterLiquidationConfigs, liquidationTableHead, TSortBuy } from './utils';
 
-const Input = styled(InputBase)(({ theme }) => ({
-  minWidth: '100px',
-  'label + &': {
-    marginTop: theme.spacing(3),
-  },
-  '& .MuiSelect-select': {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  '& .MuiInputBase-input': {
-    minWidth: '200px',
-    borderRadius: 4,
-    position: 'relative',
-    backgroundColor: theme.palette.background.paper,
-    border: '0.1px solid #ced4da',
-    fontSize: 16,
-    padding: '10px 26px 10px 12px',
-    transition: theme.transitions.create(['border-color', 'box-shadow']),
-    '&:focus': {
-      borderRadius: 4,
-      borderColor: '#80bdff',
-      boxShadow: `0 0 0 0.1rem #FCFFD8`,
-    },
-  },
-}));
+export interface TFilterParams {
+  path: 'user' | 'collateral';
+  address?: string;
+  healthFactorThreshold: number;
+  sortBy: TSortBuy;
+  reverse: boolean;
+}
 
 export default function LiquidationLeaderboard() {
   const [liquidation, setLiquidation] = useState<{
@@ -59,14 +43,25 @@ export default function LiquidationLeaderboard() {
     data: undefined,
     status: 'success',
   });
-  const [filterParams, setFilterParams] = useState<{ path: 'user' | 'collateral'; address?: string }>({ path: 'user', address: undefined });
-  const [page, setPage] = useState(0);
+  const [filterParams, setFilterParams] = useState<TFilterParams>({
+    path: 'user',
+    address: undefined,
+    healthFactorThreshold: 1.1,
+    sortBy: 'healthFactor',
+    reverse: false,
+  });
+  const [page, setPage] = useState(1);
   const [rowsPerPage] = useState(5);
 
   const getData = async () => {
     try {
       setLiquidation({ data: undefined, status: 'fetching' });
-      const data = await getLiquidationLeaderboardData({ [filterParams.path]: filterParams.address });
+      const data = await getLiquidationLeaderboardData({
+        [filterParams.path]: filterParams.address,
+        healthFactorThreshold: filterParams.healthFactorThreshold,
+        sortBy: filterParams.sortBy,
+        reverse: filterParams.reverse,
+      });
       setLiquidation({ data: data, status: 'success' });
     } catch (error) {
       setLiquidation({ data: undefined, status: 'error' });
@@ -78,13 +73,13 @@ export default function LiquidationLeaderboard() {
     setFilterParams({ ...filterParams, ...{ [param]: event.target.value } });
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (event: React.ChangeEvent<unknown>, newPage: number) => {
     setPage(newPage);
   };
 
   const dataRender = useMemo(() => {
     if (liquidation.data && liquidation.data.numberOfDocs > 0) {
-      return liquidation.data.docs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+      return liquidation.data.docs.slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage);
     } else {
       return [];
     }
@@ -97,12 +92,12 @@ export default function LiquidationLeaderboard() {
     if (filterParams.address) {
       const timeout = setTimeout(() => {
         getData();
-        setPage(0);
+        setPage(1);
       }, 350);
       return () => clearTimeout(timeout);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterParams.path, filterParams.address]);
+  }, [filterParams.path, filterParams.address, filterParams.reverse, filterParams.sortBy]);
 
   return (
     <Box sx={{ mt: 4 }}>
@@ -137,9 +132,12 @@ export default function LiquidationLeaderboard() {
             <TableRow>
               {liquidationTableHead.map((h, i) => (
                 <TableCell key={i} align={i == 0 ? 'center' : 'right'}>
-                  <Typography variant="caption2" sx={{ color: '#888880' }}>
-                    {h}
-                  </Typography>
+                  <Box className={clsx('flex-center', { 'flex-end': i !== 0 })}>
+                    <Typography variant="caption2" sx={{ color: '#888880' }}>
+                      {h.label}
+                    </Typography>
+                    {h.sort && <SortButton filter={h.sort} filterParams={filterParams} setFilterParams={setFilterParams} />}
+                  </Box>
                 </TableCell>
               ))}
             </TableRow>
@@ -149,7 +147,7 @@ export default function LiquidationLeaderboard() {
               dataRender.map((row, index) => (
                 <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell component="th" scope="row" align="center">
-                    {page * rowsPerPage + index + 1}
+                    {(page - 1) * rowsPerPage + index + 1}
                   </TableCell>
                   <TableCell align="right">
                     <Box className="flex-end">
@@ -159,7 +157,7 @@ export default function LiquidationLeaderboard() {
                   </TableCell>
                   <TableCell align="right">
                     <Box className="flex-end">
-                      <Typography sx={{ color: 'text.disabled', mr: 1 }}>{formatAddress(row.collateral)}</Typography>
+                      <Typography sx={{ color: 'text.disabled', mr: 1 }}>{findTokenInfoByToken(row.collateral)?.symbol}</Typography>
                       <ContentCopy color="secondary" fontSize="small" onClick={() => copyTextToClipboard(row.collateral)} />
                     </Box>
                   </TableCell>
@@ -191,13 +189,16 @@ export default function LiquidationLeaderboard() {
           </TableBody>
         </Table>
       </TableContainer>
-      {/* {liquidation.status == 'success' && liquidation.data && liquidation.data.numberOfDocs > 0 && (
-        <Pagination
-          count={10}
-          renderItem={(item) => <PaginationItem page={page} onChange={handleChangePage} slots={{ previous: 'a', next: 'b' }} {...item} />}
-        />
-      )} */}
       {liquidation.status == 'success' && liquidation.data && liquidation.data.numberOfDocs > 0 && (
+        <Pagination
+          className="flex-center"
+          sx={{ mt: 2 }}
+          page={page}
+          count={Math.floor(liquidation.data.numberOfDocs / 5) + 1}
+          onChange={handleChangePage}
+        />
+      )}
+      {/* {liquidation.status == 'success' && liquidation.data && liquidation.data.numberOfDocs > 0 && (
         <TablePagination
           component="div"
           count={liquidation.data.numberOfDocs}
@@ -206,7 +207,7 @@ export default function LiquidationLeaderboard() {
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5]}
         />
-      )}
+      )} */}
     </Box>
   );
 }

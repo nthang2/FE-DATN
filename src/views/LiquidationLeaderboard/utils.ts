@@ -1,9 +1,19 @@
+export type TSortBuy = 'healthFactor' | 'collateralValue' | 'debtAmount';
+
 export const filterLiquidationConfigs = {
   user: { value: 'user', label: 'User' },
   collateral: { value: 'collateral', label: 'Collateral' },
 };
 
-export const liquidationTableHead = ['Rank', 'User', 'Collateral', 'Collateral Amount', 'Debt Amount', 'Health Factor', 'Status'];
+export const liquidationTableHead: Array<{ label: string; sort?: TSortBuy }> = [
+  { label: 'Rank' },
+  { label: 'User' },
+  { label: 'Collateral' },
+  { label: 'Collateral Amount' },
+  { label: 'Debt Amount', sort: 'debtAmount' },
+  { label: 'Health Factor', sort: 'healthFactor' },
+  { label: 'Status' },
+];
 
 export const checkStatus = (healthFactor: number) => {
   if (healthFactor < 1.2) {
