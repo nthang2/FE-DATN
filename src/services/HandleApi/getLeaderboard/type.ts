@@ -1,11 +1,15 @@
 export type TLiquidationLeaderboardRow = {
   user: string;
+  collateralName: string;
+  collateralImageUrl: string;
   collateral: string;
   collateralAmount: number;
   debtAmount: number;
   collateralValue: number;
   debtValue: number;
   healthFactor: number;
+  repayAmount: number;
+  collateralToClaim: number;
 };
 
 export type TLiquidationLeaderboardApiResp = {
@@ -19,4 +23,5 @@ export type TLiquidationLeaderboardParams = {
   healthFactorThreshold: number;
   sortBy: string;
   reverse: boolean;
+  excludeCollateral: string;
 };
