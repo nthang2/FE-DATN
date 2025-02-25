@@ -16,6 +16,6 @@ export const apiUrl = {
     const _collateral = collateral ? `&collateral=${collateral}` : '';
     // eslint-disable-next-line no-extra-boolean-cast
     const checkFinalParam = Boolean(_user || _collateral) ? '' : '&';
-    return `${BACKEND_URL}/lending/liquidates/risk_loans?'${_user}${_collateral}${checkFinalParam}healthFactorThreshold=${healthFactorThreshold}&sortBy=${sortBy}&reverse=${reverse}&excludeCollateral=${excludeCollateral}`;
+    return `${BACKEND_URL}/lending/liquidates/risk_loans?'${_user}${_collateral}${checkFinalParam}&healthFactorThreshold=${healthFactorThreshold}&sortBy=${sortBy}&reverse=${reverse}&excludeCollateral=${excludeCollateral}`;
   },
 };

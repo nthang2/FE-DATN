@@ -11,18 +11,18 @@ export const liquidationTableHead: Array<{ label: string; sort?: TSortBuy }> = [
   { label: 'Collateral' },
   { label: 'Collateral Amount' },
   { label: 'Debt Amount', sort: 'debtAmount' },
-  { label: 'Repay Amount' },
   { label: 'Collateral to Claim' },
+  { label: 'Repay Amount' },
   { label: 'Health Factor', sort: 'healthFactor' },
   { label: 'Status' },
 ];
 
 export const checkStatus = (healthFactor: number) => {
   if (healthFactor < 1.2) {
-    return 'High risk';
+    return { text: 'High risk', color: 'orange' };
   } else if (healthFactor < 1) {
-    return 'Ready for liquidation';
+    return { text: 'Ready for liquidation', color: 'red' };
   } else {
-    return '--';
+    return { text: '--', color: 'text.primary' };
   }
 };
