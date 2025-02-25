@@ -52,7 +52,7 @@ export default function LiquidationLeaderboard() {
     reverse: false,
   });
   const [page, setPage] = useState(1);
-  const [rowsPerPage] = useState(5);
+  const [rowsPerPage] = useState(10);
 
   const getData = async () => {
     try {
@@ -170,16 +170,16 @@ export default function LiquidationLeaderboard() {
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.debtAmount)}</Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.repayAmount)}</Typography>
+                    <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.collateralToClaim)}</Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.collateralToClaim)}</Typography>
+                    <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.repayAmount)}</Typography>
                   </TableCell>
                   <TableCell align="right">
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.healthFactor)}</Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Typography sx={{ color: 'text.disabled' }}>{checkStatus(row.healthFactor)}</Typography>
+                    <Typography sx={{ color: checkStatus(row.healthFactor).color }}>{checkStatus(row.healthFactor).text}</Typography>
                   </TableCell>
                 </TableRow>
               ))
@@ -202,7 +202,7 @@ export default function LiquidationLeaderboard() {
           className="flex-center"
           sx={{ mt: 2 }}
           page={page}
-          count={Math.floor(liquidation.data.numberOfDocs / 5) + 1}
+          count={Math.floor(liquidation.data.numberOfDocs / rowsPerPage) + 1}
           onChange={handleChangePage}
         />
       )}
