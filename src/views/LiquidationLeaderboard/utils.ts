@@ -11,6 +11,8 @@ export const liquidationTableHead: Array<{ label: string; sort?: TSortBuy }> = [
   { label: 'Collateral' },
   { label: 'Collateral Amount' },
   { label: 'Debt Amount', sort: 'debtAmount' },
+  { label: 'Repay Amount' },
+  { label: 'Collateral to Claim' },
   { label: 'Health Factor', sort: 'healthFactor' },
   { label: 'Status' },
 ];

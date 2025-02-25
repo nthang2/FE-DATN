@@ -19,6 +19,7 @@ import Failed from 'src/components/StatusData/Failed';
 import JPowLoading from 'src/components/StatusData/Loading';
 import NoData from 'src/components/StatusData/NoData';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { usdcSolanaMainnet } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { getLiquidationLeaderboardData } from 'src/services/HandleApi/getLeaderboard/getLeaderboard';
 import { TLiquidationLeaderboardApiResp } from 'src/services/HandleApi/getLeaderboard/type';
 import { formatAddress, formatNumber } from '../../utils/format';
@@ -61,6 +62,7 @@ export default function LiquidationLeaderboard() {
         healthFactorThreshold: filterParams.healthFactorThreshold,
         sortBy: filterParams.sortBy,
         reverse: filterParams.reverse,
+        excludeCollateral: usdcSolanaMainnet.address,
       });
       setLiquidation({ data: data, status: 'success' });
     } catch (error) {
@@ -166,6 +168,12 @@ export default function LiquidationLeaderboard() {
                   </TableCell>
                   <TableCell align="right">
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.debtAmount)}</Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.repayAmount)}</Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.collateralToClaim)}</Typography>
                   </TableCell>
                   <TableCell align="right">
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.healthFactor)}</Typography>
