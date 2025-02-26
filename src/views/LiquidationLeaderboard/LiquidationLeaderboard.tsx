@@ -146,8 +146,8 @@ export default function LiquidationLeaderboard() {
           <TableHead>
             <TableRow>
               {liquidationTableHead.map((h, i) => (
-                <TableCell key={i} align={i == 0 ? 'center' : 'right'}>
-                  <Box className={clsx('flex-center', { 'flex-end': i !== 0 })}>
+                <TableCell key={i} align={i <= 1 ? 'left' : 'right'}>
+                  <Box className={clsx('flex-end', { 'flex-start': i <= 1 })}>
                     <Typography variant="caption2" sx={{ color: '#888880' }}>
                       {h.label}
                     </Typography>
@@ -161,25 +161,30 @@ export default function LiquidationLeaderboard() {
             {liquidation.status == 'success' && liquidation.data && liquidation.data.numberOfDocs > 0 && dataRender.length > 0 ? (
               dataRender.map((row, index) => (
                 <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                  <TableCell component="th" scope="row" align="center">
+                  <TableCell component="th" scope="row" align="left">
                     {(page - 1) * rowsPerPage + index + 1}
                   </TableCell>
-                  <TableCell align="right">
-                    <Box className="flex-end">
+                  <TableCell align="left">
+                    <Box className="flex-start">
                       <Typography sx={{ color: 'text.disabled', mr: 1 }}>{formatAddress(row.user)}</Typography>
                       <ContentCopy color="secondary" fontSize="small" onClick={() => copyTextToClipboard(row.user)} />
                     </Box>
                   </TableCell>
                   <TableCell align="right">
                     <Box className="flex-end">
-                      <Avatar src={row.collateralImageUrl} sx={{ height: '16px', width: '16px', mr: 0.5 }} />
                       <Typography sx={{ color: 'text.disabled' }}>{findTokenInfoByToken(row.collateral)?.symbol}</Typography>
                       {/* <ContentCopy color="secondary" fontSize="small" onClick={() => copyTextToClipboard(row.collateral)} /> */}
                     </Box>
                   </TableCell>
                   <TableCell align="right">
-                    <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.collateralAmount)}</Typography>
+                    <Box className="flex-end">
+                      <Typography sx={{ color: 'text.disabled', fontWeight: 600, mr: 1 }}>{formatNumber(row.collateralAmount)}</Typography>
+                      <Avatar src={row.collateralImageUrl} sx={{ height: '16px', width: '16px' }} />
+                      {/* <Typography sx={{ color: 'text.disabled' }}>{findTokenInfoByToken(row.collateral)?.symbol}</Typography> */}
+                      {/* <ContentCopy color="secondary" fontSize="small" onClick={() => copyTextToClipboard(row.collateral)} /> */}
+                    </Box>
                   </TableCell>
+                  {/* <TableCell align="right"></TableCell> */}
                   <TableCell align="right">
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>
                       {formatNumber(row.debtAmount, { fractionDigits: 2, prefix: '$' })}
