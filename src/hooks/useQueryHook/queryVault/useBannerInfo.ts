@@ -1,4 +1,4 @@
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useWallet, WalletContextState } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
 
@@ -8,19 +8,22 @@ const useBannerInfo = () => {
   const query = useQuery({
     queryKey: ['useBannerInfo', wallet.publicKey],
     queryFn: async () => {
-      if (!wallet) {
+      try {
+        const currWallet = wallet ? wallet : ({} as WalletContextState);
+
+        const vaultContract = new VaultContract(currWallet);
+        const { apr, tvl } = await vaultContract.getBannerInfo();
+
+        return {
+          apr,
+          tvl,
+        };
+      } catch (error) {
+        console.log('🚀 ~ queryFn: ~ error:', error);
         return undefined;
       }
-
-      const vaultContract = new VaultContract(wallet);
-      const { apr, tvl } = await vaultContract.getBannerInfo();
-
-      return {
-        apr,
-        tvl,
-      };
     },
-    enabled: Boolean(wallet.publicKey),
+    // enabled: Boolean(wallet.publicKey),
     refetchInterval: 1000 * 60 * 5,
     staleTime: Infinity,
   });

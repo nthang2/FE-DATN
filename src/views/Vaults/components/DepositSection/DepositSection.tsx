@@ -20,6 +20,7 @@ const DepositSection = () => {
   const [inputValue, setInputValue] = useState<number>();
   const [sliderValue, setSliderValue] = useState(0);
 
+  const isConnectedWallet = Boolean(wallet.publicKey);
   const isCanDeposit = useMemo(() => {
     if (!inputValue) return false;
     return inputValue <= balance.toNumber() && inputValue > 0;
@@ -63,6 +64,7 @@ const DepositSection = () => {
         variant="filled"
         type="number"
         placeholder="0"
+        disabled={!isConnectedWallet}
         InputProps={{
           disableUnderline: true,
           endAdornment: (
@@ -84,9 +86,16 @@ const DepositSection = () => {
         }}
       />
 
-      <CustomSlider value={sliderValue} max={100} min={0} onChange={handleChangeSlider} sx={{ mt: 2.5 }} />
+      <CustomSlider disabled={!isConnectedWallet} value={sliderValue} max={100} min={0} onChange={handleChangeSlider} sx={{ mt: 2.5 }} />
 
-      <ButtonLoading loading={loading} variant="contained" sx={{ mt: 2.5 }} fullWidth onClick={handleDeposit} disabled={!isCanDeposit}>
+      <ButtonLoading
+        loading={loading}
+        variant="contained"
+        sx={{ mt: 2.5 }}
+        fullWidth
+        onClick={handleDeposit}
+        disabled={!isConnectedWallet || !isCanDeposit}
+      >
         Deposit
       </ButtonLoading>
     </Box>
