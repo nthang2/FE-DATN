@@ -13,6 +13,8 @@ const ClaimableReward = () => {
   const { stakeInfo, status } = useStakedInfo();
   const { asyncExecute, loading } = useAsyncExecute();
 
+  const isConnectedWallet = Boolean(wallet.publicKey);
+
   const handleClaimReward = async () => {
     if (!wallet) return;
 
@@ -72,6 +74,7 @@ const ClaimableReward = () => {
         }}
         onClick={handleClaimReward}
         loading={loading}
+        disabled={!isConnectedWallet}
       >
         Claim Rewards
       </ButtonLoading>

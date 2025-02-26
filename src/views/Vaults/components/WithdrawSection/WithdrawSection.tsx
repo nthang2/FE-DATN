@@ -25,6 +25,7 @@ const WithdrawSection = () => {
   const [inputValue, setInputValue] = useState<number>();
   const [sliderValue, setSliderValue] = useState(0);
 
+  const isConnectedWallet = Boolean(wallet.publicKey);
   const removeAmount = useMemo(() => {
     return ((sliderValue / 100) * Number(stakeInfo?.amount)).toFixed(4);
   }, [stakeInfo, sliderValue]);
@@ -81,6 +82,7 @@ const WithdrawSection = () => {
           variant="filled"
           type="number"
           placeholder="0"
+          disabled={!isConnectedWallet}
           InputProps={{
             disableUnderline: true,
             endAdornment: (
@@ -103,7 +105,7 @@ const WithdrawSection = () => {
         />
       </Stack>
 
-      <CustomSlider value={sliderValue} min={0} max={100} onChange={handleChangeSlider} />
+      <CustomSlider disabled={!isConnectedWallet} value={sliderValue} min={0} max={100} onChange={handleChangeSlider} />
 
       <Stack justifyContent="space-between" alignItems="center">
         <Typography variant="body2">Remaining Amount</Typography>
@@ -111,7 +113,13 @@ const WithdrawSection = () => {
         <TokenUSDAIAmount children={Number(remainingAmount) || 0} />
       </Stack>
 
-      <ButtonLoading loading={loading} variant="contained" fullWidth onClick={handleWithdraw} disabled={!isCanWithdraw}>
+      <ButtonLoading
+        loading={loading}
+        variant="contained"
+        fullWidth
+        onClick={handleWithdraw}
+        disabled={!isConnectedWallet || !isCanWithdraw}
+      >
         Withdraw
       </ButtonLoading>
     </Box>
