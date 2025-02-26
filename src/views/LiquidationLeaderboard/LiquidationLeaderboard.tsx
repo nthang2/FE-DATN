@@ -1,5 +1,6 @@
 import { ContentCopy } from '@mui/icons-material';
 import {
+  Avatar,
   Box,
   FormControl,
   MenuItem,
@@ -18,7 +19,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Failed from 'src/components/StatusData/Failed';
 import JPowLoading from 'src/components/StatusData/Loading';
 import NoData from 'src/components/StatusData/NoData';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { usdcSolanaMainnet } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { getLiquidationLeaderboardData } from 'src/services/HandleApi/getLeaderboard/getLeaderboard';
 import { TLiquidationLeaderboardApiResp } from 'src/services/HandleApi/getLeaderboard/type';
@@ -26,11 +27,11 @@ import { formatAddress, formatNumber } from '../../utils/format';
 import { copyTextToClipboard } from '../../utils/index';
 import { Input } from './components/Input';
 import SortButton from './components/SortButton';
-import { checkStatus, filterLiquidationConfigs, liquidationTableHead, TSortBuy } from './utils';
+import { checkStatus, liquidationTableHead, TSortBuy } from './utils';
 
 export interface TFilterParams {
-  path: 'user' | 'collateral';
-  address?: string;
+  collateral?: string;
+  user?: string;
   healthFactorThreshold: number;
   sortBy: TSortBuy;
   reverse: boolean;
@@ -45,12 +46,13 @@ export default function LiquidationLeaderboard() {
     status: 'success',
   });
   const [filterParams, setFilterParams] = useState<TFilterParams>({
-    path: 'user',
-    address: undefined,
+    collateral: 'all',
+    user: undefined,
     healthFactorThreshold: 1.15,
     sortBy: 'healthFactor',
     reverse: false,
   });
+  console.log('🚀 ~ LiquidationLeaderboard ~ filterParams:', filterParams);
   const [page, setPage] = useState(1);
   const [rowsPerPage] = useState(10);
 
@@ -58,7 +60,8 @@ export default function LiquidationLeaderboard() {
     try {
       setLiquidation({ data: undefined, status: 'fetching' });
       const data = await getLiquidationLeaderboardData({
-        [filterParams.path]: filterParams.address,
+        collateral: filterParams.collateral == 'all' ? undefined : filterParams.collateral,
+        user: filterParams.user,
         healthFactorThreshold: filterParams.healthFactorThreshold,
         sortBy: filterParams.sortBy,
         reverse: filterParams.reverse,
@@ -71,7 +74,7 @@ export default function LiquidationLeaderboard() {
     }
   };
 
-  const handleChangeParams = (param: 'path' | 'address', event: { target: { value: string } }) => {
+  const handleChangeParams = (param: 'collateral' | 'user', event: { target: { value: string } }) => {
     setFilterParams({ ...filterParams, ...{ [param]: event.target.value } });
   };
 
@@ -87,11 +90,21 @@ export default function LiquidationLeaderboard() {
     }
   }, [page, rowsPerPage, liquidation.data]);
 
+  const collateralTokens = useMemo(() => {
+    const tokens = [{ symbol: 'All Collateral', address: 'all' }];
+    Object.values(listTokenAvailable)
+      .filter((item) => item.symbol !== 'USDC')
+      .forEach((item) => {
+        tokens.push(item);
+      });
+    return tokens;
+  }, []);
+
   useEffect(() => {
-    if (!filterParams.address) {
+    if (!filterParams.user) {
       getData();
     }
-    if (filterParams.address) {
+    if (filterParams.user) {
       const timeout = setTimeout(() => {
         getData();
         setPage(1);
@@ -99,32 +112,32 @@ export default function LiquidationLeaderboard() {
       return () => clearTimeout(timeout);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterParams.path, filterParams.address, filterParams.reverse, filterParams.sortBy]);
+  }, [filterParams.collateral, filterParams.user, filterParams.reverse, filterParams.sortBy]);
 
   return (
     <Box sx={{ mt: 4 }}>
       <Box sx={{ display: { xs: 'inherit', sm: 'flex' }, alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
-          Leaderboard
+          Liquidation Leaderboard
         </Typography>
         <Box className="flex-end" sx={{ mt: { xs: 4, sm: 0 } }}>
           <FormControl sx={{ m: 1 }} variant="standard">
             <Select
               labelId="path-select-label"
               id="path-select"
-              value={filterParams.path}
-              onChange={(e) => handleChangeParams('path', e)}
+              value={filterParams.collateral}
+              onChange={(e) => handleChangeParams('collateral', e)}
               input={<Input />}
             >
-              {Object.values(filterLiquidationConfigs).map((item) => (
-                <MenuItem key={item.value} value={item.value} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <Typography variant="body2">{item.label}</Typography>
+              {collateralTokens.map((item) => (
+                <MenuItem key={item.symbol} value={item.address} sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <Typography variant="body2">{item.symbol}</Typography>
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
           <FormControl sx={{ m: 1 }} variant="filled">
-            <Input id="demo-customized-textbox" placeholder="Address" onChange={(e) => handleChangeParams('address', e)} />
+            <Input id="search-user-address" placeholder="User Address" onChange={(e) => handleChangeParams('user', e)} />
           </FormControl>
         </Box>
       </Box>
@@ -159,8 +172,9 @@ export default function LiquidationLeaderboard() {
                   </TableCell>
                   <TableCell align="right">
                     <Box className="flex-end">
-                      <Typography sx={{ color: 'text.disabled', mr: 1 }}>{findTokenInfoByToken(row.collateral)?.symbol}</Typography>
-                      <ContentCopy color="secondary" fontSize="small" onClick={() => copyTextToClipboard(row.collateral)} />
+                      <Avatar src={row.collateralImageUrl} sx={{ height: '16px', width: '16px', mr: 0.5 }} />
+                      <Typography sx={{ color: 'text.disabled' }}>{findTokenInfoByToken(row.collateral)?.symbol}</Typography>
+                      {/* <ContentCopy color="secondary" fontSize="small" onClick={() => copyTextToClipboard(row.collateral)} /> */}
                     </Box>
                   </TableCell>
                   <TableCell align="right">

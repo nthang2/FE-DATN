@@ -1,7 +1,7 @@
 import { InputBase, styled } from '@mui/material';
 
 export const Input = styled(InputBase)(({ theme }) => ({
-  minWidth: '100px',
+  minWidth: '120px',
   'label + &': {
     marginTop: theme.spacing(3),
   },
