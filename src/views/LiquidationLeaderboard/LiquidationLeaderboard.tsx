@@ -47,7 +47,7 @@ export default function LiquidationLeaderboard() {
   const [filterParams, setFilterParams] = useState<TFilterParams>({
     path: 'user',
     address: undefined,
-    healthFactorThreshold: 1.1,
+    healthFactorThreshold: 1.15,
     sortBy: 'healthFactor',
     reverse: false,
   });
@@ -105,7 +105,7 @@ export default function LiquidationLeaderboard() {
     <Box sx={{ mt: 4 }}>
       <Box sx={{ display: { xs: 'inherit', sm: 'flex' }, alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
-          Liquidation Leaderboard
+          Leaderboard
         </Typography>
         <Box className="flex-end" sx={{ mt: { xs: 4, sm: 0 } }}>
           <FormControl sx={{ m: 1 }} variant="standard">
@@ -167,14 +167,16 @@ export default function LiquidationLeaderboard() {
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.collateralAmount)}</Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.debtAmount)}</Typography>
+                    <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>
+                      {formatNumber(row.debtAmount, { fractionDigits: 2, prefix: '$' })}
+                    </Typography>
                   </TableCell>
-                  <TableCell align="right">
+                  {/* <TableCell align="right">
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.collateralToClaim)}</Typography>
                   </TableCell>
                   <TableCell align="right">
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.repayAmount)}</Typography>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell align="right">
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.healthFactor)}</Typography>
                   </TableCell>

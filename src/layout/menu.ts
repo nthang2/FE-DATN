@@ -16,8 +16,8 @@ export const menu: TMenu[] = [
     title: 'Vaults',
     url: '/vaults',
   },
-  // {
-  //   title: 'Liquidation',
-  //   url: '/liquidation',
-  // },
+  {
+    title: 'Liquidation',
+    url: '/liquidation',
+  },
 ];
