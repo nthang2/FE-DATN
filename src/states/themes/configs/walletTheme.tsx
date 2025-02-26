@@ -812,7 +812,7 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
         styleOverrides: {
           root: {
             '&.Mui-selected': {
-              color: '#fff',
+              color: 'text.tertiary',
               boxShadow: '0px 0px 10px 1px rgba(196, 196, 196, 0.5)',
             },
           },

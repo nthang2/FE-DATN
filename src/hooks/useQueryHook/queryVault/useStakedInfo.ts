@@ -11,7 +11,7 @@ const useStakedInfo = () => {
     queryKey: ['useStakedInfo', wallet.publicKey],
     queryFn: async () => {
       if (!wallet) {
-        return undefined;
+        throw new Error('Not connect wallet');
       }
 
       const vaultContract = new VaultContract(wallet);
@@ -22,7 +22,7 @@ const useStakedInfo = () => {
         pendingReward: BN(pendingReward).dividedBy(getDecimalToken(usdaiSolanaMainnet.address)).toString(),
       };
     },
-    enabled: Boolean(wallet.publicKey),
+    // enabled: Boolean(wallet.publicKey),
     refetchInterval: 1000 * 60 * 5,
     staleTime: Infinity,
   });
