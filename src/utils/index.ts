@@ -119,3 +119,5 @@ export const getDecimalToken = (address: string) => {
 
   return decimal;
 };
+
+export const regexConfigValue = (input: string) => input.replace(/[^0-9.]|(\..*?)\..*/g, (match, group) => group || '');

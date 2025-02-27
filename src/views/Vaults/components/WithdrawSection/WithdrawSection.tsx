@@ -22,7 +22,7 @@ const WithdrawSection = () => {
   const { stakeInfo } = useStakedInfo();
   const { asyncExecute, loading } = useAsyncExecute();
 
-  const [inputValue, setInputValue] = useState<number>();
+  const [inputValue, setInputValue] = useState<string>();
   const [sliderValue, setSliderValue] = useState(0);
 
   const isConnectedWallet = Boolean(wallet.publicKey);
@@ -40,7 +40,7 @@ const WithdrawSection = () => {
 
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
     const amount = (Number(value) / 100) * Number(stakeInfo?.amount || 0);
-    setInputValue(amount);
+    setInputValue(amount.toString());
   };
 
   const handleWithdraw = async () => {
@@ -51,7 +51,7 @@ const WithdrawSection = () => {
         const hash = await vaultContract.withdraw((sliderValue / 100) * Number(stakeInfo?.amount));
         await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
         setSliderValue(0);
-        setInputValue(0);
+        setInputValue(undefined);
 
         return hash;
       },
@@ -59,7 +59,7 @@ const WithdrawSection = () => {
   };
 
   useEffect(() => {
-    const sliderPercent = ((inputValue || 0) / Number(stakeInfo?.amount || 1)) * 100;
+    const sliderPercent = ((Number(inputValue) || 0) / Number(stakeInfo?.amount || 1)) * 100;
     setSliderValue(sliderPercent);
   }, [inputValue, stakeInfo?.amount]);
 
@@ -80,7 +80,8 @@ const WithdrawSection = () => {
         <CustomTextField
           fullWidth
           variant="filled"
-          type="number"
+          inputType="number"
+          // inputMode="decimal"
           placeholder="0"
           disabled={!isConnectedWallet}
           InputProps={{
@@ -97,7 +98,7 @@ const WithdrawSection = () => {
           }}
           inputProps={{ style: { padding: 0 } }}
           sx={{ borderRadius: '16px' }}
-          onChange={(event) => setInputValue(Number(event.target.value))}
+          onChange={(event) => setInputValue(event.target.value)}
           value={inputValue}
           rule={{
             max: { max: Number(stakeInfo?.amount), message: 'Amount deposit must smaller then your balance' },
