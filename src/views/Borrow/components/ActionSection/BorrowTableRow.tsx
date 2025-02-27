@@ -49,7 +49,12 @@ const BorrowTableRow = (props: IProps) => {
         {actionStatus ? (
           <CheckCircleIcon fontSize="large" color="success" />
         ) : (
-          <ButtonLoading loading={loading} variant="contained" onClick={() => asyncExecute({ fn: onClick, onError: handleAfterTrans })}>
+          <ButtonLoading
+            loading={loading}
+            variant="contained"
+            onClick={() => asyncExecute({ fn: onClick, onError: handleAfterTrans })}
+            sx={{ minWidth: '100px' }}
+          >
             Mint
           </ButtonLoading>
         )}
