@@ -11,6 +11,7 @@ export default function SliderCustom({
   value: number | undefined;
   status: Array<'error' | 'success' | 'pending'>;
 }) {
+  console.log('🚀 ~ maxValue:', maxValue, 'value:', value);
   const position = [0, 2, 3, 4, 5, 6, 7, 8, 10];
 
   return (

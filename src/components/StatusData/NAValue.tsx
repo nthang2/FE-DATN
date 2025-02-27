@@ -11,7 +11,7 @@ export default function NAValue(props: TypographyProps) {
         py: 0.1,
         lineHeight: 1,
         borderRadius: 1,
-        fontSize: '1.25rem',
+        fontSize: '0.75rem',
         display: 'inline-flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -19,7 +19,7 @@ export default function NAValue(props: TypographyProps) {
         ...props.sx,
       }}
     >
-      --
+      &ndash;&ndash;
     </Typography>
   );
 }
