@@ -54,7 +54,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
         (Number(yourBorrow?.[token.address]) * Number(borrowRate?.[token.address])) /
           (Number(token.ratio ?? 1) * tokensPrice[token.address].price);
 
-      return decimalFlood(Math.min(_maxValue, 0), 6);
+      return decimalFlood(Math.max(_maxValue, 0), 6);
     }
     return '';
   }, [depositValue, token.address, token.ratio, yourBorrow, tokensPrice, borrowRate]);
