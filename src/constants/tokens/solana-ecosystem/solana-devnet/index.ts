@@ -46,7 +46,7 @@ export const token1SolanaDevnet = new SolanaDevnetTokenInfo({
   prettyName: 'MAX',
   isNative: false,
   isToken2022: false,
-  oracle: '56YXkoHyCn2aRTc6RCi7nMRGXwNuSdF7p4pe2s5AjHoP',
+  oracle: 'GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k',
   ratio: '0.95',
 });
 
