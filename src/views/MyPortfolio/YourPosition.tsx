@@ -98,7 +98,7 @@ export default function YourPosition() {
             status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                {formatNumber(dataStakedInfo?.amount ? Number(dataStakedInfo?.amount) : 0, {
+                {formatNumber(Number(dataStakedInfo?.amount), {
                   prefix: '$',
                 })}
               </Typography>
@@ -107,8 +107,13 @@ export default function YourPosition() {
         </Box>
         <SliderCustom
           status={[statusStakedInfo]}
-          value={dataStakedInfo?.amount ? Number(dataStakedInfo?.amount) : 0}
-          maxValue={Number(balanceUSDAI.toString()) + (dataStakedInfo?.amount ? Number(dataStakedInfo?.amount) : 0)}
+          value={Number(dataStakedInfo?.amount)}
+          maxValue={
+            // eslint-disable-next-line no-extra-boolean-cast
+            Boolean(Number(balanceUSDAI.toString()) + Number(dataStakedInfo?.amount))
+              ? Number(balanceUSDAI.toString()) + Number(dataStakedInfo?.amount)
+              : undefined
+          }
         />
       </Box>
     </BoxCustom>

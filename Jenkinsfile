@@ -22,7 +22,7 @@ pipeline {
 
         // Staging server information
         STAGING_VM_IP = "174.138.24.54"
-        STAGING_URL = "https://app-staging.jpow.ai"
+        STAGING_URL = "https://testlink.jpow.ai"
         STAGING_DOCKER_PORT = 80
         STAGING_DOCKER_BIND_PORT = 4001 
         STAGING_ENV_CREDENTIALS_ID = "env-trava-finance-lending-app-staging"

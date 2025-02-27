@@ -9,6 +9,7 @@ import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../sta
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
 import BorrowPreview from './BorrowPreview';
+import { regexConfigValue } from 'src/utils';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
@@ -30,10 +31,11 @@ const BorrowSection = () => {
     const price = convertToUsd(borrowState.address, value, listPrice);
     const borrowPercent = ((price + yourBorrowByAddress) / totalDepositValue) * 100;
     const error = validateBorrowItem(Number(value), borrowPercent, maxLtv);
+    const inputValue = regexConfigValue(value);
 
     setBorrowState({
       ...borrowState,
-      value: value,
+      value: inputValue,
       price: price,
       error: error,
     });
