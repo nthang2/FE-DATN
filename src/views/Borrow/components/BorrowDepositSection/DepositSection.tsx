@@ -15,6 +15,7 @@ import { convertToUsd, validateDepositItem } from '../../utils';
 import DepositItem from './DepositItem';
 import DepositPreview from './DepositPreview';
 import { useSearchParams } from 'react-router-dom';
+import { regexConfigValue } from 'src/utils';
 
 const DepositSection = () => {
   const [depositItems, setDepositState] = useDepositState();
@@ -72,11 +73,12 @@ const DepositSection = () => {
   };
 
   const handleChangeInput = (index: number, value: string) => {
+    const inputValue = regexConfigValue(value);
     const cloneArr = depositItems.map((item, arrIndex) => {
       if (arrIndex === index) {
         return {
           ...item,
-          value: value,
+          value: inputValue,
           price: convertToUsd(item.address, value, listPrice),
           error: validateDepositItem(Number(value), Number(depositItemBalance)),
         };
