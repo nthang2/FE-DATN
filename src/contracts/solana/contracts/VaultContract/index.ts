@@ -58,7 +58,6 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
       })
       .transaction();
     const hash = await this.sendTransaction(trans);
-    console.log('🚀 ~ VaultContract ~ claimReward ~ hash:', hash);
     return hash;
   }
 

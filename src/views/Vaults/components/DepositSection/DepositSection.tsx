@@ -17,18 +17,18 @@ const DepositSection = () => {
   const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
   const { asyncExecute, loading } = useAsyncExecute();
 
-  const [inputValue, setInputValue] = useState<number>();
+  const [inputValue, setInputValue] = useState<string>();
   const [sliderValue, setSliderValue] = useState(0);
 
   const isConnectedWallet = Boolean(wallet.publicKey);
   const isCanDeposit = useMemo(() => {
     if (!inputValue) return false;
-    return inputValue <= balance.toNumber() && inputValue > 0;
+    return Number(inputValue) <= balance.toNumber() && Number(inputValue) > 0;
   }, [balance, inputValue]);
 
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
     const amount = (Number(value) / 100) * balance.toNumber();
-    setInputValue(amount);
+    setInputValue(amount.toString());
   };
 
   const handleDeposit = async () => {
@@ -37,18 +37,18 @@ const DepositSection = () => {
     const vaultContract = new VaultContract(wallet);
     await asyncExecute({
       fn: async () => {
-        const hash = await vaultContract.deposit(inputValue);
+        const hash = await vaultContract.deposit(Number(inputValue));
         await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
 
         return hash;
       },
     });
-    setInputValue(0);
+    setInputValue(undefined);
     setSliderValue(0);
   };
 
   useEffect(() => {
-    const sliderPercent = ((inputValue || 0) / balance.toNumber()) * 100;
+    const sliderPercent = ((Number(inputValue) || 0) / balance.toNumber()) * 100;
     setSliderValue(sliderPercent);
   }, [balance, inputValue]);
 
@@ -62,7 +62,7 @@ const DepositSection = () => {
       <CustomTextField
         fullWidth
         variant="filled"
-        type="number"
+        inputType="number"
         placeholder="0"
         disabled={!isConnectedWallet}
         InputProps={{
@@ -79,8 +79,8 @@ const DepositSection = () => {
         }}
         inputProps={{ style: { padding: 0 } }}
         sx={{ borderRadius: '16px' }}
-        onChange={(event) => setInputValue(Number(event.target.value))}
-        value={Number(inputValue?.toFixed(8))}
+        onChange={(event) => setInputValue(event.target.value)}
+        value={inputValue}
         rule={{
           max: { max: balance.toNumber(), message: 'Amount deposit must smaller then your balance' },
         }}

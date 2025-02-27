@@ -8,24 +8,19 @@ const useBannerInfo = () => {
   const query = useQuery({
     queryKey: ['useBannerInfo', wallet.publicKey],
     queryFn: async () => {
-      try {
-        const currWallet = wallet ? wallet : ({} as WalletContextState);
+      const currWallet = wallet ? wallet : ({} as WalletContextState);
 
-        const vaultContract = new VaultContract(currWallet);
-        const { apr, tvl } = await vaultContract.getBannerInfo();
+      const vaultContract = new VaultContract(currWallet);
+      const { apr, tvl } = await vaultContract.getBannerInfo();
 
-        return {
-          apr,
-          tvl,
-        };
-      } catch (error) {
-        console.log('🚀 ~ queryFn: ~ error:', error);
-        return undefined;
-      }
+      return {
+        apr,
+        tvl,
+      };
     },
     // enabled: Boolean(wallet.publicKey),
     refetchInterval: 1000 * 60 * 5,
-    staleTime: Infinity,
+    staleTime: 1000 * 60 * 5,
   });
 
   return { bannerInfo: query.data, ...query };
