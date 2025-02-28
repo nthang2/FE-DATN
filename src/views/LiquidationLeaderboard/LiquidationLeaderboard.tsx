@@ -52,7 +52,6 @@ export default function LiquidationLeaderboard() {
     sortBy: 'healthFactor',
     reverse: false,
   });
-  console.log('🚀 ~ LiquidationLeaderboard ~ filterParams:', filterParams);
   const [page, setPage] = useState(1);
   const [rowsPerPage] = useState(10);
 
@@ -184,7 +183,11 @@ export default function LiquidationLeaderboard() {
                       {/* <ContentCopy color="secondary" fontSize="small" onClick={() => copyTextToClipboard(row.collateral)} /> */}
                     </Box>
                   </TableCell>
-                  {/* <TableCell align="right"></TableCell> */}
+                  <TableCell align="right">
+                    <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>
+                      {formatNumber(row.collateralValue, { fractionDigits: 2, prefix: '$' })}
+                    </Typography>
+                  </TableCell>
                   <TableCell align="right">
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>
                       {formatNumber(row.debtAmount, { fractionDigits: 2, prefix: '$' })}
