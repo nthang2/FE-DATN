@@ -27,11 +27,11 @@ export const listTokenAvailable = isDevNet
       [TokenName.TRUMP]: mapNameToInfoSolana[TokenName.TRUMP],
       [TokenName.MAX]: mapNameToInfoSolana[TokenName.MAX],
       [TokenName.AI16Z]: mapNameToInfoSolana[TokenName.AI16Z],
-      [TokenName.SOL]: mapNameToInfoSolana[TokenName.SOL],
+      // [TokenName.SOL]: mapNameToInfoSolana[TokenName.SOL],
     }
   : {
       [TokenName.ORAI]: mapNameToInfoSolana[TokenName.ORAI],
       [TokenName.MAX]: mapNameToInfoSolana[TokenName.MAX],
       [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC],
-      [TokenName.SOL]: mapNameToInfoSolana[TokenName.SOL],
+      // [TokenName.SOL]: mapNameToInfoSolana[TokenName.SOL],
     };
