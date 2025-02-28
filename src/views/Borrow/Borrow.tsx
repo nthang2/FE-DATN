@@ -11,7 +11,7 @@ const Borrow = () => {
   const [isSubmitted] = useBorrowSubmitState();
 
   return (
-    <Box width="100%" my={4}>
+    <Box width="100%" mt={4}>
       <MintBanner />
 
       <Stack gap={2} sx={{ flexDirection: { xs: 'column-reverse', md: 'row' } }}>

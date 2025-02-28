@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 
 export default function Content() {
   return (
-    <Box>
+    <Box pb={4}>
       <Outlet />
     </Box>
   );

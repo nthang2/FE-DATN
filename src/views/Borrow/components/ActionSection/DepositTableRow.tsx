@@ -43,7 +43,7 @@ const DepositTableRow = (props: IProps) => {
         {actionStatus ? (
           <CheckCircleIcon fontSize="large" color="success" />
         ) : (
-          <ButtonLoading loading={loading} variant="contained" onClick={() => asyncExecute({ fn: onClick })}>
+          <ButtonLoading loading={loading} variant="contained" onClick={() => asyncExecute({ fn: onClick })} sx={{ minWidth: '100px' }}>
             Deposit
           </ButtonLoading>
         )}

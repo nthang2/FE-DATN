@@ -15,7 +15,7 @@ import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQuery
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
-import { formatNumber } from 'src/utils/format';
+import { decimalFlood, formatNumber } from 'src/utils/format';
 import CheckHealthFactor from './CheckHealthFactor';
 
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
@@ -41,7 +41,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
       const currBorrow = Number(yourBorrow?.[token.address] || 0);
       const maxValueRepay = Math.min(currBorrow, balance.toNumber());
 
-      return maxValueRepay.toString();
+      return decimalFlood(maxValueRepay, 6);
     } else return '';
   }, [yourBorrow, token.address, balance]);
 

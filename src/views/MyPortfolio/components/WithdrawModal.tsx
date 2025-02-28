@@ -18,7 +18,7 @@ import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQuery
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
-import { formatNumber } from 'src/utils/format';
+import { decimalFlood, formatNumber } from 'src/utils/format';
 import CheckHealthFactor from './CheckHealthFactor';
 
 export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo }) {
@@ -49,12 +49,12 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
       tokensPrice !== undefined &&
       tokensPrice[token.address]
     ) {
-      const _maxValue = (
+      const _maxValue =
         Number(depositValue?.[token.address]) -
         (Number(yourBorrow?.[token.address]) * Number(borrowRate?.[token.address])) /
-          (Number(token.ratio ?? 1) * tokensPrice[token.address].price)
-      ).toString();
-      return _maxValue;
+          (Number(token.ratio ?? 1) * tokensPrice[token.address].price);
+
+      return decimalFlood(Math.max(_maxValue, 0), 6);
     }
     return '';
   }, [depositValue, token.address, token.ratio, yourBorrow, tokensPrice, borrowRate]);

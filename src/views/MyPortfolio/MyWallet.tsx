@@ -22,7 +22,7 @@ export default function MyWallet() {
   const [includeDeposits, setIncludeDeposits] = useState<boolean>(false);
 
   const totalPrice = useMemo(() => {
-    if (tokensPrice != undefined)
+    if (tokensPrice != undefined && !includeDeposits)
       return Object.values(balance).reduce((a, b) => {
         if (tokensPrice[b.address] && tokensPrice[b.address].price != null) {
           const price = tokensPrice[b.address] != undefined ? Number(tokensPrice[b.address]?.price) : 1;
@@ -30,8 +30,16 @@ export default function MyWallet() {
         }
         return a;
       }, 0);
-    else return 0;
-  }, [tokensPrice, balance]);
+    else if (tokensPrice != undefined && includeDeposits && depositValue) {
+      return Object.values(balance).reduce((a, b) => {
+        if (tokensPrice[b.address] && tokensPrice[b.address].price != null) {
+          const price = tokensPrice[b.address] != undefined ? Number(tokensPrice[b.address]?.price) : 1;
+          return a + (Number(b.balance.toString()) + Number(depositValue[b.address] ?? 0)) * price;
+        }
+        return a;
+      }, 0);
+    } else return 0;
+  }, [tokensPrice, includeDeposits, balance, depositValue]);
 
   const balanceStatus = useMemo(() => {
     const statusTokens = balance.map((item) => {
