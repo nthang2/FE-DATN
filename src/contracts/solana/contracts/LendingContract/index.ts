@@ -146,6 +146,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     transaction.add(depositTransaction);
 
     const transactionHash = await this.sendTransaction(transaction);
+    await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey] });
     return transactionHash;
   }
 
@@ -161,6 +162,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       .accountsPartial(accountsPartial)
       .transaction();
     const transactionHash = await this.sendTransaction(transaction);
+    await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey] });
 
     return transactionHash;
   }
@@ -188,7 +190,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 
     const transaction = await this.program.methods
-      .interactWithType0Depository(collateralAmount, usdaiAmount, false, true)
+      .interactWithType0Depository(collateralAmount, usdaiAmount, false, false)
       .accountsPartial(accountsPartial)
       .transaction();
     const transactionHash = await this.sendTransaction(transaction);
