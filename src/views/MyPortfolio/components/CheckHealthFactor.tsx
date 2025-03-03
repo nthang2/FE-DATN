@@ -1,24 +1,18 @@
 import { Box, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
-import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
-import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
+import useMyPortfolioInfo from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 
 export default function CheckHealthFactor({ token }: { token: SolanaEcosystemTokenInfo }) {
-  const { data: depositValueData } = useQueryDepositValue();
-  const { data: yourBorrowData } = useQueryYourBorrow();
+  const { asset } = useMyPortfolioInfo();
 
   const healthFactor = useMemo(() => {
-    if (depositValueData && yourBorrowData) {
-      const _healthFactor = BN(depositValueData[token.address])
-        .times(token.ratio ?? 1)
-        .div(yourBorrowData[token.address])
-        .toString();
-      return { healthFactor: BN(_healthFactor).isGreaterThan(100) ? '100' : _healthFactor };
-    }
-  }, [depositValueData, yourBorrowData, token.address, token.ratio]);
+    if (!asset) return {};
+    const assetHealFactor = asset[token.address].healthFactor;
+    return { healthFactor: BN(assetHealFactor).isGreaterThan(100) ? '100' : assetHealFactor.toString() };
+  }, [asset, token.address]);
 
   const checkRank = () => {
     if (healthFactor) {

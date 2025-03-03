@@ -10,10 +10,8 @@ import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithSta
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import useMyPortfolioInfo from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
-import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
-import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
 import { decimalFlood, formatNumber } from 'src/utils/format';
 import CheckHealthFactor from './CheckHealthFactor';
@@ -21,14 +19,29 @@ import CheckHealthFactor from './CheckHealthFactor';
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
   const { asyncExecute, loading } = useAsyncExecute();
-  const { address } = useSummarySolanaConnect();
-  const { data: yourBorrow, refetch: refetchYourBorrow, status: statusQueryYourBorrow } = useQueryYourBorrow();
   const { refetch: refetchDepositValue } = useQueryDepositValue();
-  const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
+  const { asset, status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo } = useMyPortfolioInfo();
 
   const [valueRepay, setValueRepay] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
   const [valueRepayHelperText, setValueRepayHelperText] = useState<string | undefined>(undefined);
+
+  const assetTokenInfo = useMemo(() => {
+    return asset?.[token.address];
+  }, [asset, token.address]);
+
+  const maxValue = useMemo(() => {
+    if (!assetTokenInfo) return '';
+    return assetTokenInfo.usdaiToRedeem.toString();
+  }, [assetTokenInfo]);
+
+  const handleMax = () => {
+    if (asset?.[token.address] != undefined) {
+      setValueRepay(maxValue);
+      const _valueInUSD = BN(assetTokenInfo?.usdaiToRedeem).toString();
+      setValueInUSD(_valueInUSD);
+    }
+  };
 
   const handleChangeValueDeposit = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValueRepay(e.target.value);
@@ -36,33 +49,16 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
     setValueInUSD(_valueInUSD);
   };
 
-  const maxValue = useMemo(() => {
-    if (yourBorrow?.[token.address] != undefined) {
-      const currBorrow = Number(yourBorrow?.[token.address] || 0);
-      const maxValueRepay = Math.min(currBorrow, balance.toNumber());
-
-      return decimalFlood(maxValueRepay, 6);
-    } else return '';
-  }, [yourBorrow, token.address, balance]);
-
-  const handleMax = () => {
-    if (yourBorrow?.[token.address] != undefined) {
-      setValueRepay(maxValue);
-      const _valueInUSD = BN(yourBorrow?.[token.address]).toString();
-      setValueInUSD(_valueInUSD);
-    }
-  };
-
   const handleRepay = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = new LendingContract(wallet);
-    const maxRepay = BN(yourBorrow?.[token.address]).toString();
+    const maxRepay = maxValue;
     const isMaxValue = Number(maxRepay) === Number(valueRepay);
 
     const hash = await lendingContract.repay(Number(valueRepay), token.address, isMaxValue);
     setValueRepay('');
     setValueInUSD('0');
-    refetchYourBorrow();
+    refetchMyPortfolioInfo();
     refetchDepositValue();
 
     return hash;
@@ -89,10 +85,10 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
           Amount
         </Typography>
         <ValueWithStatus
-          status={[statusQueryYourBorrow]}
+          status={[statusMyPortfolioInfo]}
           value={
             <Typography variant="body3" sx={{ color: 'text.secondary' }}>
-              Max: {formatNumber(maxValue)}
+              Max: {decimalFlood(maxValue, 3)}
             </Typography>
           }
         />
@@ -161,7 +157,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
                   backgroundColor: 'background.secondary',
                 },
               }}
-              rule={{ min: { min: 0 }, max: { max: Number(yourBorrow?.[token.address]) } }}
+              rule={{ min: { min: 0 }, max: { max: Number(maxValue) } }}
               onChange={handleChangeValueDeposit}
               helperText={undefined}
               _onError={(e) => {
@@ -201,11 +197,9 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
           <Box className="flex-center" sx={{ ml: 4 }}>
             <Icon tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
             <Box>
-              <Typography sx={{ fontWeight: 600, ml: 1 }}>
-                {formatNumber(BN(yourBorrow?.[token.address]).minus(Number(valueRepay) || 0))}
-              </Typography>
+              <Typography sx={{ fontWeight: 600, ml: 1 }}>{formatNumber(BN(maxValue).minus(Number(valueRepay) || 0))}</Typography>
               <Typography variant="body3" sx={{ fontWeight: 600, ml: 1, color: '#888880' }}>
-                {formatNumber(BN(yourBorrow?.[token.address]).minus(Number(valueRepay) || 0), { fractionDigits: 0, prefix: '$' })}
+                {formatNumber(BN(maxValue).minus(Number(valueRepay) || 0), { fractionDigits: 0, prefix: '$' })}
               </Typography>
             </Box>
           </Box>

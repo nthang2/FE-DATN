@@ -18,4 +18,5 @@ export const apiUrl = {
     const checkFinalParam = Boolean(_user || _collateral) ? '' : '&';
     return `${BACKEND_URL}/lending/liquidates/risk_loans?'${_user}${_collateral}${checkFinalParam}&healthFactorThreshold=${healthFactorThreshold}&sortBy=${sortBy}&reverse=${reverse}&excludeCollateral=${excludeCollateral}`;
   },
+  getMyPortfolioInfo: (userAddress: string) => `${BACKEND_URL}/lending/users/${userAddress}`,
 };

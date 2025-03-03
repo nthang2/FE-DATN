@@ -12,9 +12,7 @@ import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import useQueryBorrowRate from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryBorrowRate';
-import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
-import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
+import useMyPortfolioInfo from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
@@ -26,11 +24,8 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const { address } = useSummarySolanaConnect();
   const { data: tokensPrice, status: statusQueryAllTokensPrice } = useQueryAllTokensPrice();
   const { asyncExecute, loading } = useAsyncExecute();
-  const { data: borrowRate } = useQueryBorrowRate();
-  const { data: yourBorrow, status: statusQueryYourBorrow } = useQueryYourBorrow();
-  const { data: depositValue, refetch: refetchDepositValue, status: statusQueryDepositValue } = useQueryDepositValue();
   const { refetch: refetchBalance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
-
+  const { asset, status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo } = useMyPortfolioInfo();
   const [valueWithdraw, setValueWithdraw] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
   const [valueWithdrawHelperText, setValueWithdrawHelperText] = useState<string | undefined>(undefined);
@@ -43,29 +38,12 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   };
 
   const maxValue = useMemo(() => {
-    if (
-      depositValue?.[token.address] != undefined &&
-      yourBorrow?.[token.address] != undefined &&
-      tokensPrice !== undefined &&
-      tokensPrice[token.address]
-    ) {
-      const _maxValue =
-        Number(depositValue?.[token.address]) -
-        (Number(yourBorrow?.[token.address]) * Number(borrowRate?.[token.address])) /
-          (Number(token.ratio ?? 1) * tokensPrice[token.address].price);
-
-      return decimalFlood(Math.max(_maxValue, 0), 6);
-    }
-    return '';
-  }, [depositValue, token.address, token.ratio, yourBorrow, tokensPrice, borrowRate]);
+    if (!asset) return '';
+    return asset[token.address].maxWithdrawable.toString();
+  }, [asset, token.address]);
 
   const handleMax = () => {
-    if (
-      depositValue?.[token.address] != undefined &&
-      yourBorrow?.[token.address] != undefined &&
-      tokensPrice !== undefined &&
-      tokensPrice[token.address]
-    ) {
+    if (!asset) {
       setValueWithdraw(maxValue);
       if (!tokensPrice) return;
       const _valueInUSD = BN(maxValue).times(BN(tokensPrice[token.address].price)).toString();
@@ -79,8 +57,8 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
     const hash = await lendingContract.withdraw(Number(valueWithdraw), token.address);
     setValueWithdraw('');
     setValueInUSD('0');
-    refetchDepositValue();
     refetchBalance();
+    refetchMyPortfolioInfo();
 
     return hash;
   };
@@ -107,10 +85,10 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
           Amount
         </Typography>
         <ValueWithStatus
-          status={[statusQueryAllTokensPrice, statusQueryYourBorrow, statusQueryDepositValue]}
+          status={[statusQueryAllTokensPrice, statusMyPortfolioInfo]}
           value={
             <Typography variant="body3" sx={{ color: 'text.secondary' }}>
-              Max: {formatNumber(maxValue)}
+              Max: {decimalFlood(maxValue, 3)}
             </Typography>
           }
         />
