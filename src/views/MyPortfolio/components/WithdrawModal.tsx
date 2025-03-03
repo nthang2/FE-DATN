@@ -13,6 +13,7 @@ import { LendingContract } from 'src/contracts/solana/contracts/LendingContract'
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useMyPortfolioInfo from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
+import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
@@ -26,6 +27,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const { asyncExecute, loading } = useAsyncExecute();
   const { refetch: refetchBalance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
   const { asset, status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo } = useMyPortfolioInfo();
+  const { refetch: refetchDepositedValue } = useQueryDepositValue();
   const [valueWithdraw, setValueWithdraw] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
   const [valueWithdrawHelperText, setValueWithdrawHelperText] = useState<string | undefined>(undefined);
@@ -58,6 +60,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
     setValueWithdraw('');
     setValueInUSD('0');
     refetchBalance();
+    refetchDepositedValue();
     refetchMyPortfolioInfo();
 
     return hash;

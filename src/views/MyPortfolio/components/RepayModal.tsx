@@ -15,12 +15,14 @@ import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQue
 import { BN } from 'src/utils';
 import { decimalFlood, formatNumber } from 'src/utils/format';
 import CheckHealthFactor from './CheckHealthFactor';
+import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
   const { asyncExecute, loading } = useAsyncExecute();
   const { refetch: refetchDepositValue } = useQueryDepositValue();
   const { asset, status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo } = useMyPortfolioInfo();
+  const { refetch: refetchYourBorrow } = useQueryYourBorrow();
 
   const [valueRepay, setValueRepay] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
@@ -60,6 +62,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
     setValueInUSD('0');
     refetchMyPortfolioInfo();
     refetchDepositValue();
+    refetchYourBorrow();
 
     return hash;
   };
