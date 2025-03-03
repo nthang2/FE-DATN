@@ -11,7 +11,7 @@ export default function CheckHealthFactor({ token }: { token: SolanaEcosystemTok
   const healthFactor = useMemo(() => {
     if (!asset) return {};
     const assetHealFactor = asset[token.address].healthFactor;
-    return { healthFactor: BN(assetHealFactor).isGreaterThan(100) ? '100' : assetHealFactor.toString() };
+    return { healthFactor: BN(assetHealFactor).isGreaterThan(100) ? '100' : assetHealFactor?.toString() };
   }, [asset, token.address]);
 
   const checkRank = () => {
