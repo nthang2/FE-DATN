@@ -4,20 +4,20 @@ import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { useDepositState } from 'src/views/Borrow/state/hooks';
 import { convertToUsd } from 'src/views/Borrow/utils';
 import useQueryDepositValue from '../queryMyPortfolio/useQueryDepositValue';
-import useQueryYourBorrow from '../queryMyPortfolio/useQueryYourBorrow';
+import useMyPortfolio from '../queryMyPortfolio/useMyPortfolio';
 
 const useInvestedValue = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
-  const { data: yourBorrow } = useQueryYourBorrow();
+  const { asset } = useMyPortfolio();
   const [depositItems] = useDepositState();
   const { data: depositedValue } = useQueryDepositValue();
 
   //Already minted by deposit address
   const yourBorrowByAddress = useMemo(() => {
-    const mintedByAddress = yourBorrow ? yourBorrow[depositItems[0].address] : 0;
+    const mintedByAddress = asset ? asset[depositItems[0].address].usdaiToRedeem : 0;
 
     return mintedByAddress ? Number(mintedByAddress) : 0;
-  }, [depositItems, yourBorrow]);
+  }, [asset, depositItems]);
 
   //Already deposit by deposit address
   const depositedByAddress = useMemo(() => {
