@@ -140,7 +140,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     }
 
     const depositTransaction = await this.program.methods
-      .interactWithType0Depository(collateralAmount, usdaiAmount, true, true)
+      .interactWithType0Depository(collateralAmount, usdaiAmount, true, false)
       .accountsPartial(accountsPartial)
       .transaction();
     transaction.add(depositTransaction);
