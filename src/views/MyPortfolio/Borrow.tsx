@@ -6,16 +6,16 @@ import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNam
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
-import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import { useModalFunction } from 'src/states/modal/hooks';
 import { formatNumber } from 'src/utils/format';
 import RepayModal from './components/RepayModal';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 
 export default function Borrow() {
   // const [eMode, setEMode] = useState<boolean>(false);
-  const { data: yourBorrow } = useQueryYourBorrow();
   const { data: depositValue } = useQueryDepositValue();
   const { data: tokensPrice } = useQueryAllTokensPrice();
+  const { asset } = useMyPortfolio();
   const modalFunction = useModalFunction();
   const navigate = useNavigate();
 
@@ -37,9 +37,10 @@ export default function Borrow() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const availableMint = (row: any) => {
-    if (tokensPrice && yourBorrow) {
+    if (tokensPrice && asset) {
       const result =
-        Number(depositValue?.[row.address]) * row.ratio * Number(tokensPrice[row.address]?.price ?? 1) - Number(yourBorrow[row.address]);
+        Number(depositValue?.[row.address]) * row.ratio * Number(tokensPrice[row.address]?.price ?? 1) -
+        Number(asset[row.address].usdaiToRedeem);
 
       return result < 0 ? 0 : result;
     }
@@ -80,51 +81,55 @@ export default function Borrow() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.values(listTokenAvailable).map((row) => (
-              <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell component="th" scope="row">
-                  <Box className="flex-start">
-                    <Icon tokenName={row.symbol} />
-                    <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 1 }}>
-                      {row.symbol}
+            {Object.values(listTokenAvailable).map((row) => {
+              const borrowedValue = asset?.[row.address].usdaiToRedeem;
+
+              return (
+                <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <TableCell component="th" scope="row">
+                    <Box className="flex-start">
+                      <Icon tokenName={row.symbol} />
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 1 }}>
+                        {row.symbol}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      {depositValue?.[row.address] && tokensPrice && borrowedValue
+                        ? formatNumber(availableMint(row), {
+                            fractionDigits: 2,
+                            prefix: '$',
+                          })
+                        : '--'}
                     </Typography>
-                  </Box>
-                </TableCell>
-                <TableCell align="right">
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {depositValue?.[row.address] && tokensPrice && yourBorrow?.[row.address]
-                      ? formatNumber(availableMint(row), {
-                          fractionDigits: 2,
-                          prefix: '$',
-                        })
-                      : '--'}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {yourBorrow?.[row.address] ? formatNumber(Number(yourBorrow?.[row.address]), { fractionDigits: 2, prefix: '$' }) : '--'}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Button variant="contained" size="small" onClick={() => handleMint(row.address)}>
-                    <Typography variant="body2" sx={{ fontWeight: '500' }}>
-                      Mint
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      {borrowedValue ? formatNumber(Number(borrowedValue), { fractionDigits: 2, prefix: '$' }) : '--'}
                     </Typography>
-                  </Button>
-                  <Button
-                    sx={{ ml: 1 }}
-                    size="small"
-                    variant="outlined"
-                    onClick={() => {
-                      handleRepay(row);
-                    }}
-                    disabled={yourBorrow?.[row.address] == undefined}
-                  >
-                    Redeem
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+                  <TableCell align="right">
+                    <Button variant="contained" size="small" onClick={() => handleMint(row.address)}>
+                      <Typography variant="body2" sx={{ fontWeight: '500' }}>
+                        Mint
+                      </Typography>
+                    </Button>
+                    <Button
+                      sx={{ ml: 1 }}
+                      size="small"
+                      variant="outlined"
+                      onClick={() => {
+                        handleRepay(row);
+                      }}
+                      disabled={borrowedValue == undefined}
+                    >
+                      Redeem
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>

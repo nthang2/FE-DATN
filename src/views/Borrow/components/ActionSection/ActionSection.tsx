@@ -5,7 +5,6 @@ import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
-import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { TBorrowItem } from '../../state/types';
 import BorrowTableRow from './BorrowTableRow';
@@ -17,7 +16,6 @@ const ActionSection = () => {
   const [depositItems] = useDepositState();
   const [isSubmitted, setIsSubmitted] = useBorrowSubmitState();
   const { refetch: refetchDeposited } = useQueryDepositValue();
-  const { refetch: refetchYourBorrow } = useQueryYourBorrow();
   const { maxBorrowPrice } = useInvestedValue();
 
   const [actionStatus, setActionStatus] = useState<boolean[]>(() => {
@@ -55,7 +53,6 @@ const ActionSection = () => {
     const isBorrowMaxValue = Number(borrowState.price) === maxBorrowPrice;
     const lendingContract = new LendingContract(wallet);
     const transHash = await lendingContract.borrow(Number(borrowState.value), depositItems[0].address, isBorrowMaxValue);
-    await refetchYourBorrow();
     handChangeActionStatus(actionStatus.length - 1);
 
     return transHash;

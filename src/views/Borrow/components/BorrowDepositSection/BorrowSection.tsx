@@ -4,27 +4,27 @@ import { useEffect, useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
-import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
 import BorrowPreview from './BorrowPreview';
 import { regexConfigValue } from 'src/utils';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
   const [borrowState, setBorrowState] = useBorrowState();
   const [isSubmitted] = useBorrowSubmitState();
-  const { data: yourBorrow } = useQueryYourBorrow();
   const [depositItems] = useDepositState();
   const { totalDepositValue, yourBorrowByAddress, maxLtv } = useInvestedValue();
+  const { asset } = useMyPortfolio();
 
   const mintedValueUsd = useMemo(() => {
-    if (!yourBorrow) return 0;
+    if (!asset) return 0;
     const currAdd = depositItems[0].address;
 
-    return Number(yourBorrow[currAdd]);
-  }, [depositItems, yourBorrow]);
+    return Number(asset[currAdd].usdaiToRedeem);
+  }, [asset, depositItems]);
   const isShowYourBorrow = !!mintedValueUsd && Number(mintedValueUsd) > 0;
 
   const handleChangeInput = (value: string) => {
