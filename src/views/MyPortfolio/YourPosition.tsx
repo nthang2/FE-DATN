@@ -5,8 +5,8 @@ import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
-import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
@@ -16,7 +16,7 @@ import SliderCustom from './components/SliderCustom';
 export default function YourPosition() {
   const { address } = useSummarySolanaConnect();
   const { data: depositValueData, status: statusQueryDepositValue } = useQueryDepositValue();
-  const { data: yourBorrowData, status: statusQueryYourBorrow } = useQueryYourBorrow();
+  const { asset, status: statusMyPortfolio } = useMyPortfolio();
   const { data: tokensPrice, status: statusQueryAllTokensPrice } = useQueryAllTokensPrice();
   const { data: dataStakedInfo, status: statusStakedInfo } = useStakedInfo();
   const { balance: balanceUSDAI } = useSolanaBalanceToken(address, TokenName.USDAI);
@@ -38,10 +38,10 @@ export default function YourPosition() {
   }, [depositValueData, tokensPrice]);
 
   const totalYourBorrowValue = useMemo(() => {
-    if (yourBorrowData && Object.keys(yourBorrowData).length > 0) {
-      return Object.values(yourBorrowData).reduce((a, b) => a + Number(b), 0);
+    if (asset && Object.keys(asset).length > 0) {
+      return Object.values(asset).reduce((a, b) => a + Number(b.usdaiToRedeem), 0);
     }
-  }, [yourBorrowData]);
+  }, [asset]);
 
   const maxBorrowAbleValue = useMemo(() => {
     if (totalDepositValueRatio && totalYourBorrowValue) {
@@ -59,7 +59,7 @@ export default function YourPosition() {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="subtitle2">Collateral Deposited</Typography>
           <ValueWithStatus
-            status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
+            status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
                 {formatNumber(totalDepositValue, { fractionDigits: 2, prefix: '$' })}
@@ -68,7 +68,7 @@ export default function YourPosition() {
           />
         </Box>
         <SliderCustom
-          status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
+          status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
           maxValue={totalDepositValue}
           value={totalDepositValue}
         />
@@ -77,7 +77,7 @@ export default function YourPosition() {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="subtitle2">Minted</Typography>
           <ValueWithStatus
-            status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
+            status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
                 {formatNumber(totalYourBorrowValue, { fractionDigits: 2, prefix: '$' })}
@@ -86,7 +86,7 @@ export default function YourPosition() {
           />
         </Box>
         <SliderCustom
-          status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
+          status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
           value={totalYourBorrowValue}
           maxValue={maxBorrowAbleValue}
         />
@@ -95,7 +95,7 @@ export default function YourPosition() {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="subtitle2">Staked</Typography>
           <ValueWithStatus
-            status={[statusQueryDepositValue, statusQueryYourBorrow, statusQueryAllTokensPrice]}
+            status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
                 {formatNumber(Number(dataStakedInfo?.amount), {

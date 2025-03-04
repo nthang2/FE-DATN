@@ -26,7 +26,7 @@ const DepositPreview = (props: IProps) => {
             sx={{ mr: '1px', width: '16px', height: '16px' }}
           />
           <Typography ml={1} variant="body1">
-            Your deposited ~ ${depositedValueUsd.toFixed(2)}
+            Your deposited ~ ${depositedValueUsd.toFixed(4)}
           </Typography>
         </Stack>
 
@@ -36,7 +36,7 @@ const DepositPreview = (props: IProps) => {
             sx={{ mr: '1px', width: '16px', height: '16px' }}
           />
           <Typography ml={1} variant="body1">
-            Preview new total ~ ${totalDepositedValue.toFixed(2)}
+            Preview new total ~ ${totalDepositedValue.toFixed(4)}
           </Typography>
         </Stack>
       </Stack>

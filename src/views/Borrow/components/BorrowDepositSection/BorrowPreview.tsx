@@ -26,7 +26,7 @@ const BorrowPreview = (props: IProps) => {
             sx={{ mr: '1px', width: '16px', height: '16px' }}
           />
           <Typography ml={1} variant="body1">
-            Already minted ~ ${mintedValueUsd.toFixed(2)}
+            Already minted ~ ${mintedValueUsd.toFixed(4)}
           </Typography>
         </Stack>
 
@@ -36,7 +36,7 @@ const BorrowPreview = (props: IProps) => {
             sx={{ mr: '1px', width: '16px', height: '16px' }}
           />
           <Typography ml={1} variant="body1">
-            Preview new total ~ ${totalBorrowValue.toFixed(2)}
+            Preview new total ~ ${totalBorrowValue.toFixed(4)}
           </Typography>
         </Stack>
       </Stack>

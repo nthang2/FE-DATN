@@ -7,7 +7,6 @@ import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
-import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToUsd } from '../../utils';
@@ -20,7 +19,6 @@ const BorrowButton = () => {
   const { address } = useSummarySolanaConnect();
   const { data: listPrice } = useQueryAllTokensPrice();
   const { data: depositedValue } = useQueryDepositValue();
-  const { refetch: refetchYourBorrow } = useQueryYourBorrow();
   const { asyncExecute, loading } = useAsyncExecute();
   const { maxBorrowPrice, yourBorrowByAddress } = useInvestedValue();
 
@@ -59,7 +57,6 @@ const BorrowButton = () => {
         const isBorrowMaxValue = Number(borrowState.price) === maxBorrowPrice;
         const lendingContract = new LendingContract(wallet);
         const transHash = await lendingContract.borrow(Number(borrowState.value), depositItems[0].address, isBorrowMaxValue);
-        await refetchYourBorrow();
 
         return transHash;
       },

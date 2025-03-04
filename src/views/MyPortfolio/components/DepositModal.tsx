@@ -13,7 +13,6 @@ import { LendingContract } from 'src/contracts/solana/contracts/LendingContract'
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
-import useQueryYourBorrow from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryYourBorrow';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
@@ -31,7 +30,6 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
     error: errorBalance,
   } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
   const { refetch: refetchDepositValue } = useQueryDepositValue();
-  const { refetch: refetchYourBorrow } = useQueryYourBorrow();
   const { asyncExecute, loading } = useAsyncExecute();
 
   const [valueDeposit, setValueDeposit] = useState<string>('');
@@ -60,7 +58,6 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
     setValueInUSD('0');
     refetchBalance();
     refetchDepositValue();
-    refetchYourBorrow();
 
     return hash;
   };
