@@ -200,6 +200,11 @@ export default function LiquidationLeaderboard() {
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.repayAmount)}</Typography>
                   </TableCell> */}
                   <TableCell align="right">
+                    <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>
+                      {formatNumber(row.liquidationPrice, { fractionDigits: 2, prefix: '$' })}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.healthFactor)}</Typography>
                   </TableCell>
                   <TableCell align="right">

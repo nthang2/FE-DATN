@@ -10,6 +10,7 @@ export type TLiquidationLeaderboardRow = {
   healthFactor: number;
   repayAmount: number;
   collateralToClaim: number;
+  liquidationPrice: number;
 };
 
 export type TLiquidationLeaderboardApiResp = {

@@ -5,7 +5,6 @@ import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import { listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { roundNumber } from 'src/utils/format';
@@ -16,23 +15,22 @@ import DepositItem from './DepositItem';
 import DepositPreview from './DepositPreview';
 import { useSearchParams } from 'react-router-dom';
 import { regexConfigValue } from 'src/utils';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 
 const DepositSection = () => {
   const [depositItems, setDepositState] = useDepositState();
   const [isSubmitted] = useBorrowSubmitState();
   const [searchParams, setSearchParams] = useSearchParams();
   const { data: listPrice } = useQueryAllTokensPrice();
-  const { data: depositedValue } = useQueryDepositValue();
+  const { asset } = useMyPortfolio();
   const { address } = useSummarySolanaConnect();
   const balance = useSolanaBalanceTokens(address, Object.keys(listTokenAvailable) as Array<TSolanaToken>);
 
   const depositedValueUsd = useMemo(() => {
-    if (!depositedValue || !listPrice) return 0;
+    if (!asset || !listPrice) return 0;
     const depositAddress = depositItems[0].address;
-    const result = convertToUsd(depositAddress, depositedValue[depositAddress], listPrice);
-
-    return Number(result);
-  }, [depositItems, depositedValue, listPrice]);
+    return asset?.[depositAddress].depositedUSD;
+  }, [asset, depositItems, listPrice]);
   const isHasDeposited = Boolean(depositedValueUsd) || depositedValueUsd > 0;
   const depositItemBalance = useMemo(() => {
     return balance.find((item) => item.address === depositItems[0].address)?.balance.toNumber();
