@@ -5,7 +5,7 @@ import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import { listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
-import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import { useModalFunction } from 'src/states/modal/hooks';
 import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
@@ -18,12 +18,12 @@ import WithdrawModal from './components/WithdrawModal';
 export default function Deposit() {
   const { loading } = useAsyncExecute();
   const { address } = useSummarySolanaConnect();
-  const { data: depositValue } = useQueryDepositValue();
   const modalFunction = useModalFunction();
-
   const balance = useSolanaBalanceTokens(address, Object.keys(listTokenAvailable) as Array<TSolanaToken>);
+  const { asset } = useMyPortfolio();
 
   const tableHead = ['Asset', 'In Wallet', 'Deposited', 'Collateral', ''];
+  const tokens = Object.values(listTokenAvailable);
 
   const handleDeposit = (token: SolanaEcosystemTokenInfo) => {
     modalFunction({
@@ -31,12 +31,6 @@ export default function Deposit() {
       data: { content: <DepositModal token={token} />, title: `Deposit ${token.symbol}`, modalProps: { maxWidth: 'xs' } },
     });
   };
-
-  // const tokens = useMemo(() => {
-  //   return Object.values(mapNameToInfoSolana).filter((item) => item.address && balance.find((item) => BN(item.balance).isGreaterThan(0)));
-  // }, [balance]);
-
-  const tokens = Object.values(listTokenAvailable);
 
   const handleWithdraw = (token: SolanaEcosystemTokenInfo) => {
     modalFunction({
@@ -68,57 +62,69 @@ export default function Deposit() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tokens.map((row, index) => (
-              <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell component="th" scope="row">
-                  <Box className="flex-start">
-                    <Icon tokenName={row.symbol} />
-                    <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 1 }}>
-                      {row.symbol}
+            {tokens.map((row, index) => {
+              const balanceInWalletByUsd = BN(balance[index].balance)
+                .multipliedBy(asset?.[row.address].priceUSD || 0)
+                .toFixed(2);
+
+              return (
+                <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <TableCell component="th" scope="row">
+                    <Box className="flex-start">
+                      <Icon tokenName={row.symbol} />
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 1 }}>
+                        {row.symbol}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      {compactNumber(balance[index].balance.toString())}
                     </Typography>
-                  </Box>
-                </TableCell>
-                <TableCell align="right">
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {compactNumber(balance[index].balance.toString())}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {depositValue?.[row.address] ? formatNumber(depositValue?.[row.address]) : '--'}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-                    <SwitchCustom _checked={true} />
-                  </Box>
-                </TableCell>
-                <TableCell align="right">
-                  <Button
-                    disabled={BN(balance[index].balance).isLessThanOrEqualTo(0)}
-                    variant="contained"
-                    size="small"
-                    onClick={() => handleDeposit(row)}
-                  >
-                    <Typography variant="body2" sx={{ fontWeight: '500' }}>
-                      Deposit
+                    <Typography variant="body3" sx={{ color: 'text.tertiary', fontSize: '10px' }}>
+                      {asset?.[row.address] ? '$' + balanceInWalletByUsd : '--'}
                     </Typography>
-                  </Button>
-                  <ButtonLoading
-                    sx={{ ml: 1 }}
-                    loading={loading}
-                    size="small"
-                    variant="outlined"
-                    onClick={() => {
-                      handleWithdraw(row);
-                    }}
-                    disabled={depositValue?.[row.address] == undefined}
-                  >
-                    Withdraw
-                  </ButtonLoading>
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      {asset?.[row.address] ? formatNumber(asset?.[row.address].depositedAmount) : '--'}
+                    </Typography>
+                    <Typography variant="body3" sx={{ color: 'text.tertiary', fontSize: '10px' }}>
+                      {asset?.[row.address] ? '$' + formatNumber(asset?.[row.address].depositedUSD) : '--'}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Box sx={{ display: 'flex', justifyContent: 'end' }}>
+                      <SwitchCustom _checked={true} />
+                    </Box>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Button
+                      disabled={BN(balance[index].balance).isLessThanOrEqualTo(0)}
+                      variant="contained"
+                      size="small"
+                      onClick={() => handleDeposit(row)}
+                    >
+                      <Typography variant="body2" sx={{ fontWeight: '500' }}>
+                        Deposit
+                      </Typography>
+                    </Button>
+                    <ButtonLoading
+                      sx={{ ml: 1 }}
+                      loading={loading}
+                      size="small"
+                      variant="outlined"
+                      onClick={() => {
+                        handleWithdraw(row);
+                      }}
+                      disabled={asset?.[row.address] == undefined}
+                    >
+                      Withdraw
+                    </ButtonLoading>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
