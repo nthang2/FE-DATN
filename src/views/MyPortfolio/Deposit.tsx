@@ -65,7 +65,7 @@ export default function Deposit() {
             {tokens.map((row, index) => {
               const balanceInWalletByUsd = BN(balance[index].balance)
                 .multipliedBy(asset?.[row.address].priceUSD || 0)
-                .toFixed(4);
+                .toFixed(2);
 
               return (
                 <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>

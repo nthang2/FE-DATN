@@ -201,7 +201,7 @@ export default function LiquidationLeaderboard() {
                   </TableCell> */}
                   <TableCell align="right">
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>
-                      {formatNumber(row.liquidationPrice, { fractionDigits: 2, prefix: '$' })}
+                      {formatNumber(row.liquidationPrice, { fractionDigits: 6, prefix: '$' })}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
