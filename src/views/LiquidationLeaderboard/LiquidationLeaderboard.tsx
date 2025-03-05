@@ -26,8 +26,8 @@ import { TLiquidationLeaderboardApiResp } from 'src/services/HandleApi/getLeader
 import { formatAddress, formatNumber } from '../../utils/format';
 import { copyTextToClipboard } from '../../utils/index';
 import { Input } from './components/Input';
-import SortButton from './components/SortButton';
 import { checkStatus, liquidationTableHead, TSortBuy } from './utils';
+import { TableSortLabel } from '@mui/material';
 
 export interface TFilterParams {
   collateral?: string;
@@ -73,14 +73,6 @@ export default function LiquidationLeaderboard() {
     }
   };
 
-  const handleChangeParams = (param: 'collateral' | 'user', event: { target: { value: string } }) => {
-    setFilterParams({ ...filterParams, ...{ [param]: event.target.value } });
-  };
-
-  const handleChangePage = (event: React.ChangeEvent<unknown>, newPage: number) => {
-    setPage(newPage);
-  };
-
   const dataRender = useMemo(() => {
     if (liquidation.data && liquidation.data.numberOfDocs > 0) {
       return liquidation.data.docs.slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage);
@@ -98,6 +90,20 @@ export default function LiquidationLeaderboard() {
       });
     return tokens;
   }, []);
+
+  const handleChangeParams = (param: 'collateral' | 'user', event: { target: { value: string } }) => {
+    setFilterParams({ ...filterParams, ...{ [param]: event.target.value } });
+  };
+
+  const handleChangePage = (event: React.ChangeEvent<unknown>, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleSort = (currSortDir: boolean, filter: TSortBuy | undefined) => {
+    if (filter) {
+      setFilterParams({ ...filterParams, ...{ reverse: !currSortDir, sortBy: filter } });
+    }
+  };
 
   useEffect(() => {
     if (!filterParams.user) {
@@ -144,16 +150,30 @@ export default function LiquidationLeaderboard() {
         <Table>
           <TableHead>
             <TableRow>
-              {liquidationTableHead.map((h, i) => (
-                <TableCell key={i} align={i <= 1 ? 'left' : 'right'}>
-                  <Box className={clsx('flex-end', { 'flex-start': i <= 1 })}>
-                    <Typography variant="caption2" sx={{ color: '#888880' }}>
-                      {h.label}
-                    </Typography>
-                    {h.sort && <SortButton filter={h.sort} filterParams={filterParams} setFilterParams={setFilterParams} />}
-                  </Box>
-                </TableCell>
-              ))}
+              {liquidationTableHead.map((h, i) => {
+                const isActive = h.sort && filterParams.sortBy === h.sort;
+                const currDir = filterParams.reverse ? true : false;
+                const iconDirection = filterParams.sortBy === h.sort && filterParams.reverse ? 'desc' : 'asc';
+
+                return (
+                  <TableCell key={i} align={i <= 1 ? 'left' : 'right'}>
+                    <Box className={clsx('flex-end', { 'flex-start': i <= 1 })}>
+                      <Typography variant="caption2" sx={{ color: '#888880' }}>
+                        {h.label}
+                      </Typography>
+                      {h.sort && (
+                        <TableSortLabel
+                          active={isActive}
+                          hidden={false}
+                          direction={iconDirection}
+                          onClick={() => handleSort(currDir, h.sort)}
+                          sx={{ '& svg': { opacity: '1 !important' }, color: isActive ? '#fff' : 'text.tertiary' }}
+                        />
+                      )}
+                    </Box>
+                  </TableCell>
+                );
+              })}
             </TableRow>
           </TableHead>
           <TableBody>
