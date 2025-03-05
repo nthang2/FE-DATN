@@ -156,7 +156,7 @@ export default function LiquidationLeaderboard() {
                 const iconDirection = filterParams.sortBy === h.sort && filterParams.reverse ? 'desc' : 'asc';
 
                 return (
-                  <TableCell key={i} align={i <= 1 ? 'left' : 'right'}>
+                  <TableCell key={i} align={i <= 1 ? 'left' : 'right'} width={h.width}>
                     <Box className={clsx('flex-end', { 'flex-start': i <= 1 })}>
                       <Typography variant="caption2" sx={{ color: '#888880' }}>
                         {h.label}
@@ -183,7 +183,7 @@ export default function LiquidationLeaderboard() {
                   <TableCell component="th" scope="row" align="left">
                     {(page - 1) * rowsPerPage + index + 1}
                   </TableCell>
-                  <TableCell align="left">
+                  <TableCell align="left" width={200}>
                     <Box className="flex-start">
                       <Typography sx={{ color: 'text.disabled', mr: 1 }}>{formatAddress(row.user)}</Typography>
                       <ContentCopy color="secondary" fontSize="small" onClick={() => copyTextToClipboard(row.user)} />
