@@ -66,6 +66,7 @@ export default function Deposit() {
               const balanceInWalletByUsd = BN(balance[index].balance)
                 .multipliedBy(asset?.[row.address].priceUSD || 0)
                 .toFixed(2);
+              const withdrawAbleValue = asset?.[row.address].maxWithdrawable;
 
               return (
                 <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -117,7 +118,7 @@ export default function Deposit() {
                       onClick={() => {
                         handleWithdraw(row);
                       }}
-                      disabled={asset?.[row.address] == undefined}
+                      disabled={withdrawAbleValue == 0 || asset?.[row.address] == undefined}
                     >
                       Withdraw
                     </ButtonLoading>
