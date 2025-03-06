@@ -1,5 +1,5 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { IconSOL } from 'crypto-token-icon';
+import { IconSOL } from 'crypto-token-icon/tokens';
 import { TSolanaNetworkId } from '../types';
 import { SummaryConnectInfo } from '../../types';
 import { walletIcon } from '../../constants/walletIcon';

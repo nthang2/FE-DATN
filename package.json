@@ -27,7 +27,7 @@
     "buffer": "^6.0.3",
     "chain-registry": "^1.69.88",
     "clsx": "^2.1.1",
-    "crypto-token-icon": "^0.0.37",
+    "crypto-token-icon": "^0.0.45",
     "date-fns": "^4.1.0",
     "highcharts": "^12.1.2",
     "highcharts-react-official": "^3.2.1",
