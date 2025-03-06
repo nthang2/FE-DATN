@@ -80,7 +80,7 @@ export default function Deposit() {
                   </TableCell>
                   <TableCell align="right">
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {compactNumber(balance[index].balance.toString(), 2)}
+                      {compactNumber(balance[index].balance.toString(), 3)}
                     </Typography>
                     <Typography variant="body3" sx={{ color: 'text.tertiary', fontSize: '10px' }}>
                       {asset?.[row.address] ? '$' + balanceInWalletByUsd : '--'}
