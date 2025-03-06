@@ -83,7 +83,6 @@ export default function Borrow() {
           <TableBody>
             {Object.values(listTokenAvailable).map((row) => {
               const borrowedValue = asset?.[row.address].usdaiToRedeem;
-              console.log('🚀 ~ {Object.values ~ borrowedValue:', borrowedValue);
 
               return (
                 <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>

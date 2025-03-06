@@ -3990,10 +3990,10 @@ crypto-js@^4.1.1:
   resolved "https://registry.npmjs.org/crypto-js/-/crypto-js-4.2.0.tgz"
   integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
 
-crypto-token-icon@^0.0.37:
-  version "0.0.37"
-  resolved "https://registry.yarnpkg.com/crypto-token-icon/-/crypto-token-icon-0.0.37.tgz#2107bc517d772aec624e9de635c70b8c784c717b"
-  integrity sha512-RA6otJFKSCjFTi74hfUEfsNymzVdl2HEjNjoUDrxuXNV3IngMf7+z7+0TKMtlP9vbyOUVjEOOefehFKKj54fXg==
+crypto-token-icon@^0.0.45:
+  version "0.0.45"
+  resolved "https://registry.yarnpkg.com/crypto-token-icon/-/crypto-token-icon-0.0.45.tgz#82bff7a079beec3cced8945bd0d7b16ca45ec420"
+  integrity sha512-iqqbYkV3ei8YQxmk5rQmVOmTV1FK5x5HiVYLGarzbFax+OIP8/0NNBjLnYw6mtk9GhujaANgRvB80FhpSmQeTg==
 
 csstype@^3.0.2, csstype@^3.1.3:
   version "3.1.3"
