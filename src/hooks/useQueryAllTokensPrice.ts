@@ -15,6 +15,6 @@ export default function useQueryAllTokensPrice() {
       return getTokenPrice(arrAddress);
     },
     staleTime: Infinity,
-    refetchInterval: 1000 * 60 * 10,
+    refetchInterval: 1000 * 30,
   });
 }

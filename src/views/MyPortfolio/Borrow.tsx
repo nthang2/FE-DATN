@@ -1,3 +1,4 @@
+import { ContentCopy } from '@mui/icons-material';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
 import { useNavigate } from 'react-router-dom';
@@ -5,11 +6,12 @@ import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import { useModalFunction } from 'src/states/modal/hooks';
+import { copyTextToClipboard } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import RepayModal from './components/RepayModal';
-import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 
 export default function Borrow() {
   // const [eMode, setEMode] = useState<boolean>(false);
@@ -92,6 +94,7 @@ export default function Borrow() {
                       <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 1 }}>
                         {row.symbol}
                       </Typography>
+                      <ContentCopy sx={{ ml: 1 }} color="secondary" fontSize="small" onClick={() => copyTextToClipboard(row.address)} />
                     </Box>
                   </TableCell>
                   <TableCell align="right">

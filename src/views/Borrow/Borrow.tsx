@@ -3,6 +3,8 @@ import ActionSection from './components/ActionSection/ActionSection';
 import BorrowButton from './components/BorrowButton/BorrowButton';
 import BorrowSection from './components/BorrowDepositSection/BorrowSection';
 import DepositSection from './components/BorrowDepositSection/DepositSection';
+// import BorrowRate from './components/BorrowRate/BorrowRate';
+// import HealthFactor from './components/HealthFactor/HealthFactor';
 import LTVSection from './components/LTVSection/LTVSection';
 import MintBanner from './components/MintBanner/MintBanner';
 import { useBorrowSubmitState } from './state/hooks';
@@ -28,18 +30,15 @@ const Borrow = () => {
           >
             <Stack gap={1.25} sx={{ flexDirection: { xs: 'column', md: 'row' } }}>
               <DepositSection />
-
               <BorrowSection />
             </Stack>
-
             <LTVSection />
             {isSubmitted && <ActionSection />}
           </Box>
-
           <BorrowButton />
         </Box>
-
         {/* <Box display="flex" flexDirection="column" gap={2}>
+          <HealthFactor />
           <BorrowRate />
         </Box> */}
       </Stack>
