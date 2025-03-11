@@ -10,7 +10,7 @@ import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfol
 import { useModalFunction } from 'src/states/modal/hooks';
 import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
-import { BN } from 'src/utils';
+import { BN, copyTextToClipboard } from 'src/utils';
 import { compactNumber, formatNumber } from '../../utils/format';
 import DepositModal from './components/DepositModal';
 import SwitchCustom from './components/SwitchCustom';
