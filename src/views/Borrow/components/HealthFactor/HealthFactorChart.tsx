@@ -9,14 +9,14 @@ export default function HealthFactorChart() {
   const options = useSolidGaugeConfig(
     {
       chart: {
-        height: 200,
-        borderWidth: 0,
+        height: 250,
+        alignTicks: false,
         plotBorderWidth: 0,
+        plotShadow: false,
       },
       title: {
         text: '',
       },
-
       legend: {
         enabled: false,
       },
@@ -43,37 +43,46 @@ export default function HealthFactorChart() {
       },
       yAxis: {
         stops: [
-          [1.2, 'red'],
+          [0, 'red'],
           [1.5, 'orange'],
-          [2.0, 'green'],
+          [4, 'green'],
         ],
-        min: 1,
-        max: 2,
+        categories: ['1.2', '1.5', '2'],
+        min: 0,
+        max: 4,
         lineWidth: 0,
         tickWidth: 0,
-        tickAmount: 2,
-        title: {
-          y: -70,
-          text: undefined,
-        },
+        tickAmount: 10,
+        minorTickColor: 'none',
+        offset: 60, //khoang cach so va do thi
         labels: {
-          y: 16,
+          distance: -20,
+          rotation: 0,
+          // x: 16,
+          y: 0,
+          style: {
+            fontSize: '10px',
+          },
         },
+        tickPosition: 'inside',
+        tickLength: 5,
+        endOnTick: false,
       },
       series: [
         {
           type: 'solidgauge',
-          data: [1.2],
+          data: [5],
           dataLabels: {
             enabled: true,
-            format: '{y}%', // Hiển thị giá trị số
+            format: '{y}', // Hiển thị giá trị số
             style: {
               fontSize: '20px',
               fontWeight: 'bold',
-              color: '#333',
+              color: 'text.primary',
+              top: '20px',
             },
             align: 'center',
-            verticalAlign: 'middle',
+            verticalAlign: 'bottom',
           },
         },
       ],

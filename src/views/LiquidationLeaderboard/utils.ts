@@ -5,17 +5,18 @@ export const filterLiquidationConfigs = {
   collateral: { value: 'collateral', label: 'Collateral' },
 };
 
-export const liquidationTableHead: Array<{ label: string; sort?: TSortBuy }> = [
+export const liquidationTableHead: Array<{ label: string; sort?: TSortBuy; width?: string }> = [
   { label: 'Rank' },
-  { label: 'User' },
+  { label: 'User', width: '200' },
   { label: 'Collateral' },
   { label: 'Collateral Amount' },
   { label: 'Collateral Value' },
   { label: 'Debt Amount', sort: 'debtAmount' },
   // { label: 'Collateral to Claim' },
   // { label: 'Repay Amount' },
+  { label: 'Liquidation price' },
   { label: 'Health Factor', sort: 'healthFactor' },
-  { label: 'Status' },
+  { label: 'Status', width: '112' },
 ];
 
 export const checkStatus = (healthFactor: number) => {

@@ -85,7 +85,6 @@ export default function Borrow() {
           <TableBody>
             {Object.values(listTokenAvailable).map((row) => {
               const borrowedValue = asset?.[row.address].usdaiToRedeem;
-
               return (
                 <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell component="th" scope="row">
@@ -125,7 +124,7 @@ export default function Borrow() {
                       onClick={() => {
                         handleRepay(row);
                       }}
-                      disabled={borrowedValue == undefined}
+                      disabled={borrowedValue == 0 || !borrowedValue}
                     >
                       Redeem
                     </Button>

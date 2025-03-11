@@ -26,15 +26,15 @@ export default function HealthFactor() {
       <HealthFactorChart />
       <Box className="flex-space-between">
         <Box className="flex-start">
-          <Typography>HealthFactor</Typography>
-          <TooltipInfo title="HealthFactor" />
+          <Typography>Liquidation Price</Typography>
+          <TooltipInfo title="The price at which your collateral will be liquidated." />
         </Box>
         <ValueWithStatus status={['success']} value={'--'} />
       </Box>
       <Box className="flex-space-between">
         <Box className="flex-start">
           <Typography>Current ETH Price</Typography>
-          <TooltipInfo title="HealthFactor" />
+          <TooltipInfo title="The current market price of this collateral." />
         </Box>
         <ValueWithStatus status={['success']} value={'--'} />
       </Box>
