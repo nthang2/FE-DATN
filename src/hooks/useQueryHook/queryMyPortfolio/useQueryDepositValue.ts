@@ -25,7 +25,8 @@ export default function useQueryDepositValue() {
             if (!_add) {
               return;
             } else {
-              const _valueDeposit = await lendingContract.getLoanType0(userLoan.pdAddress);
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const _valueDeposit: any = await lendingContract.getLoanType0(userLoan.pdAddress);
               depositValue[add] = BN(_valueDeposit.collateralAmount)
                 .dividedBy(BN(10).pow(findTokenInfoByToken(add)?.decimals ?? 9))
                 .toString();
