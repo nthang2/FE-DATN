@@ -65,9 +65,10 @@ export default function Deposit() {
           <TableBody>
             {tokens.map((row, index) => {
               const balanceInWalletByUsd = BN(balance[index].balance)
-                .multipliedBy(asset?.[row.address].priceUSD || 0)
+                .multipliedBy(asset?.[row.address]?.priceUSD || 0)
                 .toFixed(2);
-              const withdrawAbleValue = asset?.[row.address].maxWithdrawable;
+              const withdrawAbleValue = asset?.[row.address]?.maxWithdrawable;
+
               return (
                 <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell component="th" scope="row">

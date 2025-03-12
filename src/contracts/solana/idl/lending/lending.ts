@@ -69,6 +69,104 @@ export type IdlLending = {
       ];
     },
     {
+      name: 'changeCollateralType1';
+      discriminator: [138, 96, 69, 14, 130, 29, 19, 115];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          docs: ['#2'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'oldCollateral';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'oldCollateralToken';
+              }
+            ];
+          };
+        },
+        {
+          name: 'oldCollateralToken';
+          writable: true;
+        },
+        {
+          name: 'newCollateral';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'newCollateralToken';
+              }
+            ];
+          };
+        },
+        {
+          name: 'newCollateralToken';
+          writable: true;
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        }
+      ];
+      args: [
+        {
+          name: 'collateralizationRatioType1';
+          type: 'u64';
+        },
+        {
+          name: 'liquidationRatioType1';
+          type: 'u64';
+        },
+        {
+          name: 'isPausedType1';
+          type: 'bool';
+        }
+      ];
+    },
+    {
       name: 'editController';
       discriminator: [132, 153, 227, 60, 132, 180, 226, 209];
       accounts: [
@@ -153,6 +251,122 @@ export type IdlLending = {
           type: {
             defined: {
               name: 'editType0DepositoryFields';
+            };
+          };
+        }
+      ];
+    },
+    {
+      name: 'editType1Collateral';
+      discriminator: [76, 225, 178, 90, 134, 169, 77, 11];
+      accounts: [
+        {
+          name: 'authority';
+          docs: ['#1'];
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          docs: ['#2'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'depository';
+          docs: ['#3'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateral1';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'collateralToken1';
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateralToken1';
+          writable: true;
+        }
+      ];
+      args: [
+        {
+          name: 'fields';
+          type: {
+            defined: {
+              name: 'editType1CollateralFields';
+            };
+          };
+        }
+      ];
+    },
+    {
+      name: 'editType1Depository';
+      discriminator: [166, 214, 109, 254, 152, 173, 250, 180];
+      accounts: [
+        {
+          name: 'authority';
+          docs: ['#1'];
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          docs: ['#2'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'depository';
+          docs: ['#3'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        }
+      ];
+      args: [
+        {
+          name: 'fields';
+          type: {
+            defined: {
+              name: 'editType1DepositoryFields';
             };
           };
         }
@@ -294,6 +508,154 @@ export type IdlLending = {
         },
         {
           name: 'liquidationPenalty';
+          type: 'u64';
+        },
+        {
+          name: 'dust';
+          type: 'u64';
+        }
+      ];
+    },
+    {
+      name: 'initializeType1Collateral';
+      discriminator: [232, 210, 40, 14, 84, 200, 40, 154];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateral1';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'collateralToken1';
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateralToken1';
+          writable: true;
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        }
+      ];
+      args: [
+        {
+          name: 'index';
+          type: 'u8';
+        },
+        {
+          name: 'collateralizationRatioType1';
+          type: 'u64';
+        },
+        {
+          name: 'liquidationRatioType1';
+          type: 'u64';
+        },
+        {
+          name: 'isPausedType1';
+          type: 'bool';
+        }
+      ];
+    },
+    {
+      name: 'initializeType1Depository';
+      discriminator: [16, 193, 10, 92, 20, 29, 22, 20];
+      accounts: [
+        {
+          name: 'authority';
+          docs: ['#1'];
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          docs: ['#3'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'depository';
+          docs: ['#4'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'oracle';
+          docs: ['CHECK'];
+          writable: true;
+        },
+        {
+          name: 'systemProgram';
+          docs: ['#9'];
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          docs: ['#10'];
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        }
+      ];
+      args: [
+        {
+          name: 'debtCeilingType1';
+          type: 'u64';
+        },
+        {
+          name: 'liquidationPenaltyType1';
           type: 'u64';
         },
         {
@@ -608,8 +970,8 @@ export type IdlLending = {
       ];
     },
     {
-      name: 'liquidateType0';
-      discriminator: [132, 41, 76, 79, 227, 71, 42, 4];
+      name: 'liquidate';
+      discriminator: [223, 179, 226, 125, 48, 46, 39, 74];
       accounts: [
         {
           name: 'controller';
@@ -798,6 +1160,225 @@ export type IdlLending = {
       ];
     },
     {
+      name: 'liquidateType1';
+      discriminator: [240, 134, 35, 212, 30, 119, 221, 35];
+      accounts: [
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'liquidator';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'user';
+          writable: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'depositoryVault';
+          writable: true;
+        },
+        {
+          name: 'loan';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'stablecoinMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateral1';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'collateralToken1';
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateralToken1';
+          writable: true;
+        },
+        {
+          name: 'liquidatorStablecoinAccount';
+          writable: true;
+        },
+        {
+          name: 'liquidatorCollateralAccount';
+          writable: true;
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'controller.reserve';
+                account: 'controller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'stablecoinMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'oracle';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'repayAmount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
       name: 'readOracleAccount';
       discriminator: [84, 167, 143, 192, 12, 22, 206, 184];
       accounts: [
@@ -826,6 +1407,974 @@ export type IdlLending = {
           name: 'priceGroup';
         };
       };
+    },
+    {
+      name: 'type1DepositoryBurn';
+      discriminator: [145, 83, 247, 28, 156, 97, 242, 27];
+      accounts: [
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'user';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'loanAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemableMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'userRedeemable';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'user';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'controller.reserve';
+                account: 'controller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'oracle';
+          docs: ['CHECK'];
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'redeemAmount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
+      name: 'type1DepositoryDeposit';
+      discriminator: [84, 191, 44, 206, 74, 115, 212, 92];
+      accounts: [
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'user';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateral1';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'collateralToken1';
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateralToken1';
+          writable: true;
+        },
+        {
+          name: 'userCollateral1';
+          writable: true;
+        },
+        {
+          name: 'depositoryVault';
+          writable: true;
+        },
+        {
+          name: 'loanAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemableMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'controller.reserve';
+                account: 'controller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'collateralAmount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
+      name: 'type1DepositoryMint';
+      discriminator: [98, 205, 150, 200, 97, 68, 38, 120];
+      accounts: [
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'user';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'loanAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemableMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'userRedeemable';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'user';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'controller.reserve';
+                account: 'controller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'oracle';
+          docs: ['CHECK'];
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'debtAmount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
+      name: 'type1DepositoryWithdraw';
+      discriminator: [19, 111, 95, 198, 100, 183, 97, 149];
+      accounts: [
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'user';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateral1';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'collateralToken1';
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateralToken1';
+          writable: true;
+        },
+        {
+          name: 'userCollateral1';
+          writable: true;
+        },
+        {
+          name: 'depositoryVault';
+          writable: true;
+        },
+        {
+          name: 'loanAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemableMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'controller.reserve';
+                account: 'controller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'oracle';
+          docs: ['CHECK'];
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'collateralAmount';
+          type: 'u64';
+        }
+      ];
     },
     {
       name: 'updateAuthority';
@@ -913,6 +2462,10 @@ export type IdlLending = {
   ];
   accounts: [
     {
+      name: 'collateralType1';
+      discriminator: [19, 61, 185, 15, 4, 152, 239, 79];
+    },
+    {
       name: 'controller';
       discriminator: [184, 79, 171, 0, 183, 43, 113, 110];
     },
@@ -921,11 +2474,35 @@ export type IdlLending = {
       discriminator: [53, 107, 87, 167, 145, 117, 129, 201];
     },
     {
+      name: 'loanType1';
+      discriminator: [53, 13, 71, 44, 243, 56, 227, 110];
+    },
+    {
       name: 'type0Depository';
       discriminator: [202, 54, 70, 164, 112, 15, 110, 15];
+    },
+    {
+      name: 'type1Depository';
+      discriminator: [132, 68, 105, 249, 215, 58, 64, 100];
     }
   ];
   events: [
+    {
+      name: 'burnType1Event';
+      discriminator: [11, 185, 25, 36, 190, 113, 131, 112];
+    },
+    {
+      name: 'changeNewCollateralType1';
+      discriminator: [204, 46, 186, 111, 9, 18, 59, 191];
+    },
+    {
+      name: 'depositType1Event';
+      discriminator: [156, 35, 223, 38, 224, 11, 167, 142];
+    },
+    {
+      name: 'initType1CollateralEvent';
+      discriminator: [222, 18, 74, 167, 241, 110, 231, 123];
+    },
     {
       name: 'initializeControllerEvent';
       discriminator: [236, 159, 123, 225, 71, 177, 241, 0];
@@ -937,6 +2514,10 @@ export type IdlLending = {
     {
       name: 'liquidationEvent';
       discriminator: [3, 13, 21, 93, 173, 136, 72, 144];
+    },
+    {
+      name: 'mintType1Event';
+      discriminator: [126, 100, 125, 84, 68, 45, 186, 158];
     },
     {
       name: 'setType0DepositoryCollateralizationRatioEvent';
@@ -957,6 +2538,30 @@ export type IdlLending = {
     {
       name: 'setType0DepositoryLiquidationRatioEvent';
       discriminator: [254, 226, 122, 32, 109, 103, 167, 214];
+    },
+    {
+      name: 'setType1CollateralizationRatioEvent';
+      discriminator: [199, 32, 48, 73, 248, 227, 12, 102];
+    },
+    {
+      name: 'setType1DepositoryDebtCeilingEvent';
+      discriminator: [100, 63, 166, 98, 124, 248, 249, 11];
+    },
+    {
+      name: 'setType1DepositoryDustEvent';
+      discriminator: [205, 116, 246, 116, 116, 149, 88, 210];
+    },
+    {
+      name: 'setType1DepositoryLiquidationPenaltyEvent';
+      discriminator: [130, 94, 135, 160, 72, 37, 20, 29];
+    },
+    {
+      name: 'setType1LiquidationRatioEvent';
+      discriminator: [60, 113, 146, 120, 221, 42, 2, 133];
+    },
+    {
+      name: 'withdrawType1Event';
+      discriminator: [26, 70, 17, 231, 83, 229, 33, 49];
     }
   ];
   errors: [
@@ -1322,61 +2927,178 @@ export type IdlLending = {
     },
     {
       code: 6072;
+      name: 'invalidRepayAmountForCollateral';
+      msg: 'Invalid repay amount for the collateral';
+    },
+    {
+      code: 6073;
       name: 'repayAmountExceedDebt';
       msg: 'The repay amount exceeds the debt.';
     },
     {
-      code: 6073;
+      code: 6074;
       name: 'invalidAccountDiscriminator';
       msg: 'Invalid account discriminator';
     },
     {
-      code: 6074;
+      code: 6075;
       name: 'unableToDeserializeAccount';
       msg: 'Unable to deserialize account';
     },
     {
-      code: 6075;
+      code: 6076;
       name: 'invalidOracle';
       msg: 'The provided oracle account is invalid.';
     },
     {
-      code: 6076;
+      code: 6077;
       name: 'onlyOneLoanAccount';
       msg: 'Only 1 loan account to be liquidated';
     },
     {
-      code: 6077;
+      code: 6078;
       name: 'invalidCollateralizationRatio';
       msg: 'Cannot liquidate to lower than Collateralization Ratio.';
     },
     {
-      code: 6078;
+      code: 6079;
       name: 'invalidReserveAccount';
       msg: 'The provided reserve account is invalid';
     },
     {
-      code: 6079;
+      code: 6080;
       name: 'invalidAccountSize';
       msg: 'The new size provided is not match the needed space for migration.';
     },
     {
-      code: 6080;
+      code: 6081;
       name: 'priceNotUpdate';
-      msg: "The price of this collateral hasn't been updated for 10 minute.";
+      msg: "The price of this collateral hasn't been updated for 1 minute.";
     },
     {
-      code: 6081;
+      code: 6082;
       name: 'invalidMetadata';
       msg: 'The provided metadata account is invalid.';
     },
     {
-      code: 6082;
+      code: 6083;
       name: 'tokenNotFound';
       msg: 'Token not found in price group oracle.';
+    },
+    {
+      code: 6084;
+      name: 'rateExceedDouble';
+      msg: 'Borrow rate has been increasing too high';
+    },
+    {
+      code: 6085;
+      name: 'depositoryPaused';
+      msg: 'The depository is paused';
+    },
+    {
+      code: 6086;
+      name: 'noMoreCollateral';
+      msg: 'No more collateral';
+    },
+    {
+      code: 6087;
+      name: 'invalidNumOfCollateral';
+      msg: 'The number of collateral is invalid because it is smaller than now';
+    },
+    {
+      code: 6088;
+      name: 'overIndex';
+      msg: 'Over index';
+    },
+    {
+      code: 6089;
+      name: 'zeroAmount';
+      msg: 'Zero amount';
+    },
+    {
+      code: 6090;
+      name: 'conflictIndex';
+      msg: 'Index is initialized, please use change collateral method';
+    },
+    {
+      code: 6091;
+      name: 'collateralAlreadyInitialized';
+      msg: 'Collateral is initialized';
     }
   ];
   types: [
+    {
+      name: 'burnType1Event';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'user';
+            type: 'pubkey';
+          },
+          {
+            name: 'burnAmount';
+            type: 'u64';
+          },
+          {
+            name: 'newDebt';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'changeNewCollateralType1';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'controller';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateralNew';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateralOld';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateralizationRatioType1';
+            type: 'u64';
+          },
+          {
+            name: 'liquidationRatioType1';
+            type: 'u64';
+          },
+          {
+            name: 'isPausedType1';
+            type: 'bool';
+          }
+        ];
+      };
+    },
+    {
+      name: 'collateralType1';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'index';
+            type: 'u8';
+          },
+          {
+            name: 'collateralTotalType1';
+            type: 'u64';
+          },
+          {
+            name: 'bump';
+            type: 'u8';
+          }
+        ];
+      };
+    },
     {
       name: 'controller';
       type: {
@@ -1421,6 +3143,26 @@ export type IdlLending = {
           {
             name: 'redeemableOracle';
             type: 'pubkey';
+          }
+        ];
+      };
+    },
+    {
+      name: 'depositType1Event';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'user';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateral';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateralAmount';
+            type: 'u64';
           }
         ];
       };
@@ -1534,6 +3276,110 @@ export type IdlLending = {
       };
     },
     {
+      name: 'editType1CollateralFields';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'collateralizationRatioType1';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'liquidationRatioType1';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'isPauseCollateralType1';
+            type: {
+              option: 'bool';
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: 'editType1DepositoryFields';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'oracle';
+            type: {
+              option: 'pubkey';
+            };
+          },
+          {
+            name: 'debtCeiling';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'liquidationPenalty';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'dust';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'duty';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'rate';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'pause';
+            type: {
+              option: 'bool';
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: 'initType1CollateralEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'controller';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateral';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateralizationRatioType1';
+            type: 'u64';
+          },
+          {
+            name: 'liquidationRatioType1';
+            type: 'u64';
+          },
+          {
+            name: 'isPausedType1';
+            type: 'bool';
+          }
+        ];
+      };
+    },
+    {
       name: 'initializeControllerEvent';
       docs: ['Event called in [instructions::initialize_controller::handler].'];
       type: {
@@ -1626,6 +3472,24 @@ export type IdlLending = {
       };
     },
     {
+      name: 'loanType1';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'collateralType1Amount';
+            type: {
+              array: ['u64', 8];
+            };
+          },
+          {
+            name: 'mintedAmount';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
       name: 'metadataFields';
       type: {
         kind: 'struct';
@@ -1645,6 +3509,26 @@ export type IdlLending = {
           {
             name: 'sellerFeeBasisPoints';
             type: 'u16';
+          }
+        ];
+      };
+    },
+    {
+      name: 'mintType1Event';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'user';
+            type: 'pubkey';
+          },
+          {
+            name: 'mintAmount';
+            type: 'u64';
+          },
+          {
+            name: 'newDebt';
+            type: 'u64';
           }
         ];
       };
@@ -1823,6 +3707,106 @@ export type IdlLending = {
       };
     },
     {
+      name: 'setType1CollateralizationRatioEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'controller';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateral';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateralizationRatio';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'setType1DepositoryDebtCeilingEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'controller';
+            type: 'pubkey';
+          },
+          {
+            name: 'depository';
+            type: 'pubkey';
+          },
+          {
+            name: 'debtCeiling';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'setType1DepositoryDustEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'controller';
+            type: 'pubkey';
+          },
+          {
+            name: 'depository';
+            type: 'pubkey';
+          },
+          {
+            name: 'dust';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'setType1DepositoryLiquidationPenaltyEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'controller';
+            type: 'pubkey';
+          },
+          {
+            name: 'depository';
+            type: 'pubkey';
+          },
+          {
+            name: 'liquidationPenalty';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'setType1LiquidationRatioEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'controller';
+            type: 'pubkey';
+          },
+          {
+            name: 'colateral';
+            type: 'pubkey';
+          },
+          {
+            name: 'liquidationRatio';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
       name: 'type0Depository';
       type: {
         kind: 'struct';
@@ -1882,6 +3866,104 @@ export type IdlLending = {
           {
             name: 'isPaused';
             type: 'bool';
+          }
+        ];
+      };
+    },
+    {
+      name: 'type1Depository';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'collateralType1';
+            type: {
+              array: ['pubkey', 8];
+            };
+          },
+          {
+            name: 'collateralizationRatioType1';
+            type: {
+              array: ['u64', 8];
+            };
+          },
+          {
+            name: 'liquidationRatioType1';
+            type: {
+              array: ['u64', 8];
+            };
+          },
+          {
+            name: 'decimals';
+            type: {
+              array: ['u8', 8];
+            };
+          },
+          {
+            name: 'oracle';
+            type: 'pubkey';
+          },
+          {
+            name: 'debtCeilingType1';
+            type: 'u64';
+          },
+          {
+            name: 'liquidationPenalty';
+            type: 'u64';
+          },
+          {
+            name: 'debtTotal';
+            type: 'u64';
+          },
+          {
+            name: 'dust';
+            type: 'u64';
+          },
+          {
+            name: 'bump';
+            type: 'u8';
+          },
+          {
+            name: 'duty';
+            type: 'u64';
+          },
+          {
+            name: 'rho';
+            type: 'u64';
+          },
+          {
+            name: 'rate';
+            type: 'u64';
+          },
+          {
+            name: 'isCollateralPaused';
+            type: {
+              array: ['bool', 8];
+            };
+          },
+          {
+            name: 'isPaused';
+            type: 'bool';
+          }
+        ];
+      };
+    },
+    {
+      name: 'withdrawType1Event';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'user';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateral';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateralAmount';
+            type: 'u64';
           }
         ];
       };
@@ -1954,6 +4036,104 @@ export const idlLending: IdlLending = {
               name: 'metadataFields',
             },
           },
+        },
+      ],
+    },
+    {
+      name: 'changeCollateralType1',
+      discriminator: [138, 96, 69, 14, 130, 29, 19, 115],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          docs: ['#2'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'oldCollateral',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'oldCollateralToken',
+              },
+            ],
+          },
+        },
+        {
+          name: 'oldCollateralToken',
+          writable: true,
+        },
+        {
+          name: 'newCollateral',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'newCollateralToken',
+              },
+            ],
+          },
+        },
+        {
+          name: 'newCollateralToken',
+          writable: true,
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+      ],
+      args: [
+        {
+          name: 'collateralizationRatioType1',
+          type: 'u64',
+        },
+        {
+          name: 'liquidationRatioType1',
+          type: 'u64',
+        },
+        {
+          name: 'isPausedType1',
+          type: 'bool',
         },
       ],
     },
@@ -2042,6 +4222,122 @@ export const idlLending: IdlLending = {
           type: {
             defined: {
               name: 'editType0DepositoryFields',
+            },
+          },
+        },
+      ],
+    },
+    {
+      name: 'editType1Collateral',
+      discriminator: [76, 225, 178, 90, 134, 169, 77, 11],
+      accounts: [
+        {
+          name: 'authority',
+          docs: ['#1'],
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          docs: ['#2'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'depository',
+          docs: ['#3'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateral1',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'collateralToken1',
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateralToken1',
+          writable: true,
+        },
+      ],
+      args: [
+        {
+          name: 'fields',
+          type: {
+            defined: {
+              name: 'editType1CollateralFields',
+            },
+          },
+        },
+      ],
+    },
+    {
+      name: 'editType1Depository',
+      discriminator: [166, 214, 109, 254, 152, 173, 250, 180],
+      accounts: [
+        {
+          name: 'authority',
+          docs: ['#1'],
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          docs: ['#2'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'depository',
+          docs: ['#3'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+      ],
+      args: [
+        {
+          name: 'fields',
+          type: {
+            defined: {
+              name: 'editType1DepositoryFields',
             },
           },
         },
@@ -2183,6 +4479,154 @@ export const idlLending: IdlLending = {
         },
         {
           name: 'liquidationPenalty',
+          type: 'u64',
+        },
+        {
+          name: 'dust',
+          type: 'u64',
+        },
+      ],
+    },
+    {
+      name: 'initializeType1Collateral',
+      discriminator: [232, 210, 40, 14, 84, 200, 40, 154],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateral1',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'collateralToken1',
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateralToken1',
+          writable: true,
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+      ],
+      args: [
+        {
+          name: 'index',
+          type: 'u8',
+        },
+        {
+          name: 'collateralizationRatioType1',
+          type: 'u64',
+        },
+        {
+          name: 'liquidationRatioType1',
+          type: 'u64',
+        },
+        {
+          name: 'isPausedType1',
+          type: 'bool',
+        },
+      ],
+    },
+    {
+      name: 'initializeType1Depository',
+      discriminator: [16, 193, 10, 92, 20, 29, 22, 20],
+      accounts: [
+        {
+          name: 'authority',
+          docs: ['#1'],
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          docs: ['#3'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'depository',
+          docs: ['#4'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'oracle',
+          docs: ['CHECK'],
+          writable: true,
+        },
+        {
+          name: 'systemProgram',
+          docs: ['#9'],
+          address: '11111111111111111111111111111111',
+        },
+        {
+          name: 'tokenProgram',
+          docs: ['#10'],
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+      ],
+      args: [
+        {
+          name: 'debtCeilingType1',
+          type: 'u64',
+        },
+        {
+          name: 'liquidationPenaltyType1',
           type: 'u64',
         },
         {
@@ -2377,8 +4821,8 @@ export const idlLending: IdlLending = {
       ],
     },
     {
-      name: 'liquidateType0',
-      discriminator: [132, 41, 76, 79, 227, 71, 42, 4],
+      name: 'liquidate',
+      discriminator: [223, 179, 226, 125, 48, 46, 39, 74],
       accounts: [
         {
           name: 'controller',
@@ -2507,6 +4951,165 @@ export const idlLending: IdlLending = {
       ],
     },
     {
+      name: 'liquidateType1',
+      discriminator: [240, 134, 35, 212, 30, 119, 221, 35],
+      accounts: [
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'liquidator',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'user',
+          writable: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'depositoryVault',
+          writable: true,
+        },
+        {
+          name: 'loan',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'stablecoinMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateral1',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'collateralToken1',
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateralToken1',
+          writable: true,
+        },
+        {
+          name: 'liquidatorStablecoinAccount',
+          writable: true,
+        },
+        {
+          name: 'liquidatorCollateralAccount',
+          writable: true,
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'controller.reserve',
+                account: 'controller',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'stablecoinMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'oracle',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'repayAmount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
       name: 'readOracleAccount',
       discriminator: [84, 167, 143, 192, 12, 22, 206, 184],
       accounts: [
@@ -2535,6 +5138,614 @@ export const idlLending: IdlLending = {
           name: 'priceGroup',
         },
       },
+    },
+    {
+      name: 'type1DepositoryBurn',
+      discriminator: [145, 83, 247, 28, 156, 97, 242, 27],
+      accounts: [
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'user',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'loanAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemableMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'userRedeemable',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'user',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'controller.reserve',
+                account: 'controller',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'oracle',
+          docs: ['CHECK'],
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'redeemAmount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
+      name: 'type1DepositoryDeposit',
+      discriminator: [84, 191, 44, 206, 74, 115, 212, 92],
+      accounts: [
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'user',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateral1',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'collateralToken1',
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateralToken1',
+          writable: true,
+        },
+        {
+          name: 'userCollateral1',
+          writable: true,
+        },
+        {
+          name: 'depositoryVault',
+          writable: true,
+        },
+        {
+          name: 'loanAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemableMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'controller.reserve',
+                account: 'controller',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'collateralAmount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
+      name: 'type1DepositoryMint',
+      discriminator: [98, 205, 150, 200, 97, 68, 38, 120],
+      accounts: [
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'user',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'loanAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemableMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'userRedeemable',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'user',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'controller.reserve',
+                account: 'controller',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'oracle',
+          docs: ['CHECK'],
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'debtAmount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
+      name: 'type1DepositoryWithdraw',
+      discriminator: [19, 111, 95, 198, 100, 183, 97, 149],
+      accounts: [
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'user',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateral1',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'collateralToken1',
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateralToken1',
+          writable: true,
+        },
+        {
+          name: 'userCollateral1',
+          writable: true,
+        },
+        {
+          name: 'depositoryVault',
+          writable: true,
+        },
+        {
+          name: 'loanAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemableMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'controller.reserve',
+                account: 'controller',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'oracle',
+          docs: ['CHECK'],
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'collateralAmount',
+          type: 'u64',
+        },
+      ],
     },
     {
       name: 'updateAuthority',
@@ -2622,6 +5833,10 @@ export const idlLending: IdlLending = {
   ],
   accounts: [
     {
+      name: 'collateralType1',
+      discriminator: [19, 61, 185, 15, 4, 152, 239, 79],
+    },
+    {
       name: 'controller',
       discriminator: [184, 79, 171, 0, 183, 43, 113, 110],
     },
@@ -2630,11 +5845,35 @@ export const idlLending: IdlLending = {
       discriminator: [53, 107, 87, 167, 145, 117, 129, 201],
     },
     {
+      name: 'loanType1',
+      discriminator: [53, 13, 71, 44, 243, 56, 227, 110],
+    },
+    {
       name: 'type0Depository',
       discriminator: [202, 54, 70, 164, 112, 15, 110, 15],
     },
+    {
+      name: 'type1Depository',
+      discriminator: [132, 68, 105, 249, 215, 58, 64, 100],
+    },
   ],
   events: [
+    {
+      name: 'burnType1Event',
+      discriminator: [11, 185, 25, 36, 190, 113, 131, 112],
+    },
+    {
+      name: 'changeNewCollateralType1',
+      discriminator: [204, 46, 186, 111, 9, 18, 59, 191],
+    },
+    {
+      name: 'depositType1Event',
+      discriminator: [156, 35, 223, 38, 224, 11, 167, 142],
+    },
+    {
+      name: 'initType1CollateralEvent',
+      discriminator: [222, 18, 74, 167, 241, 110, 231, 123],
+    },
     {
       name: 'initializeControllerEvent',
       discriminator: [236, 159, 123, 225, 71, 177, 241, 0],
@@ -2646,6 +5885,10 @@ export const idlLending: IdlLending = {
     {
       name: 'liquidationEvent',
       discriminator: [3, 13, 21, 93, 173, 136, 72, 144],
+    },
+    {
+      name: 'mintType1Event',
+      discriminator: [126, 100, 125, 84, 68, 45, 186, 158],
     },
     {
       name: 'setType0DepositoryCollateralizationRatioEvent',
@@ -2666,6 +5909,30 @@ export const idlLending: IdlLending = {
     {
       name: 'setType0DepositoryLiquidationRatioEvent',
       discriminator: [254, 226, 122, 32, 109, 103, 167, 214],
+    },
+    {
+      name: 'setType1CollateralizationRatioEvent',
+      discriminator: [199, 32, 48, 73, 248, 227, 12, 102],
+    },
+    {
+      name: 'setType1DepositoryDebtCeilingEvent',
+      discriminator: [100, 63, 166, 98, 124, 248, 249, 11],
+    },
+    {
+      name: 'setType1DepositoryDustEvent',
+      discriminator: [205, 116, 246, 116, 116, 149, 88, 210],
+    },
+    {
+      name: 'setType1DepositoryLiquidationPenaltyEvent',
+      discriminator: [130, 94, 135, 160, 72, 37, 20, 29],
+    },
+    {
+      name: 'setType1LiquidationRatioEvent',
+      discriminator: [60, 113, 146, 120, 221, 42, 2, 133],
+    },
+    {
+      name: 'withdrawType1Event',
+      discriminator: [26, 70, 17, 231, 83, 229, 33, 49],
     },
   ],
   errors: [
@@ -3031,61 +6298,178 @@ export const idlLending: IdlLending = {
     },
     {
       code: 6072,
+      name: 'invalidRepayAmountForCollateral',
+      msg: 'Invalid repay amount for the collateral',
+    },
+    {
+      code: 6073,
       name: 'repayAmountExceedDebt',
       msg: 'The repay amount exceeds the debt.',
     },
     {
-      code: 6073,
+      code: 6074,
       name: 'invalidAccountDiscriminator',
       msg: 'Invalid account discriminator',
     },
     {
-      code: 6074,
+      code: 6075,
       name: 'unableToDeserializeAccount',
       msg: 'Unable to deserialize account',
     },
     {
-      code: 6075,
+      code: 6076,
       name: 'invalidOracle',
       msg: 'The provided oracle account is invalid.',
     },
     {
-      code: 6076,
+      code: 6077,
       name: 'onlyOneLoanAccount',
       msg: 'Only 1 loan account to be liquidated',
     },
     {
-      code: 6077,
+      code: 6078,
       name: 'invalidCollateralizationRatio',
       msg: 'Cannot liquidate to lower than Collateralization Ratio.',
     },
     {
-      code: 6078,
+      code: 6079,
       name: 'invalidReserveAccount',
       msg: 'The provided reserve account is invalid',
     },
     {
-      code: 6079,
+      code: 6080,
       name: 'invalidAccountSize',
       msg: 'The new size provided is not match the needed space for migration.',
     },
     {
-      code: 6080,
+      code: 6081,
       name: 'priceNotUpdate',
-      msg: "The price of this collateral hasn't been updated for 10 minute.",
+      msg: "The price of this collateral hasn't been updated for 1 minute.",
     },
     {
-      code: 6081,
+      code: 6082,
       name: 'invalidMetadata',
       msg: 'The provided metadata account is invalid.',
     },
     {
-      code: 6082,
+      code: 6083,
       name: 'tokenNotFound',
       msg: 'Token not found in price group oracle.',
     },
+    {
+      code: 6084,
+      name: 'rateExceedDouble',
+      msg: 'Borrow rate has been increasing too high',
+    },
+    {
+      code: 6085,
+      name: 'depositoryPaused',
+      msg: 'The depository is paused',
+    },
+    {
+      code: 6086,
+      name: 'noMoreCollateral',
+      msg: 'No more collateral',
+    },
+    {
+      code: 6087,
+      name: 'invalidNumOfCollateral',
+      msg: 'The number of collateral is invalid because it is smaller than now',
+    },
+    {
+      code: 6088,
+      name: 'overIndex',
+      msg: 'Over index',
+    },
+    {
+      code: 6089,
+      name: 'zeroAmount',
+      msg: 'Zero amount',
+    },
+    {
+      code: 6090,
+      name: 'conflictIndex',
+      msg: 'Index is initialized, please use change collateral method',
+    },
+    {
+      code: 6091,
+      name: 'collateralAlreadyInitialized',
+      msg: 'Collateral is initialized',
+    },
   ],
   types: [
+    {
+      name: 'burnType1Event',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'user',
+            type: 'pubkey',
+          },
+          {
+            name: 'burnAmount',
+            type: 'u64',
+          },
+          {
+            name: 'newDebt',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'changeNewCollateralType1',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'controller',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateralNew',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateralOld',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateralizationRatioType1',
+            type: 'u64',
+          },
+          {
+            name: 'liquidationRatioType1',
+            type: 'u64',
+          },
+          {
+            name: 'isPausedType1',
+            type: 'bool',
+          },
+        ],
+      },
+    },
+    {
+      name: 'collateralType1',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'index',
+            type: 'u8',
+          },
+          {
+            name: 'collateralTotalType1',
+            type: 'u64',
+          },
+          {
+            name: 'bump',
+            type: 'u8',
+          },
+        ],
+      },
+    },
     {
       name: 'controller',
       type: {
@@ -3130,6 +6514,26 @@ export const idlLending: IdlLending = {
           {
             name: 'redeemableOracle',
             type: 'pubkey',
+          },
+        ],
+      },
+    },
+    {
+      name: 'depositType1Event',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'user',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateral',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateralAmount',
+            type: 'u64',
           },
         ],
       },
@@ -3243,6 +6647,110 @@ export const idlLending: IdlLending = {
       },
     },
     {
+      name: 'editType1CollateralFields',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'collateralizationRatioType1',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'liquidationRatioType1',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'isPauseCollateralType1',
+            type: {
+              option: 'bool',
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: 'editType1DepositoryFields',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'oracle',
+            type: {
+              option: 'pubkey',
+            },
+          },
+          {
+            name: 'debtCeiling',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'liquidationPenalty',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'dust',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'duty',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'rate',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'pause',
+            type: {
+              option: 'bool',
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: 'initType1CollateralEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'controller',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateral',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateralizationRatioType1',
+            type: 'u64',
+          },
+          {
+            name: 'liquidationRatioType1',
+            type: 'u64',
+          },
+          {
+            name: 'isPausedType1',
+            type: 'bool',
+          },
+        ],
+      },
+    },
+    {
       name: 'initializeControllerEvent',
       docs: ['Event called in [instructions::initialize_controller::handler].'],
       type: {
@@ -3335,6 +6843,24 @@ export const idlLending: IdlLending = {
       },
     },
     {
+      name: 'loanType1',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'collateralType1Amount',
+            type: {
+              array: ['u64', 8],
+            },
+          },
+          {
+            name: 'mintedAmount',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
       name: 'metadataFields',
       type: {
         kind: 'struct',
@@ -3354,6 +6880,26 @@ export const idlLending: IdlLending = {
           {
             name: 'sellerFeeBasisPoints',
             type: 'u16',
+          },
+        ],
+      },
+    },
+    {
+      name: 'mintType1Event',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'user',
+            type: 'pubkey',
+          },
+          {
+            name: 'mintAmount',
+            type: 'u64',
+          },
+          {
+            name: 'newDebt',
+            type: 'u64',
           },
         ],
       },
@@ -3532,6 +7078,106 @@ export const idlLending: IdlLending = {
       },
     },
     {
+      name: 'setType1CollateralizationRatioEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'controller',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateral',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateralizationRatio',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'setType1DepositoryDebtCeilingEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'controller',
+            type: 'pubkey',
+          },
+          {
+            name: 'depository',
+            type: 'pubkey',
+          },
+          {
+            name: 'debtCeiling',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'setType1DepositoryDustEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'controller',
+            type: 'pubkey',
+          },
+          {
+            name: 'depository',
+            type: 'pubkey',
+          },
+          {
+            name: 'dust',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'setType1DepositoryLiquidationPenaltyEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'controller',
+            type: 'pubkey',
+          },
+          {
+            name: 'depository',
+            type: 'pubkey',
+          },
+          {
+            name: 'liquidationPenalty',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'setType1LiquidationRatioEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'controller',
+            type: 'pubkey',
+          },
+          {
+            name: 'colateral',
+            type: 'pubkey',
+          },
+          {
+            name: 'liquidationRatio',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
       name: 'type0Depository',
       type: {
         kind: 'struct',
@@ -3591,6 +7237,104 @@ export const idlLending: IdlLending = {
           {
             name: 'isPaused',
             type: 'bool',
+          },
+        ],
+      },
+    },
+    {
+      name: 'type1Depository',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'collateralType1',
+            type: {
+              array: ['pubkey', 8],
+            },
+          },
+          {
+            name: 'collateralizationRatioType1',
+            type: {
+              array: ['u64', 8],
+            },
+          },
+          {
+            name: 'liquidationRatioType1',
+            type: {
+              array: ['u64', 8],
+            },
+          },
+          {
+            name: 'decimals',
+            type: {
+              array: ['u8', 8],
+            },
+          },
+          {
+            name: 'oracle',
+            type: 'pubkey',
+          },
+          {
+            name: 'debtCeilingType1',
+            type: 'u64',
+          },
+          {
+            name: 'liquidationPenalty',
+            type: 'u64',
+          },
+          {
+            name: 'debtTotal',
+            type: 'u64',
+          },
+          {
+            name: 'dust',
+            type: 'u64',
+          },
+          {
+            name: 'bump',
+            type: 'u8',
+          },
+          {
+            name: 'duty',
+            type: 'u64',
+          },
+          {
+            name: 'rho',
+            type: 'u64',
+          },
+          {
+            name: 'rate',
+            type: 'u64',
+          },
+          {
+            name: 'isCollateralPaused',
+            type: {
+              array: ['bool', 8],
+            },
+          },
+          {
+            name: 'isPaused',
+            type: 'bool',
+          },
+        ],
+      },
+    },
+    {
+      name: 'withdrawType1Event',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'user',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateral',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateralAmount',
+            type: 'u64',
           },
         ],
       },

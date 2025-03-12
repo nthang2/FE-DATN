@@ -23,7 +23,7 @@ const BorrowSection = () => {
     if (!asset) return 0;
     const currAdd = depositItems[0].address;
 
-    return Number(asset[currAdd].usdaiToRedeem);
+    return Number(asset[currAdd]?.usdaiToRedeem);
   }, [asset, depositItems]);
   const isShowYourBorrow = !!mintedValueUsd && Number(mintedValueUsd) > 0;
 

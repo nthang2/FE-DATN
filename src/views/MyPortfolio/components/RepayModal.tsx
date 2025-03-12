@@ -8,8 +8,8 @@ import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
-import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import useLendingContract from 'src/hooks/useContract/useLendingContract';
 import useMyPortfolioInfo from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
@@ -25,6 +25,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
   const { asset, status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo } = useMyPortfolioInfo();
   const { address } = useSummarySolanaConnect();
   const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
+  const { initLendingContract } = useLendingContract();
 
   const [valueRepay, setValueRepay] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
@@ -59,7 +60,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
 
   const handleRepay = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
-    const lendingContract = new LendingContract(wallet);
+    const lendingContract = initLendingContract(wallet);
     const maxRepay = maxValue;
     const isMaxValue = Number(maxRepay) === Number(valueRepay);
 

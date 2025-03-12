@@ -4,8 +4,8 @@ import { TMyPortfolioAsset, TMyPortfolioInfoResp } from './type';
 
 export type MyPortfolioInfo = { asset: { [key: string]: TMyPortfolioAsset }; portfolioInfo: TMyPortfolioInfoResp };
 
-export async function getMyPortfolioInfo(userAddress: string): Promise<MyPortfolioInfo> {
-  const resp = await axios.get(apiUrl.getMyPortfolioInfo(userAddress));
+export async function getMyPortfolioInfo(userAddress: string, crossMode: boolean): Promise<MyPortfolioInfo> {
+  const resp = await axios.get(crossMode ? apiUrl.getMyPortfolioCrossModeInfo(userAddress) : apiUrl.getMyPortfolioInfo(userAddress));
   const portfolioInfo = resp.data as TMyPortfolioInfoResp;
   const assetByTokenAddress = portfolioInfo.assets.reduce((prev, item) => {
     const key = item.contractAddress;

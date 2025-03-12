@@ -12,6 +12,7 @@ import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/us
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { formatNumber } from 'src/utils/format';
 import SliderCustom from './components/SliderCustom';
+import CrossModeSwitch from 'src/components/CrossModeSwitch/CrossModeSwitch';
 
 export default function YourPosition() {
   const { address } = useSummarySolanaConnect();
@@ -54,7 +55,10 @@ export default function YourPosition() {
 
   return (
     <BoxCustom>
-      <Typography variant="h5">Your Position</Typography>
+      <Box display={'flex'} justifyContent="space-between">
+        <Typography variant="h5">Your Position</Typography>
+        <CrossModeSwitch />
+      </Box>
       <Box sx={{ mt: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="subtitle2">Collateral Deposited</Typography>
