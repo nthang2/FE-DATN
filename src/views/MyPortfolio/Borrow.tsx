@@ -84,7 +84,8 @@ export default function Borrow() {
           </TableHead>
           <TableBody>
             {Object.values(listTokenAvailable).map((row) => {
-              const borrowedValue = asset?.[row.address].usdaiToRedeem;
+              const borrowedValue = asset?.[row.address]?.usdaiToRedeem;
+
               return (
                 <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell component="th" scope="row">

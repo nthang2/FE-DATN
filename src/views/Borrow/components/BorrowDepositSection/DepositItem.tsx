@@ -1,9 +1,12 @@
 // import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 // import { IconButton } from '@mui/material';
-import { Box, Typography } from '@mui/material';
-import { useBorrowSubmitState } from '../../state/hooks';
+import { Box, IconButton, Typography } from '@mui/material';
+import { useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { TBorrowItem } from '../../state/types';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
+import CloseIcon from '@mui/icons-material/Close';
+import { useMemo } from 'react';
+import { useCrossModeState } from 'src/states/hooks';
 
 interface IProps {
   item: TBorrowItem;
@@ -15,8 +18,18 @@ interface IProps {
 }
 
 const DepositItem = (props: IProps) => {
-  const { item, handleChangeInput, handleChangeSelectInput, index, handleMax } = props;
+  const { item, handleChangeInput, handleChangeSelectInput, index, handleMax, handleRemoveItem } = props;
+  const [crossMode] = useCrossModeState();
+  const [depositedItems] = useDepositState();
   const [isSubmitted] = useBorrowSubmitState();
+
+  const displayCloseIcon = useMemo(() => {
+    if (!crossMode) {
+      return 'none';
+    }
+
+    return depositedItems.length === 1 ? 'none' : 'flex';
+  }, [crossMode, depositedItems.length]);
 
   return (
     <DepositCustomInput
@@ -37,6 +50,14 @@ const DepositItem = (props: IProps) => {
           <Typography variant="h5" sx={{ cursor: 'pointer', fontWeight: 600, color: '#FCFFD8' }} onClick={() => handleMax(index)}>
             Max
           </Typography>
+          <IconButton
+            sx={{
+              display: displayCloseIcon,
+            }}
+            onClick={() => handleRemoveItem(index)}
+          >
+            <CloseIcon />
+          </IconButton>
         </Box>
       }
       subValue={item?.price}

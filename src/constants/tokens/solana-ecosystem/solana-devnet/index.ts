@@ -40,35 +40,35 @@ export const oraiSolanaDevnet = new SolanaDevnetTokenInfo({
 });
 
 export const token1SolanaDevnet = new SolanaDevnetTokenInfo({
-  address: '7FWWHpj9U6jnzkFaDg5kWVCw74gGzrhiSrKFkPU7ycDi',
-  decimals: 9,
+  address: 'C2R669FocBZ1HiNN1G1Pug4HaBwjPhV4hLm1YLDEp9BV',
+  decimals: 6,
   symbol: TokenName.MAX,
   prettyName: 'MAX',
   isNative: false,
   isToken2022: false,
-  oracle: 'GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k',
+  oracle: 'oraim8c9d1nkfuQk9EzGYEUGxqL3MHQYndRw1huVo5h',
   ratio: '0.95',
 });
 
 export const token2SolanaDevnet = new SolanaDevnetTokenInfo({
-  address: 'EvBgWJhp6k1CSW1hPC7hVMQeT8Psm54wTk2DyR5JtHNP',
-  decimals: 9,
+  address: 'HH1KH7dSajYre5rwRKLUc9XqAePYjsKM6mfC831hNwsX',
+  decimals: 6,
   symbol: TokenName.TRUMP,
   prettyName: 'TRUMP',
   isNative: false,
   isToken2022: false,
-  oracle: 'CsRhK1jeEih7oMHD3m8PL2b9jMw6xDzrHvDgP6sz6xer',
+  oracle: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
   ratio: '0.3',
 });
 
 export const token3SolanaDevnet = new SolanaDevnetTokenInfo({
-  address: '3eURz91ZVhdVBghyet6wcDwsBTcsGxeMA2ovMkWku3Y8',
-  decimals: 9,
+  address: '4N2YoUvm7rM8F2y9wKNexoC7JBwMXbb8bfwtwZwdvdTv',
+  decimals: 6,
   symbol: TokenName.AI16Z,
   prettyName: 'ai16z',
   isNative: false,
   isToken2022: false,
-  oracle: '95Af7sxjVyunTTikaJQymK3rVwDtEVBtbnStXGMSR9wE',
+  oracle: 'oraiyuR7hz6h7ApC56mb52CJjPZBB34USTjzaELoaPk',
   ratio: '0.4',
 });
 

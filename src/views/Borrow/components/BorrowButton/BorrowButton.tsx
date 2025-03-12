@@ -2,8 +2,8 @@ import { Button } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useMemo } from 'react';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
-import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import useLendingContract from 'src/hooks/useContract/useLendingContract';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
@@ -21,6 +21,7 @@ const BorrowButton = () => {
   const { data: depositedValue } = useQueryDepositValue();
   const { asyncExecute, loading } = useAsyncExecute();
   const { maxBorrowPrice, yourBorrowByAddress } = useInvestedValue();
+  const { initLendingContract } = useLendingContract();
 
   const depositedByAddress = useMemo(() => {
     if (!depositedValue || !listPrice) return 0;
@@ -55,7 +56,7 @@ const BorrowButton = () => {
     await asyncExecute({
       fn: async () => {
         const isBorrowMaxValue = Number(borrowState.price) === maxBorrowPrice;
-        const lendingContract = new LendingContract(wallet);
+        const lendingContract = initLendingContract(wallet);
         const transHash = await lendingContract.borrow(Number(borrowState.value), depositItems[0].address, isBorrowMaxValue);
 
         return transHash;
