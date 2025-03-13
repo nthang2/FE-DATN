@@ -3,7 +3,7 @@ import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, Ta
 import { Icon, TokenName } from 'crypto-token-icon';
 import { useNavigate } from 'react-router-dom';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
-import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { listTokenAvailable, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
@@ -12,6 +12,7 @@ import { useModalFunction } from 'src/states/modal/hooks';
 import { copyTextToClipboard } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import RepayModal from './components/RepayModal';
+import { useCrossModeState } from 'src/states/hooks';
 
 export default function Borrow() {
   // const [eMode, setEMode] = useState<boolean>(false);
@@ -20,8 +21,10 @@ export default function Borrow() {
   const { asset } = useMyPortfolio();
   const modalFunction = useModalFunction();
   const navigate = useNavigate();
+  const [crossMode] = useCrossModeState();
 
   const tableHead = ['Asset', 'Available', 'USDAI Minted', ''];
+  const listRow = crossMode ? { [TokenName.USDAI]: mapNameToInfoSolana[TokenName.USDAI] } : listTokenAvailable;
   // const handleChangeMode = () => {
   //   setEMode(!eMode);
   // };
@@ -83,7 +86,7 @@ export default function Borrow() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.values(listTokenAvailable).map((row) => {
+            {Object.values(listRow).map((row) => {
               const borrowedValue = asset?.[row.address]?.usdaiToRedeem;
 
               return (

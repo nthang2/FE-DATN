@@ -139,7 +139,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   async deposit(depositAmount: number, tokenAddress: string): Promise<string> {
     const decimal = getDecimalToken(tokenAddress);
     const collateralAmount = new BN(depositAmount * decimal);
-    const accountsPartial = this.getAccountsPartial(tokenAddress);
+    const { ...accountsPartial } = this.getAccountsPartial(tokenAddress);
     const transaction = await this._getOrCreateTokenAccountTx(new PublicKey(tokenAddress), this.provider.publicKey);
 
     if (tokenAddress === (solTokenSolana.address || solanaDevnet.address)) {
