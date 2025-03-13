@@ -127,7 +127,7 @@ const DepositSection = () => {
   return (
     <Box flex={1}>
       <BoxCustom sx={{ flex: 1, borderRadius: isHasDeposited ? '16px 16px 0px 0px' : '16px' }}>
-        <Stack justifyContent="space-between" width="100%" mb={4.5}>
+        <Stack justifyContent="space-between" width="100%" mb={4.25}>
           <Typography variant="h6" alignItems="center" display="flex" gap={1} fontWeight={700}>
             Deposit
             <TooltipInfo title="Deposit collateral to mint USDAI" />
@@ -153,7 +153,7 @@ const DepositSection = () => {
         </Box>
 
         <Button
-          variant="outlined"
+          variant="text"
           fullWidth
           sx={{
             color: '#fff',
@@ -161,6 +161,13 @@ const DepositSection = () => {
             '& path': {
               fill: '#fff',
             },
+            ':hover': {
+              '& path': {
+                fill: '#000',
+              },
+            },
+            textAlign: 'start',
+            justifyContent: 'flex-start',
           }}
           disabled={isSubmitted || !isAddAllOptions}
           onClick={handleAddItem}
@@ -169,7 +176,7 @@ const DepositSection = () => {
             <span>
               <PlusIcon />
             </span>
-            Add more
+            Add more collateral
           </Typography>
         </Button>
       </BoxCustom>

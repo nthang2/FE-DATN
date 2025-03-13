@@ -6,17 +6,16 @@ import { useCrossModeState } from 'src/states/hooks';
 const useMyPortfolio = () => {
   const wallet = useWallet();
   const [crossMode] = useCrossModeState();
-  console.log('🚀 ~ useMyPortfolio ~ crossMode:', crossMode);
 
   const query = useQuery({
-    queryKey: ['useMyPortfolio', wallet.publicKey, crossMode],
+    queryKey: ['useMyPortfolio', wallet.publicKey],
     queryFn: async () => {
       if (!wallet.publicKey) return undefined;
       const resp = await getMyPortfolioInfo(wallet.publicKey?.toString(), crossMode);
 
       return resp;
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: 1000 * 60 * 5,
     enabled: Boolean(wallet.publicKey),
   });
 
