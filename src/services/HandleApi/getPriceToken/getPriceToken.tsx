@@ -13,14 +13,15 @@ export async function getTokenPrice(tokenAddress: string[]): Promise<TPriceList>
     })
   );
 
+  const tempPrice = [5, 1, 12, 1];
   const result = response
     .filter((promise) => promise.status === 'fulfilled')
     .map((resp) => resp.value)
-    .reduce((prev, item) => {
+    .reduce((prev, item, index) => {
       const key = item.address;
 
       if (key) {
-        return { ...prev, [key]: { ...item, price: item.price || 1 } };
+        return { ...prev, [key]: { ...item, price: item.price || tempPrice[index] } };
       }
 
       return prev;

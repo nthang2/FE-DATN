@@ -9,5 +9,5 @@ export const LOAN_TYPE1_SEED = 'LOAN_TYPE_1';
 export const DEPOSITORY_SEED = 'DEPOSITORY';
 export const RESERVE_ACCOUNT =
   NETWORK === 'devnet'
-    ? new PublicKey('6gKVrmRU6RKpcBXYK88QDtMYg4FVpyQH8Scs6NWN8tbq')
+    ? new PublicKey('FTPBbNW9EiAfy2Gdhv213YzUaEhC2kNJkmkKkZaUsxyh')
     : new PublicKey('97MT8sKwFmPDWkJLnLr8aKysuKZdckngAWd4Lwz5WSr6');

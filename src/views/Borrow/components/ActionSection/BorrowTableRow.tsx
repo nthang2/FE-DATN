@@ -1,11 +1,10 @@
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Stack, TableCell, TableRow, Typography } from '@mui/material';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
-import { TBorrowItem } from '../../state/types';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { formatNumber } from 'src/utils/format';
-import { useBorrowState } from '../../state/hooks';
+import { TBorrowItem } from '../../state/types';
 
 interface IProps {
   index: number;
@@ -23,11 +22,6 @@ const BorrowTableRow = (props: IProps) => {
   } = props;
   const { asyncExecute, loading } = useAsyncExecute();
   const tokenInfo = findTokenInfoByToken(address);
-  const [borrowState, setBorrowState] = useBorrowState();
-
-  const handleAfterTrans = () => {
-    setBorrowState({ ...borrowState, value: '0', price: 0 });
-  };
 
   if (value === '0' || !value) {
     return null;
@@ -49,12 +43,7 @@ const BorrowTableRow = (props: IProps) => {
         {actionStatus ? (
           <CheckCircleIcon fontSize="large" color="success" />
         ) : (
-          <ButtonLoading
-            loading={loading}
-            variant="contained"
-            onClick={() => asyncExecute({ fn: onClick, onError: handleAfterTrans })}
-            sx={{ minWidth: '100px' }}
-          >
+          <ButtonLoading loading={loading} variant="contained" onClick={() => asyncExecute({ fn: onClick })} sx={{ minWidth: '100px' }}>
             Mint
           </ButtonLoading>
         )}

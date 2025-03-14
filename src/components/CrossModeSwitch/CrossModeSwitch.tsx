@@ -1,20 +1,17 @@
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Stack, Switch, Typography } from '@mui/material';
 import grey from '@mui/material/colors/grey';
 import { useCrossModeState } from 'src/states/hooks';
 import { defaultBorrowValue } from 'src/views/Borrow/constant';
 import { useDepositState } from 'src/views/Borrow/state/hooks';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 
 const CrossModeSwitch = () => {
   const [crossMode, setCrossMode] = useCrossModeState();
   const [, setDepositState] = useDepositState();
-  const { refetch } = useMyPortfolio();
 
   const handleChangeCrossMode = async () => {
     setCrossMode(!crossMode);
     setDepositState([defaultBorrowValue]);
-    await refetch();
   };
 
   return (

@@ -69,104 +69,6 @@ export type IdlLending = {
       ];
     },
     {
-      name: 'changeCollateralType1';
-      discriminator: [138, 96, 69, 14, 130, 29, 19, 115];
-      accounts: [
-        {
-          name: 'authority';
-          writable: true;
-          signer: true;
-        },
-        {
-          name: 'controller';
-          docs: ['#2'];
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
-              }
-            ];
-          };
-        },
-        {
-          name: 'depository';
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
-              }
-            ];
-          };
-        },
-        {
-          name: 'oldCollateral';
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
-              },
-              {
-                kind: 'account';
-                path: 'oldCollateralToken';
-              }
-            ];
-          };
-        },
-        {
-          name: 'oldCollateralToken';
-          writable: true;
-        },
-        {
-          name: 'newCollateral';
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
-              },
-              {
-                kind: 'account';
-                path: 'newCollateralToken';
-              }
-            ];
-          };
-        },
-        {
-          name: 'newCollateralToken';
-          writable: true;
-        },
-        {
-          name: 'systemProgram';
-          address: '11111111111111111111111111111111';
-        },
-        {
-          name: 'tokenProgram';
-          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
-        }
-      ];
-      args: [
-        {
-          name: 'collateralizationRatioType1';
-          type: 'u64';
-        },
-        {
-          name: 'liquidationRatioType1';
-          type: 'u64';
-        },
-        {
-          name: 'isPausedType1';
-          type: 'bool';
-        }
-      ];
-    },
-    {
       name: 'editController';
       discriminator: [132, 153, 227, 60, 132, 180, 226, 209];
       accounts: [
@@ -288,22 +190,6 @@ export type IdlLending = {
               {
                 kind: 'const';
                 value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
-              }
-            ];
-          };
-        },
-        {
-          name: 'collateral1';
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
-              },
-              {
-                kind: 'account';
-                path: 'collateralToken1';
               }
             ];
           };
@@ -550,22 +436,6 @@ export type IdlLending = {
           };
         },
         {
-          name: 'collateral1';
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
-              },
-              {
-                kind: 'account';
-                path: 'collateralToken1';
-              }
-            ];
-          };
-        },
-        {
           name: 'collateralToken1';
           writable: true;
         },
@@ -593,7 +463,7 @@ export type IdlLending = {
         },
         {
           name: 'isPausedType1';
-          type: 'bool';
+          type: 'u8';
         }
       ];
     },
@@ -970,8 +840,8 @@ export type IdlLending = {
       ];
     },
     {
-      name: 'liquidate';
-      discriminator: [223, 179, 226, 125, 48, 46, 39, 74];
+      name: 'liquidateType0';
+      discriminator: [132, 41, 76, 79, 227, 71, 42, 4];
       accounts: [
         {
           name: 'controller';
@@ -1002,12 +872,31 @@ export type IdlLending = {
           };
         },
         {
+          name: 'user';
+        },
+        {
           name: 'depositoryVault';
           writable: true;
         },
         {
           name: 'loan';
           writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
         },
         {
           name: 'stablecoinMint';
@@ -1228,22 +1117,6 @@ export type IdlLending = {
               {
                 kind: 'const';
                 value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
-              }
-            ];
-          };
-        },
-        {
-          name: 'collateral1';
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
-              },
-              {
-                kind: 'account';
-                path: 'collateralToken1';
               }
             ];
           };
@@ -1716,22 +1589,6 @@ export type IdlLending = {
           };
         },
         {
-          name: 'collateral1';
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
-              },
-              {
-                kind: 'account';
-                path: 'collateralToken1';
-              }
-            ];
-          };
-        },
-        {
           name: 'collateralToken1';
           writable: true;
         },
@@ -1761,109 +1618,6 @@ export type IdlLending = {
                 path: 'user';
               }
             ];
-          };
-        },
-        {
-          name: 'redeemableMint';
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
-              }
-            ];
-          };
-        },
-        {
-          name: 'reserveTokenAccount';
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: 'account';
-                path: 'controller.reserve';
-                account: 'controller';
-              },
-              {
-                kind: 'const';
-                value: [
-                  6,
-                  221,
-                  246,
-                  225,
-                  215,
-                  101,
-                  161,
-                  147,
-                  217,
-                  203,
-                  225,
-                  70,
-                  206,
-                  235,
-                  121,
-                  172,
-                  28,
-                  180,
-                  133,
-                  237,
-                  95,
-                  91,
-                  55,
-                  145,
-                  58,
-                  140,
-                  245,
-                  133,
-                  126,
-                  255,
-                  0,
-                  169
-                ];
-              },
-              {
-                kind: 'account';
-                path: 'redeemableMint';
-              }
-            ];
-            program: {
-              kind: 'const';
-              value: [
-                140,
-                151,
-                37,
-                143,
-                78,
-                36,
-                137,
-                241,
-                187,
-                61,
-                16,
-                41,
-                20,
-                142,
-                13,
-                131,
-                11,
-                90,
-                19,
-                153,
-                218,
-                255,
-                16,
-                132,
-                4,
-                142,
-                123,
-                216,
-                219,
-                233,
-                248,
-                89
-              ];
-            };
           };
         },
         {
@@ -2198,22 +1952,6 @@ export type IdlLending = {
           };
         },
         {
-          name: 'collateral1';
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
-              },
-              {
-                kind: 'account';
-                path: 'collateralToken1';
-              }
-            ];
-          };
-        },
-        {
           name: 'collateralToken1';
           writable: true;
         },
@@ -2461,10 +2199,6 @@ export type IdlLending = {
     }
   ];
   accounts: [
-    {
-      name: 'collateralType1';
-      discriminator: [19, 61, 185, 15, 4, 152, 239, 79];
-    },
     {
       name: 'controller';
       discriminator: [184, 79, 171, 0, 183, 43, 113, 110];
@@ -3024,6 +2758,21 @@ export type IdlLending = {
       code: 6091;
       name: 'collateralAlreadyInitialized';
       msg: 'Collateral is initialized';
+    },
+    {
+      code: 6092;
+      name: 'loanIsFull';
+      msg: 'User loan is already full with 8 collaterals.';
+    },
+    {
+      code: 6093;
+      name: 'notFoundCollateral';
+      msg: 'The collateral token is invalid in the depository.';
+    },
+    {
+      code: 6094;
+      name: 'notFoundCollateralLoan';
+      msg: 'The collateral is not deposited.';
     }
   ];
   types: [
@@ -3081,20 +2830,46 @@ export type IdlLending = {
     },
     {
       name: 'collateralType1';
+      serialization: 'bytemuck';
+      repr: {
+        kind: 'c';
+      };
       type: {
         kind: 'struct';
         fields: [
           {
-            name: 'index';
-            type: 'u8';
+            name: 'collateralMint';
+            type: 'pubkey';
           },
           {
-            name: 'collateralTotalType1';
+            name: 'collateralTotal';
+            type: 'u64';
+          },
+          {
+            name: 'collateralizationRatio';
+            type: 'u64';
+          },
+          {
+            name: 'liquidationRatio';
             type: 'u64';
           },
           {
             name: 'bump';
             type: 'u8';
+          },
+          {
+            name: 'decimals';
+            type: 'u8';
+          },
+          {
+            name: 'isPaused';
+            type: 'u8';
+          },
+          {
+            name: 'padding';
+            type: {
+              array: ['u8', 13];
+            };
           }
         ];
       };
@@ -3295,7 +3070,7 @@ export type IdlLending = {
           {
             name: 'isPauseCollateralType1';
             type: {
-              option: 'bool';
+              option: 'u8';
             };
           }
         ];
@@ -3345,7 +3120,7 @@ export type IdlLending = {
           {
             name: 'pause';
             type: {
-              option: 'bool';
+              option: 'u8';
             };
           }
         ];
@@ -3374,7 +3149,7 @@ export type IdlLending = {
           },
           {
             name: 'isPausedType1';
-            type: 'bool';
+            type: 'u8';
           }
         ];
       };
@@ -3477,7 +3252,13 @@ export type IdlLending = {
         kind: 'struct';
         fields: [
           {
-            name: 'collateralType1Amount';
+            name: 'collateralToken';
+            type: {
+              array: ['pubkey', 8];
+            };
+          },
+          {
+            name: 'collateralAmount';
             type: {
               array: ['u64', 8];
             };
@@ -3872,31 +3653,30 @@ export type IdlLending = {
     },
     {
       name: 'type1Depository';
+      serialization: 'bytemuck';
+      repr: {
+        kind: 'c';
+      };
       type: {
         kind: 'struct';
         fields: [
           {
             name: 'collateralType1';
             type: {
-              array: ['pubkey', 8];
+              array: [
+                {
+                  defined: {
+                    name: 'collateralType1';
+                  };
+                },
+                32
+              ];
             };
           },
           {
-            name: 'collateralizationRatioType1';
+            name: 'collateralTokens';
             type: {
-              array: ['u64', 8];
-            };
-          },
-          {
-            name: 'liquidationRatioType1';
-            type: {
-              array: ['u64', 8];
-            };
-          },
-          {
-            name: 'decimals';
-            type: {
-              array: ['u8', 8];
+              array: ['pubkey', 32];
             };
           },
           {
@@ -3908,20 +3688,16 @@ export type IdlLending = {
             type: 'u64';
           },
           {
-            name: 'liquidationPenalty';
+            name: 'debtTotal';
             type: 'u64';
           },
           {
-            name: 'debtTotal';
+            name: 'liquidationPenalty';
             type: 'u64';
           },
           {
             name: 'dust';
             type: 'u64';
-          },
-          {
-            name: 'bump';
-            type: 'u8';
           },
           {
             name: 'duty';
@@ -3936,14 +3712,18 @@ export type IdlLending = {
             type: 'u64';
           },
           {
-            name: 'isCollateralPaused';
-            type: {
-              array: ['bool', 8];
-            };
+            name: 'bump';
+            type: 'u8';
           },
           {
             name: 'isPaused';
-            type: 'bool';
+            type: 'u8';
+          },
+          {
+            name: 'padding';
+            type: {
+              array: ['u8', 6];
+            };
           }
         ];
       };
@@ -4036,104 +3816,6 @@ export const idlLending: IdlLending = {
               name: 'metadataFields',
             },
           },
-        },
-      ],
-    },
-    {
-      name: 'changeCollateralType1',
-      discriminator: [138, 96, 69, 14, 130, 29, 19, 115],
-      accounts: [
-        {
-          name: 'authority',
-          writable: true,
-          signer: true,
-        },
-        {
-          name: 'controller',
-          docs: ['#2'],
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
-              },
-            ],
-          },
-        },
-        {
-          name: 'depository',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
-              },
-            ],
-          },
-        },
-        {
-          name: 'oldCollateral',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
-              },
-              {
-                kind: 'account',
-                path: 'oldCollateralToken',
-              },
-            ],
-          },
-        },
-        {
-          name: 'oldCollateralToken',
-          writable: true,
-        },
-        {
-          name: 'newCollateral',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
-              },
-              {
-                kind: 'account',
-                path: 'newCollateralToken',
-              },
-            ],
-          },
-        },
-        {
-          name: 'newCollateralToken',
-          writable: true,
-        },
-        {
-          name: 'systemProgram',
-          address: '11111111111111111111111111111111',
-        },
-        {
-          name: 'tokenProgram',
-          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-        },
-      ],
-      args: [
-        {
-          name: 'collateralizationRatioType1',
-          type: 'u64',
-        },
-        {
-          name: 'liquidationRatioType1',
-          type: 'u64',
-        },
-        {
-          name: 'isPausedType1',
-          type: 'bool',
         },
       ],
     },
@@ -4259,22 +3941,6 @@ export const idlLending: IdlLending = {
               {
                 kind: 'const',
                 value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
-              },
-            ],
-          },
-        },
-        {
-          name: 'collateral1',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
-              },
-              {
-                kind: 'account',
-                path: 'collateralToken1',
               },
             ],
           },
@@ -4521,22 +4187,6 @@ export const idlLending: IdlLending = {
           },
         },
         {
-          name: 'collateral1',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
-              },
-              {
-                kind: 'account',
-                path: 'collateralToken1',
-              },
-            ],
-          },
-        },
-        {
           name: 'collateralToken1',
           writable: true,
         },
@@ -4564,7 +4214,7 @@ export const idlLending: IdlLending = {
         },
         {
           name: 'isPausedType1',
-          type: 'bool',
+          type: 'u8',
         },
       ],
     },
@@ -4821,8 +4471,8 @@ export const idlLending: IdlLending = {
       ],
     },
     {
-      name: 'liquidate',
-      discriminator: [223, 179, 226, 125, 48, 46, 39, 74],
+      name: 'liquidateType0',
+      discriminator: [132, 41, 76, 79, 227, 71, 42, 4],
       accounts: [
         {
           name: 'controller',
@@ -4853,12 +4503,31 @@ export const idlLending: IdlLending = {
           },
         },
         {
+          name: 'user',
+        },
+        {
           name: 'depositoryVault',
           writable: true,
         },
         {
           name: 'loan',
           writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
         },
         {
           name: 'stablecoinMint',
@@ -5019,22 +4688,6 @@ export const idlLending: IdlLending = {
               {
                 kind: 'const',
                 value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
-              },
-            ],
-          },
-        },
-        {
-          name: 'collateral1',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
-              },
-              {
-                kind: 'account',
-                path: 'collateralToken1',
               },
             ],
           },
@@ -5327,22 +4980,6 @@ export const idlLending: IdlLending = {
           },
         },
         {
-          name: 'collateral1',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
-              },
-              {
-                kind: 'account',
-                path: 'collateralToken1',
-              },
-            ],
-          },
-        },
-        {
           name: 'collateralToken1',
           writable: true,
         },
@@ -5372,49 +5009,6 @@ export const idlLending: IdlLending = {
                 path: 'user',
               },
             ],
-          },
-        },
-        {
-          name: 'redeemableMint',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
-              },
-            ],
-          },
-        },
-        {
-          name: 'reserveTokenAccount',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'account',
-                path: 'controller.reserve',
-                account: 'controller',
-              },
-              {
-                kind: 'const',
-                value: [
-                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
-                  245, 133, 126, 255, 0, 169,
-                ],
-              },
-              {
-                kind: 'account',
-                path: 'redeemableMint',
-              },
-            ],
-            program: {
-              kind: 'const',
-              value: [
-                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
-                216, 219, 233, 248, 89,
-              ],
-            },
           },
         },
         {
@@ -5629,22 +5223,6 @@ export const idlLending: IdlLending = {
           },
         },
         {
-          name: 'collateral1',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
-              },
-              {
-                kind: 'account',
-                path: 'collateralToken1',
-              },
-            ],
-          },
-        },
-        {
           name: 'collateralToken1',
           writable: true,
         },
@@ -5832,10 +5410,6 @@ export const idlLending: IdlLending = {
     },
   ],
   accounts: [
-    {
-      name: 'collateralType1',
-      discriminator: [19, 61, 185, 15, 4, 152, 239, 79],
-    },
     {
       name: 'controller',
       discriminator: [184, 79, 171, 0, 183, 43, 113, 110],
@@ -6396,6 +5970,21 @@ export const idlLending: IdlLending = {
       name: 'collateralAlreadyInitialized',
       msg: 'Collateral is initialized',
     },
+    {
+      code: 6092,
+      name: 'loanIsFull',
+      msg: 'User loan is already full with 8 collaterals.',
+    },
+    {
+      code: 6093,
+      name: 'notFoundCollateral',
+      msg: 'The collateral token is invalid in the depository.',
+    },
+    {
+      code: 6094,
+      name: 'notFoundCollateralLoan',
+      msg: 'The collateral is not deposited.',
+    },
   ],
   types: [
     {
@@ -6452,20 +6041,46 @@ export const idlLending: IdlLending = {
     },
     {
       name: 'collateralType1',
+      serialization: 'bytemuck',
+      repr: {
+        kind: 'c',
+      },
       type: {
         kind: 'struct',
         fields: [
           {
-            name: 'index',
-            type: 'u8',
+            name: 'collateralMint',
+            type: 'pubkey',
           },
           {
-            name: 'collateralTotalType1',
+            name: 'collateralTotal',
+            type: 'u64',
+          },
+          {
+            name: 'collateralizationRatio',
+            type: 'u64',
+          },
+          {
+            name: 'liquidationRatio',
             type: 'u64',
           },
           {
             name: 'bump',
             type: 'u8',
+          },
+          {
+            name: 'decimals',
+            type: 'u8',
+          },
+          {
+            name: 'isPaused',
+            type: 'u8',
+          },
+          {
+            name: 'padding',
+            type: {
+              array: ['u8', 13],
+            },
           },
         ],
       },
@@ -6666,7 +6281,7 @@ export const idlLending: IdlLending = {
           {
             name: 'isPauseCollateralType1',
             type: {
-              option: 'bool',
+              option: 'u8',
             },
           },
         ],
@@ -6716,7 +6331,7 @@ export const idlLending: IdlLending = {
           {
             name: 'pause',
             type: {
-              option: 'bool',
+              option: 'u8',
             },
           },
         ],
@@ -6745,7 +6360,7 @@ export const idlLending: IdlLending = {
           },
           {
             name: 'isPausedType1',
-            type: 'bool',
+            type: 'u8',
           },
         ],
       },
@@ -6848,7 +6463,13 @@ export const idlLending: IdlLending = {
         kind: 'struct',
         fields: [
           {
-            name: 'collateralType1Amount',
+            name: 'collateralToken',
+            type: {
+              array: ['pubkey', 8],
+            },
+          },
+          {
+            name: 'collateralAmount',
             type: {
               array: ['u64', 8],
             },
@@ -7243,31 +6864,30 @@ export const idlLending: IdlLending = {
     },
     {
       name: 'type1Depository',
+      serialization: 'bytemuck',
+      repr: {
+        kind: 'c',
+      },
       type: {
         kind: 'struct',
         fields: [
           {
             name: 'collateralType1',
             type: {
-              array: ['pubkey', 8],
+              array: [
+                {
+                  defined: {
+                    name: 'collateralType1',
+                  },
+                },
+                32,
+              ],
             },
           },
           {
-            name: 'collateralizationRatioType1',
+            name: 'collateralTokens',
             type: {
-              array: ['u64', 8],
-            },
-          },
-          {
-            name: 'liquidationRatioType1',
-            type: {
-              array: ['u64', 8],
-            },
-          },
-          {
-            name: 'decimals',
-            type: {
-              array: ['u8', 8],
+              array: ['pubkey', 32],
             },
           },
           {
@@ -7279,20 +6899,16 @@ export const idlLending: IdlLending = {
             type: 'u64',
           },
           {
-            name: 'liquidationPenalty',
+            name: 'debtTotal',
             type: 'u64',
           },
           {
-            name: 'debtTotal',
+            name: 'liquidationPenalty',
             type: 'u64',
           },
           {
             name: 'dust',
             type: 'u64',
-          },
-          {
-            name: 'bump',
-            type: 'u8',
           },
           {
             name: 'duty',
@@ -7307,14 +6923,18 @@ export const idlLending: IdlLending = {
             type: 'u64',
           },
           {
-            name: 'isCollateralPaused',
-            type: {
-              array: ['bool', 8],
-            },
+            name: 'bump',
+            type: 'u8',
           },
           {
             name: 'isPaused',
-            type: 'bool',
+            type: 'u8',
+          },
+          {
+            name: 'padding',
+            type: {
+              array: ['u8', 6],
+            },
           },
         ],
       },
