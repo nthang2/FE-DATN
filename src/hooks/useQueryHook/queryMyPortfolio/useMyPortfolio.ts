@@ -8,14 +8,14 @@ const useMyPortfolio = () => {
   const [crossMode] = useCrossModeState();
 
   const query = useQuery({
-    queryKey: ['useMyPortfolio', wallet.publicKey],
+    queryKey: ['useMyPortfolio', wallet.publicKey, crossMode],
     queryFn: async () => {
       if (!wallet.publicKey) return undefined;
       const resp = await getMyPortfolioInfo(wallet.publicKey?.toString(), crossMode);
 
       return resp;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
     enabled: Boolean(wallet.publicKey),
   });
 
