@@ -69,6 +69,72 @@ export type IdlLending = {
       ];
     },
     {
+      name: 'changeType1Collateral';
+      discriminator: [187, 28, 63, 208, 186, 236, 235, 198];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          docs: ['#2'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'oldCollateralToken';
+          writable: true;
+        },
+        {
+          name: 'newCollateralToken';
+          writable: true;
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        }
+      ];
+      args: [
+        {
+          name: 'collateralizationRatioType1';
+          type: 'u64';
+        },
+        {
+          name: 'liquidationRatioType1';
+          type: 'u64';
+        },
+        {
+          name: 'isPausedType1';
+          type: 'u8';
+        }
+      ];
+    },
+    {
       name: 'editController';
       discriminator: [132, 153, 227, 60, 132, 180, 226, 209];
       accounts: [
@@ -1284,72 +1350,6 @@ export type IdlLending = {
           name: 'priceGroup';
         };
       };
-    },
-    {
-      name: 'type1ChangeCollateral';
-      discriminator: [171, 201, 182, 235, 134, 0, 40, 108];
-      accounts: [
-        {
-          name: 'authority';
-          writable: true;
-          signer: true;
-        },
-        {
-          name: 'controller';
-          docs: ['#2'];
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
-              }
-            ];
-          };
-        },
-        {
-          name: 'depository';
-          writable: true;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
-              }
-            ];
-          };
-        },
-        {
-          name: 'oldCollateralToken';
-          writable: true;
-        },
-        {
-          name: 'newCollateralToken';
-          writable: true;
-        },
-        {
-          name: 'systemProgram';
-          address: '11111111111111111111111111111111';
-        },
-        {
-          name: 'tokenProgram';
-          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
-        }
-      ];
-      args: [
-        {
-          name: 'collateralizationRatioType1';
-          type: 'u64';
-        },
-        {
-          name: 'liquidationRatioType1';
-          type: 'u64';
-        },
-        {
-          name: 'isPausedType1';
-          type: 'u8';
-        }
-      ];
     },
     {
       name: 'type1DepositoryBurn';
@@ -3905,6 +3905,72 @@ export const idlLending: IdlLending = {
       ],
     },
     {
+      name: 'changeType1Collateral',
+      discriminator: [187, 28, 63, 208, 186, 236, 235, 198],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          docs: ['#2'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'oldCollateralToken',
+          writable: true,
+        },
+        {
+          name: 'newCollateralToken',
+          writable: true,
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+      ],
+      args: [
+        {
+          name: 'collateralizationRatioType1',
+          type: 'u64',
+        },
+        {
+          name: 'liquidationRatioType1',
+          type: 'u64',
+        },
+        {
+          name: 'isPausedType1',
+          type: 'u8',
+        },
+      ],
+    },
+    {
       name: 'editController',
       discriminator: [132, 153, 227, 60, 132, 180, 226, 209],
       accounts: [
@@ -4880,72 +4946,6 @@ export const idlLending: IdlLending = {
           name: 'priceGroup',
         },
       },
-    },
-    {
-      name: 'type1ChangeCollateral',
-      discriminator: [171, 201, 182, 235, 134, 0, 40, 108],
-      accounts: [
-        {
-          name: 'authority',
-          writable: true,
-          signer: true,
-        },
-        {
-          name: 'controller',
-          docs: ['#2'],
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
-              },
-            ],
-          },
-        },
-        {
-          name: 'depository',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
-              },
-            ],
-          },
-        },
-        {
-          name: 'oldCollateralToken',
-          writable: true,
-        },
-        {
-          name: 'newCollateralToken',
-          writable: true,
-        },
-        {
-          name: 'systemProgram',
-          address: '11111111111111111111111111111111',
-        },
-        {
-          name: 'tokenProgram',
-          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-        },
-      ],
-      args: [
-        {
-          name: 'collateralizationRatioType1',
-          type: 'u64',
-        },
-        {
-          name: 'liquidationRatioType1',
-          type: 'u64',
-        },
-        {
-          name: 'isPausedType1',
-          type: 'u8',
-        },
-      ],
     },
     {
       name: 'type1DepositoryBurn',

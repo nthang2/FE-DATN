@@ -34,6 +34,7 @@ export async function getMyPortfolioInfo(userAddress: string, crossMode: boolean
     priceUSD: 1,
     rate: 1,
     healthFactor: portfolioInfo.healthFactor,
+    maxAvailableToMint: portfolioInfo?.maxAvailableToMint,
   } as TMyPortfolioAsset;
 
   return { portfolioInfo: portfolioInfo, asset: assetByTokenAddress };

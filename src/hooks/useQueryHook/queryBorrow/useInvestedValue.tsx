@@ -58,17 +58,32 @@ const useInvestedValue = () => {
   }, [crossMode, depositItems, depositedByAddress]);
 
   const maxLtv = useMemo(() => {
-    if (crossMode && depositItems.length > 1) {
+    if (crossMode && asset) {
       const totalCollateralValue = depositItems.reduce((total, curr) => {
         const tokenInfo = findTokenInfoByToken(curr.address);
         return total + Number(curr.price) * Number(tokenInfo?.ratio || 0.3);
       }, 0);
 
+      const collaboratedValueRatio = Object.values(asset)
+        .filter((item) => item.depositedUSD > 0)
+        .reduce((total, item) => {
+          const key = item.name as keyof typeof mapNameToInfoSolana;
+          const tokenInfo = mapNameToInfoSolana[key];
+
+          return total + Number(item.depositedUSD) * Number(tokenInfo?.ratio || 0.3);
+        }, 0);
+
+      const collaboratedTotalPrice = Object.values(asset)
+        .filter((item) => item.depositedUSD > 0)
+        .reduce((total, item) => {
+          return total + Number(item.depositedUSD);
+        }, 0);
+
       const totalPrice = depositItems.reduce((total, curr) => {
         return total + Number(curr.price);
       }, 0);
 
-      const ltv = (totalCollateralValue / totalPrice) * 100;
+      const ltv = ((totalCollateralValue + collaboratedValueRatio) / (totalPrice + collaboratedTotalPrice)) * 100;
       const fallbackRatio = Number(findTokenInfoByToken(depositItems[0].address)?.ratio) * 100;
 
       return ltv || fallbackRatio || 30;
@@ -80,7 +95,7 @@ const useInvestedValue = () => {
     }
 
     return 30;
-  }, [crossMode, depositItems]);
+  }, [asset, crossMode, depositItems]);
 
   const maxBorrowPrice = useMemo(() => {
     const borrowPrice = (Number(maxLtv) / 100) * totalDepositValue - yourBorrowByAddress;

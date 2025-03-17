@@ -13,7 +13,7 @@ import DepositTableRow from './DepositTableRow';
 const ActionSection = () => {
   const wallet = useWallet();
   const [borrowState] = useBorrowState();
-  const [depositItems] = useDepositState();
+  const [depositItems, setDepositItems] = useDepositState();
   const [isSubmitted, setIsSubmitted] = useBorrowSubmitState();
   const { refetch: refetchDeposited } = useQueryDepositValue();
   const { maxBorrowPrice } = useInvestedValue();

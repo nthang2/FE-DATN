@@ -1,5 +1,5 @@
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { Stack, Switch, Typography } from '@mui/material';
+import { Link, Stack, Switch, Tooltip, Typography } from '@mui/material';
 import grey from '@mui/material/colors/grey';
 import { NETWORK } from 'src/constants';
 import { useCrossModeState } from 'src/states/hooks';
@@ -21,7 +21,37 @@ const CrossModeSwitch = () => {
 
   return (
     <Stack direction="row" alignItems="center" gap={1}>
-      <Typography sx={{ borderBottom: '0.5px dashed white', lineHeight: 1.2 }}>{crossMode ? 'Cross' : 'Isolated'}</Typography>
+      <Tooltip
+        title={
+          crossMode ? (
+            <Typography>
+              Multiple collateral asset in one position.{' '}
+              <Link
+                target="_blank"
+                href={'https://www.jpow.ai/'}
+                sx={{ color: 'rgb(0, 153, 255)', cursor: 'pointer', textDecoration: 'unset' }}
+              >
+                Read more
+              </Link>
+            </Typography>
+          ) : (
+            <Typography>
+              Single collateral asset in one position.{' '}
+              <Link
+                target="_blank"
+                href={'https://www.jpow.ai/'}
+                sx={{ color: 'rgb(0, 153, 255)', cursor: 'pointer', textDecoration: 'unset' }}
+              >
+                Read more
+              </Link>
+            </Typography>
+          )
+        }
+      >
+        <Typography sx={{ borderBottom: '0.5px dashed white', lineHeight: 1.2, cursor: 'pointer' }}>
+          {crossMode ? 'Cross' : 'Isolated'}
+        </Typography>
+      </Tooltip>
       <Switch
         checked={crossMode}
         onChange={handleChangeCrossMode}
