@@ -11,7 +11,7 @@ export const usdcDevSolanaDevnet = new SolanaDevnetTokenInfo({
 });
 
 export const usdaiSolanaDevnet = new SolanaDevnetTokenInfo({
-  address: 'HMmBr5L5rqjzhQZRaHkWNsqf11AfNYRM4UGfjcTMrSzk',
+  address: 'EKXbDuRg1H6GoEvae56S27uYmYqMf3RiST3azaAYvQbi',
   decimals: 6,
   symbol: TokenName.USDAI,
   prettyName: 'USDAI',
@@ -20,14 +20,14 @@ export const usdaiSolanaDevnet = new SolanaDevnetTokenInfo({
 });
 
 export const solanaDevnet = new SolanaDevnetTokenInfo({
-  address: 'So11111111111111111111111111111111111111112',
+  address: '2MLgrmLV7PabhyuuSdjLoG5jCc592pH9K8cLP7t292Np',
   decimals: 9,
   symbol: TokenName.SOL,
   prettyName: 'Solana',
   coingeckoId: 'solana',
   isToken2022: false,
   isNative: true,
-  ratio: '0.6',
+  ratio: '0.67',
 });
 
 export const oraiSolanaDevnet = new SolanaDevnetTokenInfo({
@@ -58,7 +58,7 @@ export const token2SolanaDevnet = new SolanaDevnetTokenInfo({
   isNative: false,
   isToken2022: false,
   oracle: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-  ratio: '0.95',
+  ratio: '0.4',
 });
 
 export const token3SolanaDevnet = new SolanaDevnetTokenInfo({
@@ -69,7 +69,7 @@ export const token3SolanaDevnet = new SolanaDevnetTokenInfo({
   isNative: false,
   isToken2022: false,
   oracle: 'oraiyuR7hz6h7ApC56mb52CJjPZBB34USTjzaELoaPk',
-  ratio: '0.4',
+  ratio: '0.95',
 });
 
 export const virtualSolanaDevnet = new SolanaDevnetTokenInfo({
