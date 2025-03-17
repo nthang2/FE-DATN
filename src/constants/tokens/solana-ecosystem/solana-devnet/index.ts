@@ -72,6 +72,17 @@ export const token3SolanaDevnet = new SolanaDevnetTokenInfo({
   ratio: '0.4',
 });
 
+export const virtualSolanaDevnet = new SolanaDevnetTokenInfo({
+  address: '3iQL8BFS2vE7mww4ehAqQHAsbmRNCrPxizWAT2Zfyr9y',
+  decimals: 9,
+  symbol: TokenName.VIRTUAL,
+  prettyName: '$VIRTUAL',
+  isNative: false,
+  isToken2022: false,
+  oracle: 'GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k',
+  ratio: '0.3',
+});
+
 //TOKEN_1=3eURz91ZVhdVBghyet6wcDwsBTcsGxeMA2ovMkWku3Y8
 //TOKEN_2=7FWWHpj9U6jnzkFaDg5kWVCw74gGzrhiSrKFkPU7ycDi
 //TOKEN_3=EvBgWJhp6k1CSW1hPC7hVMQeT8Psm54wTk2DyR5JtHNP
