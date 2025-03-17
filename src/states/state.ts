@@ -1,3 +1,3 @@
 import { atom } from 'jotai';
 
-export const crossModeAtom = atom<boolean>(true);
+export const crossModeAtom = atom<boolean>(false);

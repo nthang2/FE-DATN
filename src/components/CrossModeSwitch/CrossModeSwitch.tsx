@@ -1,6 +1,7 @@
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Stack, Switch, Typography } from '@mui/material';
 import grey from '@mui/material/colors/grey';
+import { NETWORK } from 'src/constants';
 import { useCrossModeState } from 'src/states/hooks';
 import { defaultBorrowValue } from 'src/views/Borrow/constant';
 import { useDepositState } from 'src/views/Borrow/state/hooks';
@@ -13,6 +14,10 @@ const CrossModeSwitch = () => {
     setCrossMode(!crossMode);
     setDepositState([defaultBorrowValue]);
   };
+
+  if (NETWORK === 'mainnet') {
+    return <></>;
+  }
 
   return (
     <Stack direction="row" alignItems="center" gap={1}>
