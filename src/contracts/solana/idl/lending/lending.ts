@@ -531,6 +531,10 @@ export type IdlLending = {
         {
           name: 'dust';
           type: 'u64';
+        },
+        {
+          name: 'duty';
+          type: 'u64';
         }
       ];
     },
@@ -1280,6 +1284,72 @@ export type IdlLending = {
           name: 'priceGroup';
         };
       };
+    },
+    {
+      name: 'type1ChangeCollateral';
+      discriminator: [171, 201, 182, 235, 134, 0, 40, 108];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          docs: ['#2'];
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'oldCollateralToken';
+          writable: true;
+        },
+        {
+          name: 'newCollateralToken';
+          writable: true;
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        }
+      ];
+      args: [
+        {
+          name: 'collateralizationRatioType1';
+          type: 'u64';
+        },
+        {
+          name: 'liquidationRatioType1';
+          type: 'u64';
+        },
+        {
+          name: 'isPausedType1';
+          type: 'u8';
+        }
+      ];
     },
     {
       name: 'type1DepositoryBurn';
@@ -2671,108 +2741,123 @@ export type IdlLending = {
     },
     {
       code: 6074;
+      name: 'withdrawAmountExceed';
+      msg: 'The withdraw amount exceeds the debt.';
+    },
+    {
+      code: 6075;
       name: 'invalidAccountDiscriminator';
       msg: 'Invalid account discriminator';
     },
     {
-      code: 6075;
+      code: 6076;
       name: 'unableToDeserializeAccount';
       msg: 'Unable to deserialize account';
     },
     {
-      code: 6076;
+      code: 6077;
       name: 'invalidOracle';
       msg: 'The provided oracle account is invalid.';
     },
     {
-      code: 6077;
+      code: 6078;
       name: 'onlyOneLoanAccount';
       msg: 'Only 1 loan account to be liquidated';
     },
     {
-      code: 6078;
+      code: 6079;
       name: 'invalidCollateralizationRatio';
       msg: 'Cannot liquidate to lower than Collateralization Ratio.';
     },
     {
-      code: 6079;
+      code: 6080;
       name: 'invalidReserveAccount';
       msg: 'The provided reserve account is invalid';
     },
     {
-      code: 6080;
+      code: 6081;
       name: 'invalidAccountSize';
       msg: 'The new size provided is not match the needed space for migration.';
     },
     {
-      code: 6081;
+      code: 6082;
       name: 'priceNotUpdate';
       msg: "The price of this collateral hasn't been updated for 1 minute.";
     },
     {
-      code: 6082;
+      code: 6083;
       name: 'invalidMetadata';
       msg: 'The provided metadata account is invalid.';
     },
     {
-      code: 6083;
+      code: 6084;
       name: 'tokenNotFound';
       msg: 'Token not found in price group oracle.';
     },
     {
-      code: 6084;
+      code: 6085;
       name: 'rateExceedDouble';
       msg: 'Borrow rate has been increasing too high';
     },
     {
-      code: 6085;
+      code: 6086;
       name: 'depositoryPaused';
       msg: 'The depository is paused';
     },
     {
-      code: 6086;
+      code: 6087;
       name: 'noMoreCollateral';
       msg: 'No more collateral';
     },
     {
-      code: 6087;
+      code: 6088;
       name: 'invalidNumOfCollateral';
       msg: 'The number of collateral is invalid because it is smaller than now';
     },
     {
-      code: 6088;
+      code: 6089;
       name: 'overIndex';
       msg: 'Over index';
     },
     {
-      code: 6089;
+      code: 6090;
       name: 'zeroAmount';
       msg: 'Zero amount';
     },
     {
-      code: 6090;
+      code: 6091;
       name: 'conflictIndex';
       msg: 'Index is initialized, please use change collateral method';
     },
     {
-      code: 6091;
+      code: 6092;
       name: 'collateralAlreadyInitialized';
       msg: 'Collateral is initialized';
     },
     {
-      code: 6092;
+      code: 6093;
       name: 'loanIsFull';
       msg: 'User loan is already full with 8 collaterals.';
     },
     {
-      code: 6093;
+      code: 6094;
+      name: 'notFoundCollateralTokenInLoan';
+      msg: 'The collateral token has not been deposited.';
+    },
+    {
+      code: 6095;
       name: 'notFoundCollateral';
       msg: 'The collateral token is invalid in the depository.';
     },
     {
-      code: 6094;
+      code: 6096;
       name: 'notFoundCollateralLoan';
       msg: 'The collateral is not deposited.';
+    },
+    {
+      code: 6097;
+      name: 'collateralTotalNotZero';
+      msg: 'Cannot change collateral because of remaining deposit amount.';
     }
   ];
   types: [
@@ -2823,7 +2908,7 @@ export type IdlLending = {
           },
           {
             name: 'isPausedType1';
-            type: 'bool';
+            type: 'u8';
           }
         ];
       };
@@ -4283,6 +4368,10 @@ export const idlLending: IdlLending = {
           name: 'dust',
           type: 'u64',
         },
+        {
+          name: 'duty',
+          type: 'u64',
+        },
       ],
     },
     {
@@ -4791,6 +4880,72 @@ export const idlLending: IdlLending = {
           name: 'priceGroup',
         },
       },
+    },
+    {
+      name: 'type1ChangeCollateral',
+      discriminator: [171, 201, 182, 235, 134, 0, 40, 108],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          docs: ['#2'],
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'oldCollateralToken',
+          writable: true,
+        },
+        {
+          name: 'newCollateralToken',
+          writable: true,
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+      ],
+      args: [
+        {
+          name: 'collateralizationRatioType1',
+          type: 'u64',
+        },
+        {
+          name: 'liquidationRatioType1',
+          type: 'u64',
+        },
+        {
+          name: 'isPausedType1',
+          type: 'u8',
+        },
+      ],
     },
     {
       name: 'type1DepositoryBurn',
@@ -5882,108 +6037,123 @@ export const idlLending: IdlLending = {
     },
     {
       code: 6074,
+      name: 'withdrawAmountExceed',
+      msg: 'The withdraw amount exceeds the debt.',
+    },
+    {
+      code: 6075,
       name: 'invalidAccountDiscriminator',
       msg: 'Invalid account discriminator',
     },
     {
-      code: 6075,
+      code: 6076,
       name: 'unableToDeserializeAccount',
       msg: 'Unable to deserialize account',
     },
     {
-      code: 6076,
+      code: 6077,
       name: 'invalidOracle',
       msg: 'The provided oracle account is invalid.',
     },
     {
-      code: 6077,
+      code: 6078,
       name: 'onlyOneLoanAccount',
       msg: 'Only 1 loan account to be liquidated',
     },
     {
-      code: 6078,
+      code: 6079,
       name: 'invalidCollateralizationRatio',
       msg: 'Cannot liquidate to lower than Collateralization Ratio.',
     },
     {
-      code: 6079,
+      code: 6080,
       name: 'invalidReserveAccount',
       msg: 'The provided reserve account is invalid',
     },
     {
-      code: 6080,
+      code: 6081,
       name: 'invalidAccountSize',
       msg: 'The new size provided is not match the needed space for migration.',
     },
     {
-      code: 6081,
+      code: 6082,
       name: 'priceNotUpdate',
       msg: "The price of this collateral hasn't been updated for 1 minute.",
     },
     {
-      code: 6082,
+      code: 6083,
       name: 'invalidMetadata',
       msg: 'The provided metadata account is invalid.',
     },
     {
-      code: 6083,
+      code: 6084,
       name: 'tokenNotFound',
       msg: 'Token not found in price group oracle.',
     },
     {
-      code: 6084,
+      code: 6085,
       name: 'rateExceedDouble',
       msg: 'Borrow rate has been increasing too high',
     },
     {
-      code: 6085,
+      code: 6086,
       name: 'depositoryPaused',
       msg: 'The depository is paused',
     },
     {
-      code: 6086,
+      code: 6087,
       name: 'noMoreCollateral',
       msg: 'No more collateral',
     },
     {
-      code: 6087,
+      code: 6088,
       name: 'invalidNumOfCollateral',
       msg: 'The number of collateral is invalid because it is smaller than now',
     },
     {
-      code: 6088,
+      code: 6089,
       name: 'overIndex',
       msg: 'Over index',
     },
     {
-      code: 6089,
+      code: 6090,
       name: 'zeroAmount',
       msg: 'Zero amount',
     },
     {
-      code: 6090,
+      code: 6091,
       name: 'conflictIndex',
       msg: 'Index is initialized, please use change collateral method',
     },
     {
-      code: 6091,
+      code: 6092,
       name: 'collateralAlreadyInitialized',
       msg: 'Collateral is initialized',
     },
     {
-      code: 6092,
+      code: 6093,
       name: 'loanIsFull',
       msg: 'User loan is already full with 8 collaterals.',
     },
     {
-      code: 6093,
+      code: 6094,
+      name: 'notFoundCollateralTokenInLoan',
+      msg: 'The collateral token has not been deposited.',
+    },
+    {
+      code: 6095,
       name: 'notFoundCollateral',
       msg: 'The collateral token is invalid in the depository.',
     },
     {
-      code: 6094,
+      code: 6096,
       name: 'notFoundCollateralLoan',
       msg: 'The collateral is not deposited.',
+    },
+    {
+      code: 6097,
+      name: 'collateralTotalNotZero',
+      msg: 'Cannot change collateral because of remaining deposit amount.',
     },
   ],
   types: [
@@ -6034,7 +6204,7 @@ export const idlLending: IdlLending = {
           },
           {
             name: 'isPausedType1',
-            type: 'bool',
+            type: 'u8',
           },
         ],
       },
