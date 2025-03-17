@@ -21,7 +21,7 @@ const CrossModeSwitch = () => {
 
   return (
     <Stack direction="row" alignItems="center" gap={1}>
-      <Typography>{crossMode ? 'Cross' : 'Isolated'}</Typography>
+      <Typography sx={{ borderBottom: '0.5px dashed white', lineHeight: 1.2 }}>{crossMode ? 'Cross' : 'Isolated'}</Typography>
       <Switch
         checked={crossMode}
         onChange={handleChangeCrossMode}

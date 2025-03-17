@@ -15,7 +15,7 @@ const useMyPortfolio = () => {
 
       return resp;
     },
-    staleTime: 0,
+    staleTime: 15 * 1000,
     enabled: Boolean(wallet.publicKey),
   });
 
