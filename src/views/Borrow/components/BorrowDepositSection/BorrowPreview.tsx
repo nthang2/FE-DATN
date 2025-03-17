@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { TBorrowItem } from '../../state/types';
 

@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { PlusIcon } from 'src/assets/icons';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
@@ -36,11 +36,14 @@ const DepositSection = () => {
 
   const isAddAllOptions = depositItems.length < Object.keys(listTokenAvailable).length;
 
-  const isHasDeposited = Boolean(depositedValueUsd) || depositedValueUsd > 0;
+  const isHasDeposited = crossMode || Boolean(depositedValueUsd) || depositedValueUsd > 0;
 
-  const depositItemBalance = useMemo(() => {
-    return balance.find((item) => item.address === depositItems[0].address)?.balance.toNumber();
-  }, [balance, depositItems]);
+  const depositItemBalance = useCallback(
+    (index: number) => {
+      return balance.find((item) => item.address === depositItems[index].address)?.balance.toNumber();
+    },
+    [balance, depositItems]
+  );
 
   const handleRemoveItem = (index: number) => {
     if (depositItems.length === 1) return;
@@ -89,7 +92,7 @@ const DepositSection = () => {
           ...item,
           value: inputValue,
           price: convertToUsd(item.address, value, listPrice),
-          error: validateDepositItem(Number(value), Number(depositItemBalance)),
+          error: validateDepositItem(Number(value), Number(depositItemBalance(index))),
         };
       }
 
@@ -104,9 +107,9 @@ const DepositSection = () => {
       if (arrIndex === index) {
         return {
           ...item,
-          value: depositItemBalance?.toString() || '0',
-          price: convertToUsd(item.address, depositItemBalance?.toString() || '0', listPrice),
-          error: validateDepositItem(Number(depositItemBalance), Number(depositItemBalance)),
+          value: depositItemBalance(index)?.toString() || '0',
+          price: convertToUsd(item.address, depositItemBalance(index)?.toString() || '0', listPrice),
+          error: undefined,
         };
       }
 
@@ -181,7 +184,11 @@ const DepositSection = () => {
         </Button>
       </BoxCustom>
 
-      <DepositPreview depositItems={depositItems} depositedValueUsd={depositedValueUsd} isHasDeposited={isHasDeposited} />
+      <DepositPreview
+        depositItems={depositItems}
+        depositedValueUsd={crossMode ? depositedValueUsd : depositedValueUsd}
+        isHasDeposited={isHasDeposited}
+      />
     </Box>
   );
 };

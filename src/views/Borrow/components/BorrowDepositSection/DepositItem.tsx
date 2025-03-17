@@ -56,7 +56,7 @@ const DepositItem = (props: IProps) => {
           <Box>
             <Typography
               variant="h5"
-              sx={{ cursor: 'pointer', fontWeight: 600, color: '#FCFFD8', textAlign: 'center' }}
+              sx={{ cursor: 'pointer', fontWeight: 600, color: '#FCFFD8', textAlign: 'end' }}
               onClick={() => handleMax(index)}
             >
               Max

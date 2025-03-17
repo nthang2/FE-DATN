@@ -49,6 +49,7 @@ export default function DepositCustomInput(props: Props) {
             sx={{
               border: '1px solid #666662',
               mr: 2,
+              minWidth: '135px',
               ...selectProps?.sx,
             }}
             {...selectProps}

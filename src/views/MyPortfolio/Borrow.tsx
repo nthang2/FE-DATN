@@ -43,6 +43,10 @@ export default function Borrow() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const availableMint = (row: any) => {
     if (tokensPrice && asset) {
+      if (asset[row.address]?.maxAvailableToMint) {
+        return asset[row.address]?.maxAvailableToMint;
+      }
+
       const result =
         Number(depositValue?.[row.address]) * row.ratio * Number(tokensPrice[row.address]?.price ?? 1) -
         Number(asset[row.address].usdaiToRedeem);
@@ -102,7 +106,7 @@ export default function Borrow() {
                   </TableCell>
                   <TableCell align="right">
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {depositValue?.[row.address] && tokensPrice && borrowedValue
+                      {asset?.[row.address] && tokensPrice && borrowedValue
                         ? formatNumber(availableMint(row), {
                             fractionDigits: 2,
                             prefix: '$',

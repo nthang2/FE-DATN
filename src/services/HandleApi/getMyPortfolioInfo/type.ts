@@ -10,6 +10,7 @@ export type TMyPortfolioAsset = {
   depositedUSD: number;
   healthFactor: number;
   maxWithdrawable: number;
+  maxAvailableToMint?: number;
 };
 
 export type TMyPortfolioInfoResp = {
