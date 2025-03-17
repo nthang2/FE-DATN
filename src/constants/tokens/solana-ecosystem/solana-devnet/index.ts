@@ -11,7 +11,7 @@ export const usdcDevSolanaDevnet = new SolanaDevnetTokenInfo({
 });
 
 export const usdaiSolanaDevnet = new SolanaDevnetTokenInfo({
-  address: '8XtWqQ5zbrxoRpic5Zavv5oqd2sFCEoBov9EydCLS3HE',
+  address: 'EKXbDuRg1H6GoEvae56S27uYmYqMf3RiST3azaAYvQbi',
   decimals: 6,
   symbol: TokenName.USDAI,
   prettyName: 'USDAI',
@@ -20,14 +20,14 @@ export const usdaiSolanaDevnet = new SolanaDevnetTokenInfo({
 });
 
 export const solanaDevnet = new SolanaDevnetTokenInfo({
-  address: 'So11111111111111111111111111111111111111112',
+  address: '2MLgrmLV7PabhyuuSdjLoG5jCc592pH9K8cLP7t292Np',
   decimals: 9,
   symbol: TokenName.SOL,
   prettyName: 'Solana',
   coingeckoId: 'solana',
   isToken2022: false,
   isNative: true,
-  ratio: '0.6',
+  ratio: '0.67',
 });
 
 export const oraiSolanaDevnet = new SolanaDevnetTokenInfo({
@@ -46,8 +46,8 @@ export const token1SolanaDevnet = new SolanaDevnetTokenInfo({
   prettyName: 'MAX',
   isNative: false,
   isToken2022: false,
-  oracle: 'GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k',
-  ratio: '0.95',
+  oracle: 'oraim8c9d1nkfuQk9EzGYEUGxqL3MHQYndRw1huVo5h',
+  ratio: '0.3',
 });
 
 export const token2SolanaDevnet = new SolanaDevnetTokenInfo({
@@ -57,8 +57,8 @@ export const token2SolanaDevnet = new SolanaDevnetTokenInfo({
   prettyName: 'TRUMP',
   isNative: false,
   isToken2022: false,
-  oracle: 'CsRhK1jeEih7oMHD3m8PL2b9jMw6xDzrHvDgP6sz6xer',
-  ratio: '0.3',
+  oracle: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  ratio: '0.4',
 });
 
 export const token3SolanaDevnet = new SolanaDevnetTokenInfo({
@@ -68,8 +68,19 @@ export const token3SolanaDevnet = new SolanaDevnetTokenInfo({
   prettyName: 'ai16z',
   isNative: false,
   isToken2022: false,
-  oracle: '95Af7sxjVyunTTikaJQymK3rVwDtEVBtbnStXGMSR9wE',
-  ratio: '0.4',
+  oracle: 'oraiyuR7hz6h7ApC56mb52CJjPZBB34USTjzaELoaPk',
+  ratio: '0.95',
+});
+
+export const virtualSolanaDevnet = new SolanaDevnetTokenInfo({
+  address: '3iQL8BFS2vE7mww4ehAqQHAsbmRNCrPxizWAT2Zfyr9y',
+  decimals: 9,
+  symbol: TokenName.VIRTUAL,
+  prettyName: '$VIRTUAL',
+  isNative: false,
+  isToken2022: false,
+  oracle: 'GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k',
+  ratio: '0.3',
 });
 
 //TOKEN_1=3eURz91ZVhdVBghyet6wcDwsBTcsGxeMA2ovMkWku3Y8

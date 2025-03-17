@@ -76,3 +76,14 @@ export const usdcSolanaMainnet = new SolanaMainnetTokenInfo({
   oracle: 'GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k',
   ratio: '0.95',
 });
+
+export const virtualSolanaMainnet = new SolanaMainnetTokenInfo({
+  address: '3iQL8BFS2vE7mww4ehAqQHAsbmRNCrPxizWAT2Zfyr9y',
+  decimals: 9,
+  symbol: TokenName.VIRTUAL,
+  prettyName: '$VIRTUAL',
+  isNative: false,
+  isToken2022: false,
+  oracle: 'GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k',
+  ratio: '0.3',
+});

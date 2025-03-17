@@ -1,26 +1,28 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { PlusIcon } from 'src/assets/icons';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import { listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
+import { useCrossModeState } from 'src/states/hooks';
 import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
-import { roundNumber } from 'src/utils/format';
+import { regexConfigValue } from 'src/utils';
 import { defaultBorrowValue } from '../../constant';
 import { useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToUsd, validateDepositItem } from '../../utils';
 import DepositItem from './DepositItem';
 import DepositPreview from './DepositPreview';
-import { useSearchParams } from 'react-router-dom';
-import { regexConfigValue } from 'src/utils';
-import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
+import CrossModeSwitch from 'src/components/CrossModeSwitch/CrossModeSwitch';
 
 const DepositSection = () => {
   const [depositItems, setDepositState] = useDepositState();
   const [isSubmitted] = useBorrowSubmitState();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [crossMode] = useCrossModeState();
   const { data: listPrice } = useQueryAllTokensPrice();
   const { asset } = useMyPortfolio();
   const { address } = useSummarySolanaConnect();
@@ -29,12 +31,19 @@ const DepositSection = () => {
   const depositedValueUsd = useMemo(() => {
     if (!asset || !listPrice) return 0;
     const depositAddress = depositItems[0].address;
-    return asset?.[depositAddress].depositedUSD;
+    return asset?.[depositAddress]?.depositedUSD;
   }, [asset, depositItems, listPrice]);
-  const isHasDeposited = Boolean(depositedValueUsd) || depositedValueUsd > 0;
-  const depositItemBalance = useMemo(() => {
-    return balance.find((item) => item.address === depositItems[0].address)?.balance.toNumber();
-  }, [balance, depositItems]);
+
+  const isAddAllOptions = depositItems.length < Object.keys(listTokenAvailable).length;
+
+  const isHasDeposited = crossMode || Boolean(depositedValueUsd) || depositedValueUsd > 0;
+
+  const depositItemBalance = useCallback(
+    (index: number) => {
+      return balance.find((item) => item.address === depositItems[index].address)?.balance.toNumber();
+    },
+    [balance, depositItems]
+  );
 
   const handleRemoveItem = (index: number) => {
     if (depositItems.length === 1) return;
@@ -45,8 +54,13 @@ const DepositSection = () => {
   };
 
   const handleAddItem = () => {
-    if (depositItems.length < 6) {
-      setDepositState((prev) => [...prev, defaultBorrowValue]);
+    if (isAddAllOptions) {
+      const listTokenRemain = Object.values(listTokenAvailable).filter((item) => {
+        const isHasChoose = depositItems.every((deposit) => deposit.address !== item.address);
+        return isHasChoose;
+      });
+
+      setDepositState((prev) => [...prev, { ...defaultBorrowValue, address: listTokenRemain[0]?.address }]);
     }
   };
 
@@ -78,7 +92,7 @@ const DepositSection = () => {
           ...item,
           value: inputValue,
           price: convertToUsd(item.address, value, listPrice),
-          error: validateDepositItem(Number(value), Number(depositItemBalance)),
+          error: validateDepositItem(Number(value), Number(depositItemBalance(index))),
         };
       }
 
@@ -93,9 +107,9 @@ const DepositSection = () => {
       if (arrIndex === index) {
         return {
           ...item,
-          value: depositItemBalance?.toString() || '0',
-          price: convertToUsd(item.address, depositItemBalance?.toString() || '0', listPrice),
-          error: validateDepositItem(Number(depositItemBalance), Number(depositItemBalance)),
+          value: depositItemBalance(index)?.toString() || '0',
+          price: convertToUsd(item.address, depositItemBalance(index)?.toString() || '0', listPrice),
+          error: undefined,
         };
       }
 
@@ -116,39 +130,14 @@ const DepositSection = () => {
   return (
     <Box flex={1}>
       <BoxCustom sx={{ flex: 1, borderRadius: isHasDeposited ? '16px 16px 0px 0px' : '16px' }}>
-        <Stack justifyContent="space-between" width="100%" mb={'14px'}>
+        <Stack justifyContent="space-between" width="100%" mb={'36px'}>
           <Typography variant="h6" alignItems="center" display="flex" gap={1} fontWeight={700}>
             Deposit
             <TooltipInfo title="Deposit collateral to mint USDAI" />
           </Typography>
 
-          <Button
-            variant="text"
-            sx={{
-              color: 'text.secondary',
-              ':hover': {
-                color: '#000',
-                '& path': {
-                  fill: '#000',
-                },
-              },
-              display: 'none',
-            }}
-            disabled={isSubmitted || depositItems.length >= 6}
-            onClick={handleAddItem}
-          >
-            <Typography variant="body2" alignItems="center" display="flex" gap={1} fontWeight={700}>
-              <span>
-                <PlusIcon />
-              </span>
-              Add more
-            </Typography>
-          </Button>
+          <CrossModeSwitch />
         </Stack>
-
-        <Typography variant="body2" mb={0.5}>
-          Your Balance: {roundNumber(depositItemBalance || 0, 4)}
-        </Typography>
 
         <Box>
           {depositItems.map((item, index) => {
@@ -165,9 +154,41 @@ const DepositSection = () => {
             );
           })}
         </Box>
+
+        <Button
+          variant="text"
+          fullWidth
+          sx={{
+            color: '#fff',
+            display: crossMode ? 'flex' : 'none',
+            '& path': {
+              fill: '#fff',
+            },
+            ':hover': {
+              '& path': {
+                fill: '#000',
+              },
+            },
+            textAlign: 'start',
+            justifyContent: 'flex-start',
+          }}
+          disabled={isSubmitted || !isAddAllOptions}
+          onClick={handleAddItem}
+        >
+          <Typography variant="body2" alignItems="center" display="flex" gap={1} fontWeight={700}>
+            <span>
+              <PlusIcon />
+            </span>
+            Add more collateral
+          </Typography>
+        </Button>
       </BoxCustom>
 
-      <DepositPreview depositItem={depositItems[0]} depositedValueUsd={depositedValueUsd} isHasDeposited={isHasDeposited} />
+      <DepositPreview
+        depositItems={depositItems}
+        depositedValueUsd={crossMode ? depositedValueUsd : depositedValueUsd}
+        isHasDeposited={isHasDeposited}
+      />
     </Box>
   );
 };

@@ -818,36 +818,36 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
           },
         },
       },
-      MuiSwitch: {
-        styleOverrides: {
-          root: {
-            width: 24,
-            height: 16,
-            padding: 0,
-            '& .MuiSwitch-switchBase': {
-              padding: 0,
-              margin: 2,
-              '&.Mui-checked': {
-                color: '#2D3400',
-                transform: 'translateX(8px)',
-                '& + .MuiSwitch-track': {
-                  backgroundColor: '#FCFFD8',
-                  opacity: 1,
-                  border: 0,
-                },
-              },
-            },
-            '& .MuiSwitch-thumb': {
-              boxSizing: 'border-box',
-              width: 12,
-              height: 12,
-            },
-            '& .MuiSwitch-track': {
-              borderRadius: 14,
-            },
-          },
-        },
-      },
+      // MuiSwitch: {
+      //   styleOverrides: {
+      //     root: {
+      //       width: 24,
+      //       height: 16,
+      //       padding: 0,
+      //       '& .MuiSwitch-switchBase': {
+      //         padding: 0,
+      //         margin: 2,
+      //         '&.Mui-checked': {
+      //           color: '#2D3400',
+      //           transform: 'translateX(8px)',
+      //           '& + .MuiSwitch-track': {
+      //             backgroundColor: '#FCFFD8',
+      //             opacity: 1,
+      //             border: 0,
+      //           },
+      //         },
+      //       },
+      //       '& .MuiSwitch-thumb': {
+      //         boxSizing: 'border-box',
+      //         width: 12,
+      //         height: 12,
+      //       },
+      //       '& .MuiSwitch-track': {
+      //         borderRadius: 14,
+      //       },
+      //     },
+      //   },
+      // },
     },
   };
 }

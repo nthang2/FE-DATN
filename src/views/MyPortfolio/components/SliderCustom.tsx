@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Tooltip, Typography } from '@mui/material';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { compactNumber } from 'src/utils/format';
 
@@ -6,9 +6,11 @@ export default function SliderCustom({
   maxValue,
   value,
   status,
+  textFill,
 }: {
   maxValue: number | undefined;
   value: number | undefined;
+  textFill: string;
   status: Array<'error' | 'success' | 'pending'>;
 }) {
   const position = [0, 2, 3, 4, 5, 6, 7, 8, 10];
@@ -39,7 +41,7 @@ export default function SliderCustom({
                         color: 'info.main',
                       }}
                     >
-                      {compactNumber(maxValue != undefined ? (maxValue / 10) * item : 0 * item * 10, 2)}
+                      {item && compactNumber(maxValue ? (maxValue / 10) * item : 0 * item * 10, 2)}
                     </Typography>
                   }
                 />
@@ -49,15 +51,17 @@ export default function SliderCustom({
         );
       })}
       {maxValue != undefined && value != undefined && (
-        <Box
-          sx={{
-            bgcolor: '#FCFFD8',
-            height: '23px',
-            borderRadius: '1200px',
-            border: '0.5px solid #919283',
-            width: `${(value / maxValue) * 100}%`,
-          }}
-        />
+        <Tooltip title={textFill}>
+          <Box
+            sx={{
+              bgcolor: '#FCFFD8',
+              height: '23px',
+              borderRadius: '1200px',
+              border: '0.5px solid #919283',
+              width: `${(value / maxValue) * 100}%`,
+            }}
+          />
+        </Tooltip>
       )}
     </Box>
   );

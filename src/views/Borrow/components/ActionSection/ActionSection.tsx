@@ -2,7 +2,7 @@ import { Table, TableBody, TableContainer, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
-import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
+import useLendingContract from 'src/hooks/useContract/useLendingContract';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
@@ -13,10 +13,11 @@ import DepositTableRow from './DepositTableRow';
 const ActionSection = () => {
   const wallet = useWallet();
   const [borrowState] = useBorrowState();
-  const [depositItems] = useDepositState();
+  const [depositItems, setDepositItems] = useDepositState();
   const [isSubmitted, setIsSubmitted] = useBorrowSubmitState();
   const { refetch: refetchDeposited } = useQueryDepositValue();
   const { maxBorrowPrice } = useInvestedValue();
+  const { initLendingContract } = useLendingContract();
 
   const [actionStatus, setActionStatus] = useState<boolean[]>(() => {
     const result = [...depositItems, borrowState].filter((item) => !!item.value && item.value !== '0');
@@ -40,7 +41,7 @@ const ActionSection = () => {
 
   const handleDeposit = async (depositItem: TBorrowItem, index: number) => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
-    const lendingContract = new LendingContract(wallet);
+    const lendingContract = initLendingContract(wallet);
     const transHash = await lendingContract.deposit(Number(depositItem.value), depositItem.address);
     await refetchDeposited();
     handChangeActionStatus(index);
@@ -51,7 +52,7 @@ const ActionSection = () => {
   const handleBorrow = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const isBorrowMaxValue = Number(borrowState.price) === maxBorrowPrice;
-    const lendingContract = new LendingContract(wallet);
+    const lendingContract = initLendingContract(wallet);
     const transHash = await lendingContract.borrow(Number(borrowState.value), depositItems[0].address, isBorrowMaxValue);
     handChangeActionStatus(actionStatus.length - 1);
 

@@ -9,8 +9,8 @@ import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
-import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import useLendingContract from 'src/hooks/useContract/useLendingContract';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useMyPortfolioInfo from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
@@ -28,6 +28,8 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const { refetch: refetchBalance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
   const { asset, status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo } = useMyPortfolioInfo();
   const { refetch: refetchDepositedValue } = useQueryDepositValue();
+  const { initLendingContract } = useLendingContract();
+
   const [valueWithdraw, setValueWithdraw] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
   const [valueWithdrawHelperText, setValueWithdrawHelperText] = useState<string | undefined>(undefined);
@@ -41,7 +43,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
 
   const maxValue = useMemo(() => {
     if (!asset) return '';
-    return asset[token.address].maxWithdrawable.toString();
+    return asset[token.address]?.maxWithdrawable.toString();
   }, [asset, token.address]);
 
   const handleMax = () => {
@@ -55,7 +57,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
 
   const handleWithdraw = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
-    const lendingContract = new LendingContract(wallet);
+    const lendingContract = initLendingContract(wallet);
     const hash = await lendingContract.withdraw(Number(valueWithdraw), token.address);
     setValueWithdraw('');
     setValueInUSD('0');

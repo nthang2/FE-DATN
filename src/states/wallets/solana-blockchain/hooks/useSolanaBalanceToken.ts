@@ -4,8 +4,8 @@ import { BN } from 'src/utils';
 import useFetchAllSolTokenBalances from './useFetchAllSolTokenBalances';
 import { solTokenSolana } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 
-export default function useSolanaBalanceToken(address: string, tokenName: TSolanaToken) {
-  const { allSlpTokenBalances, native } = useFetchAllSolTokenBalances(address);
+export default function useSolanaBalanceToken(userAddress: string, tokenName: TSolanaToken) {
+  const { allSlpTokenBalances, native } = useFetchAllSolTokenBalances(userAddress);
   if (tokenName === TokenName.SOL) {
     return native.SOL;
   }

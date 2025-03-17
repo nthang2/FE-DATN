@@ -1,3 +1,4 @@
+import { ContentCopy } from '@mui/icons-material';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { Icon } from 'crypto-token-icon';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
@@ -9,7 +10,7 @@ import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfol
 import { useModalFunction } from 'src/states/modal/hooks';
 import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
-import { BN } from 'src/utils';
+import { BN, copyTextToClipboard } from 'src/utils';
 import { compactNumber, formatNumber } from '../../utils/format';
 import DepositModal from './components/DepositModal';
 import SwitchCustom from './components/SwitchCustom';
@@ -64,9 +65,9 @@ export default function Deposit() {
           <TableBody>
             {tokens.map((row, index) => {
               const balanceInWalletByUsd = BN(balance[index].balance)
-                .multipliedBy(asset?.[row.address].priceUSD || 0)
+                .multipliedBy(asset?.[row.address]?.priceUSD || 0)
                 .toFixed(2);
-              const withdrawAbleValue = asset?.[row.address].maxWithdrawable;
+              const withdrawAbleValue = asset?.[row.address]?.maxWithdrawable;
 
               return (
                 <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -76,6 +77,7 @@ export default function Deposit() {
                       <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 1 }}>
                         {row.symbol}
                       </Typography>
+                      <ContentCopy sx={{ ml: 1 }} color="secondary" fontSize="small" onClick={() => copyTextToClipboard(row.address)} />
                     </Box>
                   </TableCell>
                   <TableCell align="right">

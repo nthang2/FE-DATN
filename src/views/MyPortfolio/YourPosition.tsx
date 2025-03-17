@@ -12,6 +12,7 @@ import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/us
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { formatNumber } from 'src/utils/format';
 import SliderCustom from './components/SliderCustom';
+import CrossModeSwitch from 'src/components/CrossModeSwitch/CrossModeSwitch';
 
 export default function YourPosition() {
   const { address } = useSummarySolanaConnect();
@@ -38,7 +39,7 @@ export default function YourPosition() {
   }, [depositValueData, tokensPrice]);
 
   const totalYourBorrowValue = useMemo(() => {
-    if (asset && Object.keys(asset).length > 0) {
+    if (asset && Object.keys(asset).length > 0 && Object.values(asset).find((a) => a.usdaiToRedeem)) {
       return Object.values(asset).reduce((a, b) => a + Number(b.usdaiToRedeem), 0);
     }
   }, [asset]);
@@ -54,7 +55,10 @@ export default function YourPosition() {
 
   return (
     <BoxCustom>
-      <Typography variant="h5">Your Position</Typography>
+      <Box display={'flex'} justifyContent="space-between">
+        <Typography variant="h5">Your Position</Typography>
+        <CrossModeSwitch />
+      </Box>
       <Box sx={{ mt: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="subtitle2">Collateral Deposited</Typography>
@@ -71,6 +75,7 @@ export default function YourPosition() {
           status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
           maxValue={totalDepositValue}
           value={totalDepositValue}
+          textFill="Amount of your deposited assets used as collateral."
         />
       </Box>
       <Box sx={{ mb: 4, mt: 8 }}>
@@ -89,6 +94,7 @@ export default function YourPosition() {
           status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
           value={totalYourBorrowValue}
           maxValue={maxBorrowAbleValue}
+          textFill="Minted amount of USDAI against your maximum mintable amount."
         />
       </Box>
       <Box sx={{ mb: 4, mt: 8 }}>
@@ -114,6 +120,7 @@ export default function YourPosition() {
               ? Number(balanceUSDAI.toString()) + Number(dataStakedInfo?.amount)
               : undefined
           }
+          textFill="Staked amount of USDAI."
         />
       </Box>
     </BoxCustom>

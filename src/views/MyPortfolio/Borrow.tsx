@@ -1,15 +1,18 @@
+import { ContentCopy } from '@mui/icons-material';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
 import { useNavigate } from 'react-router-dom';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
-import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { listTokenAvailable, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import { useModalFunction } from 'src/states/modal/hooks';
+import { copyTextToClipboard } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import RepayModal from './components/RepayModal';
-import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
+import { useCrossModeState } from 'src/states/hooks';
 
 export default function Borrow() {
   // const [eMode, setEMode] = useState<boolean>(false);
@@ -18,8 +21,10 @@ export default function Borrow() {
   const { asset } = useMyPortfolio();
   const modalFunction = useModalFunction();
   const navigate = useNavigate();
+  const [crossMode] = useCrossModeState();
 
   const tableHead = ['Asset', 'Available', 'USDAI Minted', ''];
+  const listRow = crossMode ? { [TokenName.USDAI]: mapNameToInfoSolana[TokenName.USDAI] } : listTokenAvailable;
   // const handleChangeMode = () => {
   //   setEMode(!eMode);
   // };
@@ -38,6 +43,10 @@ export default function Borrow() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const availableMint = (row: any) => {
     if (tokensPrice && asset) {
+      if (asset[row.address]?.maxAvailableToMint) {
+        return asset[row.address]?.maxAvailableToMint;
+      }
+
       const result =
         Number(depositValue?.[row.address]) * row.ratio * Number(tokensPrice[row.address]?.price ?? 1) -
         Number(asset[row.address].usdaiToRedeem);
@@ -81,8 +90,8 @@ export default function Borrow() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.values(listTokenAvailable).map((row) => {
-              const borrowedValue = asset?.[row.address].usdaiToRedeem;
+            {Object.values(listRow).map((row) => {
+              const borrowedValue = asset?.[row.address]?.usdaiToRedeem;
 
               return (
                 <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -92,11 +101,12 @@ export default function Borrow() {
                       <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 1 }}>
                         {row.symbol}
                       </Typography>
+                      <ContentCopy sx={{ ml: 1 }} color="secondary" fontSize="small" onClick={() => copyTextToClipboard(row.address)} />
                     </Box>
                   </TableCell>
                   <TableCell align="right">
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {depositValue?.[row.address] && tokensPrice && borrowedValue
+                      {asset?.[row.address] && tokensPrice && borrowedValue
                         ? formatNumber(availableMint(row), {
                             fractionDigits: 2,
                             prefix: '$',

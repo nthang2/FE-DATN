@@ -10,12 +10,15 @@ import DepositCustomInput from '../InputCustom/DepositCustomInput';
 import BorrowPreview from './BorrowPreview';
 import { regexConfigValue } from 'src/utils';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
+import { useCrossModeState } from 'src/states/hooks';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
   const [borrowState, setBorrowState] = useBorrowState();
   const [isSubmitted] = useBorrowSubmitState();
   const [depositItems] = useDepositState();
+  const [crossMode] = useCrossModeState();
   const { totalDepositValue, yourBorrowByAddress, maxLtv } = useInvestedValue();
   const { asset } = useMyPortfolio();
 
@@ -23,8 +26,14 @@ const BorrowSection = () => {
     if (!asset) return 0;
     const currAdd = depositItems[0].address;
 
-    return Number(asset[currAdd].usdaiToRedeem);
-  }, [asset, depositItems]);
+    if (crossMode) {
+      const usdAiInfo = mapNameToInfoSolana[TokenName.USDAI];
+      const mintedValueCrossMode = asset[usdAiInfo.address];
+      return Number(mintedValueCrossMode?.usdaiToRedeem);
+    }
+
+    return Number(asset[currAdd]?.usdaiToRedeem);
+  }, [asset, crossMode, depositItems]);
   const isShowYourBorrow = !!mintedValueUsd && Number(mintedValueUsd) > 0;
 
   const handleChangeInput = (value: string) => {

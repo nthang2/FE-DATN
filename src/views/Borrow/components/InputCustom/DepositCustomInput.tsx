@@ -3,6 +3,7 @@ import { Icon, TokenName } from 'crypto-token-icon';
 import { ReactNode } from 'react';
 import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { roundNumber } from 'src/utils/format';
+import { useDepositState } from '../../state/hooks';
 
 type Props = {
   subValue?: string | ReactNode;
@@ -18,8 +19,10 @@ type Props = {
 };
 
 export default function DepositCustomInput(props: Props) {
-  const { subValue, readonly = false, onClickMax, loading, maxValue, endAdornment, inputProps, selectProps, error, selectOptions } = props;
-  const options = selectOptions || Object.values(listTokenAvailable).map((item) => item.address);
+  const { subValue, readonly = false, onClickMax, loading, maxValue, endAdornment, inputProps, selectProps, error } = props;
+  const [depositItems] = useDepositState();
+
+  const options = Object.values(listTokenAvailable).map((item) => item.address);
   const inputValue = inputProps?.value ? roundNumber(Number(inputProps.value), 3) : undefined;
 
   return (
@@ -46,12 +49,14 @@ export default function DepositCustomInput(props: Props) {
             sx={{
               border: '1px solid #666662',
               mr: 2,
+              minWidth: '135px',
               ...selectProps?.sx,
             }}
             {...selectProps}
           >
             {options.map((item) => {
               const tokenInfo = findTokenInfoByToken(item);
+              const displayOption = !depositItems.find((deposit) => deposit.address === item);
 
               return (
                 <MenuItem
@@ -59,6 +64,7 @@ export default function DepositCustomInput(props: Props) {
                   key={item}
                   sx={{
                     px: 2,
+                    display: displayOption ? 'flex' : 'none',
                   }}
                 >
                   <Stack sx={{ alignItems: 'center' }}>

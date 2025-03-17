@@ -80,7 +80,7 @@ const LTVSection = () => {
       handleChangeSlider(borrowPercent);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [depositItems[0].address, yourBorrowByAddress]);
+  }, [depositItems, yourBorrowByAddress]);
 
   return (
     <BoxCustom>

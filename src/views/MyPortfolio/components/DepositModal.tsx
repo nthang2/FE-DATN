@@ -9,8 +9,8 @@ import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
-import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import useLendingContract from 'src/hooks/useContract/useLendingContract';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
@@ -30,6 +30,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
     error: errorBalance,
   } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
   const { refetch: refetchDepositValue } = useQueryDepositValue();
+  const { initLendingContract } = useLendingContract();
   const { asyncExecute, loading } = useAsyncExecute();
 
   const [valueDeposit, setValueDeposit] = useState<string>('');
@@ -52,7 +53,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
 
   const handleDeposit = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
-    const lendingContract = new LendingContract(wallet);
+    const lendingContract = initLendingContract(wallet);
     const hash = await lendingContract.deposit(Number(valueDeposit), token.address);
     setValueDeposit('');
     setValueInUSD('0');

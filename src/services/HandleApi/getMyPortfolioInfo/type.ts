@@ -10,11 +10,15 @@ export type TMyPortfolioAsset = {
   depositedUSD: number;
   healthFactor: number;
   maxWithdrawable: number;
+  maxAvailableToMint?: number;
 };
 
 export type TMyPortfolioInfoResp = {
   user: string;
   usdaiToRedeem: number;
   collateralValue: number;
+  healthFactor: number;
+  loanAccount: string;
+  maxAvailableToMint: number;
   assets: TMyPortfolioAsset[];
 };

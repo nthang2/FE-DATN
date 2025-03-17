@@ -7,6 +7,7 @@ import {
   usdaiSolanaDevnet,
   usdcDevSolanaDevnet,
   oraiSolanaDevnet,
+  virtualSolanaDevnet,
 } from '.';
 
 export const mapNameToInfoSolanaDevnet = {
@@ -17,6 +18,7 @@ export const mapNameToInfoSolanaDevnet = {
   [TokenName.USDAI]: usdaiSolanaDevnet,
   [TokenName.USDC]: usdcDevSolanaDevnet,
   [TokenName.ORAI]: oraiSolanaDevnet,
+  [TokenName.VIRTUAL]: virtualSolanaDevnet,
 };
 
 export type TSolanaDevnetToken = keyof typeof mapNameToInfoSolanaDevnet;
@@ -27,4 +29,5 @@ export const findTokenNameSolanaDevnet: Record<string, TSolanaDevnetToken | unde
   [token3SolanaDevnet.address]: TokenName.AI16Z,
   [usdaiSolanaDevnet.address]: TokenName.USDAI,
   [solanaDevnet.address]: TokenName.SOL,
+  [virtualSolanaDevnet.address]: TokenName.VIRTUAL,
 };

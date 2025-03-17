@@ -1,15 +1,16 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
-import { LendingContract } from 'src/contracts/solana/contracts/LendingContract';
+import useLendingContract from 'src/hooks/useContract/useLendingContract';
 
 const useBorrowRate = () => {
   const wallet = useWallet();
+  const { initLendingContract, crossMode } = useLendingContract();
 
   const query = useQuery({
-    queryKey: ['getBorrowRate'],
+    queryKey: ['getBorrowRate', crossMode],
     queryFn: async () => {
       if (!wallet) return 0;
-      const lendingContract = new LendingContract(wallet);
+      const lendingContract = initLendingContract(wallet);
 
       const borrowRate = await lendingContract.getBorrowRate();
       return borrowRate;
