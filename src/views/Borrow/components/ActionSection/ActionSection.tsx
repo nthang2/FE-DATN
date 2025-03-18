@@ -20,7 +20,7 @@ const ActionSection = () => {
   const { initLendingContract } = useLendingContract();
 
   const initDepositItems = useMemo(() => {
-    return [...depositItems];
+    return [...depositItems].filter((item) => !!item.value && item.value !== '0');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitted]);
 

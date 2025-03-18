@@ -19,6 +19,7 @@ const LTVSection = () => {
   const [depositItems] = useDepositState();
   const { data: listPrice } = useQueryAllTokensPrice();
   const [borrowSubmitted] = useBorrowSubmitState();
+  const [isSubmitted] = useBorrowSubmitState();
   const { totalDepositValue, yourBorrowByAddress, maxLtv, depositedByAddress } = useInvestedValue();
 
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
@@ -35,6 +36,7 @@ const LTVSection = () => {
   }, [depositedByAddress, yourBorrowByAddress]);
 
   const handleChangeSlider = (value: number | number[]) => {
+    if (isSubmitted) return;
     let sliderCommitValue = value;
     if (!maxLtv || Number(value) > maxLtv) {
       sliderCommitValue = maxLtv;

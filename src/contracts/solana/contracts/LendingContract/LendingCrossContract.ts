@@ -158,6 +158,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async borrow(borrowAmount: number, tokenAddress: string, isMax?: boolean): Promise<string> {
+    //borrow in cross mode doesn't need tokenAddress param but we still use this here for sync interface with LendingContract class
     const maxAmount = utilBN(2).pow(64).minus(1);
     const usdaiAmount = (isMax ? new BN(maxAmount.toString()) : new BN(borrowAmount * 1e6)) as BN;
     const accountsPartial = this.getAccountsPartial(tokenAddress);
