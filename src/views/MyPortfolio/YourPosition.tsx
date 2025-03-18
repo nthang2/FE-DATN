@@ -3,16 +3,23 @@ import { TokenName } from 'crypto-token-icon';
 import { useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import {
+  findTokenInfoByToken,
+  listTokenAvailable,
+  mapNameToInfoSolana,
+  TSolanaToken,
+} from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
-import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
+import useSolanaBalanceToken, { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { formatNumber } from 'src/utils/format';
 import SliderCustom from './components/SliderCustom';
 import CrossModeSwitch from 'src/components/CrossModeSwitch/CrossModeSwitch';
+import { useCrossModeState } from 'src/states/hooks';
+import { BN } from 'src/utils';
 
 export default function YourPosition() {
   const { address } = useSummarySolanaConnect();
@@ -21,12 +28,25 @@ export default function YourPosition() {
   const { data: tokensPrice, status: statusQueryAllTokensPrice } = useQueryAllTokensPrice();
   const { data: dataStakedInfo, status: statusStakedInfo } = useStakedInfo();
   const { balance: balanceUSDAI } = useSolanaBalanceToken(address, TokenName.USDAI);
+  const [crossMode] = useCrossModeState();
+  const balance = useSolanaBalanceTokens(address, Object.keys(listTokenAvailable) as Array<TSolanaToken>);
 
-  const totalDepositValue = useMemo(() => {
-    if (depositValueData && Object.keys(depositValueData).length > 0 && tokensPrice) {
-      return Object.entries(depositValueData).reduce((a, [k, v]) => a + Number(v) * Number(tokensPrice[k]?.price ?? 1), 0);
+  const collateralDepositedInfo = useMemo(() => {
+    if (asset) {
+      const totalDepositedUsd = BN(Object.values(asset).reduce((total, item) => total + item.depositedUSD, 0));
+      const totalBalanceTokens = BN(
+        Object.values(balance).reduce((total, item) => {
+          const balanceInWalletByUsd = BN(item.balance).multipliedBy(asset?.[item.address]?.priceUSD || 0);
+          return total + balanceInWalletByUsd.toNumber();
+        }, 0)
+      );
+
+      return { totalDepositedUsd, totalBalanceTokens };
     }
-  }, [depositValueData, tokensPrice]);
+
+    return { totalDepositedUsd: BN(0), totalBalanceTokens: BN(0) };
+  }, [asset, balance]);
+  const collateralDepositedMaxValue = collateralDepositedInfo.totalBalanceTokens.plus(collateralDepositedInfo.totalDepositedUsd);
 
   const totalDepositValueRatio = useMemo(() => {
     if (depositValueData && Object.keys(depositValueData).length > 0 && tokensPrice) {
@@ -39,19 +59,35 @@ export default function YourPosition() {
   }, [depositValueData, tokensPrice]);
 
   const totalYourBorrowValue = useMemo(() => {
-    if (asset && Object.keys(asset).length > 0 && Object.values(asset).find((a) => a.usdaiToRedeem)) {
-      return Object.values(asset).reduce((a, b) => a + Number(b.usdaiToRedeem), 0);
+    if (crossMode && asset) {
+      const { usdaiToRedeem } = asset[mapNameToInfoSolana[TokenName.USDAI].address];
+      return usdaiToRedeem;
     }
-  }, [asset]);
+
+    if (asset && Object.keys(asset).length > 0 && Object.values(asset).find((a) => a.usdaiToRedeem)) {
+      return Object.values(asset).reduce((a, b) => {
+        if (!crossMode && b.contractAddress === mapNameToInfoSolana[TokenName.USDAI].address) {
+          return a;
+        }
+
+        return a + Number(b.usdaiToRedeem);
+      }, 0);
+    }
+  }, [asset, crossMode]);
 
   const maxBorrowAbleValue = useMemo(() => {
+    if (crossMode && asset) {
+      const { maxAvailableToMint, usdaiToRedeem } = asset[mapNameToInfoSolana[TokenName.USDAI].address];
+      return Number(maxAvailableToMint || 0) + usdaiToRedeem;
+    }
+
     if (totalDepositValueRatio && totalYourBorrowValue) {
       return Number(totalDepositValueRatio) < totalYourBorrowValue
         ? Number(totalYourBorrowValue) // Nếu borrow vượt quá mức có thể vay, giới hạn theo borrow
         : Number(totalDepositValueRatio);
     }
     return Number(totalDepositValueRatio) || 0;
-  }, [totalDepositValueRatio, totalYourBorrowValue]);
+  }, [asset, crossMode, totalDepositValueRatio, totalYourBorrowValue]);
 
   return (
     <BoxCustom>
@@ -66,15 +102,15 @@ export default function YourPosition() {
             status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                {formatNumber(totalDepositValue, { fractionDigits: 2, prefix: '$' })}
+                {formatNumber(collateralDepositedInfo.totalDepositedUsd, { fractionDigits: 2, prefix: '$' })}
               </Typography>
             }
           />
         </Box>
         <SliderCustom
           status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
-          maxValue={totalDepositValue}
-          value={totalDepositValue}
+          maxValue={collateralDepositedMaxValue.toNumber()}
+          value={collateralDepositedInfo.totalDepositedUsd.toNumber()}
           textFill="Amount of your deposited assets used as collateral."
         />
       </Box>

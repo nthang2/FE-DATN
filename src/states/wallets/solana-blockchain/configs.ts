@@ -14,7 +14,9 @@ export const SYSTEM_PROGRAM_ID = new PublicKey('11111111111111111111111111111111
 // const rpc2 = 'https://solana-woker.distilled.ai';
 // const rpcDevnet = clusterApiUrl('devnet');
 export const rpc =
-  NETWORK === 'devnet' ? clusterApiUrl('devnet') : 'https://solana-mainnet.core.chainstack.com/0d0157f82ae1ae3b760a7f613e8ff861';
+  NETWORK === 'devnet'
+    ? clusterApiUrl('devnet')
+    : 'https://long-side-pool.solana-mainnet.quiknode.pro/8aaf937c425502838140ffe866be292624fc5fb2';
 // : 'https://long-side-pool.solana-mainnet.quiknode.pro/8aaf937c425502838140ffe866be292624fc5fb2';
 
 export const solNetworkSelect = NETWORK === 'devnet' ? WalletAdapterNetwork.Devnet : WalletAdapterNetwork.Mainnet;
