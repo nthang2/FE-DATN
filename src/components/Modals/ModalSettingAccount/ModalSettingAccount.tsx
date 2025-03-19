@@ -1,19 +1,26 @@
 import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
+import { defaultRpc } from 'src/constants';
 import { useGlobalRpcState } from 'src/states/hooks';
 
-const listOptionRpc = [
-  { value: '1', label: 'Default' },
+type TypeListRpc = {
+  value: string;
+  label: string;
+  rpc?: string;
+};
+
+const listOptionRpc: TypeListRpc[] = [
+  { value: '1', label: 'Default', rpc: defaultRpc },
   { value: '0', label: 'Custom' },
 ];
 
 const urlRegex = /[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)/;
 
 const ModalSettingAccount = () => {
-  const [radioValue, setRadioValue] = useState('1');
-  const [inputValue, setInputValue] = useState('');
-  const [, setRpcState] = useGlobalRpcState();
+  const [rpcState, setRpcState] = useGlobalRpcState();
+  const [radioValue, setRadioValue] = useState(rpcState === defaultRpc ? '1' : '0');
+  const [inputValue, setInputValue] = useState(rpcState === defaultRpc ? '' : rpcState);
   const [isValid, setIsValid] = useState(false);
   const inputRef = useRef<HTMLInputElement>();
 
@@ -22,7 +29,13 @@ const ModalSettingAccount = () => {
   };
 
   const handleConfirmSetting = () => {
-    setRpcState(inputValue);
+    if (radioValue === '0') {
+      setRpcState(inputValue);
+    } else {
+      const optionRpc = listOptionRpc.find((item) => item.value === radioValue);
+      setRpcState(optionRpc?.rpc || defaultRpc);
+    }
+
     location.reload();
   };
 
@@ -70,7 +83,7 @@ const ModalSettingAccount = () => {
         _onError={(error) => (error ? setIsValid(false) : setIsValid(true))}
       />
 
-      <Button onClick={handleConfirmSetting} variant="outlined" disabled={!isValid} sx={{ mt: 2 }}>
+      <Button onClick={handleConfirmSetting} variant="outlined" disabled={radioValue === '0' && !isValid} sx={{ mt: 2 }}>
         Confirm
       </Button>
     </FormControl>
