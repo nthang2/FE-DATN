@@ -7,11 +7,14 @@ import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/
 import { formatAddress } from 'src/utils/format';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { copyTextToClipboard } from 'src/utils';
+import { useModalFunction } from 'src/states/modal/hooks';
+import ModalSettingAccount from 'src/components/Modals/ModalSettingAccount/ModalSettingAccount';
 
 const ConnectWalletSection = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
   const { address, status, walletIcon, disconnect } = useSummarySolanaConnect();
+  const modalFunction = useModalFunction();
 
   const handleCloseAnchor = () => {
     setAnchorEl(null);
@@ -25,6 +28,13 @@ const ConnectWalletSection = () => {
   const handleCloseDialog = () => {
     setAnchorEl(null);
     setOpenDialog(false);
+  };
+
+  const handleSettingBtn = () => {
+    modalFunction({
+      type: 'openModal',
+      data: { content: <ModalSettingAccount />, title: `Settings`, modalProps: { maxWidth: 'xs' } },
+    });
   };
 
   return (
@@ -69,6 +79,9 @@ const ConnectWalletSection = () => {
               >
                 <Typography onClick={() => copyTextToClipboard(address)} mb={2}>
                   {formatAddress(address)} <ContentCopyIcon sx={{ ml: 1, fontSize: '15px' }} />
+                </Typography>
+                <Typography onClick={handleSettingBtn} mb={2}>
+                  Settings
                 </Typography>
                 <Typography onClick={disconnect}>Disconnect</Typography>
               </Box>

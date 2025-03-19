@@ -4,8 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
 import { TokenName } from 'crypto-token-icon';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { publicClientSol } from 'src/states/hooks';
 import { BN, DEC } from 'src/utils';
-import { publicClientSol } from '../configs';
 
 export default function useFetchAllSolTokenBalances(addressUser: string) {
   const nativeSolBalance = useNativeSolBalance(addressUser);
@@ -30,7 +30,7 @@ function useNativeSolBalance(addressUser: string) {
     queryKey: ['solana', 'native-sol-balance', addressUser],
     queryFn: async () => {
       const publicKey = new PublicKey(addressUser);
-      const balance = await publicClientSol.getBalance(publicKey);
+      const balance = await publicClientSol().getBalance(publicKey);
       return BN(balance).div(DEC(9));
     },
     enabled: !!addressUser,
@@ -43,7 +43,7 @@ function useAllSlpTokenBalances(addressUser: string) {
     queryKey: ['solana', 'all-slp-token-balances', addressUser],
     queryFn: async () => {
       const publicKey = new PublicKey(addressUser);
-      const tokenAccounts = await publicClientSol.getParsedTokenAccountsByOwner(publicKey, {
+      const tokenAccounts = await publicClientSol().getParsedTokenAccountsByOwner(publicKey, {
         programId: TOKEN_PROGRAM_ID,
       });
       const result: { [k in TokenName]?: BigNumber } = {};
