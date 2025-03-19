@@ -4,6 +4,7 @@ import { crossModeAtom, selectRpc } from './state';
 
 export const useCrossModeState = () => useAtom(crossModeAtom);
 export const useGlobalRpcState = () => useAtom(selectRpc);
+
 export const publicClientSol = () => {
   const store = getDefaultStore();
   return new Connection(store.get(selectRpc), 'confirmed');
