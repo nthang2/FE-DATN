@@ -9,11 +9,15 @@ import {
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
+import { PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
+import { toast } from 'react-toastify';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
+import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
+import { solTokenSolana } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { queryClient } from 'src/layout/Layout';
-import { rpc } from 'src/states/wallets/solana-blockchain/configs';
+import { publicClientSol } from 'src/states/hooks';
 import { getDecimalToken } from 'src/utils';
+import { BN as utilBN } from 'src/utils/index';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import {
@@ -24,9 +28,6 @@ import {
   REDEEMABLE_MINT_SEED,
   RESERVE_ACCOUNT,
 } from './constant';
-import { BN as utilBN } from 'src/utils/index';
-import { solTokenSolana } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
-import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
 
 export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -210,10 +211,11 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
   async checkIfPdaExist(address: PublicKey) {
     try {
-      const account = await new Connection(rpc, 'confirmed').getAccountInfo(address, undefined);
+      const account = await publicClientSol().getAccountInfo(address, undefined);
       return account;
     } catch (e: unknown) {
       console.log(e, address.toString());
+      toast.error('Loading connection fail');
       throw e;
     }
   }
