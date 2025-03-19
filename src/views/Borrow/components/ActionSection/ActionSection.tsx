@@ -9,6 +9,8 @@ import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../sta
 import { TBorrowItem } from '../../state/types';
 import BorrowTableRow from './BorrowTableRow';
 import DepositTableRow from './DepositTableRow';
+import useFetchAllSolTokenBalances from 'src/states/wallets/solana-blockchain/hooks/useFetchAllSolTokenBalances';
+import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 
 const ActionSection = () => {
   const wallet = useWallet();
@@ -18,6 +20,8 @@ const ActionSection = () => {
   const { refetch: refetchDeposited } = useQueryDepositValue();
   const { maxBorrowPrice } = useInvestedValue();
   const { initLendingContract } = useLendingContract();
+  const { address } = useSummarySolanaConnect();
+  const { allSlpTokenBalances } = useFetchAllSolTokenBalances(address);
 
   const initDepositItems = useMemo(() => {
     return [...depositItems].filter((item) => !!item.value && item.value !== '0');
@@ -49,6 +53,7 @@ const ActionSection = () => {
     const lendingContract = initLendingContract(wallet);
     const transHash = await lendingContract.deposit(Number(depositItem.value), depositItem.address);
     await refetchDeposited();
+    await allSlpTokenBalances.refetch();
     handChangeActionStatus(index);
     setDepositItems((prev) => {
       const cloneArr = [...prev];
