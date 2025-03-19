@@ -31,8 +31,12 @@ const DepositSection = () => {
   const depositedValueUsd = useMemo(() => {
     if (!asset || !listPrice) return 0;
     const depositAddress = depositItems[0].address;
+    if (crossMode) {
+      return Object.values(asset).reduce((total, item) => total + item.depositedUSD, 0);
+    }
+
     return asset?.[depositAddress]?.depositedUSD;
-  }, [asset, depositItems, listPrice]);
+  }, [asset, crossMode, depositItems, listPrice]);
 
   const isAddAllOptions = depositItems.length < Object.keys(listTokenAvailable).length;
 
@@ -184,11 +188,7 @@ const DepositSection = () => {
         </Button>
       </BoxCustom>
 
-      <DepositPreview
-        depositItems={depositItems}
-        depositedValueUsd={crossMode ? depositedValueUsd : depositedValueUsd}
-        isHasDeposited={isHasDeposited}
-      />
+      <DepositPreview depositItems={depositItems} depositedValueUsd={depositedValueUsd} isHasDeposited={isHasDeposited} />
     </Box>
   );
 };

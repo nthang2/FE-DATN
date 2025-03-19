@@ -106,7 +106,7 @@ export default function Borrow() {
                   </TableCell>
                   <TableCell align="right">
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {asset?.[row.address] && tokensPrice && borrowedValue
+                      {asset?.[row.address] && tokensPrice
                         ? formatNumber(availableMint(row), {
                             fractionDigits: 2,
                             prefix: '$',

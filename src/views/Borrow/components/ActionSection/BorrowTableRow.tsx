@@ -23,10 +23,6 @@ const BorrowTableRow = (props: IProps) => {
   const { asyncExecute, loading } = useAsyncExecute();
   const tokenInfo = findTokenInfoByToken(address);
 
-  if (value === '0' || !value) {
-    return null;
-  }
-
   return (
     <TableRow sx={{ padding: 3 }}>
       <TableCell width={100}>{index + 1}</TableCell>

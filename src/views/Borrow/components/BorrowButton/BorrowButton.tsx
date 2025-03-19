@@ -32,7 +32,7 @@ const BorrowButton = () => {
   }, [depositItems, depositedValue, listPrice]);
 
   const isOnlyMint = useMemo(() => {
-    const depositValue = depositItems.every((item) => Number(item.value) > 0);
+    const depositValue = depositItems.some((item) => Number(item.value) > 0);
     if (!depositValue) {
       if (Number(borrowState.value) > 0) {
         return true;

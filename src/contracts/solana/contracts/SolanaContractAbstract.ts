@@ -2,7 +2,7 @@
 import { AnchorProvider, Idl, Program } from '@coral-xyz/anchor';
 import { Wallet, WalletContextState } from '@solana/wallet-adapter-react';
 import { ComputeBudgetProgram, PublicKey, Transaction } from '@solana/web3.js';
-import { publicClientSol } from 'src/states/wallets/solana-blockchain/configs';
+import { publicClientSol } from 'src/states/hooks';
 
 export abstract class SolanaContractAbstract<IDL extends Idl> {
   public provider: AnchorProvider;
@@ -10,7 +10,7 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
   public wallet: Wallet | null;
 
   constructor(wallet: WalletContextState, programId: PublicKey, idl: IDL) {
-    this.provider = new AnchorProvider(publicClientSol, wallet as any, { preflightCommitment: 'confirmed' });
+    this.provider = new AnchorProvider(publicClientSol(), wallet as any, { preflightCommitment: 'confirmed' });
     this.program = new Program(idl, { ...this.provider, publicKey: programId });
     this.wallet = wallet.wallet;
   }

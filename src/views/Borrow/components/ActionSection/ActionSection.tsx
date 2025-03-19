@@ -1,6 +1,6 @@
 import { Table, TableBody, TableContainer, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import useLendingContract from 'src/hooks/useContract/useLendingContract';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
@@ -9,6 +9,8 @@ import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../sta
 import { TBorrowItem } from '../../state/types';
 import BorrowTableRow from './BorrowTableRow';
 import DepositTableRow from './DepositTableRow';
+import useFetchAllSolTokenBalances from 'src/states/wallets/solana-blockchain/hooks/useFetchAllSolTokenBalances';
+import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 
 const ActionSection = () => {
   const wallet = useWallet();
@@ -18,9 +20,16 @@ const ActionSection = () => {
   const { refetch: refetchDeposited } = useQueryDepositValue();
   const { maxBorrowPrice } = useInvestedValue();
   const { initLendingContract } = useLendingContract();
+  const { address } = useSummarySolanaConnect();
+  const { allSlpTokenBalances } = useFetchAllSolTokenBalances(address);
+
+  const initDepositItems = useMemo(() => {
+    return [...depositItems].filter((item) => !!item.value && item.value !== '0');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSubmitted]);
 
   const [actionStatus, setActionStatus] = useState<boolean[]>(() => {
-    const result = [...depositItems, borrowState].filter((item) => !!item.value && item.value !== '0');
+    const result = [...initDepositItems, borrowState].filter((item) => !!item.value && item.value !== '0');
     return Array(result.length).fill(false);
   });
 
@@ -44,7 +53,14 @@ const ActionSection = () => {
     const lendingContract = initLendingContract(wallet);
     const transHash = await lendingContract.deposit(Number(depositItem.value), depositItem.address);
     await refetchDeposited();
+    await allSlpTokenBalances.refetch();
     handChangeActionStatus(index);
+    setDepositItems((prev) => {
+      const cloneArr = [...prev];
+      cloneArr[index] = { ...cloneArr[index], value: '0', price: 0 };
+
+      return cloneArr;
+    });
 
     return transHash;
   };
@@ -67,7 +83,7 @@ const ActionSection = () => {
       <TableContainer sx={{ border: '1px solid #474744', borderRadius: 2, bgcolor: '#333331' }}>
         <Table>
           <TableBody>
-            {depositItems.map((item, index) => (
+            {initDepositItems.map((item, index) => (
               <DepositTableRow
                 actionStatus={actionStatus[index]}
                 index={index}
