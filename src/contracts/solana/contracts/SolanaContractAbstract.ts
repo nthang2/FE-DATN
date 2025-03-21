@@ -22,12 +22,12 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
       microLamports: gas,
     });
   }
-  async sendTransaction(instruction: Transaction, signers?: any[]) {
+  async sendTransaction(instruction: Transaction) {
     if (!this.wallet) {
       throw new Error('Please connect wallet');
     }
     // const transaction = new Transaction().add(instruction);
-    const signature = await this.provider.sendAndConfirm(instruction, signers, { maxRetries: 1000 * 60 });
+    const signature = await this.provider.sendAndConfirm(instruction, undefined, { maxRetries: 1000 * 60 });
     // const signature = await this.wallet.adapter.sendTransaction(instruction, publicClientSol, {
     //   maxRetries: 1000 * 60,
     //   preflightCommitment: 'confirmed',

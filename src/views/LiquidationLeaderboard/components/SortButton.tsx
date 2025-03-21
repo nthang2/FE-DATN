@@ -1,7 +1,7 @@
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Box } from '@mui/material';
 import { SetStateAction } from 'react';
-import { TFilterParams } from '../LiquidationLeaderboard';
+import { TFilterParams } from '../LeaderboardTable';
 import { TSortBuy } from '../utils';
 
 export default function SortButton({
