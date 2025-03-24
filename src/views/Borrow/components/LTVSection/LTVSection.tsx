@@ -10,6 +10,7 @@ import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../ut
 import CustomMark from '../BorrowSlide/CustomMark';
 import CustomThumb from '../BorrowSlide/CustomThumb';
 import CustomTrack from '../BorrowSlide/CustomTrack';
+import { decimalFlood } from 'src/utils/format';
 
 const minZoom = 0;
 const maxZoom = 100;
@@ -97,7 +98,7 @@ const LTVSection = () => {
 
       <Stack justifyContent="space-between" mt={1.5}>
         <Typography variant="body2">Ratio of the minted value to the collateral value</Typography>
-        <Typography variant="body2">max {maxLtv?.toFixed(2)}%</Typography>
+        <Typography variant="body2">max {decimalFlood(maxLtv, 2)}%</Typography>
       </Stack>
 
       <Box mt={3.5}>

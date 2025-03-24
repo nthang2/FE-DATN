@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material';
+import { decimalFlood } from 'src/utils/format';
 
 const CustomMark = ({ ...props }) => {
   const dataIndex = props['data-index'];
@@ -28,7 +29,7 @@ const CustomMark = ({ ...props }) => {
       <Box position="relative" height="100%">
         {isMaxValueMark && (
           <Box position="absolute" top={-18}>
-            <Typography variant="body3">{maxValue.toFixed(2)}%</Typography>
+            <Typography variant="body3">{decimalFlood(maxValue, 2)}%</Typography>
           </Box>
         )}
       </Box>
