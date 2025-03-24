@@ -4,6 +4,7 @@ import { TLiquidationLeaderboardParams } from './HandleApi/getLeaderboard/type';
 export const apiUrl = {
   getTokenPrice: (address: string) => `${BACKEND_URL}/tokens/price?tokenAddress=${address}`,
   getLendingMetrics: () => `${BACKEND_URL}/lending/metrics`,
+  getLendingMetricsCrossMode: () => `${BACKEND_URL}/lending/metrics/cross-mode`,
   getLiquidationLeaderboard: ({
     user,
     collateral,

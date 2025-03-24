@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getLendingMetrics } from 'src/services/HandleApi/getLendingMetrics/getLendingMetrics';
+import { getLendingMetrics, getLendingMetricsCrossMode } from 'src/services/HandleApi/getLendingMetrics/getLendingMetrics';
 import { TLendingMetric } from 'src/services/HandleApi/getLendingMetrics/type';
 
 const useLendingMetrics = () => {
@@ -8,7 +8,13 @@ const useLendingMetrics = () => {
     queryFn: async () => {
       try {
         const metrics = await getLendingMetrics();
-        return metrics;
+        const metricsCrossMode = await getLendingMetricsCrossMode();
+
+        return {
+          ...metrics,
+          marketSize: metrics.marketSize + metricsCrossMode.marketSize,
+          totalBorrows: metrics.totalBorrows + metricsCrossMode.totalBorrows,
+        };
       } catch (error) {
         console.log('useLendingMetrics error', error);
         return {} as TLendingMetric;
