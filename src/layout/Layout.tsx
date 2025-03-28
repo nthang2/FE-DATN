@@ -6,6 +6,8 @@ import ProviderSolana from 'src/components/Providers/ProviderSolana/ProviderSola
 import { ToastNotifier } from 'src/components/ToastNotifier/ToastNotifier';
 import Content from './content/Content';
 import Header from './header/Header';
+import { DevTools } from 'jotai-devtools';
+import 'jotai-devtools/styles.css';
 
 export const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
@@ -17,6 +19,7 @@ export default function Layout() {
           <Header />
           <Content />
           <ModalCustom />
+          <DevTools />
         </Container>
         <ToastNotifier />
       </ProviderSolana>

@@ -11,6 +11,7 @@ import CustomMark from '../BorrowSlide/CustomMark';
 import CustomThumb from '../BorrowSlide/CustomThumb';
 import CustomTrack from '../BorrowSlide/CustomTrack';
 import { decimalFlood } from 'src/utils/format';
+import { BN } from 'src/utils';
 
 const minZoom = 0;
 const maxZoom = 100;
@@ -45,7 +46,7 @@ const LTVSection = () => {
 
     const borrowValue = (Number(sliderCommitValue) / 100) * totalDepositValue - yourBorrowByAddress;
     const minValue = borrowValue < 0 ? 0 : borrowValue;
-    const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), listPrice);
+    const borrowAmount = convertToAmountToken(borrowState.address, BN(minValue).toFixed(8), listPrice);
     const error = validateBorrowItem(Number(borrowAmount), borrowPercent, maxLtv);
 
     setBorrowState({

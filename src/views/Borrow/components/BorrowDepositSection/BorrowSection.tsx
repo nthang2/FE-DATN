@@ -40,7 +40,7 @@ const BorrowSection = () => {
     const price = convertToUsd(borrowState.address, BN(value).toFixed(8), listPrice);
     const borrowPercent = ((price + yourBorrowByAddress) / totalDepositValue) * 100;
     const error = validateBorrowItem(Number(value), borrowPercent, maxLtv);
-    const inputValue = regexConfigValue(value);
+    const inputValue = regexConfigValue(BN(value).toFixed(8));
 
     setBorrowState({
       ...borrowState,

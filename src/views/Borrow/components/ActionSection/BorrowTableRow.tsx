@@ -5,6 +5,7 @@ import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapN
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import { formatNumber } from 'src/utils/format';
 import { TBorrowItem } from '../../state/types';
+import { BN } from 'src/utils';
 
 interface IProps {
   index: number;
@@ -23,7 +24,7 @@ const BorrowTableRow = (props: IProps) => {
   const { asyncExecute, loading } = useAsyncExecute();
   const tokenInfo = findTokenInfoByToken(address);
 
-  if (value === '0') {
+  if (BN(value).isLessThanOrEqualTo(0)) {
     return null;
   }
 
