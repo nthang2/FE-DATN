@@ -8,6 +8,9 @@ import StabilityQuestionTooltip from './StabilityQuestionTooltip';
 import VaultAmount from './VaultAmount';
 import { useModalFunction } from 'src/states/modal/hooks';
 import LiquidationRewardModal from './LiquidationRewardModal';
+import StakeModal from './StakeModal';
+import UnstakeModal from './UnstakeModal';
+import useGetStaked from 'src/hooks/useQueryHook/queryLiquidation/useGetStaked';
 
 const fakeDataTable = [
   {
@@ -20,22 +23,32 @@ const fakeDataTable = [
     amount: 65.52,
     value: 28.14,
   },
-  {
-    tokenName: TokenName.BTC,
-    amount: 52.59,
-    value: 40.71,
-  },
 ];
 
 const StabilityVault = () => {
   const { address } = useSummarySolanaConnect();
   const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
+  const { stakedAmount } = useGetStaked();
   const modalFunction = useModalFunction();
 
-  const handleOpenModal = () => {
+  const handleOpenModalClaim = () => {
     modalFunction({
       type: 'openModal',
       data: { content: <LiquidationRewardModal rewards={fakeDataTable} />, title: `Liquidation Rewards`, modalProps: { maxWidth: 'sm' } },
+    });
+  };
+
+  const handleOpenModalStake = () => {
+    modalFunction({
+      type: 'openModal',
+      data: { content: <StakeModal />, title: `Stake Liquidity`, modalProps: { maxWidth: 'xs' } },
+    });
+  };
+
+  const handleOpenModalUnstake = () => {
+    modalFunction({
+      type: 'openModal',
+      data: { content: <UnstakeModal />, title: `Unstake Liquidity`, modalProps: { maxWidth: 'xs' } },
     });
   };
 
@@ -69,13 +82,13 @@ const StabilityVault = () => {
 
         <Stack justifyContent="space-between">
           <Typography variant="body1">Staked</Typography>
-          <VaultAmount amount={balance.toNumber()} />
+          <VaultAmount amount={stakedAmount} />
         </Stack>
 
         <Stack justifyContent="space-between">
           <StabilityQuestionTooltip content="APR" tooltipText="Idk wait update" fontWeight={400} color="#fff" />
           <Typography variant="body1" fontWeight={700} color="primary">
-            13.42%
+            4%
           </Typography>
         </Stack>
       </Stack>
@@ -90,24 +103,24 @@ const StabilityVault = () => {
           </Typography>
         </Box>
 
-        <ButtonLoading loading={false} onClick={handleOpenModal} sx={{ bgcolor: '#46492F', color: 'text.primary' }}>
+        <ButtonLoading loading={false} onClick={handleOpenModalClaim} sx={{ bgcolor: '#46492F', color: 'text.primary' }}>
           Claim
         </ButtonLoading>
       </Stack>
 
-      <Divider sx={{ borderColor: '#474744', height: '1px' }} />
+      {/* <Divider sx={{ borderColor: '#474744', height: '1px' }} /> */}
 
-      <Stack justifyContent="space-between">
+      {/* <Stack justifyContent="space-between">
         <Typography variant="body1">Total Staked</Typography>
         <VaultAmount amount={669523.99} />
-      </Stack>
+      </Stack> */}
 
       <Stack gap={2} mt={2}>
-        <ButtonLoading fullWidth disabled loading={false}>
+        <ButtonLoading variant="contained" fullWidth loading={false} onClick={handleOpenModalUnstake}>
           Unstake
         </ButtonLoading>
 
-        <ButtonLoading variant="contained" fullWidth loading={false}>
+        <ButtonLoading variant="contained" fullWidth loading={false} onClick={handleOpenModalStake}>
           Stake
         </ButtonLoading>
       </Stack>
