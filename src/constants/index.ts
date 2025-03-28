@@ -4,10 +4,10 @@ export const FontOxanium = "'Oxanium', serif";
 
 export const ProjectID_WalletConnect = '349c73495596fe0938c2557979bddc8c';
 
-export const NETWORK: 'mainnet' | 'devnet' = 'devnet'; //change to mainnet later
+export const NETWORK: 'mainnet' | 'devnet' = 'mainnet'; //change to mainnet later
 
 export const defaultRpc =
-  NETWORK === 'devnet' ? clusterApiUrl('devnet') : 'https://solana-mainnet.core.chainstack.com/13dd9ef445fe8c91fde9f443a15704c9';
+  NETWORK !== 'mainnet' ? clusterApiUrl('devnet') : 'https://solana-mainnet.core.chainstack.com/13dd9ef445fe8c91fde9f443a15704c9';
 
 export const MAXIMUM_ALLOW = '999999999999999999999999999999';
 
