@@ -45,8 +45,8 @@ const LTVSection = () => {
     }
 
     const borrowValue = (Number(sliderCommitValue) / 100) * totalDepositValue - yourBorrowByAddress;
-    const minValue = borrowValue < 0 ? 0 : borrowValue;
-    const borrowAmount = convertToAmountToken(borrowState.address, BN(minValue).toFixed(8), listPrice);
+    const minValue = borrowValue < 0 ? 0 : Number(BN(borrowValue).toFixed(8));
+    const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), listPrice);
     const error = validateBorrowItem(Number(borrowAmount), borrowPercent, maxLtv);
 
     setBorrowState({
