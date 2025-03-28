@@ -1,13 +1,13 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import { useCrossModeState } from 'src/states/hooks';
-import { regexConfigValue } from 'src/utils';
+import { BN, regexConfigValue } from 'src/utils';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
@@ -37,7 +37,7 @@ const BorrowSection = () => {
   const isShowYourBorrow = !!mintedValueUsd && Number(mintedValueUsd) > 0;
 
   const handleChangeInput = (value: string) => {
-    const price = convertToUsd(borrowState.address, value, listPrice);
+    const price = convertToUsd(borrowState.address, BN(value).toFixed(8), listPrice);
     const borrowPercent = ((price + yourBorrowByAddress) / totalDepositValue) * 100;
     const error = validateBorrowItem(Number(value), borrowPercent, maxLtv);
     const inputValue = regexConfigValue(value);
@@ -62,6 +62,11 @@ const BorrowSection = () => {
       error: undefined,
     });
   };
+
+  useEffect(() => {
+    handleChangeInput(borrowState.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [depositItems]);
 
   return (
     <Box flex={1}>
