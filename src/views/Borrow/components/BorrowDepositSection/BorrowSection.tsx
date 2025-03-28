@@ -1,17 +1,17 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
+import { useCrossModeState } from 'src/states/hooks';
+import { regexConfigValue } from 'src/utils';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
 import BorrowPreview from './BorrowPreview';
-import { regexConfigValue } from 'src/utils';
-import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
-import { useCrossModeState } from 'src/states/hooks';
-import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
@@ -59,13 +59,9 @@ const BorrowSection = () => {
       ...borrowState,
       value: borrowAmount ? borrowAmount.toString() : '0',
       price: minValue,
+      error: undefined,
     });
   };
-
-  useEffect(() => {
-    handleChangeInput(borrowState.value);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [depositItems]);
 
   return (
     <Box flex={1}>
