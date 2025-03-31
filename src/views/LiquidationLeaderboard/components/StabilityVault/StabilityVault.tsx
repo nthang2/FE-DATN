@@ -28,14 +28,14 @@ const StabilityVault = () => {
   const handleOpenModalStake = () => {
     modalFunction({
       type: 'openModal',
-      data: { content: <StakeModal />, title: `Stake Liquidity`, modalProps: { maxWidth: 'xs' } },
+      data: { content: <StakeModal />, title: `Deposit Liquidity`, modalProps: { maxWidth: 'xs' } },
     });
   };
 
   const handleOpenModalUnstake = () => {
     modalFunction({
       type: 'openModal',
-      data: { content: <UnstakeModal />, title: `Unstake Liquidity`, modalProps: { maxWidth: 'xs' } },
+      data: { content: <UnstakeModal />, title: `Withdraw Liquidity`, modalProps: { maxWidth: 'xs' } },
     });
   };
 
@@ -104,11 +104,11 @@ const StabilityVault = () => {
 
       <Stack gap={2} mt={2}>
         <ButtonLoading variant="contained" fullWidth loading={false} onClick={handleOpenModalUnstake}>
-          Unstake
+          Withdraw
         </ButtonLoading>
 
         <ButtonLoading variant="contained" fullWidth loading={false} onClick={handleOpenModalStake}>
-          Stake
+          Deposit
         </ButtonLoading>
       </Stack>
     </BoxCustom>
