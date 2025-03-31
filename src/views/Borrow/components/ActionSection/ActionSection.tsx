@@ -15,7 +15,7 @@ import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/
 const ActionSection = () => {
   const wallet = useWallet();
   const [borrowState] = useBorrowState();
-  const [depositItems, setDepositItems] = useDepositState();
+  const [depositItems] = useDepositState();
   const [isSubmitted, setIsSubmitted] = useBorrowSubmitState();
   const { refetch: refetchDeposited } = useQueryDepositValue();
   const { maxBorrowPrice } = useInvestedValue();
@@ -55,12 +55,6 @@ const ActionSection = () => {
     await refetchDeposited();
     await allSlpTokenBalances.refetch();
     handChangeActionStatus(index);
-    setDepositItems((prev) => {
-      const cloneArr = [...prev];
-      cloneArr[index] = { ...cloneArr[index], value: '0', price: 0 };
-
-      return cloneArr;
-    });
 
     return transHash;
   };

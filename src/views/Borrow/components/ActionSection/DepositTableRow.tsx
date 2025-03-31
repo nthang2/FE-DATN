@@ -5,6 +5,7 @@ import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import { TBorrowItem } from '../../state/types';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { roundNumber } from 'src/utils/format';
+import { useDepositState } from '../../state/hooks';
 
 interface IProps {
   index: number;
@@ -20,8 +21,22 @@ const DepositTableRow = (props: IProps) => {
     onClick,
     actionStatus,
   } = props;
+  const [depositItems, setDepositItems] = useDepositState();
   const { asyncExecute, loading } = useAsyncExecute();
   const tokenInfo = findTokenInfoByToken(address);
+
+  const handleReset = () => {
+    setDepositItems(() => {
+      const cloneArr = depositItems.map((item) => {
+        if (item.address === address) {
+          return { ...item, value: '0', price: 0 };
+        }
+        return item;
+      });
+
+      return cloneArr;
+    });
+  };
 
   if (value === '0' || !value) {
     return null;
@@ -43,7 +58,12 @@ const DepositTableRow = (props: IProps) => {
         {actionStatus ? (
           <CheckCircleIcon fontSize="large" color="success" />
         ) : (
-          <ButtonLoading loading={loading} variant="contained" onClick={() => asyncExecute({ fn: onClick })} sx={{ minWidth: '100px' }}>
+          <ButtonLoading
+            loading={loading}
+            variant="contained"
+            onClick={() => asyncExecute({ fn: onClick, onSuccess: handleReset })}
+            sx={{ minWidth: '100px' }}
+          >
             Deposit
           </ButtonLoading>
         )}
