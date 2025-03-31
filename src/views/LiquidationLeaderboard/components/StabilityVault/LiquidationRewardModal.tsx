@@ -1,10 +1,9 @@
-import { Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Table, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Icon, TokenName } from 'crypto-token-icon';
-import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
-import { mapNameToInfoSolana, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import SkeletonTableBody from 'src/components/TableLoading/SkeletonTableBody';
 import { LiquidatorContract } from 'src/contracts/solana/contracts/LiquidatorContract';
-import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import useGetRewardList from 'src/hooks/useQueryHook/queryLiquidation/useGetRewardList';
+import LiquidationRewardRow from './LiquidationRewardRow';
 
 const tableHead = ['Token', 'Amount', 'Value', ''];
 
@@ -14,23 +13,15 @@ export type TLiquidationReward = {
   value: number;
 };
 
-interface IProps {
-  rewards: TLiquidationReward[];
-}
-
-const LiquidationRewardModal = (props: IProps) => {
-  const { rewards } = props;
+const LiquidationRewardModal = () => {
   const wallet = useWallet();
-  const { asyncExecute, loading } = useAsyncExecute();
+  const { data: rewards, isLoading: rewardLoading, refetch } = useGetRewardList();
 
-  const handleClaimReward = async (tokenName: string) => {
+  const handleClaimReward = async (tokenAddress: string) => {
     if (!wallet) return;
-
-    const collateral = mapNameToInfoSolana[tokenName as TSolanaToken].address;
     const contract = new LiquidatorContract(wallet);
-    const hash = await contract.claim(collateral);
-
-    return hash;
+    await contract.claim(tokenAddress);
+    await refetch();
   };
 
   return (
@@ -48,42 +39,11 @@ const LiquidationRewardModal = (props: IProps) => {
           </TableRow>
         </TableHead>
 
-        <TableBody>
-          {rewards.map((reward) => (
-            <TableRow key={reward.tokenName}>
-              <TableCell sx={{ alignItems: 'center' }}>
-                <Stack gap={1}>
-                  <Icon tokenName={reward.tokenName as TokenName} />
-                  <Typography variant="body1" fontWeight={700} color="primary">
-                    {reward.tokenName}
-                  </Typography>
-                </Stack>
-              </TableCell>
-
-              <TableCell sx={{ alignItems: 'center' }}>
-                <Typography variant="body1" fontWeight={700} color="primary">
-                  ${reward.amount}
-                </Typography>
-              </TableCell>
-
-              <TableCell sx={{ alignItems: 'center' }}>
-                <Typography variant="body1" fontWeight={700} color="primary">
-                  ${reward.value}
-                </Typography>
-              </TableCell>
-
-              <TableCell sx={{ alignItems: 'center' }} width="115px">
-                <ButtonLoading
-                  variant="contained"
-                  loading={loading}
-                  onClick={() => asyncExecute({ fn: () => handleClaimReward(reward.tokenName) })}
-                >
-                  Claim
-                </ButtonLoading>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
+        {rewardLoading ? (
+          <SkeletonTableBody cols={4} rows={3} />
+        ) : (
+          <LiquidationRewardRow data={rewards?.collaterals || []} handleClaim={handleClaimReward} />
+        )}
       </Table>
     </TableContainer>
   );

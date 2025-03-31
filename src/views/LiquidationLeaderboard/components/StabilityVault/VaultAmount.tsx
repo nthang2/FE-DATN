@@ -15,9 +15,9 @@ const VaultAmount = (props: IProps) => {
 
   return (
     <Typography variant="body1" color="primary">
-      {decimalFlood(amount, 3)} USDAI{' '}
+      {amount ? decimalFlood(amount, 3) : 0} USDAI{' '}
       <Typography component="span" variant="body1" color="info.main">
-        ${decimalFlood(usdaiPrice, 3)}
+        ${amount ? decimalFlood(usdaiPrice, 3) : 0}
       </Typography>
     </Typography>
   );

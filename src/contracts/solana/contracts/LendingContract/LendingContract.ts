@@ -23,6 +23,7 @@ import { BN as utilBN } from 'src/utils/index';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { CONTROLLER_SEED, collateral as defaultCollateral, DEPOSITORY_SEED, REDEEMABLE_MINT_SEED, RESERVE_ACCOUNT } from './constant';
+import { appStore, crossModeAtom } from 'src/states/state';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -147,7 +148,9 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     transaction.add(depositTransaction);
 
     const transactionHash = await this.sendTransaction(transaction);
-    await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey] });
+    await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
+    await queryClient.invalidateQueries({ queryKey: ['allTokensPrice'] });
+
     return transactionHash;
   }
 
@@ -163,7 +166,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       .accountsPartial(accountsPartial)
       .transaction();
     const transactionHash = await this.sendTransaction(transaction);
-    await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey] });
+    await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
+    await queryClient.invalidateQueries({ queryKey: ['allTokensPrice'] });
 
     return transactionHash;
   }
@@ -180,6 +184,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       .accountsPartial(accountsPartial)
       .transaction();
     const transactionHash = await this.sendTransaction(transaction);
+    await queryClient.invalidateQueries({ queryKey: ['allTokensPrice'] });
 
     return transactionHash;
   }
@@ -195,6 +200,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       .accountsPartial(accountsPartial)
       .transaction();
     const transactionHash = await this.sendTransaction(transaction);
+    await queryClient.invalidateQueries({ queryKey: ['allTokensPrice'] });
 
     return transactionHash;
   }

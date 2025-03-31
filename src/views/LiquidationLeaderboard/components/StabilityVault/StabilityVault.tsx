@@ -12,19 +12,6 @@ import StakeModal from './StakeModal';
 import UnstakeModal from './UnstakeModal';
 import useGetStaked from 'src/hooks/useQueryHook/queryLiquidation/useGetStaked';
 
-const fakeDataTable = [
-  {
-    tokenName: TokenName.SOL,
-    amount: 55.59,
-    value: 27.74,
-  },
-  {
-    tokenName: TokenName.ETH,
-    amount: 65.52,
-    value: 28.14,
-  },
-];
-
 const StabilityVault = () => {
   const { address } = useSummarySolanaConnect();
   const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
@@ -34,7 +21,7 @@ const StabilityVault = () => {
   const handleOpenModalClaim = () => {
     modalFunction({
       type: 'openModal',
-      data: { content: <LiquidationRewardModal rewards={fakeDataTable} />, title: `Liquidation Rewards`, modalProps: { maxWidth: 'sm' } },
+      data: { content: <LiquidationRewardModal />, title: `Liquidation Rewards`, modalProps: { maxWidth: 'sm' } },
     });
   };
 
@@ -82,7 +69,7 @@ const StabilityVault = () => {
 
         <Stack justifyContent="space-between">
           <Typography variant="body1">Staked</Typography>
-          <VaultAmount amount={stakedAmount} />
+          <VaultAmount amount={stakedAmount || 0} />
         </Stack>
 
         <Stack justifyContent="space-between">

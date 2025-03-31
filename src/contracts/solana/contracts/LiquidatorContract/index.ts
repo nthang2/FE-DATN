@@ -7,6 +7,9 @@ import { idlLiquidator, IdlLiquidator } from '../../idl/liquidator/liquidator';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { CONTROLLER_SEED, LIQUIDATOR_POOL_NAMESPACE, LP_PROVIDER_NAMESPACE, REDEEMABLE_MINT_SEED } from './constant';
 import { queryClient } from 'src/layout/Layout';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { TokenName } from 'crypto-token-icon';
+import { getDecimalToken } from 'src/utils';
 
 export class LiquidatorContract extends SolanaContractAbstract<IdlLiquidator> {
   constructor(wallet: WalletContextState) {
@@ -56,8 +59,10 @@ export class LiquidatorContract extends SolanaContractAbstract<IdlLiquidator> {
 
   async deposit(depositAmount: string) {
     const accountsPartial = this.getAccountsPartial();
+    const decimal = getDecimalToken(mapNameToInfoSolana[TokenName.USDAI].address);
+
     const transaction = await this.program.methods
-      .depositLiquidatorPool(new BN(depositAmount))
+      .depositLiquidatorPool(new BN(Number(depositAmount) * decimal))
       .accountsPartial({
         user: this.provider.publicKey,
         ...accountsPartial,
@@ -70,8 +75,10 @@ export class LiquidatorContract extends SolanaContractAbstract<IdlLiquidator> {
 
   async withdraw(withdraw: string) {
     const accountsPartial = this.getAccountsPartial();
+    const decimal = getDecimalToken(mapNameToInfoSolana[TokenName.USDAI].address);
+
     const transaction = await this.program.methods
-      .withdrawLiquidityPool(new BN(withdraw))
+      .withdrawLiquidityPool(new BN(Number(withdraw) * decimal))
       .accountsPartial({
         user: this.provider.publicKey,
         ...accountsPartial,

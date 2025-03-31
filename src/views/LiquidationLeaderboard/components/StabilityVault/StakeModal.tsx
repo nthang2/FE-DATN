@@ -24,7 +24,6 @@ const StakeModal = () => {
     if (!wallet) return;
     const contract = new LiquidatorContract(wallet);
     const hash = await contract.deposit(input);
-    console.log('hash', hash);
 
     return hash;
   };

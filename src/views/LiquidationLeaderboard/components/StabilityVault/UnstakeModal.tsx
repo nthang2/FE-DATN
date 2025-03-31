@@ -6,18 +6,26 @@ import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { LiquidatorContract } from 'src/contracts/solana/contracts/LiquidatorContract';
+import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import useGetStaked from 'src/hooks/useQueryHook/queryLiquidation/useGetStaked';
+import { formatNumber } from 'src/utils/format';
 
 const UnstakeModal = () => {
   const wallet = useWallet();
   const [input, setInput] = useState('');
+  const { stakedAmount } = useGetStaked();
+  const { asyncExecute, loading } = useAsyncExecute();
 
   const handleMax = () => {};
-  const handleDeposit = async () => {
+  const handleWithdraw = () => {
     if (!wallet) return;
 
-    const contract = new LiquidatorContract(wallet);
-    const hash = await contract.withdraw(input);
-    console.log('hash', hash);
+    asyncExecute({
+      fn: async () => {
+        const contract = new LiquidatorContract(wallet);
+        await contract.withdraw(input);
+      },
+    });
   };
 
   return (
@@ -44,7 +52,7 @@ const UnstakeModal = () => {
           status={['success']}
           value={
             <Typography variant="body3" sx={{ color: 'text.secondary' }}>
-              Max: 0
+              Max: {stakedAmount}
             </Typography>
           }
         />
@@ -81,6 +89,7 @@ const UnstakeModal = () => {
               variant="filled"
               fullWidth
               focused={true}
+              placeholder="0"
               sx={{
                 '& .MuiOutlinedInput-root': {
                   backgroundColor: 'background.secondary', // Đổi màu nền
@@ -116,7 +125,7 @@ const UnstakeModal = () => {
               helperText={undefined}
             />
             <Typography variant="body3" sx={{ color: 'text.secondary' }}>
-              {/* {formatNumber(valueInUSD, { fractionDigits: 2, suffix: '$' })} */}0
+              {formatNumber(stakedAmount, { fractionDigits: 2, suffix: '$' })}
             </Typography>
           </Box>
         </Box>
@@ -127,7 +136,7 @@ const UnstakeModal = () => {
         </Box>
       </Box>
 
-      <ButtonLoading sx={{ mt: 4 }} variant="contained" loading={false} fullWidth onClick={handleDeposit}>
+      <ButtonLoading sx={{ mt: 4 }} variant="contained" loading={loading} fullWidth onClick={handleWithdraw}>
         Confirm
       </ButtonLoading>
     </Box>
