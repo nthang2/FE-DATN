@@ -28,8 +28,13 @@ const ActionSection = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitted]);
 
+  const initBorrowItems = useMemo(() => {
+    return borrowState;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSubmitted]);
+
   const [actionStatus, setActionStatus] = useState<boolean[]>(() => {
-    const result = [...initDepositItems, borrowState].filter((item) => !!item.value && item.value !== '0');
+    const result = [...initDepositItems, initBorrowItems].filter((item) => !!item.value && item.value !== '0');
     return Array(result.length).fill(false);
   });
 
@@ -89,7 +94,7 @@ const ActionSection = () => {
             <BorrowTableRow
               actionStatus={actionStatus[actionStatus.length - 1]}
               index={actionStatus.length - 1}
-              borrowItem={borrowState}
+              borrowItem={initBorrowItems}
               onClick={handleBorrow}
             />
           </TableBody>

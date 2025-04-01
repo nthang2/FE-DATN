@@ -1119,6 +1119,144 @@ export type IdlLending = {
       ];
     },
     {
+      name: 'liquidateType0WithLiquidatorPool';
+      discriminator: [154, 197, 42, 237, 244, 99, 159, 170];
+      accounts: [
+        {
+          name: 'liquidator';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+          };
+        },
+        {
+          name: 'user';
+        },
+        {
+          name: 'loan';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'liquidatorStablecoinAccount';
+          writable: true;
+        },
+        {
+          name: 'liquidatorCollateralAccount';
+          writable: true;
+        },
+        {
+          name: 'poolStablecoinAccount';
+          writable: true;
+        },
+        {
+          name: 'poolCollateralAccount';
+          writable: true;
+        },
+        {
+          name: 'depositoryVault';
+          writable: true;
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+        },
+        {
+          name: 'stablecoinMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateral';
+          writable: true;
+        },
+        {
+          name: 'reserve';
+          writable: true;
+        },
+        {
+          name: 'oracle';
+        },
+        {
+          name: 'stabilityPool';
+          writable: true;
+        },
+        {
+          name: 'liquidatorPoolController';
+        },
+        {
+          name: 'liquidatorPoolProgram';
+          address: 'HZcLmwCeKFfuvwihVNa7XJRiWXHm3PXg3vZ3rdcrA5w3';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'repayAmount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
       name: 'liquidateType1';
       discriminator: [240, 134, 35, 212, 30, 119, 221, 35];
       accounts: [
@@ -2858,6 +2996,16 @@ export type IdlLending = {
       code: 6097;
       name: 'collateralTotalNotZero';
       msg: 'Cannot change collateral because of remaining deposit amount.';
+    },
+    {
+      code: 6098;
+      name: 'stabilityPoolSupplyCapExceeded';
+      msg: 'The supplied stablecoin in stability pool exceeds its supply cap';
+    },
+    {
+      code: 6099;
+      name: 'invalidLiquidator';
+      msg: 'The liquidator is not whitelisted';
     }
   ];
   types: [
@@ -4775,6 +4923,144 @@ export const idlLending: IdlLending = {
       ],
     },
     {
+      name: 'liquidateType0WithLiquidatorPool',
+      discriminator: [154, 197, 42, 237, 244, 99, 159, 170],
+      accounts: [
+        {
+          name: 'liquidator',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+          },
+        },
+        {
+          name: 'user',
+        },
+        {
+          name: 'loan',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'liquidatorStablecoinAccount',
+          writable: true,
+        },
+        {
+          name: 'liquidatorCollateralAccount',
+          writable: true,
+        },
+        {
+          name: 'poolStablecoinAccount',
+          writable: true,
+        },
+        {
+          name: 'poolCollateralAccount',
+          writable: true,
+        },
+        {
+          name: 'depositoryVault',
+          writable: true,
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+        },
+        {
+          name: 'stablecoinMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateral',
+          writable: true,
+        },
+        {
+          name: 'reserve',
+          writable: true,
+        },
+        {
+          name: 'oracle',
+        },
+        {
+          name: 'stabilityPool',
+          writable: true,
+        },
+        {
+          name: 'liquidatorPoolController',
+        },
+        {
+          name: 'liquidatorPoolProgram',
+          address: 'HZcLmwCeKFfuvwihVNa7XJRiWXHm3PXg3vZ3rdcrA5w3',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'repayAmount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
       name: 'liquidateType1',
       discriminator: [240, 134, 35, 212, 30, 119, 221, 35],
       accounts: [
@@ -6154,6 +6440,16 @@ export const idlLending: IdlLending = {
       code: 6097,
       name: 'collateralTotalNotZero',
       msg: 'Cannot change collateral because of remaining deposit amount.',
+    },
+    {
+      code: 6098,
+      name: 'stabilityPoolSupplyCapExceeded',
+      msg: 'The supplied stablecoin in stability pool exceeds its supply cap',
+    },
+    {
+      code: 6099,
+      name: 'invalidLiquidator',
+      msg: 'The liquidator is not whitelisted',
     },
   ],
   types: [

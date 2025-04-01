@@ -156,7 +156,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
     const transactionHash = await this.sendTransaction(transaction);
     await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
-    await queryClient.invalidateQueries({ queryKey: ['allTokensPrice'] });
+    await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
   }
@@ -170,7 +170,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const transaction = await this.program.methods.type1DepositoryMint(usdaiAmount).accountsPartial(accountsPartial).transaction();
     const transactionHash = await this.sendTransaction(transaction);
     await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
-    await queryClient.invalidateQueries({ queryKey: ['allTokensPrice'] });
+    await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
   }
@@ -182,7 +182,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
     const transaction = await this.program.methods.type1DepositoryBurn(usdaiAmount).accountsPartial(accountsPartial).transaction();
     const transactionHash = await this.sendTransaction(transaction);
-    await queryClient.invalidateQueries({ queryKey: ['allTokensPrice'] });
+    await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
   }
@@ -194,7 +194,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
     const transaction = await this.program.methods.type1DepositoryWithdraw(collateralAmount).accountsPartial(accountsPartial).transaction();
     const transactionHash = await this.sendTransaction(transaction);
-    await queryClient.invalidateQueries({ queryKey: ['allTokensPrice'] });
+    await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
   }

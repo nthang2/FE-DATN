@@ -1,9 +1,10 @@
-import { Table, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import SkeletonTableBody from 'src/components/TableLoading/SkeletonTableBody';
 import { LiquidatorContract } from 'src/contracts/solana/contracts/LiquidatorContract';
 import useGetRewardList from 'src/hooks/useQueryHook/queryLiquidation/useGetRewardList';
 import LiquidationRewardRow from './LiquidationRewardRow';
+import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 
 const tableHead = ['Token', 'Amount', 'Value', ''];
 
@@ -42,7 +43,11 @@ const LiquidationRewardModal = () => {
         {rewardLoading ? (
           <SkeletonTableBody cols={4} rows={3} />
         ) : (
-          <LiquidationRewardRow data={rewards?.collaterals || []} handleClaim={handleClaimReward} />
+          <TableBody>
+            {Object.keys(listTokenAvailable).map((tokenName) => {
+              return <LiquidationRewardRow tokenName={tokenName} data={rewards?.collaterals || []} handleClaim={handleClaimReward} />;
+            })}
+          </TableBody>
         )}
       </Table>
     </TableContainer>

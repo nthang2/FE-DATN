@@ -10,6 +10,7 @@ import { queryClient } from 'src/layout/Layout';
 import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { TokenName } from 'crypto-token-icon';
 import { getDecimalToken } from 'src/utils';
+import { LendingContract } from '../LendingContract/LendingContract';
 
 export class LiquidatorContract extends SolanaContractAbstract<IdlLiquidator> {
   constructor(wallet: WalletContextState) {
@@ -29,7 +30,9 @@ export class LiquidatorContract extends SolanaContractAbstract<IdlLiquidator> {
   }
 
   getAccountsPartial() {
-    const redeemableMint = this.getPda(REDEEMABLE_MINT_SEED);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const lendingContract = this.wallet ? new LendingContract(this.wallet as any) : null;
+    const redeemableMint = lendingContract ? lendingContract?.getPda(REDEEMABLE_MINT_SEED) : this.getPda(REDEEMABLE_MINT_SEED);
     const controller = this.getPda(CONTROLLER_SEED);
     const pool = this.getPda(LIQUIDATOR_POOL_NAMESPACE);
     const lpAccount = this.getPda(LP_PROVIDER_NAMESPACE, pool, this.provider.publicKey);
@@ -54,6 +57,7 @@ export class LiquidatorContract extends SolanaContractAbstract<IdlLiquidator> {
       controller,
       poolStablecoinAccount,
       lpAccount,
+      stablecoinMint: redeemableMint,
     };
   }
 
@@ -70,6 +74,8 @@ export class LiquidatorContract extends SolanaContractAbstract<IdlLiquidator> {
       .transaction();
 
     const transactionHash = await this.sendTransaction(transaction);
+    await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
+
     return transactionHash;
   }
 
@@ -86,6 +92,8 @@ export class LiquidatorContract extends SolanaContractAbstract<IdlLiquidator> {
       .transaction();
 
     const transactionHash = await this.sendTransaction(transaction);
+    await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
+
     return transactionHash;
   }
 
@@ -107,6 +115,8 @@ export class LiquidatorContract extends SolanaContractAbstract<IdlLiquidator> {
       .transaction();
 
     const transactionHash = await this.sendTransaction(transaction);
+    await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
+
     return transactionHash;
   }
 

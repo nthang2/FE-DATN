@@ -13,7 +13,6 @@ import { WalletContextState } from '@solana/wallet-adapter-react';
 import { PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import { toast } from 'react-toastify';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
 import { solTokenSolana } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { queryClient } from 'src/layout/Layout';
@@ -46,7 +45,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const controller = this.getPda(CONTROLLER_SEED);
     const depository = this.getPda(DEPOSITORY_SEED, collateral);
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
-    const oracle = findTokenInfoByToken(tokenAddress)?.oracle;
+    // const oracle = findTokenInfoByToken(tokenAddress)?.oracle;
     const reserveTokenAccount = getAssociatedTokenAddressSync(redeemable_mint, RESERVE_ACCOUNT, true);
 
     return {
@@ -58,7 +57,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       controller: controller,
       depository: depository,
       depositoryVault: depositoryVault,
-      oracle: oracle || ctrAdsSolana.oracle,
+      oracle: ctrAdsSolana.oracle,
       loanAccount: pdAddress,
       reserve: RESERVE_ACCOUNT,
       reserveTokenAccount: reserveTokenAccount,
@@ -149,7 +148,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
 
     const transactionHash = await this.sendTransaction(transaction);
     await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
-    await queryClient.invalidateQueries({ queryKey: ['allTokensPrice'] });
+    await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
   }
@@ -167,7 +166,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       .transaction();
     const transactionHash = await this.sendTransaction(transaction);
     await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
-    await queryClient.invalidateQueries({ queryKey: ['allTokensPrice'] });
+    await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
   }
@@ -184,7 +183,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       .accountsPartial(accountsPartial)
       .transaction();
     const transactionHash = await this.sendTransaction(transaction);
-    await queryClient.invalidateQueries({ queryKey: ['allTokensPrice'] });
+    await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
   }
@@ -200,7 +199,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       .accountsPartial(accountsPartial)
       .transaction();
     const transactionHash = await this.sendTransaction(transaction);
-    await queryClient.invalidateQueries({ queryKey: ['allTokensPrice'] });
+    await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
   }
