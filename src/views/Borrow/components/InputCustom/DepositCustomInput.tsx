@@ -23,7 +23,7 @@ export default function DepositCustomInput(props: Props) {
   const [depositItems] = useDepositState();
 
   const options = Object.values(listTokenAvailable).map((item) => item.address);
-  const inputValue = inputProps?.value ? roundNumber(Number(inputProps.value), 3) : undefined;
+  const inputValue = inputProps?.value ? roundNumber(Number(inputProps.value), 8) : undefined;
 
   return (
     <Box mb={1}>

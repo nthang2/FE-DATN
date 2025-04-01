@@ -47,7 +47,7 @@ const BorrowButton = () => {
     const totalMint = yourBorrowByAddress + borrowState.price;
     const borrowError = !borrowState.error;
     const depositError = depositItems.some((item) => Boolean(item.error));
-    const formValue = Number(borrowState.value) > 0 || Number(depositItems[0].value) > 0;
+    const formValue = Number(borrowState.value) > 0 || depositItems.some((item) => Number(item.value) > 0);
 
     return borrowError && formValue && !depositError && totalDeposit > 0 && totalMint > 0;
   }, [borrowState, crossMode, depositItems, depositedByAddress, totalDepositValue, yourBorrowByAddress]);

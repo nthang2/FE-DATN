@@ -2,16 +2,16 @@ import { Box, Stack, Typography } from '@mui/material';
 import { Icon, TokenName } from 'crypto-token-icon';
 import { useEffect, useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
+import { useCrossModeState } from 'src/states/hooks';
+import { BN, regexConfigValue } from 'src/utils';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
 import BorrowPreview from './BorrowPreview';
-import { regexConfigValue } from 'src/utils';
-import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
-import { useCrossModeState } from 'src/states/hooks';
-import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
@@ -37,10 +37,10 @@ const BorrowSection = () => {
   const isShowYourBorrow = !!mintedValueUsd && Number(mintedValueUsd) > 0;
 
   const handleChangeInput = (value: string) => {
-    const price = convertToUsd(borrowState.address, value, listPrice);
+    const price = convertToUsd(borrowState.address, BN(value).toFixed(8), listPrice);
     const borrowPercent = ((price + yourBorrowByAddress) / totalDepositValue) * 100;
     const error = validateBorrowItem(Number(value), borrowPercent, maxLtv);
-    const inputValue = regexConfigValue(value);
+    const inputValue = regexConfigValue(BN(value).toFixed(8));
 
     setBorrowState({
       ...borrowState,
@@ -59,6 +59,7 @@ const BorrowSection = () => {
       ...borrowState,
       value: borrowAmount ? borrowAmount.toString() : '0',
       price: minValue,
+      error: undefined,
     });
   };
 

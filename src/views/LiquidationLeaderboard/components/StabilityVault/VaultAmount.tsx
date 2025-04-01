@@ -2,6 +2,7 @@ import { Typography } from '@mui/material';
 import { TokenName } from 'crypto-token-icon';
 import React from 'react';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import { decimalFlood } from 'src/utils/format';
 
 interface IProps {
   amount: number;
@@ -14,9 +15,9 @@ const VaultAmount = (props: IProps) => {
 
   return (
     <Typography variant="body1" color="primary">
-      {amount.toFixed(3)} USDAI{' '}
+      {amount ? decimalFlood(amount, 3) : 0} USDAI{' '}
       <Typography component="span" variant="body1" color="info.main">
-        ${usdaiPrice.toFixed(3)}
+        ${amount ? decimalFlood(usdaiPrice, 3) : 0}
       </Typography>
     </Typography>
   );

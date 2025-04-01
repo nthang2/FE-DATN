@@ -50,7 +50,7 @@ const DepositSection = () => {
   );
 
   const handleRemoveItem = (index: number) => {
-    if (depositItems.length === 1) return;
+    if (depositItems.length === 1 || isSubmitted) return;
     const newArr = [...depositItems];
     newArr.splice(index, 1);
 

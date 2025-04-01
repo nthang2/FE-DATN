@@ -5,6 +5,8 @@ import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapN
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import { formatNumber } from 'src/utils/format';
 import { TBorrowItem } from '../../state/types';
+import { BN } from 'src/utils';
+import { useBorrowState } from '../../state/hooks';
 
 interface IProps {
   index: number;
@@ -20,8 +22,18 @@ const BorrowTableRow = (props: IProps) => {
     onClick,
     actionStatus,
   } = props;
+  const [borrowState, setBorrowState] = useBorrowState();
   const { asyncExecute, loading } = useAsyncExecute();
+
   const tokenInfo = findTokenInfoByToken(address);
+
+  const resetBorrow = () => {
+    setBorrowState({ ...borrowState, value: '0', price: 0 });
+  };
+
+  if (BN(value).isLessThanOrEqualTo(0)) {
+    return null;
+  }
 
   return (
     <TableRow sx={{ padding: 3 }}>
@@ -39,7 +51,12 @@ const BorrowTableRow = (props: IProps) => {
         {actionStatus ? (
           <CheckCircleIcon fontSize="large" color="success" />
         ) : (
-          <ButtonLoading loading={loading} variant="contained" onClick={() => asyncExecute({ fn: onClick })} sx={{ minWidth: '100px' }}>
+          <ButtonLoading
+            loading={loading}
+            variant="contained"
+            onClick={() => asyncExecute({ fn: onClick, onSuccess: resetBorrow })}
+            sx={{ minWidth: '100px' }}
+          >
             Mint
           </ButtonLoading>
         )}

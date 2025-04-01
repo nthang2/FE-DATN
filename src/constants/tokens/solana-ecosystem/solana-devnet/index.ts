@@ -11,7 +11,7 @@ export const usdcDevSolanaDevnet = new SolanaDevnetTokenInfo({
 });
 
 export const usdaiSolanaDevnet = new SolanaDevnetTokenInfo({
-  address: 'EKXbDuRg1H6GoEvae56S27uYmYqMf3RiST3azaAYvQbi',
+  address: '2PGLV5fBUJL9WvxB1MT7RH6DmDLX7N8poahBfXUm6BnT',
   decimals: 6,
   symbol: TokenName.USDAI,
   prettyName: 'USDAI',

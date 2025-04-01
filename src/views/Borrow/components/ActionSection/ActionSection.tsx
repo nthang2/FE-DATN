@@ -15,7 +15,7 @@ import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/
 const ActionSection = () => {
   const wallet = useWallet();
   const [borrowState] = useBorrowState();
-  const [depositItems, setDepositItems] = useDepositState();
+  const [depositItems] = useDepositState();
   const [isSubmitted, setIsSubmitted] = useBorrowSubmitState();
   const { refetch: refetchDeposited } = useQueryDepositValue();
   const { maxBorrowPrice } = useInvestedValue();
@@ -28,8 +28,13 @@ const ActionSection = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitted]);
 
+  const initBorrowItems = useMemo(() => {
+    return borrowState;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSubmitted]);
+
   const [actionStatus, setActionStatus] = useState<boolean[]>(() => {
-    const result = [...initDepositItems, borrowState].filter((item) => !!item.value && item.value !== '0');
+    const result = [...initDepositItems, initBorrowItems].filter((item) => !!item.value && item.value !== '0');
     return Array(result.length).fill(false);
   });
 
@@ -55,12 +60,6 @@ const ActionSection = () => {
     await refetchDeposited();
     await allSlpTokenBalances.refetch();
     handChangeActionStatus(index);
-    setDepositItems((prev) => {
-      const cloneArr = [...prev];
-      cloneArr[index] = { ...cloneArr[index], value: '0', price: 0 };
-
-      return cloneArr;
-    });
 
     return transHash;
   };
@@ -95,7 +94,7 @@ const ActionSection = () => {
             <BorrowTableRow
               actionStatus={actionStatus[actionStatus.length - 1]}
               index={actionStatus.length - 1}
-              borrowItem={borrowState}
+              borrowItem={initBorrowItems}
               onClick={handleBorrow}
             />
           </TableBody>
