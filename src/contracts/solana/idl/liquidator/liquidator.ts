@@ -254,6 +254,7 @@ export type IdlLiquidator = {
         },
         {
           name: 'controller';
+          writable: true;
           pda: {
             seeds: [
               {
@@ -1095,6 +1096,7 @@ export const idlLiquidator: IdlLiquidator = {
         },
         {
           name: 'controller',
+          writable: true,
           pda: {
             seeds: [
               {
