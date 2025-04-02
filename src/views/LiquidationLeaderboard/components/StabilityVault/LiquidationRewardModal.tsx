@@ -45,7 +45,14 @@ const LiquidationRewardModal = () => {
         ) : (
           <TableBody>
             {Object.keys(listTokenAvailable).map((tokenName) => {
-              return <LiquidationRewardRow tokenName={tokenName} data={rewards?.collaterals || []} handleClaim={handleClaimReward} />;
+              return (
+                <LiquidationRewardRow
+                  key={tokenName}
+                  tokenName={tokenName}
+                  data={rewards?.collaterals || []}
+                  handleClaim={handleClaimReward}
+                />
+              );
             })}
           </TableBody>
         )}

@@ -19,7 +19,10 @@ const StakeModal = () => {
 
   const [input, setInput] = useState('');
 
-  const handleMax = () => {};
+  const handleMax = () => {
+    setInput(balance.toString());
+  };
+
   const handleDeposit = async () => {
     if (!wallet) return;
     const contract = new LiquidatorContract(wallet);
