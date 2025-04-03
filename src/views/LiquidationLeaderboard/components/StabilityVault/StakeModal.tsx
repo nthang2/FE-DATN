@@ -5,30 +5,46 @@ import { useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { LiquidatorContract } from 'src/contracts/solana/contracts/LiquidatorContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useGetVaultInfo from 'src/hooks/useQueryHook/queryLiquidation/useGetVaultInfo';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { formatNumber } from 'src/utils/format';
+import { convertToUsd } from 'src/views/Borrow/utils';
 
 const StakeModal = () => {
   const wallet = useWallet();
   const { address } = useSummarySolanaConnect();
   const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
   const { asyncExecute, loading } = useAsyncExecute();
-
+  const { refetch: refetchVaultInfo } = useGetVaultInfo();
+  const { data: priceList } = useQueryAllTokensPrice();
+  const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
   const [input, setInput] = useState('');
+
+  const inputInUsd = convertToUsd(usdaiInfo.address, input, priceList);
 
   const handleMax = () => {
     setInput(balance.toString());
   };
 
-  const handleDeposit = async () => {
-    if (!wallet) return;
-    const contract = new LiquidatorContract(wallet);
-    const hash = await contract.deposit(input);
+  const handleDeposit = () => {
+    asyncExecute({
+      fn: async () => {
+        if (!wallet) return;
+        const contract = new LiquidatorContract(wallet);
+        const hash = await contract.deposit(input);
 
-    return hash;
+        return hash;
+      },
+      onSuccess: async () => {
+        setInput('0');
+        await refetchVaultInfo();
+      },
+    });
   };
 
   return (
@@ -55,7 +71,7 @@ const StakeModal = () => {
           status={['success']}
           value={
             <Typography variant="body3" sx={{ color: 'text.secondary' }}>
-              Max: {balance.toFixed(2)}
+              Max: {balance.toFixed(6)}
             </Typography>
           }
         />
@@ -122,12 +138,13 @@ const StakeModal = () => {
                   backgroundColor: 'background.secondary',
                 },
               }}
+              placeholder="0"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               helperText={undefined}
             />
             <Typography variant="body3" sx={{ color: 'text.secondary' }}>
-              {formatNumber(balance, { fractionDigits: 2, suffix: '$' })}
+              {formatNumber(inputInUsd, { fractionDigits: 6, suffix: '$' })}
             </Typography>
           </Box>
         </Box>
@@ -138,7 +155,7 @@ const StakeModal = () => {
         </Box>
       </Box>
 
-      <ButtonLoading sx={{ mt: 4 }} variant="contained" loading={loading} fullWidth onClick={() => asyncExecute({ fn: handleDeposit })}>
+      <ButtonLoading sx={{ mt: 4 }} variant="contained" loading={loading} fullWidth onClick={handleDeposit}>
         Confirm
       </ButtonLoading>
     </Box>

@@ -10,12 +10,13 @@ import { useModalFunction } from 'src/states/modal/hooks';
 import LiquidationRewardModal from './LiquidationRewardModal';
 import StakeModal from './StakeModal';
 import UnstakeModal from './UnstakeModal';
-import useGetStaked from 'src/hooks/useQueryHook/queryLiquidation/useGetStaked';
+import useGetVaultInfo from 'src/hooks/useQueryHook/queryLiquidation/useGetVaultInfo';
+import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 
 const StabilityVault = () => {
   const { address } = useSummarySolanaConnect();
   const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
-  const { stakedAmount } = useGetStaked();
+  const { data: vaultInfo, status: vaultStatus } = useGetVaultInfo();
   const modalFunction = useModalFunction();
 
   const handleOpenModalClaim = () => {
@@ -69,7 +70,7 @@ const StabilityVault = () => {
 
         <Stack justifyContent="space-between">
           <Typography variant="body1">Staked</Typography>
-          <VaultAmount amount={stakedAmount || 0} />
+          <ValueWithStatus status={[vaultStatus]} value={<VaultAmount amount={vaultInfo?.deposit || 0} />} />
         </Stack>
 
         <Stack justifyContent="space-between">

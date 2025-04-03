@@ -1,4 +1,4 @@
-import { BACKEND_URL, BACKEND_URL_CROSS_MODE } from './baseUrl';
+import { BACKEND_URL } from './baseUrl';
 import { TLiquidationLeaderboardParams } from './HandleApi/getLeaderboard/type';
 
 export const apiUrl = {
@@ -21,5 +21,5 @@ export const apiUrl = {
   },
   getMyPortfolioInfo: (userAddress: string) => `${BACKEND_URL}/lending/users/${userAddress}`,
   getMyPortfolioCrossModeInfo: (userAddress: string) => `${BACKEND_URL}/lending/users/${userAddress}/cross-mode`,
-  getLiquidatorRewardList: (userAddress: string) => `${BACKEND_URL_CROSS_MODE}/liquidator-pool/users/${userAddress}`,
+  getLiquidatorRewardList: (userAddress: string) => `${BACKEND_URL}/liquidator-pool/users/${userAddress}`,
 };

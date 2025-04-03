@@ -1,22 +1,37 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Icon, TokenName } from 'crypto-token-icon';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { LiquidatorContract } from 'src/contracts/solana/contracts/LiquidatorContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
-import useGetStaked from 'src/hooks/useQueryHook/queryLiquidation/useGetStaked';
+import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useGetVaultInfo from 'src/hooks/useQueryHook/queryLiquidation/useGetVaultInfo';
+import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 
 const UnstakeModal = () => {
   const wallet = useWallet();
   const [input, setInput] = useState('');
-  const { stakedAmount } = useGetStaked();
   const { asyncExecute, loading } = useAsyncExecute();
+  const { data: vaultInfo, status: vaultStatus, refetch: refetchVaultInfo } = useGetVaultInfo();
+  const { data: priceList, status: priceStatus } = useQueryAllTokensPrice();
 
-  const handleMax = () => {};
+  const maxWithdrawAbleUsd = useMemo(() => {
+    if (!vaultInfo) return 0;
+    if (!priceList) return vaultInfo.maxWithdrawable;
+    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
+
+    return BN(vaultInfo.maxWithdrawable).multipliedBy(priceList[usdaiInfo.address]?.price || 1);
+  }, [vaultInfo, priceList]);
+
+  const handleMax = () => {
+    setInput(vaultInfo?.maxWithdrawable.toString() || '0');
+  };
+
   const handleWithdraw = () => {
     if (!wallet) return;
 
@@ -24,6 +39,10 @@ const UnstakeModal = () => {
       fn: async () => {
         const contract = new LiquidatorContract(wallet);
         await contract.withdraw(input);
+      },
+      onSuccess: async () => {
+        setInput('0');
+        await refetchVaultInfo();
       },
     });
   };
@@ -49,10 +68,10 @@ const UnstakeModal = () => {
           Amount
         </Typography>
         <ValueWithStatus
-          status={['success']}
+          status={[vaultStatus]}
           value={
             <Typography variant="body3" sx={{ color: 'text.secondary' }}>
-              Max: {stakedAmount}
+              Max: {vaultInfo?.maxWithdrawable || 0}
             </Typography>
           }
         />
@@ -124,9 +143,14 @@ const UnstakeModal = () => {
               onChange={(e) => setInput(e.target.value)}
               helperText={undefined}
             />
-            <Typography variant="body3" sx={{ color: 'text.secondary' }}>
-              {formatNumber(stakedAmount, { fractionDigits: 2, suffix: '$' })}
-            </Typography>
+            <ValueWithStatus
+              status={[vaultStatus, priceStatus]}
+              value={
+                <Typography variant="body3" sx={{ color: 'text.secondary' }}>
+                  {formatNumber(maxWithdrawAbleUsd, { fractionDigits: 2, suffix: '$' })}
+                </Typography>
+              }
+            />
           </Box>
         </Box>
         <Box sx={{ alignItems: 'center', gap: 1.5, height: '100%', display: 'flex' }}>

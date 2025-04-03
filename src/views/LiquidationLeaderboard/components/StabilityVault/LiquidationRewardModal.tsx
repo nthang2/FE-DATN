@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typog
 import { useWallet } from '@solana/wallet-adapter-react';
 import SkeletonTableBody from 'src/components/TableLoading/SkeletonTableBody';
 import { LiquidatorContract } from 'src/contracts/solana/contracts/LiquidatorContract';
-import useGetRewardList from 'src/hooks/useQueryHook/queryLiquidation/useGetRewardList';
+import useGetVaultInfo from 'src/hooks/useQueryHook/queryLiquidation/useGetVaultInfo';
 import LiquidationRewardRow from './LiquidationRewardRow';
 import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 
@@ -16,7 +16,7 @@ export type TLiquidationReward = {
 
 const LiquidationRewardModal = () => {
   const wallet = useWallet();
-  const { data: rewards, isLoading: rewardLoading, refetch } = useGetRewardList();
+  const { data: rewards, isLoading: rewardLoading, refetch } = useGetVaultInfo();
 
   const handleClaimReward = async (tokenAddress: string) => {
     if (!wallet) return;
