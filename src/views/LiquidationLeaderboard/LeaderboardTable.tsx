@@ -230,7 +230,7 @@ export default function LeaderboardTable() {
                       {formatNumber(row.liquidationPrice, { fractionDigits: 6, prefix: '$' })}
                     </Typography>
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell align="right" sx={{ minWidth: '112px' }}>
                     <Typography sx={{ color: checkStatus(row.healthFactor).color }}>{checkStatus(row.healthFactor).text}</Typography>
                   </TableCell>
                 </TableRow>
