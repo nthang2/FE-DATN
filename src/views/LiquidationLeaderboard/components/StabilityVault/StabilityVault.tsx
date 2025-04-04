@@ -72,7 +72,11 @@ const StabilityVault = () => {
 
         <Stack justifyContent="space-between">
           <Typography variant="body1">Staked</Typography>
-          <ValueWithStatus status={[vaultStatus]} value={<VaultAmount amount={vaultInfo?.deposit || 0} />} />
+          {address ? (
+            <ValueWithStatus status={[vaultStatus]} value={<VaultAmount amount={vaultInfo?.deposit || 0} />} />
+          ) : (
+            <VaultAmount amount={0} />
+          )}
         </Stack>
 
         <Stack justifyContent="space-between">
