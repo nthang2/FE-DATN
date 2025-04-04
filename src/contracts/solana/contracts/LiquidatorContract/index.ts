@@ -123,15 +123,14 @@ export class LiquidatorContract extends SolanaContractAbstract<IdlLiquidator> {
   async getAccountStaked(address: PublicKey) {
     return await queryClient.ensureQueryData({
       queryKey: ['AccountStaked', address],
-      queryFn: async () => await this.program.account.lpProvider.fetch(address),
+      queryFn: async () => await this.program.account.liquidatorPool.fetch(address),
     });
   }
 
-  async getStaked() {
+  async getTotalStaked() {
     const pool = this.getPda(LIQUIDATOR_POOL_NAMESPACE);
-    const lpAccount = this.getPda(LP_PROVIDER_NAMESPACE, pool, this.provider.publicKey);
+    const account = await this.getAccountStaked(pool);
 
-    const account = await this.getAccountStaked(lpAccount);
     return account.supply.toNumber();
   }
 }

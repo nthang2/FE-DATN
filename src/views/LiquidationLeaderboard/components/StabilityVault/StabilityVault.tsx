@@ -12,11 +12,13 @@ import StakeModal from './StakeModal';
 import UnstakeModal from './UnstakeModal';
 import useGetVaultInfo from 'src/hooks/useQueryHook/queryLiquidation/useGetVaultInfo';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
+import useGetStaked from 'src/hooks/useQueryHook/queryLiquidation/useGetStaked';
 
 const StabilityVault = () => {
   const { address } = useSummarySolanaConnect();
   const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
   const { data: vaultInfo, status: vaultStatus } = useGetVaultInfo();
+  const { data: totalStaked } = useGetStaked();
   const modalFunction = useModalFunction();
 
   const handleOpenModalClaim = () => {
@@ -96,12 +98,12 @@ const StabilityVault = () => {
         </ButtonLoading>
       </Stack>
 
-      {/* <Divider sx={{ borderColor: '#474744', height: '1px' }} /> */}
+      <Divider sx={{ borderColor: '#474744', height: '1px' }} />
 
-      {/* <Stack justifyContent="space-between">
+      <Stack justifyContent="space-between">
         <Typography variant="body1">Total Staked</Typography>
-        <VaultAmount amount={669523.99} />
-      </Stack> */}
+        <VaultAmount amount={totalStaked || 0} />
+      </Stack>
 
       <Stack gap={2} mt={2}>
         <ButtonLoading variant="contained" fullWidth loading={false} onClick={handleOpenModalUnstake}>
