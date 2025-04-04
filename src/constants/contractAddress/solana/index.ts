@@ -4,7 +4,7 @@ import { NETWORK } from 'src/constants';
 export const vaultProgramId =
   NETWORK === 'devnet' ? 'BCaAj6hcBtKYVKUm1RnEyvE29Y1iu5ieLTq7CueN3vD3' : 'GtTBznMzJiND5niGV3az8LLnUbNLphqkJVHDKuCt2VYy';
 export const liquidatorProgramId =
-  NETWORK === 'devnet' ? 'HZcLmwCeKFfuvwihVNa7XJRiWXHm3PXg3vZ3rdcrA5w3' : 'K9EFpJzeiLDHgcqThMseGQgqJWk3L5mH19aW5rSEkA6';
+  NETWORK === 'devnet' ? 'HZcLmwCeKFfuvwihVNa7XJRiWXHm3PXg3vZ3rdcrA5w3' : 'CeuU7yCrwBt3pSj1UazU7heT6jQiBr9yWasY3NyJTcMo';
 export const lendingProgramId =
   NETWORK === 'devnet' ? '9amUpMWHBYyCUZgqXhP87SUCAdpoVsgdGr2E4sYCE7D1' : '3APJcbC2iHEFGv4y6a8Fi5nQ5u75ML85TQreSr7cpRDs';
 

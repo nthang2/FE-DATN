@@ -14,8 +14,8 @@ export const liquidationTableHead: Array<{ label: string; sort?: TSortBuy; width
   { label: 'Debt Amount', sort: 'debtAmount' },
   // { label: 'Collateral to Claim' },
   // { label: 'Repay Amount' },
-  { label: 'Liquidation price' },
   { label: 'Health Factor', sort: 'healthFactor' },
+  { label: 'Liquidation price' },
   { label: 'Status', width: '112' },
 ];
 

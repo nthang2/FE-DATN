@@ -221,14 +221,16 @@ export default function LeaderboardTable() {
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.repayAmount)}</Typography>
                   </TableCell> */}
                   <TableCell align="right">
+                    <Typography sx={{ fontWeight: 600, color: checkStatus(row.healthFactor).color }}>
+                      {formatNumber(row.healthFactor)}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
                     <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>
                       {formatNumber(row.liquidationPrice, { fractionDigits: 6, prefix: '$' })}
                     </Typography>
                   </TableCell>
-                  <TableCell align="right">
-                    <Typography sx={{ color: 'text.disabled', fontWeight: 600 }}>{formatNumber(row.healthFactor)}</Typography>
-                  </TableCell>
-                  <TableCell align="right">
+                  <TableCell align="right" sx={{ minWidth: '112px' }}>
                     <Typography sx={{ color: checkStatus(row.healthFactor).color }}>{checkStatus(row.healthFactor).text}</Typography>
                   </TableCell>
                 </TableRow>

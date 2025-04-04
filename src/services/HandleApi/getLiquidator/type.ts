@@ -8,5 +8,6 @@ export type TLiquidatorCollateral = {
 export type TUserLiquidatorReward = {
   user: string;
   deposit: number;
+  maxWithdrawable: number;
   collaterals: TLiquidatorCollateral[];
 };

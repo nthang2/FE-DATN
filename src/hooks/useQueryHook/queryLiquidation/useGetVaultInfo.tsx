@@ -2,11 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import { getLiquidatorRewardList } from 'src/services/HandleApi/getLiquidator/getLiquidtator';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 
-const useGetRewardList = () => {
+const useGetVaultInfo = () => {
   const { address } = useSummarySolanaConnect();
 
   const query = useQuery({
-    queryKey: ['useGetRewardList', address],
+    queryKey: ['useGetVaultInfo', address],
     queryFn: async () => {
       if (!address) return;
       const result = await getLiquidatorRewardList(address);
@@ -16,7 +16,7 @@ const useGetRewardList = () => {
     staleTime: 1000 * 60 * 10,
   });
 
-  return { ...query, stakedAmount: query.data };
+  return { ...query };
 };
 
-export default useGetRewardList;
+export default useGetVaultInfo;

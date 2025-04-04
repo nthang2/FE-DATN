@@ -14,7 +14,7 @@ const useGetStaked = () => {
       if (!wallet) return;
 
       const contract = new LiquidatorContract(wallet);
-      const result = await contract.getStaked();
+      const result = await contract.getTotalStaked();
       const decimal = getDecimalToken(mapNameToInfoSolana[TokenName.USDAI].address);
 
       return BN(result).dividedBy(decimal).toNumber();

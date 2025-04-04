@@ -64,13 +64,13 @@ const BorrowButton = () => {
         return transHash;
       },
       onError: () => setBorrowState({ ...borrowState, value: '0', price: 0 }),
+      onSuccess: () => setBorrowState({ ...borrowState, value: '0', price: 0 }),
     });
   };
 
   const handleOnClick = async () => {
     if (isOnlyMint) {
       handleBorrow();
-      setBorrowState({ ...borrowState, value: '0' });
       return;
     }
 
