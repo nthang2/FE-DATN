@@ -52,7 +52,7 @@ const StabilityVault = () => {
       <Stack gap={1.5} alignItems="center">
         <Icon tokenName={TokenName.USDAI} sx={{ fontSize: '42px' }} />
         <Box>
-          <StabilityQuestionTooltip content="Stability Vault" tooltipText="Idk wait update" />
+          <StabilityQuestionTooltip content="Stability Pool" tooltipText="Idk wait update" />
           <Typography variant="body2" color="info.main">
             Stake <strong style={{ color: '#E4E3D6' }}>USDAI </strong>
             to earn discounted crypto

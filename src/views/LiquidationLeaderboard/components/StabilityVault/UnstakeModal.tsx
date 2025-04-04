@@ -11,7 +11,7 @@ import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useGetVaultInfo from 'src/hooks/useQueryHook/queryLiquidation/useGetVaultInfo';
 import { BN } from 'src/utils';
-import { formatNumber } from 'src/utils/format';
+import { decimalFlood, formatNumber } from 'src/utils/format';
 
 const UnstakeModal = () => {
   const wallet = useWallet();
@@ -71,7 +71,7 @@ const UnstakeModal = () => {
           status={[vaultStatus]}
           value={
             <Typography variant="body3" sx={{ color: 'text.secondary' }}>
-              Max: {vaultInfo?.maxWithdrawable || 0}
+              Max: {decimalFlood(vaultInfo?.maxWithdrawable || 0, 6)}
             </Typography>
           }
         />
