@@ -2,15 +2,15 @@ import { BN } from '@coral-xyz/anchor';
 import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
+import { TokenName } from 'crypto-token-icon';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { queryClient } from 'src/layout/Layout';
+import { getDecimalToken } from 'src/utils';
 import { idlLiquidator, IdlLiquidator } from '../../idl/liquidator/liquidator';
+import { LendingContract } from '../LendingContract/LendingContract';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { CONTROLLER_SEED, LIQUIDATOR_POOL_NAMESPACE, LP_PROVIDER_NAMESPACE, REDEEMABLE_MINT_SEED } from './constant';
-import { queryClient } from 'src/layout/Layout';
-import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import { TokenName } from 'crypto-token-icon';
-import { getDecimalToken } from 'src/utils';
-import { LendingContract } from '../LendingContract/LendingContract';
 
 export class LiquidatorContract extends SolanaContractAbstract<IdlLiquidator> {
   constructor(wallet: WalletContextState) {
@@ -75,6 +75,7 @@ export class LiquidatorContract extends SolanaContractAbstract<IdlLiquidator> {
 
     const transactionHash = await this.sendTransaction(transaction);
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
+    await queryClient.invalidateQueries({ queryKey: ['useGetStaked', this.provider.publicKey] });
 
     return transactionHash;
   }
@@ -93,6 +94,7 @@ export class LiquidatorContract extends SolanaContractAbstract<IdlLiquidator> {
 
     const transactionHash = await this.sendTransaction(transaction);
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
+    await queryClient.invalidateQueries({ queryKey: ['useGetStaked', this.provider.publicKey] });
 
     return transactionHash;
   }

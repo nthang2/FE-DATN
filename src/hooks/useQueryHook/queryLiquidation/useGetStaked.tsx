@@ -1,4 +1,4 @@
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useWallet, WalletContextState } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 import { TokenName } from 'crypto-token-icon';
 import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
@@ -11,15 +11,13 @@ const useGetStaked = () => {
   const query = useQuery({
     queryKey: ['useGetStaked', wallet.publicKey],
     queryFn: async () => {
-      if (!wallet) return;
-
-      const contract = new LiquidatorContract(wallet);
+      const currWallet = wallet ? wallet : ({} as WalletContextState);
+      const contract = new LiquidatorContract(currWallet);
       const result = await contract.getTotalStaked();
       const decimal = getDecimalToken(mapNameToInfoSolana[TokenName.USDAI].address);
 
       return BN(result).dividedBy(decimal).toNumber();
     },
-    enabled: !!wallet.publicKey,
   });
 
   return { ...query, stakedAmount: query.data };

@@ -4,6 +4,7 @@ import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import { TLiquidatorCollateral } from 'src/services/HandleApi/getLiquidator/type';
 import { BN } from 'src/utils';
+import { decimalFlood } from 'src/utils/format';
 
 interface IProps {
   data: TLiquidatorCollateral[];
@@ -30,13 +31,13 @@ const LiquidationRewardRow = (props: IProps) => {
 
       <TableCell sx={{ alignItems: 'center' }}>
         <Typography variant="body1" fontWeight={700} color="primary">
-          {reward?.reward || 0}
+          {decimalFlood(reward?.reward || 0, 6)}
         </Typography>
       </TableCell>
 
       <TableCell sx={{ alignItems: 'center' }}>
         <Typography variant="body1" fontWeight={700} color="primary">
-          ${reward?.rewardUSD || 0}
+          ${decimalFlood(reward?.rewardUSD || 0, 6)}
         </Typography>
       </TableCell>
 
