@@ -13,6 +13,7 @@ import { copyTextToClipboard } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import RepayModal from './components/RepayModal';
 import { useCrossModeState } from 'src/states/hooks';
+import CrossModeRepayModal from './components/RepayModals/CrossModeRepayModal';
 
 export default function Borrow() {
   // const [eMode, setEMode] = useState<boolean>(false);
@@ -30,10 +31,17 @@ export default function Borrow() {
   // };
 
   const handleRepay = (token: SolanaEcosystemTokenInfo) => {
-    modalFunction({
-      type: 'openModal',
-      data: { content: <RepayModal token={token} />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
-    });
+    if (crossMode) {
+      modalFunction({
+        type: 'openModal',
+        data: { content: <CrossModeRepayModal />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
+      });
+    } else {
+      modalFunction({
+        type: 'openModal',
+        data: { content: <RepayModal token={token} />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
+      });
+    }
   };
 
   const handleMint = (tokenId: string) => {

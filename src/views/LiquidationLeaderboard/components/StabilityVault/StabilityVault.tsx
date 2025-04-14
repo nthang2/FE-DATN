@@ -18,7 +18,7 @@ const StabilityVault = () => {
   const { address } = useSummarySolanaConnect();
   const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
   const { data: vaultInfo, status: vaultStatus } = useGetVaultInfo();
-  const { data: totalStaked } = useGetStaked();
+  const { data: totalStaked, status: totalStakedStatus } = useGetStaked();
   const modalFunction = useModalFunction();
 
   const handleOpenModalClaim = () => {
@@ -106,7 +106,7 @@ const StabilityVault = () => {
 
       <Stack justifyContent="space-between">
         <Typography variant="body1">Total Staked</Typography>
-        <VaultAmount amount={totalStaked || 0} />
+        <ValueWithStatus status={[totalStakedStatus]} value={<VaultAmount amount={totalStaked || 0} />} />
       </Stack>
 
       <Stack gap={2} mt={2}>
