@@ -1234,7 +1234,7 @@ export type IdlLending = {
         },
         {
           name: 'liquidatorPoolProgram';
-          address: 'HZcLmwCeKFfuvwihVNa7XJRiWXHm3PXg3vZ3rdcrA5w3';
+          address: 'CeuU7yCrwBt3pSj1UazU7heT6jQiBr9yWasY3NyJTcMo';
         },
         {
           name: 'tokenProgram';
@@ -1488,6 +1488,238 @@ export type IdlLending = {
           name: 'priceGroup';
         };
       };
+    },
+    {
+      name: 'redeemByCollateral';
+      discriminator: [144, 222, 138, 57, 100, 153, 43, 88];
+      accounts: [
+        {
+          name: 'user';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'collateral';
+          writable: true;
+        },
+        {
+          name: 'userCollateral';
+          writable: true;
+        },
+        {
+          name: 'userRedeemable';
+          writable: true;
+        },
+        {
+          name: 'redeemableMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemConfig';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 78, 70, 73, 71];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+          };
+        },
+        {
+          name: 'loanAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'depositoryVault';
+          writable: true;
+        },
+        {
+          name: 'oracle';
+        },
+        {
+          name: 'reserve';
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'reserve';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'jupiterProgram';
+          address: 'JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4';
+        }
+      ];
+      args: [
+        {
+          name: 'collateralAmount';
+          type: 'u64';
+        },
+        {
+          name: 'usdaiAmount';
+          type: 'u64';
+        },
+        {
+          name: 'data';
+          type: 'bytes';
+        }
+      ];
     },
     {
       name: 'type1DepositoryBurn';
@@ -2323,6 +2555,228 @@ export type IdlLending = {
       ];
     },
     {
+      name: 'type1LiquidateWithLiquidatorPool';
+      discriminator: [153, 84, 143, 124, 14, 192, 221, 45];
+      accounts: [
+        {
+          name: 'liquidator';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'user';
+          writable: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'loan';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'liquidatorStablecoinAccount';
+          writable: true;
+        },
+        {
+          name: 'liquidatorCollateralAccount';
+          writable: true;
+        },
+        {
+          name: 'poolStablecoinAccount';
+          writable: true;
+        },
+        {
+          name: 'poolCollateralAccount';
+          writable: true;
+        },
+        {
+          name: 'depositoryVault';
+          writable: true;
+        },
+        {
+          name: 'stablecoinMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateralToken1';
+          writable: true;
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'controller.reserve';
+                account: 'controller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'stablecoinMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'reserve';
+          writable: true;
+        },
+        {
+          name: 'oracle';
+        },
+        {
+          name: 'stabilityPool';
+          writable: true;
+        },
+        {
+          name: 'liquidatorPoolController';
+        },
+        {
+          name: 'liquidatorPoolProgram';
+          address: 'CeuU7yCrwBt3pSj1UazU7heT6jQiBr9yWasY3NyJTcMo';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'repayAmount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
       name: 'updateAuthority';
       discriminator: [32, 46, 64, 28, 149, 75, 243, 88];
       accounts: [
@@ -2418,6 +2872,10 @@ export type IdlLending = {
     {
       name: 'loanType1';
       discriminator: [53, 13, 71, 44, 243, 56, 227, 110];
+    },
+    {
+      name: 'redeemConfig';
+      discriminator: [57, 11, 139, 8, 155, 199, 10, 194];
     },
     {
       name: 'type0Depository';
@@ -2920,7 +3378,7 @@ export type IdlLending = {
     {
       code: 6082;
       name: 'priceNotUpdate';
-      msg: "The price of this collateral hasn't been updated for 1 minute.";
+      msg: "The price of this collateral hasn't been updated for 10 minute.";
     },
     {
       code: 6083;
@@ -3006,6 +3464,76 @@ export type IdlLending = {
       code: 6099;
       name: 'invalidLiquidator';
       msg: 'The liquidator is not whitelisted';
+    },
+    {
+      code: 6100;
+      name: 'invalidRedeemAmount';
+      msg: 'Invalid redeem amount - must be greater than zero';
+    },
+    {
+      code: 6101;
+      name: 'redeemAmountExceedsMax';
+      msg: 'Redeem amount exceeds maximum allowed';
+    },
+    {
+      code: 6102;
+      name: 'redeemAmountBelowMin';
+      msg: 'Redeem amount below minimum allowed';
+    },
+    {
+      code: 6103;
+      name: 'insufficientUsdaiBalance';
+      msg: 'Insufficient USDAI balance for redemption';
+    },
+    {
+      code: 6104;
+      name: 'insufficientCollateralBalance';
+      msg: 'Insufficient collateral for redemption';
+    },
+    {
+      code: 6105;
+      name: 'redeemAmountExceedsRateLimit';
+      msg: 'Redeem amount exceeds maximum allowed by rate';
+    },
+    {
+      code: 6106;
+      name: 'swapAmountBelowMinimum';
+      msg: 'Swap amount below minimum required';
+    },
+    {
+      code: 6107;
+      name: 'swapAmountExceedsMaximum';
+      msg: 'Swap amount exceeds maximum allowed';
+    },
+    {
+      code: 6108;
+      name: 'invalidSwapExecution';
+      msg: 'Invalid swap execution';
+    },
+    {
+      code: 6109;
+      name: 'redeemConfigInactive';
+      msg: 'Redeem config is not active';
+    },
+    {
+      code: 6110;
+      name: 'invalidRedeemConfigCollateral';
+      msg: 'Invalid collateral mint in redeem config';
+    },
+    {
+      code: 6111;
+      name: 'invalidConfig';
+      msg: 'Invalid config';
+    },
+    {
+      code: 6112;
+      name: 'invalidCollateralTransfer';
+      msg: 'Error in collateral transfer - amount exceeds expected';
+    },
+    {
+      code: 6113;
+      name: 'depositAboveLimit';
+      msg: 'Deposit amount above limit';
     }
   ];
   types: [
@@ -3616,6 +4144,54 @@ export type IdlLending = {
           {
             name: 'updatedTimestamp';
             type: 'i64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'redeemConfig';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'authority';
+            type: 'pubkey';
+          },
+          {
+            name: 'repayer';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateral';
+            type: 'pubkey';
+          },
+          {
+            name: 'maxUsdaiAmount';
+            type: 'u64';
+          },
+          {
+            name: 'maxUsdaiRate';
+            type: 'u64';
+          },
+          {
+            name: 'slippageBps';
+            type: 'u16';
+          },
+          {
+            name: 'feeRateBps';
+            type: 'u16';
+          },
+          {
+            name: 'isActive';
+            type: 'bool';
+          },
+          {
+            name: 'bump';
+            type: 'u8';
+          },
+          {
+            name: 'minUsdaiAmount';
+            type: 'u64';
           }
         ];
       };
@@ -5038,7 +5614,7 @@ export const idlLending: IdlLending = {
         },
         {
           name: 'liquidatorPoolProgram',
-          address: 'HZcLmwCeKFfuvwihVNa7XJRiWXHm3PXg3vZ3rdcrA5w3',
+          address: 'CeuU7yCrwBt3pSj1UazU7heT6jQiBr9yWasY3NyJTcMo',
         },
         {
           name: 'tokenProgram',
@@ -5232,6 +5808,178 @@ export const idlLending: IdlLending = {
           name: 'priceGroup',
         },
       },
+    },
+    {
+      name: 'redeemByCollateral',
+      discriminator: [144, 222, 138, 57, 100, 153, 43, 88],
+      accounts: [
+        {
+          name: 'user',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'collateral',
+          writable: true,
+        },
+        {
+          name: 'userCollateral',
+          writable: true,
+        },
+        {
+          name: 'userRedeemable',
+          writable: true,
+        },
+        {
+          name: 'redeemableMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemConfig',
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 78, 70, 73, 71],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+          },
+        },
+        {
+          name: 'loanAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'depositoryVault',
+          writable: true,
+        },
+        {
+          name: 'oracle',
+        },
+        {
+          name: 'reserve',
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'reserve',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+        {
+          name: 'jupiterProgram',
+          address: 'JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4',
+        },
+      ],
+      args: [
+        {
+          name: 'collateralAmount',
+          type: 'u64',
+        },
+        {
+          name: 'usdaiAmount',
+          type: 'u64',
+        },
+        {
+          name: 'data',
+          type: 'bytes',
+        },
+      ],
     },
     {
       name: 'type1DepositoryBurn',
@@ -5767,6 +6515,168 @@ export const idlLending: IdlLending = {
       ],
     },
     {
+      name: 'type1LiquidateWithLiquidatorPool',
+      discriminator: [153, 84, 143, 124, 14, 192, 221, 45],
+      accounts: [
+        {
+          name: 'liquidator',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'user',
+          writable: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'loan',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'liquidatorStablecoinAccount',
+          writable: true,
+        },
+        {
+          name: 'liquidatorCollateralAccount',
+          writable: true,
+        },
+        {
+          name: 'poolStablecoinAccount',
+          writable: true,
+        },
+        {
+          name: 'poolCollateralAccount',
+          writable: true,
+        },
+        {
+          name: 'depositoryVault',
+          writable: true,
+        },
+        {
+          name: 'stablecoinMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateralToken1',
+          writable: true,
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'controller.reserve',
+                account: 'controller',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'stablecoinMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'reserve',
+          writable: true,
+        },
+        {
+          name: 'oracle',
+        },
+        {
+          name: 'stabilityPool',
+          writable: true,
+        },
+        {
+          name: 'liquidatorPoolController',
+        },
+        {
+          name: 'liquidatorPoolProgram',
+          address: 'CeuU7yCrwBt3pSj1UazU7heT6jQiBr9yWasY3NyJTcMo',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'repayAmount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
       name: 'updateAuthority',
       discriminator: [32, 46, 64, 28, 149, 75, 243, 88],
       accounts: [
@@ -5862,6 +6772,10 @@ export const idlLending: IdlLending = {
     {
       name: 'loanType1',
       discriminator: [53, 13, 71, 44, 243, 56, 227, 110],
+    },
+    {
+      name: 'redeemConfig',
+      discriminator: [57, 11, 139, 8, 155, 199, 10, 194],
     },
     {
       name: 'type0Depository',
@@ -6364,7 +7278,7 @@ export const idlLending: IdlLending = {
     {
       code: 6082,
       name: 'priceNotUpdate',
-      msg: "The price of this collateral hasn't been updated for 1 minute.",
+      msg: "The price of this collateral hasn't been updated for 10 minute.",
     },
     {
       code: 6083,
@@ -6450,6 +7364,76 @@ export const idlLending: IdlLending = {
       code: 6099,
       name: 'invalidLiquidator',
       msg: 'The liquidator is not whitelisted',
+    },
+    {
+      code: 6100,
+      name: 'invalidRedeemAmount',
+      msg: 'Invalid redeem amount - must be greater than zero',
+    },
+    {
+      code: 6101,
+      name: 'redeemAmountExceedsMax',
+      msg: 'Redeem amount exceeds maximum allowed',
+    },
+    {
+      code: 6102,
+      name: 'redeemAmountBelowMin',
+      msg: 'Redeem amount below minimum allowed',
+    },
+    {
+      code: 6103,
+      name: 'insufficientUsdaiBalance',
+      msg: 'Insufficient USDAI balance for redemption',
+    },
+    {
+      code: 6104,
+      name: 'insufficientCollateralBalance',
+      msg: 'Insufficient collateral for redemption',
+    },
+    {
+      code: 6105,
+      name: 'redeemAmountExceedsRateLimit',
+      msg: 'Redeem amount exceeds maximum allowed by rate',
+    },
+    {
+      code: 6106,
+      name: 'swapAmountBelowMinimum',
+      msg: 'Swap amount below minimum required',
+    },
+    {
+      code: 6107,
+      name: 'swapAmountExceedsMaximum',
+      msg: 'Swap amount exceeds maximum allowed',
+    },
+    {
+      code: 6108,
+      name: 'invalidSwapExecution',
+      msg: 'Invalid swap execution',
+    },
+    {
+      code: 6109,
+      name: 'redeemConfigInactive',
+      msg: 'Redeem config is not active',
+    },
+    {
+      code: 6110,
+      name: 'invalidRedeemConfigCollateral',
+      msg: 'Invalid collateral mint in redeem config',
+    },
+    {
+      code: 6111,
+      name: 'invalidConfig',
+      msg: 'Invalid config',
+    },
+    {
+      code: 6112,
+      name: 'invalidCollateralTransfer',
+      msg: 'Error in collateral transfer - amount exceeds expected',
+    },
+    {
+      code: 6113,
+      name: 'depositAboveLimit',
+      msg: 'Deposit amount above limit',
     },
   ],
   types: [
@@ -7060,6 +8044,54 @@ export const idlLending: IdlLending = {
           {
             name: 'updatedTimestamp',
             type: 'i64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'redeemConfig',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'authority',
+            type: 'pubkey',
+          },
+          {
+            name: 'repayer',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateral',
+            type: 'pubkey',
+          },
+          {
+            name: 'maxUsdaiAmount',
+            type: 'u64',
+          },
+          {
+            name: 'maxUsdaiRate',
+            type: 'u64',
+          },
+          {
+            name: 'slippageBps',
+            type: 'u16',
+          },
+          {
+            name: 'feeRateBps',
+            type: 'u16',
+          },
+          {
+            name: 'isActive',
+            type: 'bool',
+          },
+          {
+            name: 'bump',
+            type: 'u8',
+          },
+          {
+            name: 'minUsdaiAmount',
+            type: 'u64',
           },
         ],
       },

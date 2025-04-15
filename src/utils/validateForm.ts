@@ -23,8 +23,8 @@ export const validate = (value: string | number, rule: TOptionValidate) => {
     },
     max: (params) => {
       if (typeof params === 'number') {
-        const errMessage = `Input value must greater than ${params}`;
-        return Number(value) < params ? errMessage : undefined;
+        const errMessage = `Input value must smaller than ${params}`;
+        return Number(value) > params ? errMessage : undefined;
       } else {
         const { max, message } = params;
         const errMessage = message || `Input value must smaller than ${max}`;
