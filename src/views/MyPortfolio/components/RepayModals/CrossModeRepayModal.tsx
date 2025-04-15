@@ -7,12 +7,12 @@ import { useCrossModeState } from 'src/states/hooks';
 
 const options = [
   {
-    label: 'Repay with collateral',
-    value: 'collateral',
-  },
-  {
     label: 'Repay with wallet',
     value: 'wallet',
+  },
+  {
+    label: 'Repay with collateral',
+    value: 'collateral',
   },
 ];
 
@@ -23,7 +23,7 @@ interface IProps {
 const CrossModeRepayModal = (props: IProps) => {
   const { token } = props;
   const [crossMode] = useCrossModeState();
-  const [selectedOption, setSelectedOption] = useState<string>('collateral');
+  const [selectedOption, setSelectedOption] = useState<string>('wallet');
 
   return (
     <>
