@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BN } from '@coral-xyz/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -9,7 +10,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
+import { ComputeBudgetProgram, PublicKey, SystemProgram, Transaction, TransactionMessage, VersionedTransaction } from '@solana/web3.js';
 import { toast } from 'react-toastify';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
@@ -24,11 +25,15 @@ import {
   CONTROLLER_SEED,
   collateral as defaultCollateral,
   DEPOSITORY_TYPE1_SEED,
+  LOAN,
   LOAN_TYPE1_SEED,
   REDEEMABLE_MINT_SEED,
+  REDEEM_CONFIG,
   RESERVE_ACCOUNT,
+  computeUnits,
 } from './constant';
 import { appStore, crossModeAtom } from 'src/states/state';
+import { getAddressLookupTableAccounts, addPriorityFee } from 'src/views/MyPortfolio/utils';
 
 export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -114,6 +119,18 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
   async initialize(): Promise<string> {
     return '';
+  }
+
+  async getDepository(tokenAddress: string) {
+    const depository = await this.program.account.type0Depository.fetch(new PublicKey(tokenAddress));
+    return depository;
+  }
+
+  async getLoan(tokenAddress: string) {
+    const loanPda = this.getPda(LOAN, new PublicKey(tokenAddress));
+    const loan = await this.program.account.loanType0.fetch(loanPda);
+
+    return loan;
   }
 
   wrapNative(fromPubkey: PublicKey, amount: number): Transaction {
@@ -224,5 +241,68 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
       toast.error('Loading connection fail');
       throw e;
     }
+  }
+
+  async getRedeemConfig(tokenAddress: string) {
+    const redeemPda = this.getPda(REDEEM_CONFIG, new PublicKey(tokenAddress));
+    const config = await this.program.account.redeemConfig.fetch(redeemPda);
+    console.log('🚀 ~ LendingCrossContract ~ getRedeemConfig ~ config:', config);
+
+    return config;
+  }
+
+  async redeemByCollateral(params: {
+    usdaiAmount: string;
+    collateralAmountRaw: string;
+    selectedToken: string;
+    resultSwapInstructions: any;
+  }) {
+    const { collateralAmountRaw, selectedToken, usdaiAmount, resultSwapInstructions } = params;
+
+    const accountsPartial = this.getAccountsPartial(selectedToken);
+    const jupiterData = Buffer.from(resultSwapInstructions.swapInstruction.data, 'base64');
+    const remainingAccounts = resultSwapInstructions.swapInstruction.accounts.map((acc: any) => {
+      const pubkeyStr = acc.pubkey;
+      const isUser = pubkeyStr === this.provider.publicKey?.toString();
+
+      return {
+        pubkey: new PublicKey(pubkeyStr),
+        isSigner: acc.isSigner || isUser, // Mark as signer if it's the user
+        isWritable: acc.isWritable,
+      };
+    });
+
+    const addressLookupTableAccounts = await getAddressLookupTableAccounts(resultSwapInstructions.addressLookupTableAddresses || []);
+
+    const instructions = [
+      // Add compute unit limit
+      ComputeBudgetProgram.setComputeUnitLimit({
+        units: computeUnits,
+      }),
+
+      // Add priority fee
+      addPriorityFee(),
+
+      // Use redeem_by_collateral_3 instruction
+      await this.program.methods
+        .redeemByCollateral(new BN(usdaiAmount), new BN(collateralAmountRaw), jupiterData)
+        .accountsPartial(accountsPartial)
+        .remainingAccounts(remainingAccounts)
+        .instruction(),
+    ];
+
+    const blockhash = (await this.provider.connection.getLatestBlockhash('finalized')).blockhash;
+    const messageV0 = new TransactionMessage({
+      payerKey: this.provider.publicKey,
+      recentBlockhash: blockhash,
+      instructions,
+    }).compileToV0Message(addressLookupTableAccounts);
+
+    const transaction = new VersionedTransaction(messageV0);
+    // const simulate = await this.provider.connection.simulateTransaction(transaction, { commitment: 'finalized' });
+    // console.log('simulate', simulate);
+
+    const result = await this.sendTransaction(transaction);
+    return result;
   }
 }

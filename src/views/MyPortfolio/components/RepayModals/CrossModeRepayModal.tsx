@@ -1,9 +1,9 @@
 import { MenuItem, Select, Typography } from '@mui/material';
 import { useState } from 'react';
+import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import RepayModal from '../RepayModal';
-import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import { TokenName } from 'crypto-token-icon';
 import RepayWithCollateral from './RepayWithCollateral';
+import { useCrossModeState } from 'src/states/hooks';
 
 const options = [
   {
@@ -16,9 +16,14 @@ const options = [
   },
 ];
 
-const CrossModeRepayModal = () => {
+interface IProps {
+  token: SolanaEcosystemTokenInfo;
+}
+
+const CrossModeRepayModal = (props: IProps) => {
+  const { token } = props;
+  const [crossMode] = useCrossModeState();
   const [selectedOption, setSelectedOption] = useState<string>('collateral');
-  const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
 
   return (
     <>
@@ -41,8 +46,8 @@ const CrossModeRepayModal = () => {
         ))}
       </Select>
 
-      {selectedOption === 'wallet' && <RepayModal token={usdaiInfo} />}
-      {selectedOption === 'collateral' && <RepayWithCollateral />}
+      {selectedOption === 'wallet' && <RepayModal token={token} />}
+      {selectedOption === 'collateral' && <RepayWithCollateral token={crossMode ? undefined : token} />}
     </>
   );
 };

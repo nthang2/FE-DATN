@@ -7,6 +7,7 @@ import { ReactNode } from 'react';
 declare global {
   interface Window {
     eth_owallet: any;
+    phantom: any;
   }
 
   interface ImportMetaEnv {

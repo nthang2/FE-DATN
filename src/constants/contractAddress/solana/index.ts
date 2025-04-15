@@ -13,4 +13,5 @@ export const ctrAdsSolana = {
   lending: new PublicKey(lendingProgramId),
   vault: new PublicKey(vaultProgramId),
   liquidator: new PublicKey(liquidatorProgramId),
+  jupiter: new PublicKey('JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4'),
 };

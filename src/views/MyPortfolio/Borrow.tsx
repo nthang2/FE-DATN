@@ -15,6 +15,9 @@ import RepayModal from './components/RepayModal';
 import { useCrossModeState } from 'src/states/hooks';
 import CrossModeRepayModal from './components/RepayModals/CrossModeRepayModal';
 
+const tableHead = ['Asset', 'Available', 'USDAI Minted', ''];
+const listRepayableWithCollateral = [TokenName.USDC, TokenName.MAX, TokenName.SOL];
+
 export default function Borrow() {
   // const [eMode, setEMode] = useState<boolean>(false);
   const { data: depositValue } = useQueryDepositValue();
@@ -24,17 +27,25 @@ export default function Borrow() {
   const navigate = useNavigate();
   const [crossMode] = useCrossModeState();
 
-  const tableHead = ['Asset', 'Available', 'USDAI Minted', ''];
   const listRow = crossMode ? { [TokenName.USDAI]: mapNameToInfoSolana[TokenName.USDAI] } : listTokenAvailable;
   // const handleChangeMode = () => {
   //   setEMode(!eMode);
   // };
 
   const handleRepay = (token: SolanaEcosystemTokenInfo) => {
-    if (crossMode) {
+    const isRepayableWithCollateral = listRepayableWithCollateral.indexOf(token.symbol) >= 0;
+    if (!isRepayableWithCollateral) {
       modalFunction({
         type: 'openModal',
-        data: { content: <CrossModeRepayModal />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
+        data: { content: <RepayModal token={token} />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
+      });
+      return;
+    }
+
+    if (!crossMode) {
+      modalFunction({
+        type: 'openModal',
+        data: { content: <CrossModeRepayModal token={token} />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
       });
     } else {
       modalFunction({

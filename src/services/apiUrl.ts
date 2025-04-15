@@ -1,4 +1,4 @@
-import { BACKEND_URL } from './baseUrl';
+import { BACKEND_URL, URL_JUPITER_API } from './baseUrl';
 import { TLiquidationLeaderboardParams } from './HandleApi/getLeaderboard/type';
 
 export const apiUrl = {
@@ -22,4 +22,6 @@ export const apiUrl = {
   getMyPortfolioInfo: (userAddress: string) => `${BACKEND_URL}/lending/users/${userAddress}`,
   getMyPortfolioCrossModeInfo: (userAddress: string) => `${BACKEND_URL}/lending/users/${userAddress}/cross-mode`,
   getLiquidatorRewardList: (userAddress: string) => `${BACKEND_URL}/liquidator-pool/users/${userAddress}`,
+  getJupiterQuote: (param: string) => `${URL_JUPITER_API}/quote?${param}`,
+  jupiterSwapInstructions: () => `${URL_JUPITER_API}/swap-instructions`,
 };
