@@ -21,7 +21,7 @@ const useJupiterQuote = () => {
 
   const query = useMutation({
     mutationKey: ['getJupiterQuote'],
-    mutationFn: async (params: { repayInput: string; collateralInput: string; selectedToken: string; slippageBps: number }) => {
+    mutationFn: async (params: { repayInput: string; selectedToken: string; slippageBps: number }) => {
       if (!wallet.publicKey) return 0;
 
       const { repayInput, selectedToken, slippageBps } = params;

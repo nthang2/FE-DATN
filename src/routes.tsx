@@ -1,10 +1,11 @@
 import { useRoutes } from 'react-router-dom';
 import Layout from './layout/Layout';
-import Borrow from './views/Borrow/Borrow';
-import MyPortfolio from './views/MyPortfolio/MyPortfolio';
-import NotFound from './views/NotFound/NotFound';
-import Vaults from './views/Vaults/Vaults';
-import LiquidationLeaderboard from './views/LiquidationLeaderboard/LiquidationLeaderboard';
+import { lazy } from 'react';
+const Borrow = lazy(() => import('./views/Borrow/Borrow'));
+const MyPortfolio = lazy(() => import('./views/MyPortfolio/MyPortfolio'));
+const NotFound = lazy(() => import('./views/NotFound/NotFound'));
+const Vaults = lazy(() => import('./views/Vaults/Vaults'));
+const LiquidationLeaderboard = lazy(() => import('./views/LiquidationLeaderboard/LiquidationLeaderboard'));
 
 export default function Routes() {
   return useRoutes([
