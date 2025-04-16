@@ -32,7 +32,7 @@ const LiquidationRewardModal = () => {
           <TableRow>
             {tableHead.map((header) => (
               <TableCell key={header} align="left">
-                <Typography variant="caption2" sx={{ color: '#888880' }}>
+                <Typography variant="caption2" sx={{ color: 'info.main' }}>
                   {header}
                 </Typography>
               </TableCell>

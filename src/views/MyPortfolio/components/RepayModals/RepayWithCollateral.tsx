@@ -89,14 +89,14 @@ const RepayWithCollateral = (props: IProps) => {
     <Stack direction={'column'} gap={4}>
       <Stack direction={'column'} gap={0.5}>
         <Stack justifyContent={'space-between'}>
-          <Typography variant="body2" sx={{ color: '#888880' }}>
+          <Typography variant="body2" sx={{ color: 'info.main' }}>
             Your Repay:
           </Typography>
 
           <ValueWithStatus
             status={[redeemConfigStatus]}
             value={
-              <Typography variant="body2" sx={{ color: '#888880' }}>
+              <Typography variant="body2" sx={{ color: 'info.main' }}>
                 Repayable amount: {maxRepayAmount}
               </Typography>
             }
@@ -121,11 +121,11 @@ const RepayWithCollateral = (props: IProps) => {
 
       <Stack direction={'column'} gap={0.5}>
         <Stack justifyContent={'space-between'}>
-          <Typography variant="body2" sx={{ color: '#888880' }}>
+          <Typography variant="body2" sx={{ color: 'info.main' }}>
             Repay with:
           </Typography>
 
-          {/* <Typography variant="body2" sx={{ color: '#888880' }}>
+          {/* <Typography variant="body2" sx={{ color: 'info.main' }}>
             Available: {decimalFlood(availableRepay || 0, 5)}
           </Typography> */}
         </Stack>
@@ -144,16 +144,16 @@ const RepayWithCollateral = (props: IProps) => {
       </Stack>
 
       <Stack justifyContent={'space-between'} borderTop={'1px solid #323326'} borderBottom={'1px solid #323326'} paddingY={2}>
-        <Typography variant="body1" sx={{ color: '#888880' }}>
+        <Typography variant="body1" sx={{ color: 'info.main' }}>
           Action
         </Typography>
 
         <Stack gap={1} alignItems={'center'}>
-          <Typography variant="body2" sx={{ color: '#888880' }}>
+          <Typography variant="body2" sx={{ color: 'info.main' }}>
             Redeem
           </Typography>
           <IconUsdai />
-          <Typography variant="body2" sx={{ color: '#888880' }}>
+          <Typography variant="body2" sx={{ color: 'info.main' }}>
             USDAI
           </Typography>
         </Stack>

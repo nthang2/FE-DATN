@@ -90,7 +90,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
       }}
     >
       <Box className="flex-space-between">
-        <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880' }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main' }}>
           Amount
         </Typography>
         <ValueWithStatus
@@ -189,7 +189,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
       <FormHelperText sx={{ px: 1, py: 0, minHeight: '16px' }} error>
         {valueRepayHelperText}
       </FormHelperText>
-      <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880', mt: 3 }}>
+      <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main', mt: 3 }}>
         Transaction overview
       </Typography>
       <Box sx={{ bgcolor: 'background.secondary', borderRadius: '16px' }}>
@@ -200,14 +200,14 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
             height: '72px',
           }}
         >
-          <Typography variant="body2" sx={{ color: '#888880', minWidth: '100px' }}>
+          <Typography variant="body2" sx={{ color: 'info.main', minWidth: '100px' }}>
             Debt
           </Typography>
           <Box className="flex-center" sx={{ ml: 4 }}>
             <Icon tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
             <Box>
               <Typography sx={{ fontWeight: 600, ml: 1 }}>{formatNumber(BN(maxValue).minus(Number(valueRepay) || 0))}</Typography>
-              <Typography variant="body3" sx={{ fontWeight: 600, ml: 1, color: '#888880' }}>
+              <Typography variant="body3" sx={{ fontWeight: 600, ml: 1, color: 'info.main' }}>
                 {formatNumber(BN(maxValue).minus(Number(valueRepay) || 0), { fractionDigits: 0, prefix: '$' })}
               </Typography>
             </Box>
@@ -221,17 +221,17 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
             height: '72px',
           }}
         >
-          <Typography variant="body2" sx={{ color: '#888880', minWidth: '100px' }}>
+          <Typography variant="body2" sx={{ color: 'info.main', minWidth: '100px' }}>
             Health factor:
           </Typography>
           <CheckHealthFactor token={token} />
         </Box>
       </Box>
       <Box className="flex-space-between" sx={{ mt: 3 }}>
-        <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880' }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main' }}>
           Action
         </Typography>
-        <SettingsOutlined sx={{ color: '#888880' }} />
+        <SettingsOutlined sx={{ color: 'info.main' }} />
       </Box>
       <Box className={clsx(['box', 'flex-space-between'])} sx={{ border: '#666662 solid 1px', position: 'relative' }}>
         <Box className="flex-center">

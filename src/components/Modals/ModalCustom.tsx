@@ -13,7 +13,7 @@ export default function ModalCustom() {
           {typeof modal.title == 'string' ? <Typography sx={{ fontWeight: 600 }}>{modal.title}</Typography> : modal.title}
           {modal.isShowCloseModal && (
             <IconButton onClick={() => modalFunction({ type: 'closeModal' })}>
-              <ClearRounded sx={{ ml: 'auto', cursor: 'pointer', fontSize: '25px', color: '#888880' }} />
+              <ClearRounded sx={{ ml: 'auto', cursor: 'pointer', fontSize: '25px', color: 'info.main' }} />
             </IconButton>
           )}
         </Box>
