@@ -1,4 +1,5 @@
 import { SvgIcon, SvgIconProps } from '@mui/material';
+
 import React from 'react';
 
 export type _SvgIconProps = React.FC<SvgIconProps>;
@@ -71,3 +72,11 @@ export const PlusIcon = () => {
     </svg>
   );
 };
+
+export const EdgeIcon: _SvgIconProps = (props) => (
+  <SvgIcon viewBox="0 0 48 48" {...props}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="#08080D">
+      <path d="M0.499756 0C9.85087 0 16.4998 7.14524 16.4998 16V0H0.499756Z" fill="#08080D" />
+    </svg>
+  </SvgIcon>
+);

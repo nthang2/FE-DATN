@@ -115,7 +115,7 @@ export default function MyWallet() {
   );
 
   return (
-    <BoxCustom sx={{}}>
+    <BoxCustom sx={{ bgcolor: 'background.default' }}>
       <Box className="flex-space-between">
         <Box className="flex-start">
           <Typography variant="h6" sx={{ fontWeight: 700 }}>

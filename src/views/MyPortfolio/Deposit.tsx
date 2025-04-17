@@ -45,11 +45,11 @@ export default function Deposit() {
   };
 
   return (
-    <BoxCustom sx={{ mt: 2 }}>
+    <BoxCustom sx={{ bgcolor: 'background.default', mt: 2 }}>
       <Typography variant="h5" sx={{ fontWeight: 700 }}>
         Deposit
       </Typography>
-      <TableContainer sx={{ bgcolor: 'background.content' }}>
+      <TableContainer>
         <Table>
           <TableHead>
             <TableRow>

@@ -44,12 +44,12 @@ export default function RepayCustomInput(props: Props) {
       >
         {Boolean(selectProps) && (
           <Select
-            id="demo-select"
             disabled={readonly}
             sx={{
               border: '1px solid #666662',
+              borderRadius: '8px',
               mr: 2,
-              minWidth: '135px',
+              minWidth: '125px',
               ...selectProps?.sx,
             }}
             renderValue={(value) => {
@@ -145,10 +145,9 @@ export default function RepayCustomInput(props: Props) {
         <Box sx={{ alignItems: 'center', gap: 1.5, height: '100%', display: 'flex' }}>
           {maxValue ? (
             <Box>
-              <Typography variant="h5" sx={{ cursor: 'pointer', fontWeight: 400 }} onClick={onClickMax}>
+              <Typography variant="h5" sx={{ cursor: 'pointer', fontWeight: 600, color: '#FCFFD8', mr: 0.5 }} onClick={onClickMax}>
                 Max
               </Typography>
-              <Typography variant="body3">{maxValue}</Typography>
             </Box>
           ) : null}
 

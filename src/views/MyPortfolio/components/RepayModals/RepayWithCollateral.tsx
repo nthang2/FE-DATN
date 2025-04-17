@@ -17,6 +17,7 @@ import { calcCollateralAmountRaw } from '../../utils';
 import RepayCustomInput from '../InputCustom/RepayCustomInput';
 import { defaultRepayFormValue, TRepayForm } from './type';
 import { decimalFlood } from 'src/utils/format';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 interface IProps {
   token?: SolanaEcosystemTokenInfo;
@@ -86,7 +87,7 @@ const RepayWithCollateral = (props: IProps) => {
   };
 
   return (
-    <Stack direction={'column'} gap={4}>
+    <Stack direction={'column'} gap={3}>
       <Stack direction={'column'} gap={0.5}>
         <Stack justifyContent={'space-between'}>
           <Typography variant="body2" sx={{ color: 'info.main' }}>
@@ -118,6 +119,8 @@ const RepayWithCollateral = (props: IProps) => {
           error={helperText}
         />
       </Stack>
+
+      <ArrowDownwardIcon sx={{ height: '32px', width: '32px', color: 'info.main', margin: '0 auto' }} />
 
       <Stack direction={'column'} gap={0.5}>
         <Stack justifyContent={'space-between'}>
