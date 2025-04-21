@@ -112,6 +112,13 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     return await this.program.account.loanType0.fetch(userLoanPDAAddress);
   }
 
+  async getDepositoryVault(tokenAddress: string) {
+    const { depositoryVault } = this.getAccountsPartial(tokenAddress);
+    const depository = await getAccount(this.provider.connection, depositoryVault);
+
+    return depository;
+  }
+
   async getDepository(tokenAddress: string) {
     const depositoryPda = this.getPda(DEPOSITORY_SEED, new PublicKey(tokenAddress));
     const depository = await this.program.account.type0Depository.fetch(depositoryPda);
@@ -122,7 +129,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const depositoryPda = this.getPda(DEPOSITORY_SEED, new PublicKey(tokenAddress));
     const loanPda = this.getPda(LOAN, depositoryPda, this.provider.publicKey);
     const loan = await this.program.account.loanType0.fetch(loanPda);
-
     // min(redeem_config.max_usdai_amount, max_usdai_with_rate) với max_usdai_with_rate = loan.minted_amount * depository.rate * redeem_config.max_usdai_rate / 10000)
 
     return loan;

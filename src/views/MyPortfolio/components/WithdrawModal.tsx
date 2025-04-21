@@ -19,6 +19,7 @@ import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/
 import { BN } from 'src/utils';
 import { decimalFlood, formatNumber } from 'src/utils/format';
 import CheckHealthFactor from './CheckHealthFactor';
+import { toast } from 'react-toastify';
 
 export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
@@ -58,6 +59,14 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const handleWithdraw = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = initLendingContract(wallet);
+    const depositoryVault = await lendingContract.getDepositoryVault(token.address);
+    const loanAccount = await lendingContract.getLoan(token.address);
+
+    if (!BN(loanAccount.collateralAmount).isGreaterThan(depositoryVault.amount.toString())) {
+      toast.error('Protocol has insufficient funds');
+      return;
+    }
+
     const hash = await lendingContract.withdraw(Number(valueWithdraw), token.address);
     setValueWithdraw('');
     setValueInUSD('0');

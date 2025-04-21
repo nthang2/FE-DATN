@@ -305,4 +305,11 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const result = await this.sendTransaction(transaction);
     return result;
   }
+
+  async getDepositoryVault(tokenAddress: string) {
+    const { depositoryVault } = this.getAccountsPartial(tokenAddress);
+    const depository = await getAccount(this.provider.connection, depositoryVault);
+
+    return depository;
+  }
 }
