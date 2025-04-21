@@ -62,7 +62,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
     const depositoryVault = await lendingContract.getDepositoryVault(token.address);
     const loanAccount = await lendingContract.getLoan(token.address);
 
-    if (!BN(loanAccount.collateralAmount).isGreaterThan(depositoryVault.amount.toString())) {
+    if (BN(loanAccount.collateralAmount).isGreaterThan(depositoryVault.amount.toString())) {
       toast.error('Protocol has insufficient funds');
       return;
     }
