@@ -10,6 +10,18 @@ export const usdcDevSolanaDevnet = new SolanaDevnetTokenInfo({
   isToken2022: false,
 });
 
+export const scOraiSolanaMainnet = new SolanaDevnetTokenInfo({
+  address: 'oraiHES5kVRKK62M8T3KkTpFeKg8UBJz1RJ3d69MSAC',
+  decimals: 6,
+  symbol: TokenName.scORAI,
+  prettyName: 'Staking Compound ORAI',
+  coingeckoId: 'staking-compound-orai',
+  isNative: false,
+  isToken2022: false,
+  oracle: 'GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k',
+  ratio: '0.4',
+});
+
 export const usdaiSolanaDevnet = new SolanaDevnetTokenInfo({
   address: '2PGLV5fBUJL9WvxB1MT7RH6DmDLX7N8poahBfXUm6BnT',
   decimals: 6,

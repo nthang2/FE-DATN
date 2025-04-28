@@ -36,7 +36,7 @@ export default function MyWallet() {
       return Object.values(balance).reduce((a, b) => {
         if (tokensPrice[b.address] && tokensPrice[b.address].price != null) {
           const price = tokensPrice[b.address] != undefined ? Number(tokensPrice[b.address]?.price) : 1;
-          return a + (Number(b.balance.toString()) + Number(asset[b.address].depositedAmount ?? 0)) * price;
+          return a + (Number(b.balance.toString()) + Number(asset[b.address]?.depositedAmount ?? 0)) * price;
         }
         return a;
       }, 0);
@@ -60,7 +60,7 @@ export default function MyWallet() {
             id: index.toString(),
             name: Object.keys(listTokenAvailable)[index],
             y:
-              (Number(item.balance.toString()) + Number(asset[item.address].depositedAmount ?? 0)) *
+              (Number(item.balance.toString()) + Number(asset[item.address]?.depositedAmount ?? 0)) *
               Number(tokensPrice[item.address]?.price ?? 1),
           });
         });

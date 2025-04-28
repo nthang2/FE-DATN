@@ -19,6 +19,7 @@ export const mapNameToInfoSolanaDevnet = {
   [TokenName.USDC]: usdcDevSolanaDevnet,
   [TokenName.ORAI]: oraiSolanaDevnet,
   [TokenName.VIRTUAL]: virtualSolanaDevnet,
+  [TokenName.scORAI]: oraiSolanaDevnet,
 };
 
 export type TSolanaDevnetToken = keyof typeof mapNameToInfoSolanaDevnet;
