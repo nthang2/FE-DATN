@@ -5,6 +5,7 @@ import {
   createAssociatedTokenAccountInstruction,
   createSyncNativeInstruction,
   getAccount,
+  getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
   NATIVE_MINT,
   TOKEN_PROGRAM_ID,
@@ -44,6 +45,33 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const [pda] = PublicKey.findProgramAddressSync([Buffer.from(seed), ...addressParam], this.program.programId);
 
     return pda;
+  }
+
+  async checkUserCollateral1(tokenAddress: PublicKey) {
+    try {
+      const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
+      await getAccount(this.provider.connection, userCollateral1);
+
+      return null;
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.name.includes('TokenAccountNotFoundError')) {
+          const newAssociatedTokenAddress = await getAssociatedTokenAddress(new PublicKey(tokenAddress), this.provider.publicKey);
+          const temp = createAssociatedTokenAccountInstruction(
+            this.provider.publicKey,
+            newAssociatedTokenAddress,
+            this.provider.publicKey,
+            new PublicKey(tokenAddress)
+          );
+
+          return temp;
+        }
+
+        throw new Error(error.message);
+      }
+
+      throw new Error('');
+    }
   }
 
   getAccountsPartial(tokenAddress: string) {
@@ -222,12 +250,20 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const collateralAmount = new BN(depositAmount * decimal);
     const usdaiAmount = new BN(0 * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
+    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const resultTransaction = new Transaction();
+
+    if (isHasUserCollateral1 !== null) {
+      resultTransaction.add(isHasUserCollateral1);
+    }
 
     const transaction = await this.program.methods
       .interactWithType0Depository(collateralAmount, usdaiAmount, false, false)
       .accountsPartial(accountsPartial)
       .transaction();
-    const transactionHash = await this.sendTransaction(transaction);
+    resultTransaction.add(transaction);
+
+    const transactionHash = await this.sendTransaction(resultTransaction);
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
