@@ -25,7 +25,6 @@ import {
   CONTROLLER_SEED,
   collateral as defaultCollateral,
   DEPOSITORY_TYPE1_SEED,
-  LOAN,
   LOAN_TYPE1_SEED,
   REDEEMABLE_MINT_SEED,
   REDEEM_CONFIG,
@@ -127,8 +126,9 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async getLoan(tokenAddress: string) {
-    const loanPda = this.getPda(LOAN, new PublicKey(tokenAddress));
-    const loan = await this.program.account.loanType0.fetch(loanPda);
+    const { depository } = this.getAccountsPartial(tokenAddress);
+    const loanPda = this.getPda(LOAN_TYPE1_SEED, depository, this.provider.publicKey);
+    const loan = await this.program.account.loanType1.fetch(loanPda);
 
     return loan;
   }
@@ -210,6 +210,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const accountsPartial = this.getAccountsPartial(tokenAddress);
 
     const transaction = await this.program.methods.type1DepositoryWithdraw(collateralAmount).accountsPartial(accountsPartial).transaction();
+
     const transactionHash = await this.sendTransaction(transaction);
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
