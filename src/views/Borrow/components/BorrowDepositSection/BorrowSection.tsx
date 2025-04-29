@@ -52,6 +52,7 @@ const BorrowSection = () => {
   };
 
   const handleMax = () => {
+    if (isSubmitted) return;
     const borrowPrice = (Number(maxLtv) / 100) * totalDepositValue - yourBorrowByAddress;
     const minValue = borrowPrice < 0 ? 0 : borrowPrice;
     const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), listPrice);
