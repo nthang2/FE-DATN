@@ -339,7 +339,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
         isWritable: acc.isWritable,
       };
     });
-
+    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(selectedToken));
     const addressLookupTableAccounts = await getAddressLookupTableAccounts(resultSwapInstructions.addressLookupTableAddresses || []);
 
     const instructions = [
@@ -347,10 +347,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       ComputeBudgetProgram.setComputeUnitLimit({
         units: computeUnits,
       }),
-
       // Add priority fee
       addPriorityFee(),
-
       // Use redeem_by_collateral_3 instruction
       await this.program.methods
         .redeemByCollateral(new BN(usdaiAmount), new BN(collateralAmountRaw), jupiterData)
@@ -358,6 +356,10 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
         .remainingAccounts(remainingAccounts)
         .instruction(),
     ];
+
+    if (isHasUserCollateral1 !== null) {
+      instructions.unshift(isHasUserCollateral1);
+    }
 
     const blockhash = (await this.provider.connection.getLatestBlockhash('finalized')).blockhash;
     const messageV0 = new TransactionMessage({
@@ -369,7 +371,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const transaction = new VersionedTransaction(messageV0);
     // const simulate = await this.provider.connection.simulateTransaction(transaction, { commitment: 'finalized' });
     // console.log('simulate', simulate);
-
     const result = await this.sendTransaction(transaction);
     return result;
   }
