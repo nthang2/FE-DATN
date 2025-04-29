@@ -35,5 +35,5 @@ export const listTokenAvailable = isDevNet
       [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC],
       [TokenName.SOL]: mapNameToInfoSolana[TokenName.SOL],
       [TokenName.VIRTUAL]: mapNameToInfoSolana[TokenName.VIRTUAL],
-      [TokenName.scORAI]: mapNameToInfoSolana[TokenName.scORAI],
+      // [TokenName.scORAI]: mapNameToInfoSolana[TokenName.scORAI],
     };

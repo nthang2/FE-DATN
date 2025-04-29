@@ -47,7 +47,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   getAccountsPartial(tokenAddress: string) {
-    // const redeemable_mint = new PublicKey('DYeTA4ZQhEwoJ5imjq1Q3zgwfTgkh4WmdfFHAq3jLrv3');
     const redeemable_mint = this.getPda(REDEEMABLE_MINT_SEED);
     const collateral = new PublicKey(tokenAddress);
     const userCollateralATA = getAssociatedTokenAddressSync(collateral, this.provider.publicKey);
@@ -56,7 +55,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const controller = this.getPda(CONTROLLER_SEED);
     const depository = this.getPda(DEPOSITORY_SEED, collateral);
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
-    // const oracle = findTokenInfoByToken(tokenAddress)?.oracle;
     const reserveTokenAccount = getAssociatedTokenAddressSync(redeemable_mint, RESERVE_ACCOUNT, true);
     const redeemConfig = this.getPda(REDEEM_CONFIG, collateral);
 
