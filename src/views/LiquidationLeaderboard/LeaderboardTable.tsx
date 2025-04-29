@@ -159,7 +159,7 @@ export default function LeaderboardTable() {
                 return (
                   <TableCell key={i} align={i <= 1 ? 'left' : 'right'} width={h.width}>
                     <Box className={clsx('flex-end', { 'flex-start': i <= 1 })}>
-                      <Typography variant="caption2" sx={{ color: '#888880' }}>
+                      <Typography variant="caption2" sx={{ color: 'info.main' }}>
                         {h.label}
                       </Typography>
                       {h.sort && (

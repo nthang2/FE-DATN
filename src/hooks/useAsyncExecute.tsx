@@ -33,6 +33,13 @@ export default function useAsyncExecute() {
     try {
       const response = await fn(notify, idToast);
       onSuccess?.(response);
+
+      if (!response) {
+        toast.dismiss(idToast);
+        setLoading(false);
+        return;
+      }
+
       toast.update(idToast, {
         render: (
           <Stack alignItems="center" gap={0.5}>

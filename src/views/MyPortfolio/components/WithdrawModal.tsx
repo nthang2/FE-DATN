@@ -19,6 +19,7 @@ import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/
 import { BN } from 'src/utils';
 import { decimalFlood, formatNumber } from 'src/utils/format';
 import CheckHealthFactor from './CheckHealthFactor';
+import { toast } from 'react-toastify';
 
 export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
@@ -58,6 +59,14 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const handleWithdraw = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
     const lendingContract = initLendingContract(wallet);
+    const depositoryVault = await lendingContract.getDepositoryVault(token.address);
+    const loanAccount = await lendingContract.getLoan(token.address);
+
+    if (BN(loanAccount.collateralAmount).isGreaterThan(depositoryVault.amount.toString())) {
+      toast.error('Protocol has insufficient funds');
+      return;
+    }
+
     const hash = await lendingContract.withdraw(Number(valueWithdraw), token.address);
     setValueWithdraw('');
     setValueInUSD('0');
@@ -86,7 +95,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
       }}
     >
       <Box className="flex-space-between">
-        <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880' }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main' }}>
           Amount
         </Typography>
         <ValueWithStatus
@@ -194,7 +203,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
       <FormHelperText sx={{ px: 1, py: 0, minHeight: '16px' }} error>
         {valueWithdrawHelperText}
       </FormHelperText>
-      <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880', mt: 3 }}>
+      <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main', mt: 3 }}>
         Transaction overview
       </Typography>
       <Box
@@ -204,17 +213,17 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
           // borderColor: error ? 'error.main' : '#666662',
         }}
       >
-        <Typography variant="body2" sx={{ color: '#888880' }}>
+        <Typography variant="body2" sx={{ color: 'info.main' }}>
           Health factor:
         </Typography>
         <CheckHealthFactor token={token} />
       </Box>
       <Box>
         <Box className="flex-space-between" sx={{ mt: 3 }}>
-          <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880' }}>
+          <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main' }}>
             Action
           </Typography>
-          <SettingsOutlined sx={{ color: '#888880' }} />
+          <SettingsOutlined sx={{ color: 'info.main' }} />
         </Box>
         <Box className={clsx(['box', 'flex-space-between'])} sx={{ border: '#666662 solid 1px', position: 'relative' }}>
           <Box className="flex-center">

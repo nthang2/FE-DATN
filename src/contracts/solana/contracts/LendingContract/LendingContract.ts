@@ -5,6 +5,7 @@ import {
   createAssociatedTokenAccountInstruction,
   createSyncNativeInstruction,
   getAccount,
+  getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
   NATIVE_MINT,
   TOKEN_PROGRAM_ID,
@@ -46,8 +47,34 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     return pda;
   }
 
+  async checkUserCollateral1(tokenAddress: PublicKey) {
+    try {
+      const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
+      await getAccount(this.provider.connection, userCollateral1);
+
+      return null;
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.name.includes('TokenAccountNotFoundError')) {
+          const newAssociatedTokenAddress = await getAssociatedTokenAddress(new PublicKey(tokenAddress), this.provider.publicKey);
+          const temp = createAssociatedTokenAccountInstruction(
+            this.provider.publicKey,
+            newAssociatedTokenAddress,
+            this.provider.publicKey,
+            new PublicKey(tokenAddress)
+          );
+
+          return temp;
+        }
+
+        throw new Error(error.message);
+      }
+
+      throw new Error('');
+    }
+  }
+
   getAccountsPartial(tokenAddress: string) {
-    // const redeemable_mint = new PublicKey('DYeTA4ZQhEwoJ5imjq1Q3zgwfTgkh4WmdfFHAq3jLrv3');
     const redeemable_mint = this.getPda(REDEEMABLE_MINT_SEED);
     const collateral = new PublicKey(tokenAddress);
     const userCollateralATA = getAssociatedTokenAddressSync(collateral, this.provider.publicKey);
@@ -56,7 +83,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const controller = this.getPda(CONTROLLER_SEED);
     const depository = this.getPda(DEPOSITORY_SEED, collateral);
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
-    // const oracle = findTokenInfoByToken(tokenAddress)?.oracle;
     const reserveTokenAccount = getAssociatedTokenAddressSync(redeemable_mint, RESERVE_ACCOUNT, true);
     const redeemConfig = this.getPda(REDEEM_CONFIG, collateral);
 
@@ -112,6 +138,13 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     return await this.program.account.loanType0.fetch(userLoanPDAAddress);
   }
 
+  async getDepositoryVault(tokenAddress: string) {
+    const { depositoryVault } = this.getAccountsPartial(tokenAddress);
+    const depository = await getAccount(this.provider.connection, depositoryVault);
+
+    return depository;
+  }
+
   async getDepository(tokenAddress: string) {
     const depositoryPda = this.getPda(DEPOSITORY_SEED, new PublicKey(tokenAddress));
     const depository = await this.program.account.type0Depository.fetch(depositoryPda);
@@ -122,7 +155,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const depositoryPda = this.getPda(DEPOSITORY_SEED, new PublicKey(tokenAddress));
     const loanPda = this.getPda(LOAN, depositoryPda, this.provider.publicKey);
     const loan = await this.program.account.loanType0.fetch(loanPda);
-
     // min(redeem_config.max_usdai_amount, max_usdai_with_rate) với max_usdai_with_rate = loan.minted_amount * depository.rate * redeem_config.max_usdai_rate / 10000)
 
     return loan;
@@ -184,12 +216,20 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const maxAmount = utilBN(2).pow(64).minus(1);
     const usdaiAmount = isMax ? new BN(maxAmount.toString()) : new BN(borrowAmount * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
+    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const resultTransaction = new Transaction();
+
+    if (isHasUserCollateral1 !== null) {
+      resultTransaction.add(isHasUserCollateral1);
+    }
 
     const transaction = await this.program.methods
       .interactWithType0Depository(collateralAmount, usdaiAmount, false, true)
       .accountsPartial(accountsPartial)
       .transaction();
-    const transactionHash = await this.sendTransaction(transaction);
+    resultTransaction.add(transaction);
+
+    const transactionHash = await this.sendTransaction(resultTransaction);
     await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
@@ -202,12 +242,20 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const maxAmount = utilBN(2).pow(64).minus(1);
     const usdaiAmount = isMax ? new BN(maxAmount.toString()) : new BN(debtAmount * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
+    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const resultTransaction = new Transaction();
+
+    if (isHasUserCollateral1 !== null) {
+      resultTransaction.add(isHasUserCollateral1);
+    }
 
     const transaction = await this.program.methods
       .interactWithType0Depository(collateralAmount, usdaiAmount, false, false)
       .accountsPartial(accountsPartial)
       .transaction();
-    const transactionHash = await this.sendTransaction(transaction);
+    resultTransaction.add(transaction);
+
+    const transactionHash = await this.sendTransaction(resultTransaction);
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
@@ -218,12 +266,20 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const collateralAmount = new BN(depositAmount * decimal);
     const usdaiAmount = new BN(0 * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
+    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const resultTransaction = new Transaction();
+
+    if (isHasUserCollateral1 !== null) {
+      resultTransaction.add(isHasUserCollateral1);
+    }
 
     const transaction = await this.program.methods
       .interactWithType0Depository(collateralAmount, usdaiAmount, false, false)
       .accountsPartial(accountsPartial)
       .transaction();
-    const transactionHash = await this.sendTransaction(transaction);
+    resultTransaction.add(transaction);
+
+    const transactionHash = await this.sendTransaction(resultTransaction);
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
@@ -283,7 +339,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
         isWritable: acc.isWritable,
       };
     });
-
+    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(selectedToken));
     const addressLookupTableAccounts = await getAddressLookupTableAccounts(resultSwapInstructions.addressLookupTableAddresses || []);
 
     const instructions = [
@@ -291,10 +347,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       ComputeBudgetProgram.setComputeUnitLimit({
         units: computeUnits,
       }),
-
       // Add priority fee
       addPriorityFee(),
-
       // Use redeem_by_collateral_3 instruction
       await this.program.methods
         .redeemByCollateral(new BN(usdaiAmount), new BN(collateralAmountRaw), jupiterData)
@@ -302,6 +356,10 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
         .remainingAccounts(remainingAccounts)
         .instruction(),
     ];
+
+    if (isHasUserCollateral1 !== null) {
+      instructions.unshift(isHasUserCollateral1);
+    }
 
     const blockhash = (await this.provider.connection.getLatestBlockhash('finalized')).blockhash;
     const messageV0 = new TransactionMessage({
@@ -313,7 +371,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const transaction = new VersionedTransaction(messageV0);
     // const simulate = await this.provider.connection.simulateTransaction(transaction, { commitment: 'finalized' });
     // console.log('simulate', simulate);
-
     const result = await this.sendTransaction(transaction);
     return result;
   }

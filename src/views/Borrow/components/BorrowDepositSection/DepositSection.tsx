@@ -40,7 +40,7 @@ const DepositSection = () => {
 
   const isAddAllOptions = depositItems.length < Object.keys(listTokenAvailable).length;
 
-  const isHasDeposited = crossMode || Boolean(depositedValueUsd) || depositedValueUsd > 0;
+  const isHasDeposited = Boolean(depositedValueUsd) || Number(depositedValueUsd) > 0;
 
   const depositItemBalance = useCallback(
     (index: number) => {

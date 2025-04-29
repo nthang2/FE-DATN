@@ -64,7 +64,7 @@ const StakeModal = () => {
       }}
     >
       <Box className="flex-space-between">
-        <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880' }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main' }}>
           Amount
         </Typography>
         <ValueWithStatus

@@ -41,7 +41,9 @@ const CrossModeRepayModal = (props: IProps) => {
       >
         {options.map((option) => (
           <MenuItem key={option.value} value={option.value} sx={{ padding: '4px 16px', height: '35px' }}>
-            <Typography variant="body2">{option.label}</Typography>
+            <Typography variant="body2" lineHeight={'unset'}>
+              {option.label}
+            </Typography>
           </MenuItem>
         ))}
       </Select>

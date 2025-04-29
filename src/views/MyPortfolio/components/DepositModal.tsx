@@ -80,7 +80,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
       }}
     >
       <Box className="flex-space-between">
-        <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880' }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main' }}>
           Amount
         </Typography>
         <ValueWithStatus
@@ -177,7 +177,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
       <FormHelperText sx={{ px: 1, py: 0, minHeight: '16px' }} error>
         {valueDepositHelperText}
       </FormHelperText>
-      <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880', mt: 3 }}>
+      <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main', mt: 3 }}>
         Transaction overview
       </Typography>
       <Box
@@ -186,17 +186,17 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
           bgcolor: 'background.secondary',
         }}
       >
-        <Typography variant="body2" sx={{ color: '#888880' }}>
+        <Typography variant="body2" sx={{ color: 'info.main' }}>
           Health factor:
         </Typography>
         <CheckHealthFactor token={token} />
       </Box>
       <Box>
         <Box className="flex-space-between" sx={{ mt: 3 }}>
-          <Typography variant="body2" sx={{ fontWeight: 500, color: '#888880' }}>
+          <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main' }}>
             Action
           </Typography>
-          <SettingsOutlined sx={{ color: '#888880' }} />
+          <SettingsOutlined sx={{ color: 'info.main' }} />
         </Box>
         <Box className={clsx(['box', 'flex-space-between'])} sx={{ border: '#666662 solid 1px', position: 'relative' }}>
           <Box className="flex-center">

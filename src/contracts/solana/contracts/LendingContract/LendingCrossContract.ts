@@ -3,8 +3,10 @@ import { BN } from '@coral-xyz/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
+  createCloseAccountInstruction,
   createSyncNativeInstruction,
   getAccount,
+  getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
   NATIVE_MINT,
   TOKEN_PROGRAM_ID,
@@ -17,23 +19,22 @@ import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devne
 import { solTokenSolana } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { queryClient } from 'src/layout/Layout';
 import { publicClientSol } from 'src/states/hooks';
+import { appStore, crossModeAtom } from 'src/states/state';
 import { getDecimalToken } from 'src/utils';
 import { BN as utilBN } from 'src/utils/index';
+import { addPriorityFee, getAddressLookupTableAccounts } from 'src/views/MyPortfolio/utils';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import {
+  computeUnits,
   CONTROLLER_SEED,
   collateral as defaultCollateral,
   DEPOSITORY_TYPE1_SEED,
-  LOAN,
   LOAN_TYPE1_SEED,
-  REDEEMABLE_MINT_SEED,
   REDEEM_CONFIG,
+  REDEEMABLE_MINT_SEED,
   RESERVE_ACCOUNT,
-  computeUnits,
 } from './constant';
-import { appStore, crossModeAtom } from 'src/states/state';
-import { getAddressLookupTableAccounts, addPriorityFee } from 'src/views/MyPortfolio/utils';
 
 export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -47,6 +48,48 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     return pda;
   }
 
+  async checkUserCollateral1(tokenAddress: PublicKey) {
+    try {
+      const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
+      await getAccount(this.provider.connection, userCollateral1);
+
+      return null;
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.name.includes('TokenAccountNotFoundError')) {
+          const newAssociatedTokenAddress = await getAssociatedTokenAddress(new PublicKey(tokenAddress), this.provider.publicKey);
+          const temp = createAssociatedTokenAccountInstruction(
+            this.provider.publicKey,
+            newAssociatedTokenAddress,
+            this.provider.publicKey,
+            new PublicKey(tokenAddress)
+          );
+
+          return temp;
+        }
+
+        throw new Error(error.message);
+      }
+
+      throw new Error('');
+    }
+  }
+
+  async closeAccount(tokenAddress: PublicKey) {
+    const newAssociatedTokenAddress = await getAssociatedTokenAddress(new PublicKey(tokenAddress), this.provider.publicKey);
+    const ix = createCloseAccountInstruction(
+      newAssociatedTokenAddress, // source (ATA cần đóng)
+      this.provider.publicKey, // destination: nơi nhận lại SOL
+      this.provider.publicKey
+    );
+    const tx = new Transaction().add(ix);
+    tx.recentBlockhash = (await this.provider.connection.getLatestBlockhash()).blockhash;
+    tx.feePayer = this.provider.publicKey;
+    this.sendTransaction(tx);
+
+    console.log('closeAccount', tx);
+  }
+
   getAccountsPartial(tokenAddress: string) {
     const redeemable_mint = this.getPda(REDEEMABLE_MINT_SEED);
     const collateral = new PublicKey(tokenAddress);
@@ -56,8 +99,8 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const depository = this.getPda(DEPOSITORY_TYPE1_SEED);
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
     const reserveTokenAccount = getAssociatedTokenAddressSync(redeemable_mint, RESERVE_ACCOUNT, true);
-    const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
     const collateral1Pda = this.getPda(DEPOSITORY_TYPE1_SEED, new PublicKey(tokenAddress));
+    const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
 
     return {
       controller: controller,
@@ -127,8 +170,9 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async getLoan(tokenAddress: string) {
-    const loanPda = this.getPda(LOAN, new PublicKey(tokenAddress));
-    const loan = await this.program.account.loanType0.fetch(loanPda);
+    const { depository } = this.getAccountsPartial(tokenAddress);
+    const loanPda = this.getPda(LOAN_TYPE1_SEED, depository, this.provider.publicKey);
+    const loan = await this.program.account.loanType1.fetch(loanPda);
 
     return loan;
   }
@@ -186,6 +230,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
     const transaction = await this.program.methods.type1DepositoryMint(usdaiAmount).accountsPartial(accountsPartial).transaction();
     const transactionHash = await this.sendTransaction(transaction);
+
     await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
@@ -199,6 +244,8 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
     const transaction = await this.program.methods.type1DepositoryBurn(usdaiAmount).accountsPartial(accountsPartial).transaction();
     const transactionHash = await this.sendTransaction(transaction);
+
+    await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
@@ -208,9 +255,18 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const decimal = getDecimalToken(tokenAddress);
     const collateralAmount = new BN(depositAmount * decimal);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
+    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const resultTransaction = new Transaction();
+
+    if (isHasUserCollateral1 !== null) {
+      resultTransaction.add(isHasUserCollateral1);
+    }
 
     const transaction = await this.program.methods.type1DepositoryWithdraw(collateralAmount).accountsPartial(accountsPartial).transaction();
-    const transactionHash = await this.sendTransaction(transaction);
+    resultTransaction.add(transaction);
+    const transactionHash = await this.sendTransaction(resultTransaction);
+
+    await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
@@ -304,5 +360,12 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
     const result = await this.sendTransaction(transaction);
     return result;
+  }
+
+  async getDepositoryVault(tokenAddress: string) {
+    const { depositoryVault } = this.getAccountsPartial(tokenAddress);
+    const depository = await getAccount(this.provider.connection, depositoryVault);
+
+    return depository;
   }
 }

@@ -13,13 +13,12 @@ import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
+import { useCrossModeState } from 'src/states/hooks';
 import useSolanaBalanceToken, { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
+import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import SliderCustom from './components/SliderCustom';
-import CrossModeSwitch from 'src/components/CrossModeSwitch/CrossModeSwitch';
-import { useCrossModeState } from 'src/states/hooks';
-import { BN } from 'src/utils';
 
 export default function YourPosition() {
   const { address } = useSummarySolanaConnect();
@@ -90,10 +89,10 @@ export default function YourPosition() {
   }, [asset, crossMode, totalDepositValueRatio, totalYourBorrowValue]);
 
   return (
-    <BoxCustom>
+    <BoxCustom sx={{ bgcolor: 'background.default' }}>
       <Box display={'flex'} justifyContent="space-between">
         <Typography variant="h5">Your Position</Typography>
-        <CrossModeSwitch />
+        {/* <CrossModeSwitch /> */}
       </Box>
       <Box sx={{ mt: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

@@ -87,3 +87,15 @@ export const virtualSolanaMainnet = new SolanaMainnetTokenInfo({
   oracle: 'GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k',
   ratio: '0.3',
 });
+
+export const scOraiSolanaMainnet = new SolanaMainnetTokenInfo({
+  address: 'oraiHES5kVRKK62M8T3KkTpFeKg8UBJz1RJ3d69MSAC',
+  decimals: 6,
+  symbol: TokenName.scORAI,
+  prettyName: 'Staking Compound ORAI',
+  coingeckoId: 'staking-compound-orai',
+  isNative: false,
+  isToken2022: false,
+  oracle: 'GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k',
+  ratio: '0.4',
+});

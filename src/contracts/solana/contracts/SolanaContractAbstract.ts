@@ -44,7 +44,7 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
       const simulate = await connection.simulateTransaction(transaction, { commitment: 'finalized' });
       console.log('Simulation:', simulate);
       if (simulate.value.err) {
-        throw new Error('Simulate error: ' + simulate.value.err.toString());
+        throw new Error('Simulate error:' + simulate.value.logs?.join('\n'));
       }
     }
     if (this.contextWallet.wallet?.adapter.name === 'Phantom') {

@@ -77,7 +77,7 @@ export default function Borrow() {
   };
 
   return (
-    <BoxCustom sx={{ mt: 2 }}>
+    <BoxCustom sx={{ bgcolor: 'background.default', mt: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography variant="h5" sx={{ fontWeight: 700, mr: 4 }}>
@@ -95,7 +95,7 @@ export default function Borrow() {
           </Typography>
         </Button> */}
       </Box>
-      <TableContainer sx={{ bgcolor: 'background.content' }}>
+      <TableContainer>
         <Table>
           <TableHead>
             <TableRow>

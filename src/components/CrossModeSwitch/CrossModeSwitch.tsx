@@ -4,11 +4,12 @@ import grey from '@mui/material/colors/grey';
 // import { NETWORK } from 'src/constants';
 import { useCrossModeState } from 'src/states/hooks';
 import { defaultBorrowValue } from 'src/views/Borrow/constant';
-import { useDepositState } from 'src/views/Borrow/state/hooks';
+import { useBorrowSubmitState, useDepositState } from 'src/views/Borrow/state/hooks';
 
 const CrossModeSwitch = () => {
   const [crossMode, setCrossMode] = useCrossModeState();
   const [, setDepositState] = useDepositState();
+  const [isSubmitted] = useBorrowSubmitState();
 
   const handleChangeCrossMode = async () => {
     setCrossMode(!crossMode);
@@ -56,6 +57,7 @@ const CrossModeSwitch = () => {
         checked={crossMode}
         onChange={handleChangeCrossMode}
         checkedIcon={<CheckCircleIcon />}
+        disabled={isSubmitted}
         sx={(theme) => ({
           padding: 1,
           '& .MuiSwitch-switchBase': {
