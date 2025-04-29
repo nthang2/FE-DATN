@@ -216,12 +216,20 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const maxAmount = utilBN(2).pow(64).minus(1);
     const usdaiAmount = isMax ? new BN(maxAmount.toString()) : new BN(borrowAmount * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
+    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const resultTransaction = new Transaction();
+
+    if (isHasUserCollateral1 !== null) {
+      resultTransaction.add(isHasUserCollateral1);
+    }
 
     const transaction = await this.program.methods
       .interactWithType0Depository(collateralAmount, usdaiAmount, false, true)
       .accountsPartial(accountsPartial)
       .transaction();
-    const transactionHash = await this.sendTransaction(transaction);
+    resultTransaction.add(transaction);
+
+    const transactionHash = await this.sendTransaction(resultTransaction);
     await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
@@ -234,12 +242,20 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const maxAmount = utilBN(2).pow(64).minus(1);
     const usdaiAmount = isMax ? new BN(maxAmount.toString()) : new BN(debtAmount * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
+    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const resultTransaction = new Transaction();
+
+    if (isHasUserCollateral1 !== null) {
+      resultTransaction.add(isHasUserCollateral1);
+    }
 
     const transaction = await this.program.methods
       .interactWithType0Depository(collateralAmount, usdaiAmount, false, false)
       .accountsPartial(accountsPartial)
       .transaction();
-    const transactionHash = await this.sendTransaction(transaction);
+    resultTransaction.add(transaction);
+
+    const transactionHash = await this.sendTransaction(resultTransaction);
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;

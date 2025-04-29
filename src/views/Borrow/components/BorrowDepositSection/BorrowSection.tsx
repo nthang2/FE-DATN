@@ -7,7 +7,8 @@ import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import { useCrossModeState } from 'src/states/hooks';
-import { BN, regexConfigValue } from 'src/utils';
+import { regexConfigValue } from 'src/utils';
+import { decimalFlood } from 'src/utils/format';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
@@ -37,10 +38,10 @@ const BorrowSection = () => {
   const isShowYourBorrow = !!mintedValueUsd && Number(mintedValueUsd) > 0;
 
   const handleChangeInput = (value: string) => {
-    const price = convertToUsd(borrowState.address, BN(value).toFixed(8), listPrice);
+    const price = convertToUsd(borrowState.address, decimalFlood(value, 6), listPrice);
     const borrowPercent = ((price + yourBorrowByAddress) / totalDepositValue) * 100;
     const error = validateBorrowItem(Number(value), borrowPercent, maxLtv);
-    const inputValue = regexConfigValue(BN(value).toFixed(8));
+    const inputValue = regexConfigValue(decimalFlood(value, 6));
 
     setBorrowState({
       ...borrowState,
