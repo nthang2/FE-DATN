@@ -5,6 +5,7 @@ import {
   createAssociatedTokenAccountInstruction,
   createSyncNativeInstruction,
   getAccount,
+  getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
   NATIVE_MINT,
   TOKEN_PROGRAM_ID,
@@ -17,22 +18,22 @@ import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devne
 import { solTokenSolana } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { queryClient } from 'src/layout/Layout';
 import { publicClientSol } from 'src/states/hooks';
+import { appStore, crossModeAtom } from 'src/states/state';
 import { getDecimalToken } from 'src/utils';
 import { BN as utilBN } from 'src/utils/index';
+import { addPriorityFee, getAddressLookupTableAccounts } from 'src/views/MyPortfolio/utils';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import {
+  computeUnits,
   CONTROLLER_SEED,
   collateral as defaultCollateral,
   DEPOSITORY_TYPE1_SEED,
   LOAN_TYPE1_SEED,
-  REDEEMABLE_MINT_SEED,
   REDEEM_CONFIG,
+  REDEEMABLE_MINT_SEED,
   RESERVE_ACCOUNT,
-  computeUnits,
 } from './constant';
-import { appStore, crossModeAtom } from 'src/states/state';
-import { getAddressLookupTableAccounts, addPriorityFee } from 'src/views/MyPortfolio/utils';
 
 export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -46,6 +47,25 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     return pda;
   }
 
+  async checkUserCollateral1(tokenAddress: PublicKey) {
+    try {
+      getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
+      return null;
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('TokenAccountNotFoundError')) {
+        const newAssociatedTokenAddress = await getAssociatedTokenAddress(new PublicKey(tokenAddress), this.provider.publicKey);
+        const temp = createAssociatedTokenAccountInstruction(
+          this.provider.publicKey,
+          newAssociatedTokenAddress,
+          this.provider.publicKey,
+          new PublicKey(tokenAddress)
+        );
+        return temp;
+      }
+      throw error;
+    }
+  }
+
   getAccountsPartial(tokenAddress: string) {
     const redeemable_mint = this.getPda(REDEEMABLE_MINT_SEED);
     const collateral = new PublicKey(tokenAddress);
@@ -55,8 +75,8 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const depository = this.getPda(DEPOSITORY_TYPE1_SEED);
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
     const reserveTokenAccount = getAssociatedTokenAddressSync(redeemable_mint, RESERVE_ACCOUNT, true);
-    const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
     const collateral1Pda = this.getPda(DEPOSITORY_TYPE1_SEED, new PublicKey(tokenAddress));
+    const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
 
     return {
       controller: controller,
@@ -208,10 +228,17 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const decimal = getDecimalToken(tokenAddress);
     const collateralAmount = new BN(depositAmount * decimal);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
+    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const resultTransaction = new Transaction();
+
+    if (isHasUserCollateral1 !== null) {
+      resultTransaction.add(isHasUserCollateral1);
+    }
 
     const transaction = await this.program.methods.type1DepositoryWithdraw(collateralAmount).accountsPartial(accountsPartial).transaction();
+    resultTransaction.add(transaction);
 
-    const transactionHash = await this.sendTransaction(transaction);
+    const transactionHash = await this.sendTransaction(resultTransaction);
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
