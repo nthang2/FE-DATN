@@ -3,6 +3,7 @@ import { BN } from '@coral-xyz/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
+  createCloseAccountInstruction,
   createSyncNativeInstruction,
   getAccount,
   getAssociatedTokenAddress,
@@ -49,21 +50,44 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
   async checkUserCollateral1(tokenAddress: PublicKey) {
     try {
-      getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
+      const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
+      await getAccount(this.provider.connection, userCollateral1);
+
       return null;
     } catch (error) {
-      if (error instanceof Error && error.message.includes('TokenAccountNotFoundError')) {
-        const newAssociatedTokenAddress = await getAssociatedTokenAddress(new PublicKey(tokenAddress), this.provider.publicKey);
-        const temp = createAssociatedTokenAccountInstruction(
-          this.provider.publicKey,
-          newAssociatedTokenAddress,
-          this.provider.publicKey,
-          new PublicKey(tokenAddress)
-        );
-        return temp;
+      if (error instanceof Error) {
+        if (error.name.includes('TokenAccountNotFoundError')) {
+          const newAssociatedTokenAddress = await getAssociatedTokenAddress(new PublicKey(tokenAddress), this.provider.publicKey);
+          const temp = createAssociatedTokenAccountInstruction(
+            this.provider.publicKey,
+            newAssociatedTokenAddress,
+            this.provider.publicKey,
+            new PublicKey(tokenAddress)
+          );
+
+          return temp;
+        }
+
+        throw new Error(error.message);
       }
-      throw error;
+
+      throw new Error('');
     }
+  }
+
+  async closeAccount(tokenAddress: PublicKey) {
+    const newAssociatedTokenAddress = await getAssociatedTokenAddress(new PublicKey(tokenAddress), this.provider.publicKey);
+    const ix = createCloseAccountInstruction(
+      newAssociatedTokenAddress, // source (ATA cần đóng)
+      this.provider.publicKey, // destination: nơi nhận lại SOL
+      this.provider.publicKey
+    );
+    const tx = new Transaction().add(ix);
+    tx.recentBlockhash = (await this.provider.connection.getLatestBlockhash()).blockhash;
+    tx.feePayer = this.provider.publicKey;
+    this.sendTransaction(tx);
+
+    console.log('closeAccount', tx);
   }
 
   getAccountsPartial(tokenAddress: string) {
@@ -206,6 +230,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
     const transaction = await this.program.methods.type1DepositoryMint(usdaiAmount).accountsPartial(accountsPartial).transaction();
     const transactionHash = await this.sendTransaction(transaction);
+
     await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
@@ -219,6 +244,8 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
     const transaction = await this.program.methods.type1DepositoryBurn(usdaiAmount).accountsPartial(accountsPartial).transaction();
     const transactionHash = await this.sendTransaction(transaction);
+
+    await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
@@ -237,8 +264,9 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
     const transaction = await this.program.methods.type1DepositoryWithdraw(collateralAmount).accountsPartial(accountsPartial).transaction();
     resultTransaction.add(transaction);
-
     const transactionHash = await this.sendTransaction(resultTransaction);
+
+    await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
     return transactionHash;
