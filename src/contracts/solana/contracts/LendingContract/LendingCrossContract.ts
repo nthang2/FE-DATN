@@ -75,21 +75,6 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     }
   }
 
-  async closeAccount(tokenAddress: PublicKey) {
-    const newAssociatedTokenAddress = await getAssociatedTokenAddress(new PublicKey(tokenAddress), this.provider.publicKey);
-    const ix = createCloseAccountInstruction(
-      newAssociatedTokenAddress, // source (ATA cần đóng)
-      this.provider.publicKey, // destination: nơi nhận lại SOL
-      this.provider.publicKey
-    );
-    const tx = new Transaction().add(ix);
-    tx.recentBlockhash = (await this.provider.connection.getLatestBlockhash()).blockhash;
-    tx.feePayer = this.provider.publicKey;
-    this.sendTransaction(tx);
-
-    console.log('closeAccount', tx);
-  }
-
   getAccountsPartial(tokenAddress: string) {
     const redeemable_mint = this.getPda(REDEEMABLE_MINT_SEED);
     const collateral = new PublicKey(tokenAddress);
@@ -266,6 +251,10 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     resultTransaction.add(transaction);
     const transactionHash = await this.sendTransaction(resultTransaction);
 
+    if (tokenAddress === (solTokenSolana.address || solanaDevnet.address)) {
+      resultTransaction.add(await this.unwrapSol());
+    }
+
     await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
@@ -367,5 +356,14 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const depository = await getAccount(this.provider.connection, depositoryVault);
 
     return depository;
+  }
+
+  async unwrapSol(wsolMint: PublicKey = new PublicKey('So11111111111111111111111111111111111111112')) {
+    const associatedTokenAccount = await getAssociatedTokenAddress(wsolMint, this.provider.publicKey);
+
+    const inx = createCloseAccountInstruction(associatedTokenAccount, this.provider.publicKey, this.provider.publicKey, []);
+
+    const tx = new Transaction().add(inx);
+    return tx;
   }
 }
