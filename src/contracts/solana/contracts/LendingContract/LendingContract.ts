@@ -3,6 +3,7 @@ import { BN } from '@coral-xyz/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
+  createCloseAccountInstruction,
   createSyncNativeInstruction,
   getAccount,
   getAssociatedTokenAddress,
@@ -18,22 +19,22 @@ import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devne
 import { solTokenSolana } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { queryClient } from 'src/layout/Layout';
 import { publicClientSol } from 'src/states/hooks';
+import { appStore, crossModeAtom } from 'src/states/state';
 import { getDecimalToken } from 'src/utils';
 import { BN as utilBN } from 'src/utils/index';
+import { addPriorityFee, getAddressLookupTableAccounts } from 'src/views/MyPortfolio/utils';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import {
+  computeUnits,
   CONTROLLER_SEED,
   collateral as defaultCollateral,
   DEPOSITORY_SEED,
-  REDEEMABLE_MINT_SEED,
-  REDEEM_CONFIG,
-  RESERVE_ACCOUNT,
   LOAN,
-  computeUnits,
+  REDEEM_CONFIG,
+  REDEEMABLE_MINT_SEED,
+  RESERVE_ACCOUNT,
 } from './constant';
-import { appStore, crossModeAtom } from 'src/states/state';
-import { addPriorityFee, getAddressLookupTableAccounts } from 'src/views/MyPortfolio/utils';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -279,6 +280,10 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       .transaction();
     resultTransaction.add(transaction);
 
+    if (tokenAddress === (solTokenSolana.address || solanaDevnet.address)) {
+      resultTransaction.add(await this.unwrapSol());
+    }
+
     const transactionHash = await this.sendTransaction(resultTransaction);
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 
@@ -373,5 +378,14 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     // console.log('simulate', simulate);
     const result = await this.sendTransaction(transaction);
     return result;
+  }
+
+  async unwrapSol(wsolMint: PublicKey = new PublicKey('So11111111111111111111111111111111111111112')) {
+    const associatedTokenAccount = await getAssociatedTokenAddress(wsolMint, this.provider.publicKey);
+
+    const inx = createCloseAccountInstruction(associatedTokenAccount, this.provider.publicKey, this.provider.publicKey, []);
+
+    const tx = new Transaction().add(inx);
+    return tx;
   }
 }
