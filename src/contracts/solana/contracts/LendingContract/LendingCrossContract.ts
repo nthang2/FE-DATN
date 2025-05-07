@@ -249,11 +249,12 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
     const transaction = await this.program.methods.type1DepositoryWithdraw(collateralAmount).accountsPartial(accountsPartial).transaction();
     resultTransaction.add(transaction);
-    const transactionHash = await this.sendTransaction(resultTransaction);
 
     if (tokenAddress === (solTokenSolana.address || solanaDevnet.address)) {
       resultTransaction.add(await this.unwrapSol());
     }
+
+    const transactionHash = await this.sendTransaction(resultTransaction);
 
     await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
@@ -360,10 +361,9 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
   async unwrapSol(wsolMint: PublicKey = new PublicKey('So11111111111111111111111111111111111111112')) {
     const associatedTokenAccount = await getAssociatedTokenAddress(wsolMint, this.provider.publicKey);
-
     const inx = createCloseAccountInstruction(associatedTokenAccount, this.provider.publicKey, this.provider.publicKey, []);
-
     const tx = new Transaction().add(inx);
+
     return tx;
   }
 }
