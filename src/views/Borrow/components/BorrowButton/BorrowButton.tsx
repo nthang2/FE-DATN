@@ -4,13 +4,9 @@ import { useMemo } from 'react';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useLendingContract from 'src/hooks/useContract/useLendingContract';
-import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
-import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
-import { convertToUsd } from '../../utils';
-import { useCrossModeState } from 'src/states/hooks';
 
 const BorrowButton = () => {
   const wallet = useWallet();
@@ -18,39 +14,26 @@ const BorrowButton = () => {
   const [depositItems] = useDepositState();
   const [isSubmitted, setIsSubmitted] = useBorrowSubmitState();
   const { address } = useSummarySolanaConnect();
-  const { data: listPrice } = useQueryAllTokensPrice();
-  const { data: depositedValue } = useQueryDepositValue();
   const { asyncExecute, loading } = useAsyncExecute();
-  const { maxBorrowPrice, yourBorrowByAddress, totalDepositValue } = useInvestedValue();
+  const { maxBorrowPrice } = useInvestedValue();
   const { initLendingContract } = useLendingContract();
-  const [crossMode] = useCrossModeState();
-
-  const depositedByAddress = useMemo(() => {
-    if (!depositedValue || !listPrice) return 0;
-    const depositAddress = depositItems[0].address;
-    return convertToUsd(depositAddress, depositedValue[depositAddress], listPrice) || 0;
-  }, [depositItems, depositedValue, listPrice]);
 
   const isOnlyMint = useMemo(() => {
     const depositValue = depositItems.some((item) => Number(item.value) > 0);
     if (!depositValue) {
-      if (Number(borrowState.value) > 0) {
-        return true;
-      }
+      return Number(borrowState.value) > 0;
     }
 
     return false;
   }, [borrowState.value, depositItems]);
 
   const isValidBorrow = useMemo(() => {
-    const totalDeposit = crossMode ? depositItems[0].price + totalDepositValue : depositItems[0].price + depositedByAddress;
-    const totalMint = yourBorrowByAddress + borrowState.price;
     const borrowError = !borrowState.error;
     const depositError = depositItems.some((item) => Boolean(item.error));
     const formValue = Number(borrowState.value) > 0 || depositItems.some((item) => Number(item.value) > 0);
 
-    return borrowError && formValue && !depositError && totalDeposit > 0 && totalMint > 0;
-  }, [borrowState, crossMode, depositItems, depositedByAddress, totalDepositValue, yourBorrowByAddress]);
+    return borrowError && formValue && !depositError;
+  }, [borrowState, depositItems]);
 
   const handleBorrow = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;
