@@ -40,7 +40,7 @@ const CrossModeSwitch = () => {
               Single collateral asset in one position.{' '}
               <Link
                 target="_blank"
-                href={'https://www.jpow.ai/Cross-Mode-Mechanism-1c4930c1ef03800fb74af6c08a83fc6f'}
+                href={'https://www.jpow.ai/Mechanism-for-Users-1ab930c1ef038079bc0ee0da4480e156'}
                 sx={{ color: 'rgb(0, 153, 255)', cursor: 'pointer', textDecoration: 'unset' }}
               >
                 Read more
