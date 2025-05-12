@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 import { listTokenAvailable, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { getTokenPrice } from 'src/services/HandleApi/getPriceToken/getPriceToken';
 

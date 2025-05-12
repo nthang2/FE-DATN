@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Icon, TokenName } from 'crypto-token-icon';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import { TokenName } from 'src/libs/crypto-icons';
 import { useEffect, useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
@@ -69,7 +70,7 @@ const DepositSection = () => {
           disableUnderline: true,
           endAdornment: (
             <Stack alignItems="center" gap={0.5}>
-              <Icon tokenName={TokenName.USDAI} />
+              <IconToken tokenName={TokenName.USDAI} />
               <Typography variant="body1" sx={{ color: 'primary.main', pr: 2 }}>
                 USDAI
               </Typography>

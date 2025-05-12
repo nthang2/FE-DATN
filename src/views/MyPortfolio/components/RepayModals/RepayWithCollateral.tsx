@@ -1,5 +1,4 @@
 import { Stack, Typography } from '@mui/material';
-import { mapNameToIcon, TokenName } from 'crypto-token-icon';
 import { useMemo, useState } from 'react';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
@@ -18,6 +17,8 @@ import RepayCustomInput from '../InputCustom/RepayCustomInput';
 import { defaultRepayFormValue, TRepayForm } from './type';
 import { decimalFlood } from 'src/utils/format';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { TokenName } from 'src/libs/crypto-icons';
+import { mapNameToIcon } from 'src/libs/crypto-icons/constants/iconMappings';
 
 interface IProps {
   token?: SolanaEcosystemTokenInfo;

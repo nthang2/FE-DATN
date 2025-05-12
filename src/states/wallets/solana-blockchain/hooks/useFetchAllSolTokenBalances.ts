@@ -2,7 +2,7 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { PublicKey } from '@solana/web3.js';
 import { useQuery } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
-import { TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { publicClientSol } from 'src/states/hooks';
 import { BN, DEC } from 'src/utils';

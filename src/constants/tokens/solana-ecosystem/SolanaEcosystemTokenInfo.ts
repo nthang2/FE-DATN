@@ -1,4 +1,4 @@
-import { TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 import { BaseTokenInfo } from '../BaseTokenInfo';
 
 export class SolanaEcosystemTokenInfo extends BaseTokenInfo {

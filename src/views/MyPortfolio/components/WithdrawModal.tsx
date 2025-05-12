@@ -2,7 +2,6 @@ import { SettingsOutlined } from '@mui/icons-material';
 import { Box, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
-import { Icon } from 'crypto-token-icon';
 import { useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
@@ -20,6 +19,7 @@ import { BN } from 'src/utils';
 import { decimalFlood, formatNumber } from 'src/utils/format';
 import CheckHealthFactor from './CheckHealthFactor';
 import { toast } from 'react-toastify';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 
 export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
@@ -124,7 +124,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
             bgcolor: 'secondary.dark',
           }}
         >
-          <Icon tokenName={token.symbol} sx={{ mr: 1 }} />
+          <IconToken tokenName={token.symbol} sx={{ mr: 1 }} />
           <Typography variant="body2">{token.symbol}</Typography>
         </Stack>
         <Box
@@ -227,7 +227,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
         </Box>
         <Box className={clsx(['box', 'flex-space-between'])} sx={{ border: '#666662 solid 1px', position: 'relative' }}>
           <Box className="flex-center">
-            <Icon tokenName={token.symbol} />
+            <IconToken tokenName={token.symbol} />
             <Typography sx={{ ml: 1, fontWeight: 600 }}>Withdraw {token.symbol}</Typography>
           </Box>
           <ButtonLoading

@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Icon, TokenName } from 'crypto-token-icon';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import { TokenName } from 'src/libs/crypto-icons';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
@@ -13,7 +14,7 @@ import CustomTextField from 'src/components/CustomForms/CustomTextField';
 
 const TokenUSDAIAmount = ({ children }: { children: ReactNode }) => (
   <Typography variant="body2" display="flex" alignItems="center" gap={1}>
-    {children} <Icon tokenName={TokenName.USDAI} />
+    {children} <IconToken tokenName={TokenName.USDAI} />
   </Typography>
 );
 
@@ -88,7 +89,7 @@ const WithdrawSection = () => {
             disableUnderline: true,
             endAdornment: (
               <Stack alignItems="center" gap={0.5}>
-                <Icon tokenName={TokenName.USDAI} />
+                <IconToken tokenName={TokenName.USDAI} />
                 <Typography variant="body1" sx={{ color: 'primary.main', pr: 2 }}>
                   USDAI
                 </Typography>

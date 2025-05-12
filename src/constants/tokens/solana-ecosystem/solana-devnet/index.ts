@@ -1,4 +1,4 @@
-import { TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 import { SolanaDevnetTokenInfo } from './SolanaDevnetTokenInfo';
 
 export const usdcDevSolanaDevnet = new SolanaDevnetTokenInfo({

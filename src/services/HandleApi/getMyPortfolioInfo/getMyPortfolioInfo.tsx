@@ -2,7 +2,7 @@ import axios from 'axios';
 import { apiUrl } from 'src/services/apiUrl';
 import { TMyPortfolioAsset, TMyPortfolioInfoResp } from './type';
 import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import { TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 
 export type MyPortfolioInfo = { asset: { [key: string]: TMyPortfolioAsset }; portfolioInfo: TMyPortfolioInfoResp };
 

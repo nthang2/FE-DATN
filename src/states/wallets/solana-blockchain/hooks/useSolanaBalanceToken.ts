@@ -1,4 +1,4 @@
-import { TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 import { mapNameToInfoSolana, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { BN } from 'src/utils';
 import useFetchAllSolTokenBalances from './useFetchAllSolTokenBalances';

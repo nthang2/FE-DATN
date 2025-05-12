@@ -1,5 +1,5 @@
-import { SvgComponent } from 'crypto-token-icon';
-import { IconLeap, IconLedger, IconMetamask, IconOwallet, IconTronLink, IconWalletConnect } from 'crypto-token-icon/wallets';
+import { SvgComponent } from 'src/libs/crypto-icons';
+import { IconLeap, IconMetaMask, IconOwallet, IconTronLink, IconWalletConnect } from 'src/libs/crypto-icons/wallets';
 
 // TODO: liệt kê toàn bộ các id của wallet và icon tương ứng
 export const walletIcon: { [k: string]: SvgComponent } = {
@@ -8,10 +8,9 @@ export const walletIcon: { [k: string]: SvgComponent } = {
   OWallet: IconOwallet,
   'io.leapwallet.LeapWallet': IconLeap,
   'leap-extension': IconLeap,
-  'cosmos-extension-metamask': IconMetamask,
-  metaMaskSDK: IconMetamask,
-  MetaMask: IconMetamask,
-  Ledger: IconLedger,
+  'cosmos-extension-metamask': IconMetaMask,
+  metaMaskSDK: IconMetaMask,
+  MetaMask: IconMetaMask,
   walletConnect: IconWalletConnect,
   WalletConnect: IconWalletConnect,
   TronLink: IconTronLink,

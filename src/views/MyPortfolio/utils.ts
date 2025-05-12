@@ -1,5 +1,5 @@
 import { AddressLookupTableAccount, ComputeBudgetProgram, PublicKey } from '@solana/web3.js';
-import { TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { TPriceList } from 'src/services/HandleApi/getPriceToken/getPriceToken';
 import { publicClientSol } from 'src/states/hooks';

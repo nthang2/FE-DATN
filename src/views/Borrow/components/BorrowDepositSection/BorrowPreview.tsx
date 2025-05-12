@@ -1,8 +1,9 @@
 import { Stack, Typography } from '@mui/material';
-import { Icon, TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 import { useMemo } from 'react';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { TBorrowItem } from '../../state/types';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 
 interface IProps {
   isShowYourBorrow: boolean;
@@ -21,7 +22,7 @@ const BorrowPreview = (props: IProps) => {
     isShowYourBorrow && (
       <Stack bgcolor="#333331" p="16px 20px" borderRadius="0px 0px 16px 16px" alignItems="left" direction="column" gap={1}>
         <Stack alignItems="center">
-          <Icon
+          <IconToken
             tokenName={findTokenInfoByToken(borrowItem.address)?.symbol as TokenName}
             sx={{ mr: '1px', width: '16px', height: '16px' }}
           />
@@ -31,7 +32,7 @@ const BorrowPreview = (props: IProps) => {
         </Stack>
 
         <Stack alignItems="center" display={isHasNewValue ? 'flex' : 'none'}>
-          <Icon
+          <IconToken
             tokenName={findTokenInfoByToken(borrowItem.address)?.symbol as TokenName}
             sx={{ mr: '1px', width: '16px', height: '16px' }}
           />

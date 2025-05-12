@@ -2,7 +2,7 @@ import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useMutation } from '@tanstack/react-query';
-import { TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useLendingContract from 'src/hooks/useContract/useLendingContract';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';

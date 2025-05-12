@@ -1,5 +1,6 @@
 import { Box, FormHelperText, MenuItem, Select, SelectProps, Skeleton, Stack, Typography } from '@mui/material';
-import { Icon, TokenName } from 'crypto-token-icon';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import { TokenName } from 'src/libs/crypto-icons';
 import { ReactNode } from 'react';
 import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
@@ -57,7 +58,7 @@ export default function RepayCustomInput(props: Props) {
 
               return (
                 <Stack sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Icon tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: 1 }} />
+                  <IconToken tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: 1 }} />
                   <Typography variant="body2">{tokenInfo?.symbol}</Typography>
                 </Stack>
               );
@@ -88,7 +89,7 @@ export default function RepayCustomInput(props: Props) {
                 >
                   <Stack sx={{ alignItems: 'center', justifyContent: 'space-between', gap: 3, width: '100%' }}>
                     <Stack>
-                      <Icon tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: 1 }} />
+                      <IconToken tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: 1 }} />
                       <Typography variant="body2">{tokenInfo?.symbol}</Typography>
                     </Stack>
 
