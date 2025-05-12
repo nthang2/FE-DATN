@@ -99,3 +99,14 @@ export const scOraiSolanaMainnet = new SolanaMainnetTokenInfo({
   oracle: 'GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k',
   ratio: '0.4',
 });
+
+export const usdtSolanaMainnet = new SolanaMainnetTokenInfo({
+  address: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+  decimals: 6,
+  symbol: TokenName.USDT,
+  prettyName: 'USDT',
+  isNative: false,
+  isToken2022: false,
+  oracle: 'GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k',
+  ratio: '0.95',
+});

@@ -59,11 +59,15 @@ export const PNG_USDC: IconUrls = {
   darkmode: baseImgUrlToken('USDC'),
 };
 
+export const PNG_USDT: IconUrls = {
+  lightmode: baseImgUrlToken('USDT'),
+  darkmode: baseImgUrlToken('USDT'),
+};
+
 export const PNG_VIRTUAL: IconUrls = {
   lightmode: baseImgUrlToken('VIRTUAL'),
   darkmode: baseImgUrlToken('VIRTUAL'),
 };
-
 
 // Wallet image paths
 export const PNG_WALLET_Leap: IconUrls = {

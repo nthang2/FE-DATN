@@ -9,6 +9,7 @@ import {
   oraiSolanaMainnet,
   virtualSolanaMainnet,
   scOraiSolanaMainnet,
+  usdtSolanaMainnet,
 } from '.';
 
 export const mapNameToInfoSolanaMainnet = {
@@ -21,6 +22,7 @@ export const mapNameToInfoSolanaMainnet = {
   [TokenName.ORAI]: oraiSolanaMainnet,
   [TokenName.VIRTUAL]: virtualSolanaMainnet,
   [TokenName.scORAI]: scOraiSolanaMainnet,
+  [TokenName.USDT]: usdtSolanaMainnet,
 };
 
 export type TSolanaMainnetToken = keyof typeof mapNameToInfoSolanaMainnet;
@@ -35,4 +37,5 @@ export const findTokenNameSolanaMainnet: Record<string, TSolanaMainnetToken | un
   [solTokenSolana.address]: TokenName.SOL,
   [virtualSolanaMainnet.address]: TokenName.VIRTUAL,
   [scOraiSolanaMainnet.address]: TokenName.scORAI,
+  [usdtSolanaMainnet.address]: TokenName.USDT,
 };

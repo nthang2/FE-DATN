@@ -8,6 +8,7 @@ import { IconSOL } from '../tokens/IconSOL';
 import { IconTRUMP } from '../tokens/IconTRUMP';
 import { IconUSDAI } from '../tokens/IconUSDAI';
 import { IconUSDC } from '../tokens/IconUSDC';
+import { IconUSDT } from '../tokens/IconUSDT';
 import { IconVIRTUAL } from '../tokens/IconVIRTUAL';
 import { IconscORAI } from '../tokens/IconscORAI';
 
@@ -26,6 +27,7 @@ export const mapNameToIcon: Record<TokenName, SvgComponent> = {
     [TokenName.TRUMP]: IconTRUMP,
     [TokenName.USDAI]: IconUSDAI,
     [TokenName.USDC]: IconUSDC,
+    [TokenName.USDT]: IconUSDT,
     [TokenName.VIRTUAL]: IconVIRTUAL,
     [TokenName.scORAI]: IconscORAI,
 };

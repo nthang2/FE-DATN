@@ -7,5 +7,6 @@ export { IconSOL } from './IconSOL';
 export { IconTRUMP } from './IconTRUMP';
 export { IconUSDAI } from './IconUSDAI';
 export { IconUSDC } from './IconUSDC';
+export { IconUSDT } from './IconUSDT';
 export { IconVIRTUAL } from './IconVIRTUAL';
 export { IconscORAI } from './IconscORAI';

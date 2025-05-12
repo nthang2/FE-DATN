@@ -42,6 +42,17 @@ export const solanaDevnet = new SolanaDevnetTokenInfo({
   ratio: '0.67',
 });
 
+export const usdtSolanaDevnet = new SolanaDevnetTokenInfo({
+  address: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+  decimals: 6,
+  symbol: TokenName.USDT,
+  prettyName: 'USDT',
+  isNative: false,
+  isToken2022: false,
+  oracle: 'GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k',
+  ratio: '0.95',
+});
+
 export const oraiSolanaDevnet = new SolanaDevnetTokenInfo({
   address: 'oraiyuR7hz6h7ApC56mb52CJjPZBB34USTjzaELoaPk',
   decimals: 6,
