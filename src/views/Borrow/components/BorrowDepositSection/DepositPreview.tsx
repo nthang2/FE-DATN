@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material';
+import { Collapse, Stack, Typography } from '@mui/material';
 import React, { useMemo } from 'react';
 import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { TBorrowItem } from '../../state/types';
@@ -53,7 +53,7 @@ const DepositPreview = (props: IProps) => {
   }, [asset, crossMode, depositItems, depositedToken]);
 
   return (
-    isHasDeposited && (
+    <Collapse in={isHasDeposited}>
       <Stack bgcolor="#333331" p="16px 20px" borderRadius="0px 0px 16px 16px" alignItems="left" direction="column" gap={1}>
         <Stack alignItems="center">
           {depositedToken.map((item, index) => {
@@ -74,7 +74,7 @@ const DepositPreview = (props: IProps) => {
           </Typography>
         </Stack>
       </Stack>
-    )
+    </Collapse>
   );
 };
 
