@@ -52,7 +52,7 @@ const RepayWithCollateral = (props: IProps) => {
 
   const handleSubmit = async () => {
     await asyncExecute({
-      fn: async () => await mutateAsync({ ...repayValue, slippageBps: 1 }),
+      fn: async () => await mutateAsync({ ...repayValue, slippageBps: 1, priorityFee: 0.1 }),
       onSuccess: async () => {
         setRepayValue(defaultRepayFormValue(token?.address || Object.values(listTokenAvailable)[0].address));
       },
