@@ -5,38 +5,25 @@ import { TPriceList } from 'src/services/HandleApi/getPriceToken/getPriceToken';
 import { publicClientSol } from 'src/states/hooks';
 import { BN } from 'src/utils';
 
-export async function getAddressLookupTableAccounts(keys: string[]): Promise<AddressLookupTableAccount[]> {
-  if (!keys || keys.length === 0) return [];
+export const getAddressLookupTableAccounts = async (keys: string[]): Promise<AddressLookupTableAccount[]> => {
   const connection = publicClientSol();
+  const addressLookupTableAccountInfos = await connection.getMultipleAccountsInfo(keys.map((key) => new PublicKey(key)));
 
-  try {
-    const addressLookupTableAccountInfos = await connection.getMultipleAccountsInfo(keys.map((key) => new PublicKey(key)));
+  return addressLookupTableAccountInfos.reduce((acc, accountInfo, index) => {
+    const addressLookupTableAddress = keys[index];
+    if (accountInfo) {
+      const addressLookupTableAccount = new AddressLookupTableAccount({
+        key: new PublicKey(addressLookupTableAddress),
+        state: AddressLookupTableAccount.deserialize(accountInfo.data),
+      });
+      acc.push(addressLookupTableAccount);
+    }
+    return acc;
+  }, new Array<AddressLookupTableAccount>());
+};
 
-    return addressLookupTableAccountInfos.reduce((acc, accountInfo, index) => {
-      const addressLookupTableAddress = keys[index];
-      if (accountInfo) {
-        try {
-          const addressLookupTableAccount = new AddressLookupTableAccount({
-            key: new PublicKey(addressLookupTableAddress),
-            state: AddressLookupTableAccount.deserialize(accountInfo.data),
-          });
-          acc.push(addressLookupTableAccount);
-          console.log(`Loaded lookup table with ${addressLookupTableAccount.state.addresses.length} addresses`);
-        } catch (e) {
-          console.error(`Error deserializing lookup table ${addressLookupTableAddress}`, e);
-        }
-      }
-      return acc;
-    }, new Array<AddressLookupTableAccount>());
-  } catch (error) {
-    console.error('Error fetching lookup tables:', error);
-    return [];
-  }
-}
-
-export function addPriorityFee() {
+export function addPriorityFee(microLamports: number = 0.001) {
   // Use custom value if provided, otherwise calculate from SOL
-  const microLamports = 500_000;
   return ComputeBudgetProgram.setComputeUnitPrice({
     microLamports: microLamports,
   });

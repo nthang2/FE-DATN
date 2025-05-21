@@ -14,3 +14,4 @@ export const RESERVE_ACCOUNT =
 export const REDEEM_CONFIG = 'REDEEM_CONFIG';
 export const LOAN = 'LOAN';
 export const computeUnits = 1_400_000;
+export const jupiterProgram = new PublicKey('JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4');

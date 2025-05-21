@@ -1,12 +1,7 @@
-import { PublicKey } from '@solana/web3.js';
 export type TJupiterSwapBody = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   quoteResponse: any;
   userPublicKey: string;
-  destinationTokenAccount: PublicKey;
-  wrapAndUnwrapSol: boolean;
-  useSharedAccounts: boolean;
-  dynamicComputeUnitLimit: boolean;
 };
 
 export type TJupiterQuoteParam = {
@@ -14,8 +9,6 @@ export type TJupiterQuoteParam = {
   outputMint: string;
   amount: string;
   slippageBps: number;
-  onlyDirectRoutes: string;
-  userPublicKey: string;
   maxAccounts: number;
   excludeDexes: string;
 };

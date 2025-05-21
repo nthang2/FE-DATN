@@ -1,25 +1,21 @@
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import { findTokenInfoByToken, listTokenAvailable, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { listTokenAvailable, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import useJupiterQuote from 'src/hooks/useQueryHook/queryMyPortfolio/useJupiterQuote';
-import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
-import useQueryRedeemConfig from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryRedeemConfig';
+import useRedeemWithCollateral from 'src/hooks/useQueryHook/queryMyPortfolio/useRedeemWithCollateral';
+import { TokenName } from 'src/libs/crypto-icons';
 import { useCrossModeState } from 'src/states/hooks';
 import { BN } from 'src/utils';
 import { validate } from 'src/utils/validateForm';
 import { calcCollateralAmountRaw } from '../../utils';
 import RepayCustomInput from '../InputCustom/RepayCustomInput';
+import RepayWithCollateralInfo from './RepayWithCollateralInfo';
 import { defaultRepayFormValue, TRepayForm } from './type';
-import { decimalFlood } from 'src/utils/format';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { TokenName } from 'src/libs/crypto-icons';
-import { mapNameToIcon } from 'src/libs/crypto-icons/constants/iconMappings';
-
 interface IProps {
   token?: SolanaEcosystemTokenInfo;
 }
@@ -29,16 +25,13 @@ const RepayWithCollateral = (props: IProps) => {
   const [repayValue, setRepayValue] = useState<TRepayForm>(
     defaultRepayFormValue(token?.address || Object.values(listTokenAvailable)[0].address)
   );
-  const { data, status: redeemConfigStatus, refetch: refetchRedeem } = useQueryRedeemConfig(repayValue.selectedToken);
   const { data: listPrice } = useQueryAllTokensPrice();
-  const { mutateAsync } = useJupiterQuote();
+  const { mutateAsync } = useRedeemWithCollateral();
   const [crossMode] = useCrossModeState();
   const { asyncExecute, loading: submitLoading } = useAsyncExecute();
-  const { asset, refetch: refetchAsset } = useMyPortfolio();
   const [helperText, setHelperText] = useState<string | undefined>();
 
   const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
-  const IconUsdai = mapNameToIcon[TokenName.USDAI];
 
   const collateralAmount = useMemo(() => {
     const { amountInWei } = calcCollateralAmountRaw(listPrice, repayValue.repayInput, repayValue.selectedToken);
@@ -46,49 +39,28 @@ const RepayWithCollateral = (props: IProps) => {
   }, [listPrice, repayValue.repayInput, repayValue.selectedToken]);
 
   const maxRepayAmount = useMemo(() => {
-    if (data && data.redeemConfig) {
-      const selectedTokenInfo = findTokenInfoByToken(repayValue.selectedToken);
-      if (!selectedTokenInfo) return 0;
-
-      const percentLoan = BN(asset?.[selectedTokenInfo.address].usdaiToRedeem.toFixed(5) || 0)
-        .multipliedBy(data.redeemConfig.maxUsdaiRate)
-        .dividedBy(10000);
-      const maxValue = BN(Number(data.redeemConfig.maxUsdaiAmount)).dividedBy(`1e${usdaiInfo.decimals}`).toNumber();
-
-      return Math.min(maxValue, Number(decimalFlood(percentLoan.toString(), 4)));
-    }
-
-    return 0;
-  }, [asset, data, repayValue.selectedToken, usdaiInfo.decimals]);
+    return 1;
+  }, []);
 
   const handleChangeInput = (key: keyof TRepayForm, value: string) => {
-    if (data && data.redeemConfig) {
-      const minValue = BN(Number(data.redeemConfig.minUsdaiAmount)).dividedBy(`1e${usdaiInfo.decimals}`).toNumber();
-
-      const errMessage = validate(value, {
-        min: minValue,
-        max: maxRepayAmount,
-      });
-      setHelperText(errMessage.error[0]);
-      setRepayValue({ ...repayValue, [key]: value });
-    }
+    const errMessage = validate(value, {
+      max: maxRepayAmount,
+    });
+    setHelperText(errMessage.error[0]);
+    setRepayValue({ ...repayValue, [key]: value });
   };
 
   const handleSubmit = async () => {
-    if (data && data.redeemConfig) {
-      await asyncExecute({
-        fn: async () => await mutateAsync({ ...repayValue, slippageBps: data.redeemConfig.slippageBps }),
-        onSuccess: async () => {
-          setRepayValue(defaultRepayFormValue(token?.address || Object.values(listTokenAvailable)[0].address));
-          await refetchAsset();
-          await refetchRedeem();
-        },
-      });
-    }
+    await asyncExecute({
+      fn: async () => await mutateAsync({ ...repayValue, slippageBps: 1 }),
+      onSuccess: async () => {
+        setRepayValue(defaultRepayFormValue(token?.address || Object.values(listTokenAvailable)[0].address));
+      },
+    });
   };
 
   return (
-    <Stack direction={'column'} gap={3}>
+    <Stack direction={'column'}>
       <Stack direction={'column'} gap={0.5}>
         <Stack justifyContent={'space-between'}>
           <Typography variant="body2" sx={{ color: 'info.main' }}>
@@ -96,7 +68,7 @@ const RepayWithCollateral = (props: IProps) => {
           </Typography>
 
           <ValueWithStatus
-            status={[redeemConfigStatus]}
+            status={['success']}
             value={
               <Typography variant="body2" sx={{ color: 'info.main' }}>
                 Repayable amount: {maxRepayAmount}
@@ -128,10 +100,6 @@ const RepayWithCollateral = (props: IProps) => {
           <Typography variant="body2" sx={{ color: 'info.main' }}>
             Repay with:
           </Typography>
-
-          {/* <Typography variant="body2" sx={{ color: 'info.main' }}>
-            Available: {decimalFlood(availableRepay || 0, 5)}
-          </Typography> */}
         </Stack>
 
         <RepayCustomInput
@@ -147,27 +115,14 @@ const RepayWithCollateral = (props: IProps) => {
         />
       </Stack>
 
-      <Stack justifyContent={'space-between'} borderTop={'1px solid #323326'} borderBottom={'1px solid #323326'} paddingY={2}>
-        <Typography variant="body1" sx={{ color: 'info.main' }}>
-          Action
-        </Typography>
-
-        <Stack gap={1} alignItems={'center'}>
-          <Typography variant="body2" sx={{ color: 'info.main' }}>
-            Redeem
-          </Typography>
-          <IconUsdai />
-          <Typography variant="body2" sx={{ color: 'info.main' }}>
-            USDAI
-          </Typography>
-        </Stack>
-      </Stack>
+      <RepayWithCollateralInfo />
 
       <ButtonLoading
         variant="contained"
         onClick={handleSubmit}
         loading={submitLoading}
         disabled={!!helperText || !BN(repayValue.repayInput).gt(0)}
+        sx={{ mt: 2 }}
       >
         Redeem
       </ButtonLoading>

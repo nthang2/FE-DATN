@@ -11,11 +11,10 @@ export default function useQueryRedeemConfig(tokenAddress: string) {
     queryFn: async () => {
       try {
         const lendingContract = initLendingContract(wallet);
-        const redeemConfig = await lendingContract.getRedeemConfig(tokenAddress);
         const depository = await lendingContract.getDepository(tokenAddress);
         const loan = await lendingContract.getLoan(tokenAddress);
 
-        return { redeemConfig, depository, loan };
+        return { depository, loan };
       } catch (error) {
         console.log('🚀 ~ queryFn: ~ error:', error);
         return {};

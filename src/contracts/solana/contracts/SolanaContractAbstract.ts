@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AnchorProvider, Idl, Program } from '@coral-xyz/anchor';
+import { AnchorProvider, Idl, Program, web3 } from '@coral-xyz/anchor';
 import { SendTransactionOptions } from '@solana/wallet-adapter-base';
 import { Wallet, WalletContextState } from '@solana/wallet-adapter-react';
 import { ComputeBudgetProgram, PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js';
@@ -30,6 +30,7 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
   async awaitConfirmTransaction(signature: string) {
     const connection = publicClientSol();
     const latestBlockHash = await connection.getLatestBlockhash();
+
     await connection.confirmTransaction({
       blockhash: latestBlockHash.blockhash,
       lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
@@ -38,12 +39,46 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
     await sleep(600);
   }
 
-  async sendTransaction(transaction: Transaction | VersionedTransaction, options?: SendTransactionOptions) {
+  async signTx(txHex: string) {
+    const parsedTx = web3.Transaction.from(Buffer.from(txHex, 'base64'));
+    const tx = await this.contextWallet?.signTransaction!(parsedTx);
+    const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
+
+    const txSigned = await this.provider.connection?.sendRawTransaction(tx.serialize());
+    await this.provider?.connection?.confirmTransaction({
+      signature: txSigned,
+      blockhash,
+      lastValidBlockHeight,
+    });
+    return txSigned;
+  }
+
+  async signTxPhantomWallet(txHex: any) {
+    const parsedTx = web3.Transaction.from(Buffer.from(txHex, 'base64'));
+    const phantomProvider = window?.phantom?.solana;
+    const res = await phantomProvider?.signAndSendTransaction!(parsedTx);
+    const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
+    // const txSigned = await this.provider.connection?.sendRawTransaction(tx.serialize());
+    if (res?.signature) {
+      await this.provider?.connection?.confirmTransaction({
+        signature: res.signature,
+        blockhash,
+        lastValidBlockHeight,
+      });
+    }
+    return res?.signature;
+  }
+
+  async sendTransaction(
+    transaction: Transaction | VersionedTransaction,
+    options?: SendTransactionOptions,
+    disableThrowSimulateError = false
+  ) {
     const connection = publicClientSol();
     if (transaction instanceof VersionedTransaction) {
-      const simulate = await connection.simulateTransaction(transaction, { commitment: 'finalized' });
+      const simulate = await connection.simulateTransaction(transaction, { replaceRecentBlockhash: true, commitment: 'finalized' });
       console.log('Simulation:', simulate);
-      if (simulate.value.err) {
+      if (simulate.value.err && !disableThrowSimulateError) {
         throw new Error('Simulate error:' + simulate.value.logs?.join('\n'));
       }
     }
