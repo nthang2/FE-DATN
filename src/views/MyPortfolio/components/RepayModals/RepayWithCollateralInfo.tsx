@@ -1,6 +1,6 @@
-import { Stack, Typography, IconButton } from '@mui/material';
-import React, { useState } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { Stack, Typography } from '@mui/material';
+import { useState } from 'react';
 import { mapNameToIcon } from 'src/libs/crypto-icons/constants/iconMappings';
 import { TokenName } from 'src/libs/crypto-icons/types';
 import ModalSettingTrans from './ModalSettingTrans';
@@ -16,19 +16,7 @@ const RepayWithCollateralInfo = () => {
           Setting Transaction
         </Typography>
 
-        <IconButton sx={{ paddingY: 0 }} onClick={() => setIsOpenSetting(true)}>
-          <SettingsIcon />
-        </IconButton>
-      </Stack>
-
-      <Stack justifyContent={'space-between'}>
-        <Typography variant="body1" sx={{ color: 'info.main' }}>
-          Input amount
-        </Typography>
-
-        <Typography variant="body1" fontWeight={'bold'} sx={{ color: 'info.main' }}>
-          100
-        </Typography>
+        <SettingsIcon onClick={() => setIsOpenSetting(true)} sx={{ cursor: 'pointer' }} />
       </Stack>
 
       <Stack justifyContent={'space-between'}>

@@ -7,7 +7,7 @@ import { TokenName } from 'src/libs/crypto-icons';
 import { getJupiterQuote, jupiterSwapInstructions } from 'src/services/HandleApi/getJupiterInfo/getJupiterInfo';
 import { calcCollateralAmountRaw } from 'src/views/MyPortfolio/utils';
 
-const maxAccounts = 50;
+const maxAccounts = 46;
 
 const useRedeemWithCollateral = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
@@ -42,7 +42,7 @@ const useRedeemWithCollateral = () => {
       const result = await jupiterSwapInstructions(swapBody);
 
       const contract = initLendingContract(wallet);
-      const hash = await contract.redeemByCollateralType0({
+      const hash = await contract.redeemByCollateral({
         collateralAmountRaw: amount.toFixed(0),
         selectedToken,
         resultSwapInstructions: result,

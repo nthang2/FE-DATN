@@ -16,6 +16,8 @@ import { calcCollateralAmountRaw } from '../../utils';
 import RepayCustomInput from '../InputCustom/RepayCustomInput';
 import RepayWithCollateralInfo from './RepayWithCollateralInfo';
 import { defaultRepayFormValue, TRepayForm } from './type';
+import { usePriorityFeeState } from '../../state/hooks';
+import { useSlippageToleranceState } from '../../state/hooks';
 interface IProps {
   token?: SolanaEcosystemTokenInfo;
 }
@@ -30,6 +32,8 @@ const RepayWithCollateral = (props: IProps) => {
   const [crossMode] = useCrossModeState();
   const { asyncExecute, loading: submitLoading } = useAsyncExecute();
   const [helperText, setHelperText] = useState<string | undefined>();
+  const [slippageTolerance] = useSlippageToleranceState();
+  const [priorityFee] = usePriorityFeeState();
 
   const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
 
@@ -51,8 +55,10 @@ const RepayWithCollateral = (props: IProps) => {
   };
 
   const handleSubmit = async () => {
+    const slippageBps = slippageTolerance * 100;
+
     await asyncExecute({
-      fn: async () => await mutateAsync({ ...repayValue, slippageBps: 1, priorityFee: 0.1 }),
+      fn: async () => await mutateAsync({ ...repayValue, slippageBps: slippageBps, priorityFee: priorityFee }),
       onSuccess: async () => {
         setRepayValue(defaultRepayFormValue(token?.address || Object.values(listTokenAvailable)[0].address));
       },
@@ -112,6 +118,7 @@ const RepayWithCollateral = (props: IProps) => {
             value: collateralAmount.toFixed(6),
             disabled: true,
           }}
+          subValue
         />
       </Stack>
 

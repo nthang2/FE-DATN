@@ -1,9 +1,10 @@
 import { Box, FormHelperText, MenuItem, Select, SelectProps, Skeleton, Stack, Typography } from '@mui/material';
-import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
-import { TokenName } from 'src/libs/crypto-icons';
 import { ReactNode } from 'react';
 import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import { TokenName } from 'src/libs/crypto-icons';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import { BN } from 'src/utils';
 import { roundNumber } from 'src/utils/format';
 
 type Props = {
@@ -25,6 +26,7 @@ export default function RepayCustomInput(props: Props) {
 
   const options = selectOptions ? selectOptions : Object.values(listTokenAvailable).map((item) => item.address);
   const inputValue = inputProps?.value ? roundNumber(Number(inputProps.value), 8) : undefined;
+  const tokenPrice = listPrice?.[selectProps?.value || 0];
 
   return (
     <Box mb={1}>
@@ -77,7 +79,6 @@ export default function RepayCustomInput(props: Props) {
           >
             {options.map((item) => {
               const tokenInfo = findTokenInfoByToken(item);
-              const tokenPrice = listPrice?.[item];
 
               return (
                 <MenuItem
@@ -91,13 +92,6 @@ export default function RepayCustomInput(props: Props) {
                     <Stack>
                       <IconToken tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: 1 }} />
                       <Typography variant="body2">{tokenInfo?.symbol}</Typography>
-                    </Stack>
-
-                    <Stack direction="column" textAlign="right">
-                      <Typography variant="body3" sx={{ color: 'text.secondary' }}>
-                        Price
-                      </Typography>
-                      <Typography variant="body3">{tokenPrice?.price ? `$${roundNumber(tokenPrice.price, 6)}` : '-'}</Typography>
                     </Stack>
                   </Stack>
                 </MenuItem>
@@ -137,7 +131,10 @@ export default function RepayCustomInput(props: Props) {
               />
               {subValue ? (
                 <Typography variant="body3" sx={{ color: 'text.secondary' }}>
-                  ${roundNumber(Number(subValue), 6)}
+                  ~$
+                  {BN(tokenPrice?.price)
+                    .multipliedBy(inputValue || 0)
+                    .toFixed(2)}
                 </Typography>
               ) : null}
             </>

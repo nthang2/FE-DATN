@@ -39,6 +39,7 @@ import {
   DEPOSITORY_SEED,
   jupiterProgram,
   LOAN,
+  LOAN_TYPE1_SEED,
   REDEEM_CONFIG,
   REDEEMABLE_MINT_SEED,
   RESERVE_ACCOUNT,
@@ -93,23 +94,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const depository = this.getPda(DEPOSITORY_SEED, collateral);
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
     const reserveTokenAccount = getAssociatedTokenAddressSync(redeemable_mint, RESERVE_ACCOUNT, true);
-    const redeemConfig = this.getPda(REDEEM_CONFIG, collateral);
-
-    console.log({
-      user: this.provider.publicKey.toString(),
-      collateral: collateral.toString(),
-      userCollateral: userCollateralATA.toString(),
-      redeemableMint: redeemable_mint.toString(),
-      userRedeemable: userRedeemATA.toString(),
-      controller: controller.toString(),
-      depository: depository.toString(),
-      depositoryVault: depositoryVault.toString(),
-      oracle: ctrAdsSolana.oracle.toString(),
-      loanAccount: pdAddress.toString(),
-      reserve: RESERVE_ACCOUNT.toString(),
-      reserveTokenAccount: reserveTokenAccount.toString(),
-      redeemConfig: redeemConfig.toString(),
-    });
+    const redeemConfig = this.getPda(REDEEM_CONFIG);
 
     return {
       user: this.provider.publicKey,
@@ -130,7 +115,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
 
   getUserLoanByToken(user: PublicKey, token: PublicKey) {
     const depositoryPda = this.getPda(DEPOSITORY_SEED, token);
-    const pdAddress = this.getPda('LOAN', depositoryPda, user);
+    const pdAddress = this.getPda(LOAN_TYPE1_SEED, depositoryPda, user);
 
     return { pdAddress, depositoryPda };
   }
@@ -350,7 +335,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     return tx;
   }
 
-  async redeemByCollateralType0(params: {
+  //Collateral Type 0 in Isolated Mode
+  async redeemByCollateral(params: {
     collateralAmountRaw: string;
     selectedToken: string;
     resultSwapInstructions: any;

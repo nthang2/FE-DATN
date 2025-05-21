@@ -35,7 +35,7 @@ export default function Borrow() {
 
   const handleRepay = (token: SolanaEcosystemTokenInfo) => {
     const isRepayableWithCollateral = listRepayableWithCollateral.indexOf(token.symbol) >= 0;
-    if (!isRepayableWithCollateral) {
+    if (!isRepayableWithCollateral && !crossMode) {
       modalFunction({
         type: 'openModal',
         data: { content: <RepayModal token={token} />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
@@ -43,17 +43,10 @@ export default function Borrow() {
       return;
     }
 
-    if (!crossMode) {
-      modalFunction({
-        type: 'openModal',
-        data: { content: <CrossModeRepayModal token={token} />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
-      });
-    } else {
-      modalFunction({
-        type: 'openModal',
-        data: { content: <RepayModal token={token} />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
-      });
-    }
+    modalFunction({
+      type: 'openModal',
+      data: { content: <CrossModeRepayModal token={token} />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
+    });
   };
 
   const handleMint = (tokenId: string) => {

@@ -11,7 +11,7 @@ export const RESERVE_ACCOUNT =
   NETWORK === 'devnet'
     ? new PublicKey('8kmSBtXyQ5svS8qPiHLA5BTrQ2iUN86KATKn2EJUEpen')
     : new PublicKey('HcYBeyAkXaDCvgULg22ijEuTHL1wj1zMKFNZgSKpDeU9');
-export const REDEEM_CONFIG = 'REDEEM_CONFIG';
+export const REDEEM_CONFIG = 'REDEEM_COL_CONFIG_V2';
 export const LOAN = 'LOAN';
 export const computeUnits = 1_400_000;
 export const jupiterProgram = new PublicKey('JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4');

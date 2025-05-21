@@ -4,6 +4,6 @@ export const slippageToleranceAtom = atomWithStorage<number>('slippageTolerance'
   getOnInit: true,
 });
 
-export const priorityFeeAtom = atomWithStorage<string>('priorityFee', 'normal', undefined, {
+export const priorityFeeAtom = atomWithStorage<number>('priorityFee', 1_000, undefined, {
   getOnInit: true,
 });

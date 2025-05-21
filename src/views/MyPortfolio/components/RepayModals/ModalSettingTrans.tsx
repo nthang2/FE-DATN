@@ -13,26 +13,26 @@ const slippageOptions = [
     label: '0.5%',
   },
   {
-    value: 0.7,
-    label: '0.7%',
-  },
-  {
     value: 1,
     label: '1%',
+  },
+  {
+    value: 3,
+    label: '3%',
   },
 ];
 
 const priorityFeeOptions = [
   {
-    value: 'normal',
+    value: 1_000,
     label: 'Normal',
   },
   {
-    value: 'turbo',
+    value: 1_00_000,
     label: 'Turbo',
   },
   {
-    value: 'custom',
+    value: 1_000_000,
     label: 'Custom',
   },
 ];
@@ -51,7 +51,7 @@ const ModalSettingTrans = (props: IProps) => {
     setSlippageTolerance(value);
   };
 
-  const handleChangePriorityFee = (value: string) => {
+  const handleChangePriorityFee = (value: number) => {
     setPriorityFee(value);
   };
 
@@ -106,15 +106,6 @@ const ModalSettingTrans = (props: IProps) => {
 
           <Divider sx={{ borderColor: '#ffffff1f' }} />
         </Stack>
-
-        {/* <Stack direction={'row'} justifyContent={'space-between'} mt={3} gap={2}>
-          <Button fullWidth variant={'contained'}>
-            Apply
-          </Button>
-          <Button fullWidth variant={'outlined'}>
-            Cancel
-          </Button>
-        </Stack> */}
       </DialogContent>
     </Dialog>
   );
