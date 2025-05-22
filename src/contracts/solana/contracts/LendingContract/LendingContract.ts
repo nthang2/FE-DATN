@@ -161,13 +161,16 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
 
     return depository;
   }
+
   async getLoan(tokenAddress: string) {
     const depositoryPda = this.getPda(DEPOSITORY_SEED, new PublicKey(tokenAddress));
     const loanPda = this.getPda(LOAN, depositoryPda, this.provider.publicKey);
     const loan = await this.program.account.loanType0.fetch(loanPda);
-    // min(redeem_config.max_usdai_amount, max_usdai_with_rate) với max_usdai_with_rate = loan.minted_amount * depository.rate * redeem_config.max_usdai_rate / 10000)
 
-    return loan;
+    //This variable only use for cross mode we declare here just for sync interface getLoan return type
+    const listAvailableCollateral = [tokenAddress];
+
+    return { ...loan, listAvailableCollateral };
   }
 
   async initialize(): Promise<string> {

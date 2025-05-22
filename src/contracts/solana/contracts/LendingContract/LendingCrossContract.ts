@@ -160,7 +160,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async getDepository(tokenAddress: string) {
-    const depository = await this.program.account.type0Depository.fetch(new PublicKey(tokenAddress));
+    const depository = await this.program.account.type1Depository.fetch(new PublicKey(tokenAddress));
     return depository;
   }
 
@@ -168,8 +168,18 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const { depository } = this.getAccountsPartial(tokenAddress);
     const loanPda = this.getPda(LOAN_TYPE1_SEED, depository, this.provider.publicKey);
     const loan = await this.program.account.loanType1.fetch(loanPda);
+    const addressCollateral = loan.collateralToken.findIndex((token) => token.toString() === tokenAddress);
+    const collateralAmount = addressCollateral !== -1 ? loan.collateralAmount[addressCollateral] : new BN(0);
+    const listAvailableCollateral = loan.collateralAmount.reduce((acc: string[], curr, index) => {
+      if (Number(curr) > 0) {
+        acc.push(loan.collateralToken[index].toString());
+      }
 
-    return loan;
+      return acc;
+    }, [] as string[]);
+    const result = { ...loan, collateralAmount, listAvailableCollateral };
+
+    return result;
   }
 
   wrapNative(fromPubkey: PublicKey, amount: number): Transaction {

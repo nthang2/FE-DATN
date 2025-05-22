@@ -18,24 +18,28 @@ import RepayWithCollateralInfo from './RepayWithCollateralInfo';
 import { defaultRepayFormValue, TRepayForm } from './type';
 import { usePriorityFeeState } from '../../state/hooks';
 import { useSlippageToleranceState } from '../../state/hooks';
+import useQueryRedeemConfig from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryRedeemConfig';
+import { decimalFlood } from 'src/utils/format';
 interface IProps {
   token?: SolanaEcosystemTokenInfo;
 }
 
 const RepayWithCollateral = (props: IProps) => {
   const { token } = props;
+  const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
+
+  const [helperText, setHelperText] = useState<string | undefined>();
   const [repayValue, setRepayValue] = useState<TRepayForm>(
     defaultRepayFormValue(token?.address || Object.values(listTokenAvailable)[0].address)
   );
+
   const { data: listPrice } = useQueryAllTokensPrice();
   const { mutateAsync } = useRedeemWithCollateral();
   const [crossMode] = useCrossModeState();
   const { asyncExecute, loading: submitLoading } = useAsyncExecute();
-  const [helperText, setHelperText] = useState<string | undefined>();
   const [slippageTolerance] = useSlippageToleranceState();
   const [priorityFee] = usePriorityFeeState();
-
-  const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
+  const { data: redeemConfig, status: statusRedeemConfig } = useQueryRedeemConfig(repayValue.selectedToken);
 
   const collateralAmount = useMemo(() => {
     const { amountInWei } = calcCollateralAmountRaw(listPrice, repayValue.repayInput, repayValue.selectedToken);
@@ -43,8 +47,11 @@ const RepayWithCollateral = (props: IProps) => {
   }, [listPrice, repayValue.repayInput, repayValue.selectedToken]);
 
   const maxRepayAmount = useMemo(() => {
-    return 1;
-  }, []);
+    if (!redeemConfig || !redeemConfig?.usdaiInPool) return 0;
+    const loanCollateralAmount = redeemConfig.loan.collateralAmount?.toNumber() / 10 ** 6;
+
+    return Math.min(redeemConfig?.usdaiInPool?.balance.usdai - 1000, loanCollateralAmount);
+  }, [redeemConfig]);
 
   const handleChangeInput = (key: keyof TRepayForm, value: string) => {
     const errMessage = validate(value, {
@@ -52,6 +59,10 @@ const RepayWithCollateral = (props: IProps) => {
     });
     setHelperText(errMessage.error[0]);
     setRepayValue({ ...repayValue, [key]: value });
+  };
+
+  const handleChangeSelect = (value: string) => {
+    setRepayValue({ selectedToken: value, repayInput: '0' });
   };
 
   const handleSubmit = async () => {
@@ -74,10 +85,10 @@ const RepayWithCollateral = (props: IProps) => {
           </Typography>
 
           <ValueWithStatus
-            status={['success']}
+            status={[statusRedeemConfig]}
             value={
               <Typography variant="body2" sx={{ color: 'info.main' }}>
-                Repayable amount: {maxRepayAmount}
+                Repayable amount: {decimalFlood(maxRepayAmount, 2)}
               </Typography>
             }
           />
@@ -111,13 +122,14 @@ const RepayWithCollateral = (props: IProps) => {
         <RepayCustomInput
           selectProps={{
             value: repayValue.selectedToken,
-            onChange: (e) => handleChangeInput('selectedToken', e.target.value),
+            onChange: (e) => handleChangeSelect(e.target.value),
             disabled: !crossMode,
           }}
           inputProps={{
             value: collateralAmount.toFixed(6),
             disabled: true,
           }}
+          selectOptions={redeemConfig?.loan?.listAvailableCollateral || []}
           subValue
         />
       </Stack>

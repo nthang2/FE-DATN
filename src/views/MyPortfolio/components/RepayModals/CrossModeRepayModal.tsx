@@ -1,4 +1,4 @@
-import { MenuItem, Select, Typography } from '@mui/material';
+import { Fade, MenuItem, Select, Typography } from '@mui/material';
 import { useState } from 'react';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import RepayModal from '../RepayModal';
@@ -48,8 +48,17 @@ const CrossModeRepayModal = (props: IProps) => {
         ))}
       </Select>
 
-      {selectedOption === 'wallet' && <RepayModal token={token} />}
-      {selectedOption === 'collateral' && <RepayWithCollateral token={crossMode ? undefined : token} />}
+      <Fade in={selectedOption === 'wallet'} hidden={selectedOption !== 'wallet'} timeout={500}>
+        <div>
+          <RepayModal token={token} />
+        </div>
+      </Fade>
+
+      <Fade in={selectedOption === 'collateral'} hidden={selectedOption !== 'collateral'} timeout={500}>
+        <div>
+          <RepayWithCollateral token={crossMode ? undefined : token} />
+        </div>
+      </Fade>
     </>
   );
 };

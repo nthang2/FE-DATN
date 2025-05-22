@@ -22,3 +22,11 @@ export type TMyPortfolioInfoResp = {
   maxAvailableToMint: number;
   assets: TMyPortfolioAsset[];
 };
+
+export type TResponseUsdaiInPool = {
+  address: string;
+  balance: {
+    usdc: number;
+    usdai: number;
+  };
+};

@@ -75,7 +75,7 @@ const ModalSettingTrans = (props: IProps) => {
               <RadioButton
                 isSelected={slippageTolerance === option.value}
                 onClick={() => handleChangeSlippageTolerance(option.value)}
-                label={`${option.value}`}
+                label={`${option.label}`}
               />
             ))}
           </Stack>
