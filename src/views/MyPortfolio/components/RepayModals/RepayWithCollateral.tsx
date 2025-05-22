@@ -6,20 +6,19 @@ import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithSta
 import { listTokenAvailable, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
-import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useJupiterQuote from 'src/hooks/useQueryHook/queryMyPortfolio/useJupiterQuote';
+import useQueryRedeemConfig from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryRedeemConfig';
 import useRedeemWithCollateral from 'src/hooks/useQueryHook/queryMyPortfolio/useRedeemWithCollateral';
 import { TokenName } from 'src/libs/crypto-icons';
 import { useCrossModeState } from 'src/states/hooks';
 import { BN } from 'src/utils';
+import { decimalFlood } from 'src/utils/format';
 import { validate } from 'src/utils/validateForm';
-import { calcCollateralAmountRaw } from '../../utils';
+import { usePriorityFeeState, useSlippageToleranceState } from '../../state/hooks';
 import RepayCustomInput from '../InputCustom/RepayCustomInput';
 import RepayWithCollateralInfo from './RepayWithCollateralInfo';
 import { defaultRepayFormValue, TRepayForm } from './type';
-import { usePriorityFeeState } from '../../state/hooks';
-import { useSlippageToleranceState } from '../../state/hooks';
-import useQueryRedeemConfig from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryRedeemConfig';
-import { decimalFlood } from 'src/utils/format';
+import { useDebounce } from 'use-debounce';
 interface IProps {
   token?: SolanaEcosystemTokenInfo;
 }
@@ -33,18 +32,24 @@ const RepayWithCollateral = (props: IProps) => {
     defaultRepayFormValue(token?.address || Object.values(listTokenAvailable)[0].address)
   );
 
-  const { data: listPrice } = useQueryAllTokensPrice();
   const { mutateAsync } = useRedeemWithCollateral();
   const [crossMode] = useCrossModeState();
   const { asyncExecute, loading: submitLoading } = useAsyncExecute();
   const [slippageTolerance] = useSlippageToleranceState();
   const [priorityFee] = usePriorityFeeState();
   const { data: redeemConfig, status: statusRedeemConfig } = useQueryRedeemConfig(repayValue.selectedToken);
+  const [debounceRepayInput] = useDebounce(repayValue.repayInput, 500);
+  const { data: jupiterQuote, refetch: refetchJupiterQuote } = useJupiterQuote({
+    repayInput: debounceRepayInput,
+    selectedToken: repayValue.selectedToken,
+    slippageBps: slippageTolerance,
+  });
 
-  const collateralAmount = useMemo(() => {
-    const { amountInWei } = calcCollateralAmountRaw(listPrice, repayValue.repayInput, repayValue.selectedToken);
-    return amountInWei;
-  }, [listPrice, repayValue.repayInput, repayValue.selectedToken]);
+  const usdaiAmount = useMemo(() => {
+    return BN(jupiterQuote?.outAmount)
+      .div(BN(10).pow(BN(usdaiInfo.decimals)))
+      .toNumber();
+  }, [jupiterQuote?.outAmount, usdaiInfo.decimals]);
 
   const maxRepayAmount = useMemo(() => {
     if (!redeemConfig || !redeemConfig?.usdaiInPool) return 0;
@@ -72,6 +77,7 @@ const RepayWithCollateral = (props: IProps) => {
       fn: async () => await mutateAsync({ ...repayValue, slippageBps: slippageBps, priorityFee: priorityFee }),
       onSuccess: async () => {
         setRepayValue(defaultRepayFormValue(token?.address || Object.values(listTokenAvailable)[0].address));
+        await refetchJupiterQuote();
       },
     });
   };
@@ -81,7 +87,7 @@ const RepayWithCollateral = (props: IProps) => {
       <Stack direction={'column'} gap={0.5}>
         <Stack justifyContent={'space-between'}>
           <Typography variant="body2" sx={{ color: 'info.main' }}>
-            Your Repay:
+            Repay with:
           </Typography>
 
           <ValueWithStatus
@@ -96,17 +102,19 @@ const RepayWithCollateral = (props: IProps) => {
 
         <RepayCustomInput
           selectProps={{
-            value: usdaiInfo.address,
-            disabled: true,
+            value: repayValue.selectedToken,
+            onChange: (e) => handleChangeSelect(e.target.value),
+            disabled: !crossMode,
           }}
-          selectOptions={[usdaiInfo.address]}
           inputProps={{
             value: repayValue.repayInput,
             onChange: (e) => handleChangeInput('repayInput', e.target.value),
           }}
-          maxValue={maxRepayAmount}
-          onClickMax={() => handleChangeInput('repayInput', String(maxRepayAmount) || '0')}
           error={helperText}
+          maxValue={maxRepayAmount}
+          selectOptions={redeemConfig?.loan?.listAvailableCollateral || []}
+          subValue
+          onClickMax={() => handleChangeInput('repayInput', String(maxRepayAmount) || '0')}
         />
       </Stack>
 
@@ -115,26 +123,24 @@ const RepayWithCollateral = (props: IProps) => {
       <Stack direction={'column'} gap={0.5}>
         <Stack justifyContent={'space-between'}>
           <Typography variant="body2" sx={{ color: 'info.main' }}>
-            Repay with:
+            Your Repay:
           </Typography>
         </Stack>
 
         <RepayCustomInput
           selectProps={{
-            value: repayValue.selectedToken,
-            onChange: (e) => handleChangeSelect(e.target.value),
-            disabled: !crossMode,
-          }}
-          inputProps={{
-            value: collateralAmount.toFixed(6),
+            value: usdaiInfo.address,
             disabled: true,
           }}
-          selectOptions={redeemConfig?.loan?.listAvailableCollateral || []}
-          subValue
+          selectOptions={[usdaiInfo.address]}
+          inputProps={{
+            value: usdaiAmount,
+            disabled: true,
+          }}
         />
       </Stack>
 
-      <RepayWithCollateralInfo />
+      <RepayWithCollateralInfo priceImpact={jupiterQuote?.priceImpactPct} minExpected={jupiterQuote?.otherAmountThreshold} />
 
       <ButtonLoading
         variant="contained"

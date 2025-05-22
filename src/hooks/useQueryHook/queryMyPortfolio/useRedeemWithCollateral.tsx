@@ -1,16 +1,15 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useMutation } from '@tanstack/react-query';
-import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useLendingContract from 'src/hooks/useContract/useLendingContract';
-import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { TokenName } from 'src/libs/crypto-icons';
 import { getJupiterQuote, jupiterSwapInstructions } from 'src/services/HandleApi/getJupiterInfo/getJupiterInfo';
-import { calcCollateralAmountRaw } from 'src/views/MyPortfolio/utils';
+import { BN } from 'src/utils';
+import { decimalFlood } from 'src/utils/format';
 
-const maxAccounts = 46;
+const maxAccounts = 40;
 
 const useRedeemWithCollateral = () => {
-  const { data: listPrice } = useQueryAllTokensPrice();
   const wallet = useWallet();
   const { initLendingContract } = useLendingContract();
 
@@ -21,15 +20,22 @@ const useRedeemWithCollateral = () => {
 
       const { repayInput, selectedToken, slippageBps, priorityFee } = params;
       const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
-      const { amount } = calcCollateralAmountRaw(listPrice, repayInput, selectedToken);
+      const selectedTokenInfo = findTokenInfoByToken(selectedToken);
+
+      const amount = decimalFlood(
+        BN(repayInput)
+          .multipliedBy(BN(10).pow(BN(selectedTokenInfo?.decimals || 0)))
+          .toString(),
+        0
+      );
 
       const jupiterQuoteParams = {
         inputMint: selectedToken,
         outputMint: usdaiInfo.address,
-        amount: BigInt(amount.toFixed(0)).toString(),
+        amount: BigInt(amount).toString(),
         slippageBps: slippageBps,
         maxAccounts: maxAccounts,
-        excludeDexes: 'Obric+V2',
+        excludeDexes: 'Obric V2',
       };
 
       const jupiterQuote = await getJupiterQuote(jupiterQuoteParams);
@@ -43,7 +49,7 @@ const useRedeemWithCollateral = () => {
 
       const contract = initLendingContract(wallet);
       const hash = await contract.redeemByCollateral({
-        collateralAmountRaw: amount.toFixed(0),
+        collateralAmountRaw: amount,
         selectedToken,
         resultSwapInstructions: result,
         priorityFee,
