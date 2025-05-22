@@ -1,6 +1,6 @@
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { Stack, Typography } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { listTokenAvailable, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
@@ -19,6 +19,7 @@ import RepayCustomInput from '../InputCustom/RepayCustomInput';
 import RepayWithCollateralInfo from './RepayWithCollateralInfo';
 import { defaultRepayFormValue, TRepayForm } from './type';
 import { useDebounce } from 'use-debounce';
+import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 interface IProps {
   token?: SolanaEcosystemTokenInfo;
 }
@@ -32,6 +33,7 @@ const RepayWithCollateral = (props: IProps) => {
     defaultRepayFormValue(token?.address || Object.values(listTokenAvailable)[0].address)
   );
 
+  const { data: listTokenPrice } = useQueryAllTokensPrice();
   const { mutateAsync } = useRedeemWithCollateral();
   const [crossMode] = useCrossModeState();
   const { asyncExecute, loading: submitLoading } = useAsyncExecute();
@@ -46,17 +48,34 @@ const RepayWithCollateral = (props: IProps) => {
   });
 
   const usdaiAmount = useMemo(() => {
+    if (!jupiterQuote) return 0;
+
     return BN(jupiterQuote?.outAmount)
       .div(BN(10).pow(BN(usdaiInfo.decimals)))
       .toNumber();
-  }, [jupiterQuote?.outAmount, usdaiInfo.decimals]);
+  }, [jupiterQuote, usdaiInfo.decimals]);
 
   const maxRepayAmount = useMemo(() => {
-    if (!redeemConfig || !redeemConfig?.usdaiInPool) return 0;
-    const loanCollateralAmount = redeemConfig.loan.collateralAmount?.toNumber() / 10 ** 6;
+    if (!redeemConfig || !redeemConfig?.loan || !listTokenPrice) return 0;
 
-    return Math.min(redeemConfig?.usdaiInPool?.balance.usdai - 1000, loanCollateralAmount);
-  }, [redeemConfig]);
+    const { selectedToken } = repayValue;
+    const collateralAmount = redeemConfig.loan.collateralAmount?.toNumber() / 10 ** 6;
+    const mintedAmount = redeemConfig.loan.mintedAmount;
+    const selectTokenPrice = listTokenPrice[selectedToken].price;
+    const usdaiPrice = listTokenPrice[usdaiInfo.address].price;
+    const collateralValue = Number(collateralAmount) * selectTokenPrice;
+    const usdaiInPool = redeemConfig?.usdaiInPool?.balance.usdai * usdaiPrice - 1000;
+    const maxCollateralAmount = Math.min(mintedAmount, usdaiInPool) / selectTokenPrice;
+
+    if (crossMode) {
+      const maxCollateralValue = Math.min(mintedAmount, collateralValue, usdaiInPool);
+      const result = maxCollateralValue / selectTokenPrice;
+
+      return result;
+    }
+
+    return Math.min(maxCollateralAmount, collateralAmount);
+  }, [redeemConfig, listTokenPrice, repayValue, usdaiInfo.address, crossMode]);
 
   const handleChangeInput = (key: keyof TRepayForm, value: string) => {
     const errMessage = validate(value, {
@@ -81,6 +100,17 @@ const RepayWithCollateral = (props: IProps) => {
       },
     });
   };
+
+  useEffect(() => {
+    //set default token if token not in list available collateral
+    if (redeemConfig && crossMode && redeemConfig?.loan?.listAvailableCollateral) {
+      if (redeemConfig?.loan?.listAvailableCollateral.indexOf(repayValue.selectedToken) === -1) {
+        setRepayValue(defaultRepayFormValue(redeemConfig?.loan?.listAvailableCollateral[0]));
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [redeemConfig]);
 
   return (
     <Stack direction={'column'}>
@@ -134,13 +164,20 @@ const RepayWithCollateral = (props: IProps) => {
           }}
           selectOptions={[usdaiInfo.address]}
           inputProps={{
-            value: usdaiAmount,
+            value: usdaiAmount.toString() || '0',
             disabled: true,
           }}
+          subValue
         />
       </Stack>
 
-      <RepayWithCollateralInfo priceImpact={jupiterQuote?.priceImpactPct} minExpected={jupiterQuote?.otherAmountThreshold} />
+      <RepayWithCollateralInfo
+        priceImpact={jupiterQuote?.priceImpactPct}
+        minExpected={jupiterQuote?.otherAmountThreshold}
+        token={token || usdaiInfo}
+        usdaiRepay={usdaiAmount.toString() || '0'}
+        mintedAmount={redeemConfig?.loan?.mintedAmount?.toString() || '0'}
+      />
 
       <ButtonLoading
         variant="contained"

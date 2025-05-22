@@ -155,13 +155,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     return depository;
   }
 
-  async getDepository(tokenAddress: string) {
-    const depositoryPda = this.getPda(DEPOSITORY_SEED, new PublicKey(tokenAddress));
-    const depository = await this.program.account.type0Depository.fetch(depositoryPda);
-
-    return depository;
-  }
-
   async getLoan(tokenAddress: string) {
     const depositoryPda = this.getPda(DEPOSITORY_SEED, new PublicKey(tokenAddress));
     const loanPda = this.getPda(LOAN, depositoryPda, this.provider.publicKey);

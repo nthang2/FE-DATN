@@ -43,6 +43,8 @@ import {
   RESERVE_ACCOUNT,
 } from './constant';
 import { addPriorityFee, getAddressLookupTableAccounts } from 'src/views/MyPortfolio/utils';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { TokenName } from 'src/libs/crypto-icons';
 
 export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -159,19 +161,22 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     return '';
   }
 
-  async getDepository(tokenAddress: string) {
-    const depository = await this.program.account.type1Depository.fetch(new PublicKey(tokenAddress));
-    return depository;
-  }
-
   async getLoan(tokenAddress: string) {
+    //Only accept these collateral
+    const fixedAvailableCollateral = [
+      mapNameToInfoSolana[TokenName.ORAI].address,
+      mapNameToInfoSolana[TokenName.USDC].address,
+      mapNameToInfoSolana[TokenName.SOL].address,
+      mapNameToInfoSolana[TokenName.MAX].address,
+    ];
+
     const { depository } = this.getAccountsPartial(tokenAddress);
     const loanPda = this.getPda(LOAN_TYPE1_SEED, depository, this.provider.publicKey);
     const loan = await this.program.account.loanType1.fetch(loanPda);
     const addressCollateral = loan.collateralToken.findIndex((token) => token.toString() === tokenAddress);
     const collateralAmount = addressCollateral !== -1 ? loan.collateralAmount[addressCollateral] : new BN(0);
     const listAvailableCollateral = loan.collateralAmount.reduce((acc: string[], curr, index) => {
-      if (Number(curr) > 0) {
+      if (Number(curr) > 0 && fixedAvailableCollateral.indexOf(loan.collateralToken[index].toString()) !== -1) {
         acc.push(loan.collateralToken[index].toString());
       }
 

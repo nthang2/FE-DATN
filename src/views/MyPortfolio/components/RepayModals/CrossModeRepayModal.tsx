@@ -4,6 +4,7 @@ import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/
 import RepayModal from '../RepayModal';
 import RepayWithCollateral from './RepayWithCollateral';
 import { useCrossModeState } from 'src/states/hooks';
+import useQueryRedeemConfig from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryRedeemConfig';
 
 const options = [
   {
@@ -24,6 +25,10 @@ const CrossModeRepayModal = (props: IProps) => {
   const { token } = props;
   const [crossMode] = useCrossModeState();
   const [selectedOption, setSelectedOption] = useState<string>('wallet');
+  const { data: redeemConfig } = useQueryRedeemConfig(token.address);
+
+  const hasAvailableCollateral =
+    !crossMode || (redeemConfig?.loan?.listAvailableCollateral && redeemConfig.loan.listAvailableCollateral.length > 0);
 
   return (
     <>
@@ -35,6 +40,7 @@ const CrossModeRepayModal = (props: IProps) => {
           padding: '4px 16px',
           borderRadius: '8px',
           mb: 4,
+          display: hasAvailableCollateral ? 'inline-flex' : 'none',
         }}
         value={selectedOption}
         onChange={(e) => setSelectedOption(e.target.value)}
