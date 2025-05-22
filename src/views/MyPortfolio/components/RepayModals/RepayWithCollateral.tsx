@@ -1,9 +1,9 @@
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import { listTokenAvailable, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken, listTokenAvailable, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useJupiterQuote from 'src/hooks/useQueryHook/queryMyPortfolio/useJupiterQuote';
@@ -20,6 +20,9 @@ import RepayWithCollateralInfo from './RepayWithCollateralInfo';
 import { defaultRepayFormValue, TRepayForm } from './type';
 import { useDebounce } from 'use-debounce';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import clsx from 'clsx';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 interface IProps {
   token?: SolanaEcosystemTokenInfo;
 }
@@ -40,6 +43,7 @@ const RepayWithCollateral = (props: IProps) => {
   const [slippageTolerance] = useSlippageToleranceState();
   const [priorityFee] = usePriorityFeeState();
   const { data: redeemConfig, status: statusRedeemConfig } = useQueryRedeemConfig(repayValue.selectedToken);
+  const { refetch: refetchMyPortfolioInfo } = useMyPortfolio();
   const [debounceRepayInput] = useDebounce(repayValue.repayInput, 500);
   const { data: jupiterQuote, refetch: refetchJupiterQuote } = useJupiterQuote({
     repayInput: debounceRepayInput,
@@ -59,23 +63,30 @@ const RepayWithCollateral = (props: IProps) => {
     if (!redeemConfig || !redeemConfig?.loan || !listTokenPrice) return 0;
 
     const { selectedToken } = repayValue;
-    const collateralAmount = redeemConfig.loan.collateralAmount?.toNumber() / 10 ** 6;
-    const mintedAmount = redeemConfig.loan.mintedAmount;
     const selectTokenPrice = listTokenPrice[selectedToken].price;
     const usdaiPrice = listTokenPrice[usdaiInfo.address].price;
-    const collateralValue = Number(collateralAmount) * selectTokenPrice;
+    const selectTokenInfo = findTokenInfoByToken(selectedToken);
+
+    const collateralAmount = redeemConfig.loan.collateralAmount?.toNumber();
+    const mintedValue = (redeemConfig.loan.mintedAmount * usdaiPrice) / BN(10).pow(usdaiInfo.decimals).toNumber();
+
+    const collateralValue =
+      (Number(collateralAmount) * selectTokenPrice) /
+      BN(10)
+        .pow(selectTokenInfo?.decimals || 0)
+        .toNumber();
     const usdaiInPool = redeemConfig?.usdaiInPool?.balance.usdai * usdaiPrice - 1000;
-    const maxCollateralAmount = Math.min(mintedAmount, usdaiInPool) / selectTokenPrice;
+    const maxCollateralAmount = Math.min(mintedValue, usdaiInPool) / selectTokenPrice;
 
     if (crossMode) {
-      const maxCollateralValue = Math.min(mintedAmount, collateralValue, usdaiInPool);
+      const maxCollateralValue = Math.min(mintedValue, collateralValue, usdaiInPool);
       const result = maxCollateralValue / selectTokenPrice;
 
       return result;
     }
 
     return Math.min(maxCollateralAmount, collateralAmount);
-  }, [redeemConfig, listTokenPrice, repayValue, usdaiInfo.address, crossMode]);
+  }, [redeemConfig, listTokenPrice, repayValue, usdaiInfo.address, usdaiInfo.decimals, crossMode]);
 
   const handleChangeInput = (key: keyof TRepayForm, value: string) => {
     const errMessage = validate(value, {
@@ -97,6 +108,7 @@ const RepayWithCollateral = (props: IProps) => {
       onSuccess: async () => {
         setRepayValue(defaultRepayFormValue(token?.address || Object.values(listTokenAvailable)[0].address));
         await refetchJupiterQuote();
+        await refetchMyPortfolioInfo();
       },
     });
   };
@@ -113,7 +125,22 @@ const RepayWithCollateral = (props: IProps) => {
   }, [redeemConfig]);
 
   return (
-    <Stack direction={'column'}>
+    <Stack
+      direction={'column'}
+      sx={{
+        '.box': {
+          display: 'flex',
+          py: 2,
+          height: '82px',
+          placeItems: 'center',
+          borderRadius: '16px',
+          alignItems: 'center',
+          mt: 1,
+          color: '#fff',
+          px: 2,
+        },
+      }}
+    >
       <Stack direction={'column'} gap={0.5}>
         <Stack justifyContent={'space-between'}>
           <Typography variant="body2" sx={{ color: 'info.main' }}>
@@ -124,7 +151,7 @@ const RepayWithCollateral = (props: IProps) => {
             status={[statusRedeemConfig]}
             value={
               <Typography variant="body2" sx={{ color: 'info.main' }}>
-                Repayable amount: {decimalFlood(maxRepayAmount, 2)}
+                Repayable amount: {decimalFlood(maxRepayAmount, 6)}
               </Typography>
             }
           />
@@ -179,15 +206,21 @@ const RepayWithCollateral = (props: IProps) => {
         mintedAmount={redeemConfig?.loan?.mintedAmount?.toString() || '0'}
       />
 
-      <ButtonLoading
-        variant="contained"
-        onClick={handleSubmit}
-        loading={submitLoading}
-        disabled={!!helperText || !BN(repayValue.repayInput).gt(0)}
-        sx={{ mt: 2 }}
-      >
-        Redeem
-      </ButtonLoading>
+      <Box className={clsx(['box', 'flex-space-between'])} sx={{ border: '#666662 solid 1px', position: 'relative' }}>
+        <Box className="flex-center">
+          <IconToken tokenName={TokenName.USDAI} />
+          <Typography sx={{ ml: 1, fontWeight: 600 }}>Redeem {TokenName.USDAI}</Typography>
+        </Box>
+        <ButtonLoading
+          disabled={!!helperText || !BN(repayValue.repayInput).gt(0)}
+          size="small"
+          loading={submitLoading}
+          variant="contained"
+          onClick={handleSubmit}
+        >
+          Redeem
+        </ButtonLoading>
+      </Box>
     </Stack>
   );
 };

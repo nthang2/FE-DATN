@@ -38,8 +38,7 @@ import {
   collateral as defaultCollateral,
   DEPOSITORY_SEED,
   jupiterProgram,
-  LOAN,
-  LOAN_TYPE1_SEED,
+  LOAN_TYPE0_SEED,
   REDEEM_CONFIG,
   REDEEMABLE_MINT_SEED,
   RESERVE_ACCOUNT,
@@ -115,7 +114,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
 
   getUserLoanByToken(user: PublicKey, token: PublicKey) {
     const depositoryPda = this.getPda(DEPOSITORY_SEED, token);
-    const pdAddress = this.getPda(LOAN_TYPE1_SEED, depositoryPda, user);
+    const pdAddress = this.getPda(LOAN_TYPE0_SEED, depositoryPda, user);
 
     return { pdAddress, depositoryPda };
   }
@@ -157,7 +156,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
 
   async getLoan(tokenAddress: string) {
     const depositoryPda = this.getPda(DEPOSITORY_SEED, new PublicKey(tokenAddress));
-    const loanPda = this.getPda(LOAN, depositoryPda, this.provider.publicKey);
+    const loanPda = this.getPda(LOAN_TYPE0_SEED, depositoryPda, this.provider.publicKey);
     const loan = await this.program.account.loanType0.fetch(loanPda);
 
     //This variable only use for cross mode we declare here just for sync interface getLoan return type
@@ -366,6 +365,12 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
 
     const instruction = [ComputeBudgetProgram.setComputeUnitLimit({ units: 1400000 }), addPriorityFee(priorityFee), redeemCollInsType0];
     const blockhash = (await this.provider.connection.getLatestBlockhash('finalized')).blockhash;
+    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(selectedToken));
+
+    if (isHasUserCollateral1 !== null) {
+      instruction.unshift(isHasUserCollateral1);
+    }
+
     const messageV0 = new TransactionMessage({
       payerKey: this.provider.publicKey,
       recentBlockhash: blockhash,

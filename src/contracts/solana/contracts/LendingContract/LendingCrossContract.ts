@@ -356,8 +356,11 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
 
     const addressLookupTableAccounts: AddressLookupTableAccount[] = [];
     addressLookupTableAccounts.push(...(await getAddressLookupTableAccounts(resultSwapInstructions.addressLookupTableAddresses)));
-
     const instruction = [ComputeBudgetProgram.setComputeUnitLimit({ units: 1400000 }), addPriorityFee(priorityFee), redeemCollIns];
+    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(selectedToken));
+    if (isHasUserCollateral1 !== null) {
+      instruction.unshift(isHasUserCollateral1);
+    }
     const blockhash = (await this.provider.connection.getLatestBlockhash()).blockhash;
     const messageV0 = new TransactionMessage({
       payerKey: this.provider.publicKey,

@@ -28,6 +28,9 @@ const RepayWithCollateralInfo = (props: IProps) => {
   const [slippageTolerance] = useSlippageToleranceState();
 
   const usdaiPrice = listTokenPrice?.[usdaiInfo.address].price;
+  const debt = BN(mintedAmount || 0)
+    .dividedBy(BN(10).pow(BN(usdaiInfo.decimals)))
+    .minus(BN(usdaiRepay || 0));
 
   return (
     <Stack direction={'column'} gap={1} mt={2}>
@@ -51,17 +54,9 @@ const RepayWithCollateralInfo = (props: IProps) => {
           <Box className="flex-center" sx={{ ml: 4 }}>
             <IconToken tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
             <Box>
-              <Typography sx={{ fontWeight: 600, ml: 1 }}>
-                {BN(mintedAmount || 0)
-                  .minus(BN(usdaiRepay || 0))
-                  .toFixed(2)}
-              </Typography>
+              <Typography sx={{ fontWeight: 600, ml: 1 }}>{debt.toFixed(6)}</Typography>
               <Typography variant="body3" sx={{ fontWeight: 600, ml: 1, color: 'info.main' }}>
-                {BN(mintedAmount || 0)
-                  .minus(BN(usdaiRepay || 0))
-                  .multipliedBy(usdaiPrice || 1)
-                  .toFixed(2)}
-                $
+                {debt.multipliedBy(usdaiPrice || 1).toFixed(6)}$
               </Typography>
             </Box>
           </Box>
@@ -89,7 +84,7 @@ const RepayWithCollateralInfo = (props: IProps) => {
       <Accordion sx={{ bgcolor: 'transparent', ':before': { display: 'none' } }}>
         <AccordionSummary sx={{ paddingX: 0 }} expandIcon={<ExpandMoreIcon />}>
           <Stack justifyContent={'space-between'}>
-            <Typography variant="body2" sx={{ color: 'info.main', fontWeight: 500, borderBottom: '1px dashed #f2f9a5' }}>
+            <Typography variant="body2" sx={{ color: 'info.main', fontWeight: 500, borderBottom: '1px dashed #888880' }}>
               Swap Info
             </Typography>
           </Stack>
@@ -111,7 +106,7 @@ const RepayWithCollateralInfo = (props: IProps) => {
               </Typography>
 
               <Stack direction={'row'} gap={1} alignItems={'center'}>
-                <Typography variant="body2" fontWeight={'bold'} sx={{ color: 'info.main' }}>
+                <Typography variant="body1" fontWeight={'bold'} sx={{ color: 'info.main' }}>
                   {slippageTolerance}%
                 </Typography>
                 <SettingsOutlined
