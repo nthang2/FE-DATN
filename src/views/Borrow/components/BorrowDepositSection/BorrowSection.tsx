@@ -1,5 +1,4 @@
 import { Box, Stack, Typography } from '@mui/material';
-import { Icon, TokenName } from 'crypto-token-icon';
 import { useEffect, useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
@@ -13,6 +12,8 @@ import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../sta
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
 import BorrowPreview from './BorrowPreview';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import { TokenName } from 'src/libs/crypto-icons';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
@@ -88,7 +89,7 @@ const BorrowSection = () => {
               disabled: true,
               renderValue: () => (
                 <Stack sx={{ alignItems: 'center' }}>
-                  <Icon tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
+                  <IconToken tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
                   <Typography variant="body2">USDAI</Typography>
                 </Stack>
               ),

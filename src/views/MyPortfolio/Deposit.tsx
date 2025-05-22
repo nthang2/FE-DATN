@@ -1,6 +1,5 @@
 import { ContentCopy } from '@mui/icons-material';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { Icon } from 'crypto-token-icon';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import { listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
@@ -15,6 +14,7 @@ import { compactNumber, formatNumber } from '../../utils/format';
 import DepositModal from './components/DepositModal';
 import SwitchCustom from './components/SwitchCustom';
 import WithdrawModal from './components/WithdrawModal';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 
 export default function Deposit() {
   const { loading } = useAsyncExecute();
@@ -74,7 +74,7 @@ export default function Deposit() {
                 <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell component="th" scope="row">
                     <Box className="flex-start">
-                      <Icon tokenName={row.symbol} />
+                      <IconToken tokenName={row.symbol} />
                       <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 1 }}>
                         {row.symbol}
                       </Typography>

@@ -1,4 +1,4 @@
-import { TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 import {
   ai16zTokenSolana,
   maxTokenSolana,
@@ -9,6 +9,7 @@ import {
   oraiSolanaMainnet,
   virtualSolanaMainnet,
   scOraiSolanaMainnet,
+  usdtSolanaMainnet,
 } from '.';
 
 export const mapNameToInfoSolanaMainnet = {
@@ -21,6 +22,7 @@ export const mapNameToInfoSolanaMainnet = {
   [TokenName.ORAI]: oraiSolanaMainnet,
   [TokenName.VIRTUAL]: virtualSolanaMainnet,
   [TokenName.scORAI]: scOraiSolanaMainnet,
+  [TokenName.USDT]: usdtSolanaMainnet,
 };
 
 export type TSolanaMainnetToken = keyof typeof mapNameToInfoSolanaMainnet;

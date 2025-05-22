@@ -4,13 +4,13 @@ import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import FormatSmallNumber from 'src/components/General/FormatSmallNumber/FormatSmallNumber';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
-import { labelMark, marks } from '../../constant';
+import { decimalFlood } from 'src/utils/format';
+import { marks } from '../../constant';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import CustomMark from '../BorrowSlide/CustomMark';
 import CustomThumb from '../BorrowSlide/CustomThumb';
 import CustomTrack from '../BorrowSlide/CustomTrack';
-import { decimalFlood } from 'src/utils/format';
 
 const minZoom = 0;
 const maxZoom = 100;
@@ -124,7 +124,7 @@ const LTVSection = () => {
         />
 
         {/* Label */}
-        <Stack width="100%" sx={{ alignItems: 'center', textAlign: 'center', display: { xs: 'none', md: 'none' } }}>
+        {/* <Stack width="100%" sx={{ alignItems: 'center', textAlign: 'center', display: { xs: 'none', md: 'none' } }}>
           {markList.map((mark, index) => {
             let width = mark.value;
             if (index !== 0) {
@@ -141,7 +141,7 @@ const LTVSection = () => {
               </Typography>
             );
           })}
-        </Stack>
+        </Stack> */}
       </Box>
     </BoxCustom>
   );

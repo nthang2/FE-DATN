@@ -1,6 +1,7 @@
 import { ContentCopy } from '@mui/icons-material';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { Icon, TokenName } from 'crypto-token-icon';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import { TokenName } from 'src/libs/crypto-icons';
 import { useNavigate } from 'react-router-dom';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import { listTokenAvailable, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
@@ -34,7 +35,7 @@ export default function Borrow() {
 
   const handleRepay = (token: SolanaEcosystemTokenInfo) => {
     const isRepayableWithCollateral = listRepayableWithCollateral.indexOf(token.symbol) >= 0;
-    if (!isRepayableWithCollateral) {
+    if (!isRepayableWithCollateral && !crossMode) {
       modalFunction({
         type: 'openModal',
         data: { content: <RepayModal token={token} />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
@@ -42,17 +43,10 @@ export default function Borrow() {
       return;
     }
 
-    if (!crossMode) {
-      modalFunction({
-        type: 'openModal',
-        data: { content: <CrossModeRepayModal token={token} />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
-      });
-    } else {
-      modalFunction({
-        type: 'openModal',
-        data: { content: <RepayModal token={token} />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
-      });
-    }
+    modalFunction({
+      type: 'openModal',
+      data: { content: <CrossModeRepayModal token={token} />, title: `Redeem ${TokenName.USDAI}`, modalProps: { maxWidth: 'xs' } },
+    });
   };
 
   const handleMint = (tokenId: string) => {
@@ -116,7 +110,7 @@ export default function Borrow() {
                 <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell component="th" scope="row">
                     <Box className="flex-start">
-                      <Icon tokenName={row.symbol} />
+                      <IconToken tokenName={row.symbol} />
                       <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 1 }}>
                         {row.symbol}
                       </Typography>

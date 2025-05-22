@@ -10,6 +10,53 @@ export type IdlLending = {
   };
   instructions: [
     {
+      name: 'addCollateralRedeemConfigV2';
+      discriminator: [178, 55, 142, 222, 66, 247, 207, 192];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemConfigV2';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 76, 95, 67, 79, 78, 70, 73, 71, 95, 86, 50];
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'collaterals';
+          type: {
+            vec: 'pubkey';
+          };
+        }
+      ];
+    },
+    {
       name: 'addMetadata';
       discriminator: [231, 195, 40, 240, 67, 231, 53, 136];
       accounts: [
@@ -65,6 +112,102 @@ export type IdlLending = {
               name: 'metadataFields';
             };
           };
+        }
+      ];
+    },
+    {
+      name: 'addWhitelistAdmin';
+      discriminator: [20, 72, 17, 49, 147, 29, 238, 218];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'whitelistAdminAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78];
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'whitelistAdmins';
+          type: {
+            vec: 'pubkey';
+          };
+        }
+      ];
+    },
+    {
+      name: 'changeCollateralRedeemConfig';
+      discriminator: [5, 197, 93, 80, 239, 60, 160, 17];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemConfigV2';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 76, 95, 67, 79, 78, 70, 73, 71, 95, 86, 50];
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'oldCollateral';
+          type: 'pubkey';
+        },
+        {
+          name: 'newCollateral';
+          type: 'pubkey';
         }
       ];
     },
@@ -135,6 +278,255 @@ export type IdlLending = {
       ];
     },
     {
+      name: 'changeWhitelistAdmin';
+      discriminator: [176, 113, 33, 246, 172, 77, 8, 225];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'whitelistAdminAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78];
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'oldAdmin';
+          type: 'pubkey';
+        },
+        {
+          name: 'newAdmin';
+          type: 'pubkey';
+        }
+      ];
+    },
+    {
+      name: 'depositUsdcSmartVault';
+      discriminator: [159, 229, 32, 185, 153, 72, 30, 120];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateral';
+          writable: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+          };
+        },
+        {
+          name: 'depositoryVault';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'investment';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [73, 78, 86, 69, 83, 84, 77, 69, 78, 84];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+          };
+        },
+        {
+          name: 'investmentAta';
+          writable: true;
+        },
+        {
+          name: 'vaultInfo';
+          writable: true;
+        },
+        {
+          name: 'config';
+          writable: true;
+        },
+        {
+          name: 'vaultUsdcAta';
+          writable: true;
+        },
+        {
+          name: 'feeWalletUsdcAta';
+          writable: true;
+        },
+        {
+          name: 'jpowInfo';
+          docs: ['CHECK', "seeds = ['USER_INFO', investment.key()]"];
+          writable: true;
+        },
+        {
+          name: 'usdcSmartVaultProgram';
+          address: '8dSVJttXWeKwieWbM18Z5f36uwcjmZ7iDSSjVXqKqMvA';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'depositUsdcAmount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
       name: 'editController';
       discriminator: [132, 153, 227, 60, 132, 180, 226, 209];
       accounts: [
@@ -163,6 +555,72 @@ export type IdlLending = {
             defined: {
               name: 'editControllerFields';
             };
+          };
+        }
+      ];
+    },
+    {
+      name: 'editInvestment';
+      discriminator: [112, 37, 241, 14, 199, 60, 76, 58];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'investment';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [73, 78, 86, 69, 83, 84, 77, 69, 78, 84];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateral';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'proportion';
+          type: {
+            option: 'u64';
+          };
+        },
+        {
+          name: 'whiteListWallet';
+          type: {
+            option: 'pubkey';
+          };
+        },
+        {
+          name: 'reserve';
+          type: {
+            option: 'pubkey';
           };
         }
       ];
@@ -320,6 +778,100 @@ export type IdlLending = {
             defined: {
               name: 'editType1DepositoryFields';
             };
+          };
+        }
+      ];
+    },
+    {
+      name: 'initRedeemConfigV2';
+      discriminator: [218, 141, 161, 235, 49, 156, 161, 152];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemConfigV2';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 76, 95, 67, 79, 78, 70, 73, 71, 95, 86, 50];
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'collaterals';
+          type: {
+            vec: 'pubkey';
+          };
+        }
+      ];
+    },
+    {
+      name: 'initWhitelistAdmin';
+      discriminator: [99, 58, 231, 184, 136, 74, 38, 133];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'whitelistAdminAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78];
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'whitelistAdmins';
+          type: {
+            vec: 'pubkey';
           };
         }
       ];
@@ -1179,10 +1731,6 @@ export type IdlLending = {
           };
         },
         {
-          name: 'liquidatorStablecoinAccount';
-          writable: true;
-        },
-        {
           name: 'liquidatorCollateralAccount';
           writable: true;
         },
@@ -1460,6 +2008,77 @@ export type IdlLending = {
       ];
     },
     {
+      name: 'pauseOrUnpauseRedeemConfig';
+      discriminator: [209, 152, 0, 163, 160, 234, 115, 162];
+      accounts: [
+        {
+          name: 'whitelist';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'whitelistAdmins';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78];
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemByCollateralConfigV2';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 76, 95, 67, 79, 78, 70, 73, 71, 95, 86, 50];
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'pauseFunction';
+          type: {
+            option: 'u8';
+          };
+        },
+        {
+          name: 'pauseCollateral';
+          type: {
+            option: 'u8';
+          };
+        },
+        {
+          name: 'collateral';
+          type: {
+            option: 'pubkey';
+          };
+        }
+      ];
+    },
+    {
       name: 'readOracleAccount';
       discriminator: [84, 167, 143, 192, 12, 22, 206, 184];
       accounts: [
@@ -1490,8 +2109,91 @@ export type IdlLending = {
       };
     },
     {
-      name: 'redeemByCollateral';
-      discriminator: [144, 222, 138, 57, 100, 153, 43, 88];
+      name: 'requestWithdrawSmartvault';
+      discriminator: [165, 217, 18, 36, 123, 225, 42, 52];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateral';
+          writable: true;
+        },
+        {
+          name: 'investment';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [73, 78, 86, 69, 83, 84, 77, 69, 78, 84];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+          };
+        },
+        {
+          name: 'vaultInfo';
+          writable: true;
+        },
+        {
+          name: 'withdrawRequest';
+          docs: ['CHECK'];
+          writable: true;
+        },
+        {
+          name: 'jpowInfo';
+          docs: ["seeds = ['USER_INFO', investment.key()]"];
+          writable: true;
+        },
+        {
+          name: 'usdcSmartVaultProgram';
+          address: '8dSVJttXWeKwieWbM18Z5f36uwcjmZ7iDSSjVXqKqMvA';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'lendingAmount';
+          type: 'f64';
+        }
+      ];
+    },
+    {
+      name: 'type0RedeemByCollateral';
+      discriminator: [59, 170, 157, 122, 111, 25, 62, 2];
       accounts: [
         {
           name: 'user';
@@ -1499,15 +2201,19 @@ export type IdlLending = {
           signer: true;
         },
         {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
           name: 'collateral';
-          writable: true;
-        },
-        {
-          name: 'userCollateral';
-          writable: true;
-        },
-        {
-          name: 'userRedeemable';
           writable: true;
         },
         {
@@ -1523,15 +2229,183 @@ export type IdlLending = {
           };
         },
         {
-          name: 'controller';
+          name: 'userRedeemable';
           writable: true;
           pda: {
             seeds: [
               {
+                kind: 'account';
+                path: 'user';
+              },
+              {
                 kind: 'const';
-                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
               }
             ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'userCollateral';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'user';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
           };
         },
         {
@@ -1551,16 +2425,12 @@ export type IdlLending = {
           };
         },
         {
-          name: 'redeemConfig';
+          name: 'redeemConfigV2';
           pda: {
             seeds: [
               {
                 kind: 'const';
-                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 78, 70, 73, 71];
-              },
-              {
-                kind: 'account';
-                path: 'collateral';
+                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 76, 95, 67, 79, 78, 70, 73, 71, 95, 86, 50];
               }
             ];
           };
@@ -1588,12 +2458,97 @@ export type IdlLending = {
         {
           name: 'depositoryVault';
           writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
         },
         {
           name: 'oracle';
-        },
-        {
-          name: 'reserve';
+          docs: ['CHECK'];
+          writable: true;
         },
         {
           name: 'reserveTokenAccount';
@@ -1602,7 +2557,8 @@ export type IdlLending = {
             seeds: [
               {
                 kind: 'account';
-                path: 'reserve';
+                path: 'controller.reserve';
+                account: 'controller';
               },
               {
                 kind: 'const';
@@ -1709,10 +2665,6 @@ export type IdlLending = {
       args: [
         {
           name: 'collateralAmount';
-          type: 'u64';
-        },
-        {
-          name: 'usdaiAmount';
           type: 'u64';
         },
         {
@@ -2612,10 +3564,6 @@ export type IdlLending = {
           };
         },
         {
-          name: 'liquidatorStablecoinAccount';
-          writable: true;
-        },
-        {
           name: 'liquidatorCollateralAccount';
           writable: true;
         },
@@ -2777,6 +3725,485 @@ export type IdlLending = {
       ];
     },
     {
+      name: 'type1RedeemByCollateral';
+      discriminator: [19, 152, 177, 94, 230, 90, 158, 92];
+      accounts: [
+        {
+          name: 'user';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateral';
+          docs: ['CHECK in below'];
+          writable: true;
+        },
+        {
+          name: 'redeemableMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'userRedeemable';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'user';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'userCollateral';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'user';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'depositoryType1';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemConfigV2';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 76, 95, 67, 79, 78, 70, 73, 71, 95, 86, 50];
+              }
+            ];
+          };
+        },
+        {
+          name: 'loanAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depositoryType1';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'depositoryVault';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'depositoryType1';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'oracle';
+          docs: ['CHECK'];
+          writable: true;
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'controller.reserve';
+                account: 'controller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'jupiterProgram';
+          address: 'JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4';
+        }
+      ];
+      args: [
+        {
+          name: 'collateralAmount';
+          type: 'u64';
+        },
+        {
+          name: 'data';
+          type: 'bytes';
+        }
+      ];
+    },
+    {
       name: 'updateAuthority';
       discriminator: [32, 46, 64, 28, 149, 75, 243, 88];
       accounts: [
@@ -2858,12 +4285,481 @@ export type IdlLending = {
           };
         }
       ];
+    },
+    {
+      name: 'updateTokenAuthority';
+      discriminator: [113, 45, 104, 44, 56, 68, 212, 82];
+      accounts: [
+        {
+          name: 'oldAuthority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'mint';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'controller';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'metadata';
+          writable: true;
+        },
+        {
+          name: 'metadataProgram';
+          writable: true;
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        }
+      ];
+      args: [];
+    },
+    {
+      name: 'withdrawInvestment';
+      discriminator: [157, 158, 101, 11, 240, 193, 192, 92];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateral';
+          writable: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+          };
+        },
+        {
+          name: 'depositoryVault';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'investment';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [73, 78, 86, 69, 83, 84, 77, 69, 78, 84];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+          };
+        },
+        {
+          name: 'investmentAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'investment';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [];
+    },
+    {
+      name: 'withdrawRevenue';
+      discriminator: [58, 241, 152, 184, 104, 150, 169, 119];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'revenueWalletAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'investment.revenue_wallet';
+                account: 'investment';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'collateral';
+          writable: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'investment';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [73, 78, 86, 69, 83, 84, 77, 69, 78, 84];
+              },
+              {
+                kind: 'account';
+                path: 'collateral';
+              }
+            ];
+          };
+        },
+        {
+          name: 'investmentAta';
+          writable: true;
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [];
     }
   ];
   accounts: [
     {
+      name: 'config';
+      discriminator: [155, 12, 170, 224, 30, 250, 204, 130];
+    },
+    {
       name: 'controller';
       discriminator: [184, 79, 171, 0, 183, 43, 113, 110];
+    },
+    {
+      name: 'investment';
+      discriminator: [175, 134, 9, 175, 115, 153, 39, 28];
     },
     {
       name: 'loanType0';
@@ -2874,8 +4770,8 @@ export type IdlLending = {
       discriminator: [53, 13, 71, 44, 243, 56, 227, 110];
     },
     {
-      name: 'redeemConfig';
-      discriminator: [57, 11, 139, 8, 155, 199, 10, 194];
+      name: 'redeemByCollateralConfigV2';
+      discriminator: [84, 193, 134, 218, 211, 27, 137, 25];
     },
     {
       name: 'type0Depository';
@@ -2884,6 +4780,18 @@ export type IdlLending = {
     {
       name: 'type1Depository';
       discriminator: [132, 68, 105, 249, 215, 58, 64, 100];
+    },
+    {
+      name: 'userInfo';
+      discriminator: [83, 134, 200, 56, 144, 56, 10, 62];
+    },
+    {
+      name: 'vaultInfo';
+      discriminator: [133, 250, 161, 78, 246, 27, 55, 187];
+    },
+    {
+      name: 'whitelistAdmin';
+      discriminator: [163, 150, 229, 143, 243, 38, 17, 133];
     }
   ];
   events: [
@@ -3467,73 +5375,163 @@ export type IdlLending = {
     },
     {
       code: 6100;
+      name: 'depositToSmartVaultFailed';
+      msg: 'Fail to deposit to the smart vault';
+    },
+    {
+      code: 6101;
+      name: 'requestWithdrawToSmartVaultFailed';
+      msg: 'Fail to request withdraw to the smart vault';
+    },
+    {
+      code: 6102;
+      name: 'invalidSmartVaultProgram';
+      msg: 'Invalid smart vault program';
+    },
+    {
+      code: 6103;
+      name: 'proportionInvestmentNotInitialized';
+      msg: 'Proportion of investment account not initialized';
+    },
+    {
+      code: 6104;
+      name: 'invalidSigner';
+      msg: 'Invalid Signer Pda';
+    },
+    {
+      code: 6105;
+      name: 'exceededInvestmentError';
+      msg: 'Investment amount is different desired amount the investment limit';
+    },
+    {
+      code: 6106;
+      name: 'proportionInvestmentInvalid';
+      msg: 'Investment proportion is invalid';
+    },
+    {
+      code: 6107;
+      name: 'invalidWithdrawLendingAmount';
+      msg: 'Lending amount is invalid';
+    },
+    {
+      code: 6108;
+      name: 'invalidDepositAmountUsdc';
+      msg: 'The amount of USDC to deposit to smartvault is invalid';
+    },
+    {
+      code: 6109;
       name: 'invalidRedeemAmount';
       msg: 'Invalid redeem amount - must be greater than zero';
     },
     {
-      code: 6101;
+      code: 6110;
       name: 'redeemAmountExceedsMax';
       msg: 'Redeem amount exceeds maximum allowed';
     },
     {
-      code: 6102;
+      code: 6111;
       name: 'redeemAmountBelowMin';
       msg: 'Redeem amount below minimum allowed';
     },
     {
-      code: 6103;
+      code: 6112;
       name: 'insufficientUsdaiBalance';
       msg: 'Insufficient USDAI balance for redemption';
     },
     {
-      code: 6104;
+      code: 6113;
       name: 'insufficientCollateralBalance';
       msg: 'Insufficient collateral for redemption';
     },
     {
-      code: 6105;
+      code: 6114;
       name: 'redeemAmountExceedsRateLimit';
       msg: 'Redeem amount exceeds maximum allowed by rate';
     },
     {
-      code: 6106;
+      code: 6115;
       name: 'swapAmountBelowMinimum';
       msg: 'Swap amount below minimum required';
     },
     {
-      code: 6107;
+      code: 6116;
       name: 'swapAmountExceedsMaximum';
       msg: 'Swap amount exceeds maximum allowed';
     },
     {
-      code: 6108;
-      name: 'invalidSwapExecution';
-      msg: 'Invalid swap execution';
+      code: 6117;
+      name: 'invalidSwapData';
+      msg: 'Invalid swap data';
     },
     {
-      code: 6109;
+      code: 6118;
       name: 'redeemConfigInactive';
       msg: 'Redeem config is not active';
     },
     {
-      code: 6110;
+      code: 6119;
       name: 'invalidRedeemConfigCollateral';
       msg: 'Invalid collateral mint in redeem config';
     },
     {
-      code: 6111;
+      code: 6120;
       name: 'invalidConfig';
       msg: 'Invalid config';
     },
     {
-      code: 6112;
+      code: 6121;
       name: 'invalidCollateralTransfer';
       msg: 'Error in collateral transfer - amount exceeds expected';
     },
     {
-      code: 6113;
+      code: 6122;
       name: 'depositAboveLimit';
       msg: 'Deposit amount above limit';
+    },
+    {
+      code: 6123;
+      name: 'insufficientFundsForInvestment';
+      msg: 'Insufficient funds for investment';
+    },
+    {
+      code: 6124;
+      name: 'priceDifferenceTooHigh';
+      msg: 'Price difference too high';
+    },
+    {
+      code: 6125;
+      name: 'notFoundCollateralInRedeemByCollateral';
+      msg: 'Not found collateral in redeem by collateral';
+    },
+    {
+      code: 6126;
+      name: 'collateralIsPausedForRedeemByCollateral';
+      msg: 'Collateral is paused for redeem by collateral';
+    },
+    {
+      code: 6127;
+      name: 'invalidWhitelistAdmin';
+      msg: 'Invalid whitelist admin';
+    },
+    {
+      code: 6128;
+      name: 'whiteListAdminIsFull';
+      msg: 'White list admin is full';
+    },
+    {
+      code: 6129;
+      name: 'collateralAlreadyExists';
+      msg: 'Collateral already exists';
+    },
+    {
+      code: 6130;
+      name: 'adminAlreadyInit';
+      msg: 'Admin already initialized';
+    },
+    {
+      code: 6131;
+      name: 'collateralIsPaused';
+      msg: 'Collateral is paused';
     }
   ];
   types: [
@@ -3631,6 +5629,48 @@ export type IdlLending = {
             type: {
               array: ['u8', 13];
             };
+          }
+        ];
+      };
+    },
+    {
+      name: 'config';
+      serialization: 'bytemuckunsafe';
+      repr: {
+        kind: 'c';
+      };
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'authority';
+            type: 'pubkey';
+          },
+          {
+            name: 'vaultBotServer';
+            type: 'pubkey';
+          },
+          {
+            name: 'feeWallet';
+            type: 'pubkey';
+          },
+          {
+            name: 'allowedLendingPools';
+            type: {
+              array: ['pubkey', 10];
+            };
+          },
+          {
+            name: 'performanceFeePercent';
+            type: 'u64';
+          },
+          {
+            name: 'monthlyManagementFee';
+            type: 'u64';
+          },
+          {
+            name: 'nextMonthlyFeeCollectionTime';
+            type: 'u64';
           }
         ];
       };
@@ -3972,6 +6012,42 @@ export type IdlLending = {
       };
     },
     {
+      name: 'investment';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'amountType0';
+            type: 'u64';
+          },
+          {
+            name: 'amountType1';
+            type: 'u64';
+          },
+          {
+            name: 'proportion';
+            type: 'u64';
+          },
+          {
+            name: 'revenue';
+            type: 'u64';
+          },
+          {
+            name: 'whitelistWallet';
+            type: 'pubkey';
+          },
+          {
+            name: 'revenueWallet';
+            type: 'pubkey';
+          },
+          {
+            name: 'bump';
+            type: 'u8';
+          }
+        ];
+      };
+    },
+    {
       name: 'liquidationEvent';
       type: {
         kind: 'struct';
@@ -4149,49 +6225,29 @@ export type IdlLending = {
       };
     },
     {
-      name: 'redeemConfig';
+      name: 'redeemByCollateralConfigV2';
+      serialization: 'bytemuck';
+      repr: {
+        kind: 'c';
+      };
       type: {
         kind: 'struct';
         fields: [
           {
-            name: 'authority';
-            type: 'pubkey';
-          },
-          {
-            name: 'repayer';
-            type: 'pubkey';
-          },
-          {
             name: 'collateral';
-            type: 'pubkey';
+            type: {
+              array: ['pubkey', 32];
+            };
           },
           {
-            name: 'maxUsdaiAmount';
-            type: 'u64';
+            name: 'isPausedCollateral';
+            type: {
+              array: ['u8', 32];
+            };
           },
           {
-            name: 'maxUsdaiRate';
-            type: 'u64';
-          },
-          {
-            name: 'slippageBps';
-            type: 'u16';
-          },
-          {
-            name: 'feeRateBps';
-            type: 'u16';
-          },
-          {
-            name: 'isActive';
-            type: 'bool';
-          },
-          {
-            name: 'bump';
+            name: 'isPausedFunction';
             type: 'u8';
-          },
-          {
-            name: 'minUsdaiAmount';
-            type: 'u64';
           }
         ];
       };
@@ -4538,6 +6594,68 @@ export type IdlLending = {
       };
     },
     {
+      name: 'userInfo';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'depositedLendingUsdc';
+            type: 'f64';
+          },
+          {
+            name: 'depositedUsdc';
+            type: 'u64';
+          },
+          {
+            name: 'reserveUsdc';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'vaultInfo';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'bump';
+            type: 'u8';
+          },
+          {
+            name: 'lendingPool';
+            type: 'pubkey';
+          },
+          {
+            name: 'totalLendingUsdc';
+            type: 'f64';
+          },
+          {
+            name: 'reserveUsdc';
+            type: 'u64';
+          },
+          {
+            name: 'isLocked';
+            type: 'bool';
+          }
+        ];
+      };
+    },
+    {
+      name: 'whitelistAdmin';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'whitelistAdmins';
+            type: {
+              array: ['pubkey', 5];
+            };
+          }
+        ];
+      };
+    },
+    {
       name: 'withdrawType1Event';
       type: {
         kind: 'struct';
@@ -4569,6 +6687,53 @@ export const idlLending: IdlLending = {
     description: 'Created with Anchor',
   },
   instructions: [
+    {
+      name: 'addCollateralRedeemConfigV2',
+      discriminator: [178, 55, 142, 222, 66, 247, 207, 192],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemConfigV2',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 76, 95, 67, 79, 78, 70, 73, 71, 95, 86, 50],
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'collaterals',
+          type: {
+            vec: 'pubkey',
+          },
+        },
+      ],
+    },
     {
       name: 'addMetadata',
       discriminator: [231, 195, 40, 240, 67, 231, 53, 136],
@@ -4625,6 +6790,102 @@ export const idlLending: IdlLending = {
               name: 'metadataFields',
             },
           },
+        },
+      ],
+    },
+    {
+      name: 'addWhitelistAdmin',
+      discriminator: [20, 72, 17, 49, 147, 29, 238, 218],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'whitelistAdminAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78],
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'whitelistAdmins',
+          type: {
+            vec: 'pubkey',
+          },
+        },
+      ],
+    },
+    {
+      name: 'changeCollateralRedeemConfig',
+      discriminator: [5, 197, 93, 80, 239, 60, 160, 17],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemConfigV2',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 76, 95, 67, 79, 78, 70, 73, 71, 95, 86, 50],
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'oldCollateral',
+          type: 'pubkey',
+        },
+        {
+          name: 'newCollateral',
+          type: 'pubkey',
         },
       ],
     },
@@ -4695,6 +6956,195 @@ export const idlLending: IdlLending = {
       ],
     },
     {
+      name: 'changeWhitelistAdmin',
+      discriminator: [176, 113, 33, 246, 172, 77, 8, 225],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'whitelistAdminAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78],
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'oldAdmin',
+          type: 'pubkey',
+        },
+        {
+          name: 'newAdmin',
+          type: 'pubkey',
+        },
+      ],
+    },
+    {
+      name: 'depositUsdcSmartVault',
+      discriminator: [159, 229, 32, 185, 153, 72, 30, 120],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateral',
+          writable: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+          },
+        },
+        {
+          name: 'depositoryVault',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'investment',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [73, 78, 86, 69, 83, 84, 77, 69, 78, 84],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+          },
+        },
+        {
+          name: 'investmentAta',
+          writable: true,
+        },
+        {
+          name: 'vaultInfo',
+          writable: true,
+        },
+        {
+          name: 'config',
+          writable: true,
+        },
+        {
+          name: 'vaultUsdcAta',
+          writable: true,
+        },
+        {
+          name: 'feeWalletUsdcAta',
+          writable: true,
+        },
+        {
+          name: 'jpowInfo',
+          docs: ['CHECK', "seeds = ['USER_INFO', investment.key()]"],
+          writable: true,
+        },
+        {
+          name: 'usdcSmartVaultProgram',
+          address: '8dSVJttXWeKwieWbM18Z5f36uwcjmZ7iDSSjVXqKqMvA',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'depositUsdcAmount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
       name: 'editController',
       discriminator: [132, 153, 227, 60, 132, 180, 226, 209],
       accounts: [
@@ -4723,6 +7173,72 @@ export const idlLending: IdlLending = {
             defined: {
               name: 'editControllerFields',
             },
+          },
+        },
+      ],
+    },
+    {
+      name: 'editInvestment',
+      discriminator: [112, 37, 241, 14, 199, 60, 76, 58],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'investment',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [73, 78, 86, 69, 83, 84, 77, 69, 78, 84],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateral',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'proportion',
+          type: {
+            option: 'u64',
+          },
+        },
+        {
+          name: 'whiteListWallet',
+          type: {
+            option: 'pubkey',
+          },
+        },
+        {
+          name: 'reserve',
+          type: {
+            option: 'pubkey',
           },
         },
       ],
@@ -4880,6 +7396,100 @@ export const idlLending: IdlLending = {
             defined: {
               name: 'editType1DepositoryFields',
             },
+          },
+        },
+      ],
+    },
+    {
+      name: 'initRedeemConfigV2',
+      discriminator: [218, 141, 161, 235, 49, 156, 161, 152],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemConfigV2',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 76, 95, 67, 79, 78, 70, 73, 71, 95, 86, 50],
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'collaterals',
+          type: {
+            vec: 'pubkey',
+          },
+        },
+      ],
+    },
+    {
+      name: 'initWhitelistAdmin',
+      discriminator: [99, 58, 231, 184, 136, 74, 38, 133],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'whitelistAdminAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78],
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'whitelistAdmins',
+          type: {
+            vec: 'pubkey',
           },
         },
       ],
@@ -5559,10 +8169,6 @@ export const idlLending: IdlLending = {
           },
         },
         {
-          name: 'liquidatorStablecoinAccount',
-          writable: true,
-        },
-        {
           name: 'liquidatorCollateralAccount',
           writable: true,
         },
@@ -5780,6 +8386,77 @@ export const idlLending: IdlLending = {
       ],
     },
     {
+      name: 'pauseOrUnpauseRedeemConfig',
+      discriminator: [209, 152, 0, 163, 160, 234, 115, 162],
+      accounts: [
+        {
+          name: 'whitelist',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'whitelistAdmins',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78],
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemByCollateralConfigV2',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 76, 95, 67, 79, 78, 70, 73, 71, 95, 86, 50],
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'pauseFunction',
+          type: {
+            option: 'u8',
+          },
+        },
+        {
+          name: 'pauseCollateral',
+          type: {
+            option: 'u8',
+          },
+        },
+        {
+          name: 'collateral',
+          type: {
+            option: 'pubkey',
+          },
+        },
+      ],
+    },
+    {
       name: 'readOracleAccount',
       discriminator: [84, 167, 143, 192, 12, 22, 206, 184],
       accounts: [
@@ -5810,8 +8487,91 @@ export const idlLending: IdlLending = {
       },
     },
     {
-      name: 'redeemByCollateral',
-      discriminator: [144, 222, 138, 57, 100, 153, 43, 88],
+      name: 'requestWithdrawSmartvault',
+      discriminator: [165, 217, 18, 36, 123, 225, 42, 52],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateral',
+          writable: true,
+        },
+        {
+          name: 'investment',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [73, 78, 86, 69, 83, 84, 77, 69, 78, 84],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+          },
+        },
+        {
+          name: 'vaultInfo',
+          writable: true,
+        },
+        {
+          name: 'withdrawRequest',
+          docs: ['CHECK'],
+          writable: true,
+        },
+        {
+          name: 'jpowInfo',
+          docs: ["seeds = ['USER_INFO', investment.key()]"],
+          writable: true,
+        },
+        {
+          name: 'usdcSmartVaultProgram',
+          address: '8dSVJttXWeKwieWbM18Z5f36uwcjmZ7iDSSjVXqKqMvA',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'lendingAmount',
+          type: 'f64',
+        },
+      ],
+    },
+    {
+      name: 'type0RedeemByCollateral',
+      discriminator: [59, 170, 157, 122, 111, 25, 62, 2],
       accounts: [
         {
           name: 'user',
@@ -5819,15 +8579,19 @@ export const idlLending: IdlLending = {
           signer: true,
         },
         {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
           name: 'collateral',
-          writable: true,
-        },
-        {
-          name: 'userCollateral',
-          writable: true,
-        },
-        {
-          name: 'userRedeemable',
           writable: true,
         },
         {
@@ -5843,15 +8607,63 @@ export const idlLending: IdlLending = {
           },
         },
         {
-          name: 'controller',
+          name: 'userRedeemable',
           writable: true,
           pda: {
             seeds: [
               {
+                kind: 'account',
+                path: 'user',
+              },
+              {
                 kind: 'const',
-                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
               },
             ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'userCollateral',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'user',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
           },
         },
         {
@@ -5871,16 +8683,12 @@ export const idlLending: IdlLending = {
           },
         },
         {
-          name: 'redeemConfig',
+          name: 'redeemConfigV2',
           pda: {
             seeds: [
               {
                 kind: 'const',
-                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 78, 70, 73, 71],
-              },
-              {
-                kind: 'account',
-                path: 'collateral',
+                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 76, 95, 67, 79, 78, 70, 73, 71, 95, 86, 50],
               },
             ],
           },
@@ -5908,12 +8716,37 @@ export const idlLending: IdlLending = {
         {
           name: 'depositoryVault',
           writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
         },
         {
           name: 'oracle',
-        },
-        {
-          name: 'reserve',
+          docs: ['CHECK'],
+          writable: true,
         },
         {
           name: 'reserveTokenAccount',
@@ -5922,7 +8755,8 @@ export const idlLending: IdlLending = {
             seeds: [
               {
                 kind: 'account',
-                path: 'reserve',
+                path: 'controller.reserve',
+                account: 'controller',
               },
               {
                 kind: 'const',
@@ -5969,10 +8803,6 @@ export const idlLending: IdlLending = {
       args: [
         {
           name: 'collateralAmount',
-          type: 'u64',
-        },
-        {
-          name: 'usdaiAmount',
           type: 'u64',
         },
         {
@@ -6572,10 +9402,6 @@ export const idlLending: IdlLending = {
           },
         },
         {
-          name: 'liquidatorStablecoinAccount',
-          writable: true,
-        },
-        {
           name: 'liquidatorCollateralAccount',
           writable: true,
         },
@@ -6677,6 +9503,245 @@ export const idlLending: IdlLending = {
       ],
     },
     {
+      name: 'type1RedeemByCollateral',
+      discriminator: [19, 152, 177, 94, 230, 90, 158, 92],
+      accounts: [
+        {
+          name: 'user',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateral',
+          docs: ['CHECK in below'],
+          writable: true,
+        },
+        {
+          name: 'redeemableMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'userRedeemable',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'user',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'userCollateral',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'user',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'depositoryType1',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemConfigV2',
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 95, 67, 79, 76, 95, 67, 79, 78, 70, 73, 71, 95, 86, 50],
+              },
+            ],
+          },
+        },
+        {
+          name: 'loanAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depositoryType1',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'depositoryVault',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'depositoryType1',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'oracle',
+          docs: ['CHECK'],
+          writable: true,
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'controller.reserve',
+                account: 'controller',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+        {
+          name: 'jupiterProgram',
+          address: 'JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4',
+        },
+      ],
+      args: [
+        {
+          name: 'collateralAmount',
+          type: 'u64',
+        },
+        {
+          name: 'data',
+          type: 'bytes',
+        },
+      ],
+    },
+    {
       name: 'updateAuthority',
       discriminator: [32, 46, 64, 28, 149, 75, 243, 88],
       accounts: [
@@ -6759,11 +9824,300 @@ export const idlLending: IdlLending = {
         },
       ],
     },
+    {
+      name: 'updateTokenAuthority',
+      discriminator: [113, 45, 104, 44, 56, 68, 212, 82],
+      accounts: [
+        {
+          name: 'oldAuthority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'mint',
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'controller',
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'metadata',
+          writable: true,
+        },
+        {
+          name: 'metadataProgram',
+          writable: true,
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+      ],
+      args: [],
+    },
+    {
+      name: 'withdrawInvestment',
+      discriminator: [157, 158, 101, 11, 240, 193, 192, 92],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateral',
+          writable: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+          },
+        },
+        {
+          name: 'depositoryVault',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'investment',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [73, 78, 86, 69, 83, 84, 77, 69, 78, 84],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+          },
+        },
+        {
+          name: 'investmentAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'investment',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [],
+    },
+    {
+      name: 'withdrawRevenue',
+      discriminator: [58, 241, 152, 184, 104, 150, 169, 119],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'revenueWalletAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'investment.revenue_wallet',
+                account: 'investment',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'collateral',
+          writable: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'investment',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [73, 78, 86, 69, 83, 84, 77, 69, 78, 84],
+              },
+              {
+                kind: 'account',
+                path: 'collateral',
+              },
+            ],
+          },
+        },
+        {
+          name: 'investmentAta',
+          writable: true,
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [],
+    },
   ],
   accounts: [
     {
+      name: 'config',
+      discriminator: [155, 12, 170, 224, 30, 250, 204, 130],
+    },
+    {
       name: 'controller',
       discriminator: [184, 79, 171, 0, 183, 43, 113, 110],
+    },
+    {
+      name: 'investment',
+      discriminator: [175, 134, 9, 175, 115, 153, 39, 28],
     },
     {
       name: 'loanType0',
@@ -6774,8 +10128,8 @@ export const idlLending: IdlLending = {
       discriminator: [53, 13, 71, 44, 243, 56, 227, 110],
     },
     {
-      name: 'redeemConfig',
-      discriminator: [57, 11, 139, 8, 155, 199, 10, 194],
+      name: 'redeemByCollateralConfigV2',
+      discriminator: [84, 193, 134, 218, 211, 27, 137, 25],
     },
     {
       name: 'type0Depository',
@@ -6784,6 +10138,18 @@ export const idlLending: IdlLending = {
     {
       name: 'type1Depository',
       discriminator: [132, 68, 105, 249, 215, 58, 64, 100],
+    },
+    {
+      name: 'userInfo',
+      discriminator: [83, 134, 200, 56, 144, 56, 10, 62],
+    },
+    {
+      name: 'vaultInfo',
+      discriminator: [133, 250, 161, 78, 246, 27, 55, 187],
+    },
+    {
+      name: 'whitelistAdmin',
+      discriminator: [163, 150, 229, 143, 243, 38, 17, 133],
     },
   ],
   events: [
@@ -7367,73 +10733,163 @@ export const idlLending: IdlLending = {
     },
     {
       code: 6100,
+      name: 'depositToSmartVaultFailed',
+      msg: 'Fail to deposit to the smart vault',
+    },
+    {
+      code: 6101,
+      name: 'requestWithdrawToSmartVaultFailed',
+      msg: 'Fail to request withdraw to the smart vault',
+    },
+    {
+      code: 6102,
+      name: 'invalidSmartVaultProgram',
+      msg: 'Invalid smart vault program',
+    },
+    {
+      code: 6103,
+      name: 'proportionInvestmentNotInitialized',
+      msg: 'Proportion of investment account not initialized',
+    },
+    {
+      code: 6104,
+      name: 'invalidSigner',
+      msg: 'Invalid Signer Pda',
+    },
+    {
+      code: 6105,
+      name: 'exceededInvestmentError',
+      msg: 'Investment amount is different desired amount the investment limit',
+    },
+    {
+      code: 6106,
+      name: 'proportionInvestmentInvalid',
+      msg: 'Investment proportion is invalid',
+    },
+    {
+      code: 6107,
+      name: 'invalidWithdrawLendingAmount',
+      msg: 'Lending amount is invalid',
+    },
+    {
+      code: 6108,
+      name: 'invalidDepositAmountUsdc',
+      msg: 'The amount of USDC to deposit to smartvault is invalid',
+    },
+    {
+      code: 6109,
       name: 'invalidRedeemAmount',
       msg: 'Invalid redeem amount - must be greater than zero',
     },
     {
-      code: 6101,
+      code: 6110,
       name: 'redeemAmountExceedsMax',
       msg: 'Redeem amount exceeds maximum allowed',
     },
     {
-      code: 6102,
+      code: 6111,
       name: 'redeemAmountBelowMin',
       msg: 'Redeem amount below minimum allowed',
     },
     {
-      code: 6103,
+      code: 6112,
       name: 'insufficientUsdaiBalance',
       msg: 'Insufficient USDAI balance for redemption',
     },
     {
-      code: 6104,
+      code: 6113,
       name: 'insufficientCollateralBalance',
       msg: 'Insufficient collateral for redemption',
     },
     {
-      code: 6105,
+      code: 6114,
       name: 'redeemAmountExceedsRateLimit',
       msg: 'Redeem amount exceeds maximum allowed by rate',
     },
     {
-      code: 6106,
+      code: 6115,
       name: 'swapAmountBelowMinimum',
       msg: 'Swap amount below minimum required',
     },
     {
-      code: 6107,
+      code: 6116,
       name: 'swapAmountExceedsMaximum',
       msg: 'Swap amount exceeds maximum allowed',
     },
     {
-      code: 6108,
-      name: 'invalidSwapExecution',
-      msg: 'Invalid swap execution',
+      code: 6117,
+      name: 'invalidSwapData',
+      msg: 'Invalid swap data',
     },
     {
-      code: 6109,
+      code: 6118,
       name: 'redeemConfigInactive',
       msg: 'Redeem config is not active',
     },
     {
-      code: 6110,
+      code: 6119,
       name: 'invalidRedeemConfigCollateral',
       msg: 'Invalid collateral mint in redeem config',
     },
     {
-      code: 6111,
+      code: 6120,
       name: 'invalidConfig',
       msg: 'Invalid config',
     },
     {
-      code: 6112,
+      code: 6121,
       name: 'invalidCollateralTransfer',
       msg: 'Error in collateral transfer - amount exceeds expected',
     },
     {
-      code: 6113,
+      code: 6122,
       name: 'depositAboveLimit',
       msg: 'Deposit amount above limit',
+    },
+    {
+      code: 6123,
+      name: 'insufficientFundsForInvestment',
+      msg: 'Insufficient funds for investment',
+    },
+    {
+      code: 6124,
+      name: 'priceDifferenceTooHigh',
+      msg: 'Price difference too high',
+    },
+    {
+      code: 6125,
+      name: 'notFoundCollateralInRedeemByCollateral',
+      msg: 'Not found collateral in redeem by collateral',
+    },
+    {
+      code: 6126,
+      name: 'collateralIsPausedForRedeemByCollateral',
+      msg: 'Collateral is paused for redeem by collateral',
+    },
+    {
+      code: 6127,
+      name: 'invalidWhitelistAdmin',
+      msg: 'Invalid whitelist admin',
+    },
+    {
+      code: 6128,
+      name: 'whiteListAdminIsFull',
+      msg: 'White list admin is full',
+    },
+    {
+      code: 6129,
+      name: 'collateralAlreadyExists',
+      msg: 'Collateral already exists',
+    },
+    {
+      code: 6130,
+      name: 'adminAlreadyInit',
+      msg: 'Admin already initialized',
+    },
+    {
+      code: 6131,
+      name: 'collateralIsPaused',
+      msg: 'Collateral is paused',
     },
   ],
   types: [
@@ -7531,6 +10987,48 @@ export const idlLending: IdlLending = {
             type: {
               array: ['u8', 13],
             },
+          },
+        ],
+      },
+    },
+    {
+      name: 'config',
+      serialization: 'bytemuckunsafe',
+      repr: {
+        kind: 'c',
+      },
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'authority',
+            type: 'pubkey',
+          },
+          {
+            name: 'vaultBotServer',
+            type: 'pubkey',
+          },
+          {
+            name: 'feeWallet',
+            type: 'pubkey',
+          },
+          {
+            name: 'allowedLendingPools',
+            type: {
+              array: ['pubkey', 10],
+            },
+          },
+          {
+            name: 'performanceFeePercent',
+            type: 'u64',
+          },
+          {
+            name: 'monthlyManagementFee',
+            type: 'u64',
+          },
+          {
+            name: 'nextMonthlyFeeCollectionTime',
+            type: 'u64',
           },
         ],
       },
@@ -7872,6 +11370,42 @@ export const idlLending: IdlLending = {
       },
     },
     {
+      name: 'investment',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'amountType0',
+            type: 'u64',
+          },
+          {
+            name: 'amountType1',
+            type: 'u64',
+          },
+          {
+            name: 'proportion',
+            type: 'u64',
+          },
+          {
+            name: 'revenue',
+            type: 'u64',
+          },
+          {
+            name: 'whitelistWallet',
+            type: 'pubkey',
+          },
+          {
+            name: 'revenueWallet',
+            type: 'pubkey',
+          },
+          {
+            name: 'bump',
+            type: 'u8',
+          },
+        ],
+      },
+    },
+    {
       name: 'liquidationEvent',
       type: {
         kind: 'struct',
@@ -8049,49 +11583,29 @@ export const idlLending: IdlLending = {
       },
     },
     {
-      name: 'redeemConfig',
+      name: 'redeemByCollateralConfigV2',
+      serialization: 'bytemuck',
+      repr: {
+        kind: 'c',
+      },
       type: {
         kind: 'struct',
         fields: [
           {
-            name: 'authority',
-            type: 'pubkey',
-          },
-          {
-            name: 'repayer',
-            type: 'pubkey',
-          },
-          {
             name: 'collateral',
-            type: 'pubkey',
+            type: {
+              array: ['pubkey', 32],
+            },
           },
           {
-            name: 'maxUsdaiAmount',
-            type: 'u64',
+            name: 'isPausedCollateral',
+            type: {
+              array: ['u8', 32],
+            },
           },
           {
-            name: 'maxUsdaiRate',
-            type: 'u64',
-          },
-          {
-            name: 'slippageBps',
-            type: 'u16',
-          },
-          {
-            name: 'feeRateBps',
-            type: 'u16',
-          },
-          {
-            name: 'isActive',
-            type: 'bool',
-          },
-          {
-            name: 'bump',
+            name: 'isPausedFunction',
             type: 'u8',
-          },
-          {
-            name: 'minUsdaiAmount',
-            type: 'u64',
           },
         ],
       },
@@ -8432,6 +11946,68 @@ export const idlLending: IdlLending = {
             name: 'padding',
             type: {
               array: ['u8', 6],
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: 'userInfo',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'depositedLendingUsdc',
+            type: 'f64',
+          },
+          {
+            name: 'depositedUsdc',
+            type: 'u64',
+          },
+          {
+            name: 'reserveUsdc',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'vaultInfo',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'bump',
+            type: 'u8',
+          },
+          {
+            name: 'lendingPool',
+            type: 'pubkey',
+          },
+          {
+            name: 'totalLendingUsdc',
+            type: 'f64',
+          },
+          {
+            name: 'reserveUsdc',
+            type: 'u64',
+          },
+          {
+            name: 'isLocked',
+            type: 'bool',
+          },
+        ],
+      },
+    },
+    {
+      name: 'whitelistAdmin',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'whitelistAdmins',
+            type: {
+              array: ['pubkey', 5],
             },
           },
         ],

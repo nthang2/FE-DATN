@@ -1,4 +1,4 @@
-import { SvgComponent } from 'crypto-token-icon';
+import { SvgComponent } from 'src/libs/crypto-icons';
 
 export type TWalletStatus =
   | 'Connected'

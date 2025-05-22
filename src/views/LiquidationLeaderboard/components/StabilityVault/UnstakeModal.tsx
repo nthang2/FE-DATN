@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Icon, TokenName } from 'crypto-token-icon';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import { TokenName } from 'src/libs/crypto-icons';
 import { useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
@@ -93,7 +94,7 @@ const UnstakeModal = () => {
             bgcolor: 'secondary.dark',
           }}
         >
-          <Icon tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
+          <IconToken tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
           <Typography variant="body2">{TokenName.USDAI}</Typography>
         </Stack>
         <Box

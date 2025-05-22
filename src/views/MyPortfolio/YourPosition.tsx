@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 import { useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';

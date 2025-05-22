@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Collapse, Stack, Typography } from '@mui/material';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { PlusIcon } from 'src/assets/icons';
@@ -159,33 +159,35 @@ const DepositSection = () => {
           })}
         </Box>
 
-        <Button
-          variant="text"
-          fullWidth
-          sx={{
-            color: '#fff',
-            display: crossMode ? 'flex' : 'none',
-            '& path': {
-              fill: '#fff',
-            },
-            ':hover': {
+        <Collapse in={crossMode}>
+          <Button
+            variant="text"
+            fullWidth
+            sx={{
+              color: '#fff',
+              display: 'flex',
               '& path': {
-                fill: '#000',
+                fill: '#fff',
               },
-            },
-            textAlign: 'start',
-            justifyContent: 'flex-start',
-          }}
-          disabled={isSubmitted || !isAddAllOptions}
-          onClick={handleAddItem}
-        >
-          <Typography variant="body2" alignItems="center" display="flex" gap={1} fontWeight={700}>
-            <span>
-              <PlusIcon />
-            </span>
-            Add more collateral
-          </Typography>
-        </Button>
+              ':hover': {
+                '& path': {
+                  fill: '#000',
+                },
+              },
+              textAlign: 'start',
+              justifyContent: 'flex-start',
+            }}
+            disabled={isSubmitted || !isAddAllOptions}
+            onClick={handleAddItem}
+          >
+            <Typography variant="body2" alignItems="center" display="flex" gap={1} fontWeight={700}>
+              <span>
+                <PlusIcon />
+              </span>
+              Add more collateral
+            </Typography>
+          </Button>
+        </Collapse>
       </BoxCustom>
 
       <DepositPreview depositItems={depositItems} depositedValueUsd={depositedValueUsd} isHasDeposited={isHasDeposited} />

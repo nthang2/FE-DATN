@@ -2,7 +2,8 @@ import { SettingsOutlined } from '@mui/icons-material';
 import { Box, Divider, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
-import { Icon, TokenName } from 'crypto-token-icon';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import { TokenName } from 'src/libs/crypto-icons';
 import { useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
@@ -119,7 +120,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
             bgcolor: 'secondary.dark',
           }}
         >
-          <Icon tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
+          <IconToken tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
           <Typography variant="body2">{TokenName.USDAI}</Typography>
         </Stack>
         <Box
@@ -204,7 +205,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
             Debt
           </Typography>
           <Box className="flex-center" sx={{ ml: 4 }}>
-            <Icon tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
+            <IconToken tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
             <Box>
               <Typography sx={{ fontWeight: 600, ml: 1 }}>{formatNumber(BN(maxValue).minus(Number(valueRepay) || 0))}</Typography>
               <Typography variant="body3" sx={{ fontWeight: 600, ml: 1, color: 'info.main' }}>
@@ -235,7 +236,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
       </Box>
       <Box className={clsx(['box', 'flex-space-between'])} sx={{ border: '#666662 solid 1px', position: 'relative' }}>
         <Box className="flex-center">
-          <Icon tokenName={TokenName.USDAI} />
+          <IconToken tokenName={TokenName.USDAI} />
           <Typography sx={{ ml: 1, fontWeight: 600 }}>Redeem {TokenName.USDAI}</Typography>
         </Box>
         <ButtonLoading

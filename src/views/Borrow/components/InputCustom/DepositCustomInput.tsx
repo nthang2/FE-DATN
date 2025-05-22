@@ -1,5 +1,6 @@
 import { Box, FormHelperText, MenuItem, Select, SelectProps, Skeleton, Stack, Typography } from '@mui/material';
-import { Icon, TokenName } from 'crypto-token-icon';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import { TokenName } from 'src/libs/crypto-icons';
 import { ReactNode } from 'react';
 import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { roundNumber } from 'src/utils/format';
@@ -68,7 +69,7 @@ export default function DepositCustomInput(props: Props) {
                   }}
                 >
                   <Stack sx={{ alignItems: 'center' }}>
-                    <Icon tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: 1 }} />
+                    <IconToken tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: 1 }} />
                     <Typography variant="body2">{tokenInfo?.symbol}</Typography>
                   </Stack>
                 </MenuItem>

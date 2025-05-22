@@ -1,5 +1,6 @@
 import { Box, Divider, Stack, Typography } from '@mui/material';
-import { Icon, TokenName } from 'crypto-token-icon';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import { TokenName } from 'src/libs/crypto-icons';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
@@ -52,7 +53,7 @@ const StabilityVault = () => {
       }}
     >
       <Stack gap={1.5} alignItems="center">
-        <Icon tokenName={TokenName.USDAI} sx={{ fontSize: '42px' }} />
+        <IconToken tokenName={TokenName.USDAI} sx={{ fontSize: '42px' }} />
         <Box>
           <StabilityQuestionTooltip content="Stability Pool" tooltipText="Idk wait update" />
           <Typography variant="body2" color="info.main">

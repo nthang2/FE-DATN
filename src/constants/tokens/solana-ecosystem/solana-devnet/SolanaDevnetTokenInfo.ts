@@ -1,4 +1,4 @@
-import { TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 import { SolanaEcosystemTokenInfo } from '../SolanaEcosystemTokenInfo';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 

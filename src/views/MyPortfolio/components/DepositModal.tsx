@@ -2,7 +2,7 @@ import { SettingsOutlined } from '@mui/icons-material';
 import { Box, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
-import { Icon } from 'crypto-token-icon';
+
 import { useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
@@ -18,6 +18,7 @@ import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import CheckHealthFactor from './CheckHealthFactor';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 
 export default function DepositModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
@@ -109,7 +110,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
             bgcolor: 'secondary.dark',
           }}
         >
-          <Icon tokenName={token.symbol} sx={{ mr: 1 }} />
+          <IconToken tokenName={token.symbol} sx={{ mr: 1 }} />
           <Typography variant="body2">{token.symbol}</Typography>
         </Stack>
         <Box
@@ -200,7 +201,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
         </Box>
         <Box className={clsx(['box', 'flex-space-between'])} sx={{ border: '#666662 solid 1px', position: 'relative' }}>
           <Box className="flex-center">
-            <Icon tokenName={token.symbol} />
+            <IconToken tokenName={token.symbol} />
             <Typography sx={{ ml: 1, fontWeight: 600 }}>Deposit {token.symbol}</Typography>
           </Box>
           <ButtonLoading

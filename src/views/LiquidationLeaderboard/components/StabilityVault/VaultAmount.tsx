@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 import React from 'react';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { decimalFlood } from 'src/utils/format';

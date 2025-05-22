@@ -43,7 +43,7 @@ export function getWalletThemeConfig(mode: THEME_MODE): ThemeOptions {
 
     info: {
       main: getColor('#888880', '#888880'), // text color
-      light: getColor('#00527C', '#EAF4FF'), // defaul bg color
+      light: getColor('#EAF4FF', '#EAF4FF'), // defaul bg color
       dark: getColor('#007CB4', '#91D0FF'), // filled bg color
     },
 
@@ -673,51 +673,6 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
             '& .MuiInputBase-root': {
               height: '36px',
             },
-          },
-        },
-      },
-      MuiAccordion: {
-        styleOverrides: {
-          root: {
-            backgroundColor: theme.palette.mode == 'light' ? '#F7F7F7' : '#2D2D2D',
-            overflow: 'hidden',
-            borderRadius: '24px',
-            '&:first-of-type, &:last-of-type': {
-              borderRadius: '24px !important',
-            },
-            '&:before': {
-              display: 'none',
-            },
-            '&.Mui-expanded': {
-              // backgroundColor: theme.palette.background.accordion,
-            },
-            boxShadow: 'none',
-            border: '1px solid',
-            borderColor: theme.palette.mode == 'dark' ? '#484848' : '#E3E3E3',
-          },
-        },
-      },
-      MuiAccordionSummary: {
-        styleOverrides: {
-          root: {
-            // background: 'none',
-            // background: theme.palette.background.paper,
-            '&.Mui-expanded': {
-              // boxShadow: 'inset 0px 0px 6px #D5D9D985, 0px 3px 6px #00000014',
-            },
-            '& .MuiAccordionSummary-content': {
-              margin: 0,
-              '&.Mui-expanded': {
-                margin: 0,
-              },
-            },
-          },
-        },
-      },
-      MuiAccordionDetails: {
-        styleOverrides: {
-          root: {
-            padding: theme.spacing(1),
           },
         },
       },

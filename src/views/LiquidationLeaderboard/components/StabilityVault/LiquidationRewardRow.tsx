@@ -1,7 +1,8 @@
 import { Stack, TableCell, TableRow, Typography } from '@mui/material';
-import { Icon, TokenName } from 'crypto-token-icon';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import { TokenName } from 'src/libs/crypto-icons';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { TLiquidatorCollateral } from 'src/services/HandleApi/getLiquidator/type';
 import { BN } from 'src/utils';
 import { decimalFlood } from 'src/utils/format';
@@ -22,7 +23,7 @@ const LiquidationRewardRow = (props: IProps) => {
     <TableRow key={reward?.collateralToken}>
       <TableCell sx={{ alignItems: 'center' }}>
         <Stack gap={1}>
-          <Icon tokenName={tokenName as TokenName} />
+          <IconToken tokenName={tokenName as TokenName} />
           <Typography variant="body1" fontWeight={700} color="primary">
             {tokenName}
           </Typography>

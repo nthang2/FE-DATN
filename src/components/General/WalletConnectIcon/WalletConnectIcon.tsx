@@ -1,4 +1,4 @@
-import { SvgComponent } from 'crypto-token-icon';
+import { SvgComponent } from 'src/libs/crypto-icons/types';
 
 interface IProps {
   Icon: string | SvgComponent | undefined;

@@ -1,6 +1,7 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 import useLendingContract from 'src/hooks/useContract/useLendingContract';
+import { getUsdaiInPool } from 'src/services/HandleApi/getMyPortfolioInfo/getUsdaiInPool';
 
 export default function useQueryRedeemConfig(tokenAddress: string) {
   const wallet = useWallet();
@@ -11,11 +12,10 @@ export default function useQueryRedeemConfig(tokenAddress: string) {
     queryFn: async () => {
       try {
         const lendingContract = initLendingContract(wallet);
-        const redeemConfig = await lendingContract.getRedeemConfig(tokenAddress);
-        const depository = await lendingContract.getDepository(tokenAddress);
         const loan = await lendingContract.getLoan(tokenAddress);
+        const usdaiInPool = await getUsdaiInPool();
 
-        return { redeemConfig, depository, loan };
+        return { loan, usdaiInPool };
       } catch (error) {
         console.log('🚀 ~ queryFn: ~ error:', error);
         return {};

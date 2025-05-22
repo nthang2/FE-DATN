@@ -12,7 +12,15 @@ import {
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { ComputeBudgetProgram, PublicKey, SystemProgram, Transaction, TransactionMessage, VersionedTransaction } from '@solana/web3.js';
+import {
+  AddressLookupTableAccount,
+  ComputeBudgetProgram,
+  PublicKey,
+  SystemProgram,
+  Transaction,
+  TransactionMessage,
+  VersionedTransaction,
+} from '@solana/web3.js';
 import { toast } from 'react-toastify';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
@@ -22,19 +30,21 @@ import { publicClientSol } from 'src/states/hooks';
 import { appStore, crossModeAtom } from 'src/states/state';
 import { getDecimalToken } from 'src/utils';
 import { BN as utilBN } from 'src/utils/index';
-import { addPriorityFee, getAddressLookupTableAccounts } from 'src/views/MyPortfolio/utils';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import {
-  computeUnits,
   CONTROLLER_SEED,
   collateral as defaultCollateral,
   DEPOSITORY_TYPE1_SEED,
+  jupiterProgram,
   LOAN_TYPE1_SEED,
   REDEEM_CONFIG,
   REDEEMABLE_MINT_SEED,
   RESERVE_ACCOUNT,
 } from './constant';
+import { addPriorityFee, getAddressLookupTableAccounts } from 'src/views/MyPortfolio/utils';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { TokenName } from 'src/libs/crypto-icons';
 
 export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -84,8 +94,9 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const depository = this.getPda(DEPOSITORY_TYPE1_SEED);
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
     const reserveTokenAccount = getAssociatedTokenAddressSync(redeemable_mint, RESERVE_ACCOUNT, true);
-    const collateral1Pda = this.getPda(DEPOSITORY_TYPE1_SEED, new PublicKey(tokenAddress));
+    const collateral1 = new PublicKey(tokenAddress);
     const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
+    const redeemConfig = this.getPda(REDEEM_CONFIG);
 
     return {
       controller: controller,
@@ -99,8 +110,9 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
       reserve: RESERVE_ACCOUNT,
       reserveTokenAccount: reserveTokenAccount,
       collateralToken1: new PublicKey(tokenAddress),
-      collateral1: collateral1Pda,
+      collateral1: collateral1,
       userCollateral1: userCollateral1,
+      redeemConfig: redeemConfig,
     };
   }
 
@@ -149,17 +161,30 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     return '';
   }
 
-  async getDepository(tokenAddress: string) {
-    const depository = await this.program.account.type0Depository.fetch(new PublicKey(tokenAddress));
-    return depository;
-  }
-
   async getLoan(tokenAddress: string) {
+    //Only accept these collateral
+    const fixedAvailableCollateral = [
+      mapNameToInfoSolana[TokenName.ORAI].address,
+      mapNameToInfoSolana[TokenName.USDC].address,
+      mapNameToInfoSolana[TokenName.SOL].address,
+      mapNameToInfoSolana[TokenName.MAX].address,
+    ];
+
     const { depository } = this.getAccountsPartial(tokenAddress);
     const loanPda = this.getPda(LOAN_TYPE1_SEED, depository, this.provider.publicKey);
     const loan = await this.program.account.loanType1.fetch(loanPda);
+    const addressCollateral = loan.collateralToken.findIndex((token) => token.toString() === tokenAddress);
+    const collateralAmount = addressCollateral !== -1 ? loan.collateralAmount[addressCollateral] : new BN(0);
+    const listAvailableCollateral = loan.collateralAmount.reduce((acc: string[], curr, index) => {
+      if (Number(curr) > 0 && fixedAvailableCollateral.indexOf(loan.collateralToken[index].toString()) !== -1) {
+        acc.push(loan.collateralToken[index].toString());
+      }
 
-    return loan;
+      return acc;
+    }, [] as string[]);
+    const result = { ...loan, collateralAmount, listAvailableCollateral };
+
+    return result;
   }
 
   wrapNative(fromPubkey: PublicKey, amount: number): Transaction {
@@ -289,69 +314,6 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     }
   }
 
-  async getRedeemConfig(tokenAddress: string) {
-    const redeemPda = this.getPda(REDEEM_CONFIG, new PublicKey(tokenAddress));
-    const config = await this.program.account.redeemConfig.fetch(redeemPda);
-    console.log('🚀 ~ LendingCrossContract ~ getRedeemConfig ~ config:', config);
-
-    return config;
-  }
-
-  async redeemByCollateral(params: {
-    usdaiAmount: string;
-    collateralAmountRaw: string;
-    selectedToken: string;
-    resultSwapInstructions: any;
-  }) {
-    const { collateralAmountRaw, selectedToken, usdaiAmount, resultSwapInstructions } = params;
-
-    const accountsPartial = this.getAccountsPartial(selectedToken);
-    const jupiterData = Buffer.from(resultSwapInstructions.swapInstruction.data, 'base64');
-    const remainingAccounts = resultSwapInstructions.swapInstruction.accounts.map((acc: any) => {
-      const pubkeyStr = acc.pubkey;
-      const isUser = pubkeyStr === this.provider.publicKey?.toString();
-
-      return {
-        pubkey: new PublicKey(pubkeyStr),
-        isSigner: acc.isSigner || isUser, // Mark as signer if it's the user
-        isWritable: acc.isWritable,
-      };
-    });
-
-    const addressLookupTableAccounts = await getAddressLookupTableAccounts(resultSwapInstructions.addressLookupTableAddresses || []);
-
-    const instructions = [
-      // Add compute unit limit
-      ComputeBudgetProgram.setComputeUnitLimit({
-        units: computeUnits,
-      }),
-
-      // Add priority fee
-      addPriorityFee(),
-
-      // Use redeem_by_collateral_3 instruction
-      await this.program.methods
-        .redeemByCollateral(new BN(usdaiAmount), new BN(collateralAmountRaw), jupiterData)
-        .accountsPartial(accountsPartial)
-        .remainingAccounts(remainingAccounts)
-        .instruction(),
-    ];
-
-    const blockhash = (await this.provider.connection.getLatestBlockhash('finalized')).blockhash;
-    const messageV0 = new TransactionMessage({
-      payerKey: this.provider.publicKey,
-      recentBlockhash: blockhash,
-      instructions,
-    }).compileToV0Message(addressLookupTableAccounts);
-
-    const transaction = new VersionedTransaction(messageV0);
-    // const simulate = await this.provider.connection.simulateTransaction(transaction, { commitment: 'finalized' });
-    // console.log('simulate', simulate);
-
-    const result = await this.sendTransaction(transaction);
-    return result;
-  }
-
   async getDepositoryVault(tokenAddress: string) {
     const { depositoryVault } = this.getAccountsPartial(tokenAddress);
     const depository = await getAccount(this.provider.connection, depositoryVault);
@@ -365,5 +327,94 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const tx = new Transaction().add(inx);
 
     return tx;
+  }
+
+  //Collateral Type 1 in Cross Mode
+  async redeemByCollateral(params: {
+    collateralAmountRaw: string;
+    selectedToken: string;
+    resultSwapInstructions: any;
+    priorityFee: number;
+  }) {
+    const { collateralAmountRaw, selectedToken, resultSwapInstructions, priorityFee } = params;
+
+    const dataSwap = Buffer.from(resultSwapInstructions.swapInstruction.data, 'base64');
+
+    const remainingAccounts = resultSwapInstructions.swapInstruction.accounts.map(
+      (acc: { pubkey: any; isSigner: any; isWritable: any }) => {
+        const pubkeyStr = acc.pubkey;
+        const isUser = pubkeyStr === this.provider.publicKey.toString();
+        return {
+          pubkey: new PublicKey(pubkeyStr),
+          isSigner: acc.isSigner || isUser, // Mark as signer if it's the user
+          isWritable: acc.isWritable,
+        };
+      }
+    );
+
+    const redeemCollIns = await this.getRedeemByCollateralType1Instruction(selectedToken, collateralAmountRaw, remainingAccounts, dataSwap);
+
+    const addressLookupTableAccounts: AddressLookupTableAccount[] = [];
+    addressLookupTableAccounts.push(...(await getAddressLookupTableAccounts(resultSwapInstructions.addressLookupTableAddresses)));
+    const instruction = [ComputeBudgetProgram.setComputeUnitLimit({ units: 1400000 }), addPriorityFee(priorityFee), redeemCollIns];
+    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(selectedToken));
+    if (isHasUserCollateral1 !== null) {
+      instruction.unshift(isHasUserCollateral1);
+    }
+    const blockhash = (await this.provider.connection.getLatestBlockhash()).blockhash;
+    const messageV0 = new TransactionMessage({
+      payerKey: this.provider.publicKey,
+      recentBlockhash: blockhash,
+      instructions: instruction,
+    }).compileToV0Message(addressLookupTableAccounts);
+
+    const transaction = new VersionedTransaction(messageV0);
+    const txHash = await this.sendTransaction(transaction, undefined, true);
+
+    return txHash;
+  }
+
+  async getRedeemByCollateralType0Instruction(tokenMintAddress: string, amountCollateral: string, remainingAccounts: any, data: any) {
+    try {
+      const accountsPartial = this.getAccountsPartial(tokenMintAddress);
+
+      const ix = await this.program.methods
+        .type0RedeemByCollateral(new BN(amountCollateral), data)
+        .accountsPartial({
+          ...accountsPartial,
+          jupiterProgram: jupiterProgram,
+        })
+        .remainingAccounts(remainingAccounts)
+        .instruction();
+
+      return ix;
+    } catch (error) {
+      console.error('❌ Error get ins redeem config:', error);
+      throw error;
+    }
+  }
+
+  async getRedeemByCollateralType1Instruction(tokenMintAddress: string, amountCollateral: string, remainingAccounts: any, data: any) {
+    try {
+      const accountsPartial = this.getAccountsPartial(tokenMintAddress);
+
+      const ix = await this.program.methods
+        .type1RedeemByCollateral(new BN(amountCollateral), data)
+        .accountsPartial({
+          ...accountsPartial,
+          jupiterProgram: jupiterProgram,
+          collateral: new PublicKey(tokenMintAddress),
+          userCollateral: accountsPartial.userCollateral1,
+          depositoryType1: accountsPartial.depository,
+          redeemConfigV2: accountsPartial.redeemConfig,
+        })
+        .remainingAccounts(remainingAccounts)
+        .instruction();
+
+      return ix;
+    } catch (error) {
+      console.error('❌ Error get ins redeem config:', error);
+      throw error;
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { BACKEND_URL, URL_JUPITER_API } from './baseUrl';
+import { BACKEND_URL, URL_JUPITER_API, URL_METEORA_API } from './baseUrl';
 import { TLiquidationLeaderboardParams } from './HandleApi/getLeaderboard/type';
 
 export const apiUrl = {
@@ -24,4 +24,6 @@ export const apiUrl = {
   getLiquidatorRewardList: (userAddress: string) => `${BACKEND_URL}/liquidator-pool/users/${userAddress}`,
   getJupiterQuote: (param: string) => `${URL_JUPITER_API}/quote?${param}`,
   jupiterSwapInstructions: () => `${URL_JUPITER_API}/swap-instructions`,
+  getUsdaiInPool: () => `${BACKEND_URL}/tokens/usdai/liquidity-pool`,
+  getMeteoraTokenPrice: (tokenAddress: string) => `${URL_METEORA_API}/pair/${tokenAddress}`,
 };

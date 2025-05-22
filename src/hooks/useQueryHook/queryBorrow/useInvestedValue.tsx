@@ -6,7 +6,7 @@ import { convertToUsd } from 'src/views/Borrow/utils';
 import useQueryDepositValue from '../queryMyPortfolio/useQueryDepositValue';
 import useMyPortfolio from '../queryMyPortfolio/useMyPortfolio';
 import { useCrossModeState } from 'src/states/hooks';
-import { TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 
 const useInvestedValue = () => {
   const { data: listPrice } = useQueryAllTokensPrice();

@@ -1,6 +1,6 @@
 import { useWallet, WalletContextState } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
-import { TokenName } from 'crypto-token-icon';
+import { TokenName } from 'src/libs/crypto-icons';
 import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { LiquidatorContract } from 'src/contracts/solana/contracts/LiquidatorContract';
 import { BN, getDecimalToken } from 'src/utils';

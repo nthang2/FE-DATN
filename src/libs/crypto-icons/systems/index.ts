@@ -1,0 +1,1 @@
+export { IconBSC } from './IconBSC';
