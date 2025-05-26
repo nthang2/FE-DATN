@@ -1,8 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AnchorProvider, Idl, Program, web3 } from '@coral-xyz/anchor';
+import { AnchorProvider, Idl, Program } from '@coral-xyz/anchor';
+import {
+  createCloseAccountInstruction,
+  createSyncNativeInstruction,
+  getAssociatedTokenAddress,
+  getAssociatedTokenAddressSync,
+  NATIVE_MINT,
+} from '@solana/spl-token';
 import { SendTransactionOptions } from '@solana/wallet-adapter-base';
 import { Wallet, WalletContextState } from '@solana/wallet-adapter-react';
-import { ComputeBudgetProgram, PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js';
+import { ComputeBudgetProgram, PublicKey, SystemProgram, Transaction, VersionedTransaction } from '@solana/web3.js';
 import { publicClientSol } from 'src/states/hooks';
 import { sleep } from 'src/utils';
 
@@ -27,6 +34,43 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
     });
   }
 
+  wrapNative(fromPubkey: PublicKey, amount: number): Transaction {
+    const fromTokenAccount = getAssociatedTokenAddressSync(NATIVE_MINT, fromPubkey);
+
+    const tx = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: fromPubkey,
+        toPubkey: fromTokenAccount,
+        lamports: amount,
+      }),
+      createSyncNativeInstruction(fromTokenAccount)
+    );
+    return tx;
+  }
+
+  wrapSol(inputToken: string, amount: number): Transaction {
+    if (inputToken === NATIVE_MINT.toBase58()) {
+      return this.wrapNative(this.provider.publicKey, amount);
+    }
+
+    return new Transaction();
+  }
+
+  async unwrapSol(wsolMint: PublicKey = new PublicKey('So11111111111111111111111111111111111111112')) {
+    const associatedTokenAccount = await getAssociatedTokenAddress(wsolMint, this.provider.publicKey);
+    const inx = createCloseAccountInstruction(associatedTokenAccount, this.provider.publicKey, this.provider.publicKey, []);
+    const tx = new Transaction().add(inx);
+
+    return tx;
+  }
+
+  getPda(seed: string, ...tokens: PublicKey[]) {
+    const addressParam = tokens.map((token) => token.toBuffer());
+    const [pda] = PublicKey.findProgramAddressSync([Buffer.from(seed), ...addressParam], this.program.programId);
+
+    return pda;
+  }
+
   async awaitConfirmTransaction(signature: string) {
     const connection = publicClientSol();
     const latestBlockHash = await connection.getLatestBlockhash();
@@ -37,36 +81,6 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
       signature,
     });
     await sleep(600);
-  }
-
-  async signTx(txHex: string) {
-    const parsedTx = web3.Transaction.from(Buffer.from(txHex, 'base64'));
-    const tx = await this.contextWallet?.signTransaction!(parsedTx);
-    const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
-
-    const txSigned = await this.provider.connection?.sendRawTransaction(tx.serialize());
-    await this.provider?.connection?.confirmTransaction({
-      signature: txSigned,
-      blockhash,
-      lastValidBlockHeight,
-    });
-    return txSigned;
-  }
-
-  async signTxPhantomWallet(txHex: any) {
-    const parsedTx = web3.Transaction.from(Buffer.from(txHex, 'base64'));
-    const phantomProvider = window?.phantom?.solana;
-    const res = await phantomProvider?.signAndSendTransaction!(parsedTx);
-    const { blockhash, lastValidBlockHeight } = await this.provider.connection.getLatestBlockhash();
-    // const txSigned = await this.provider.connection?.sendRawTransaction(tx.serialize());
-    if (res?.signature) {
-      await this.provider?.connection?.confirmTransaction({
-        signature: res.signature,
-        blockhash,
-        lastValidBlockHeight,
-      });
-    }
-    return res?.signature;
   }
 
   async sendTransaction(

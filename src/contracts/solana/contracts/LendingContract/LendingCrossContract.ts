@@ -3,12 +3,9 @@ import { BN } from '@coral-xyz/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
-  createCloseAccountInstruction,
-  createSyncNativeInstruction,
   getAccount,
   getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
-  NATIVE_MINT,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import { WalletContextState } from '@solana/wallet-adapter-react';
@@ -16,20 +13,22 @@ import {
   AddressLookupTableAccount,
   ComputeBudgetProgram,
   PublicKey,
-  SystemProgram,
   Transaction,
   TransactionMessage,
   VersionedTransaction,
 } from '@solana/web3.js';
 import { toast } from 'react-toastify';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
 import { solTokenSolana } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { queryClient } from 'src/layout/Layout';
+import { TokenName } from 'src/libs/crypto-icons';
 import { publicClientSol } from 'src/states/hooks';
 import { appStore, crossModeAtom } from 'src/states/state';
 import { getDecimalToken } from 'src/utils';
 import { BN as utilBN } from 'src/utils/index';
+import { addPriorityFee, getAddressLookupTableAccounts } from 'src/views/MyPortfolio/utils';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import {
@@ -42,20 +41,10 @@ import {
   REDEEMABLE_MINT_SEED,
   RESERVE_ACCOUNT,
 } from './constant';
-import { addPriorityFee, getAddressLookupTableAccounts } from 'src/views/MyPortfolio/utils';
-import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import { TokenName } from 'src/libs/crypto-icons';
 
 export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
     super(wallet, ctrAdsSolana.lending, idlLending);
-  }
-
-  getPda(seed: string, ...tokens: PublicKey[]) {
-    const addressParam = tokens.map((token) => token.toBuffer());
-    const [pda] = PublicKey.findProgramAddressSync([Buffer.from(seed), ...addressParam], this.program.programId);
-
-    return pda;
   }
 
   async checkUserCollateral1(tokenAddress: PublicKey) {
@@ -187,28 +176,6 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     return result;
   }
 
-  wrapNative(fromPubkey: PublicKey, amount: number): Transaction {
-    const fromTokenAccount = getAssociatedTokenAddressSync(NATIVE_MINT, fromPubkey);
-
-    const tx = new Transaction().add(
-      SystemProgram.transfer({
-        fromPubkey: fromPubkey,
-        toPubkey: fromTokenAccount,
-        lamports: amount,
-      }),
-      createSyncNativeInstruction(fromTokenAccount)
-    );
-    return tx;
-  }
-
-  wrapSol(inputToken: string, amount: number): Transaction {
-    if (inputToken === NATIVE_MINT.toBase58()) {
-      return this.wrapNative(this.provider.publicKey, amount);
-    }
-
-    return new Transaction();
-  }
-
   async deposit(depositAmount: number, tokenAddress: string): Promise<string> {
     const decimal = getDecimalToken(tokenAddress);
     const collateralAmount = new BN(depositAmount * decimal);
@@ -321,14 +288,6 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     return depository;
   }
 
-  async unwrapSol(wsolMint: PublicKey = new PublicKey('So11111111111111111111111111111111111111112')) {
-    const associatedTokenAccount = await getAssociatedTokenAddress(wsolMint, this.provider.publicKey);
-    const inx = createCloseAccountInstruction(associatedTokenAccount, this.provider.publicKey, this.provider.publicKey, []);
-    const tx = new Transaction().add(inx);
-
-    return tx;
-  }
-
   //Collateral Type 1 in Cross Mode
   async redeemByCollateral(params: {
     collateralAmountRaw: string;
@@ -352,7 +311,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
       }
     );
 
-    const redeemCollIns = await this.getRedeemByCollateralType1Instruction(selectedToken, collateralAmountRaw, remainingAccounts, dataSwap);
+    const redeemCollIns = await this.getRedeemByCollateralInstruction(selectedToken, collateralAmountRaw, remainingAccounts, dataSwap);
 
     const addressLookupTableAccounts: AddressLookupTableAccount[] = [];
     addressLookupTableAccounts.push(...(await getAddressLookupTableAccounts(resultSwapInstructions.addressLookupTableAddresses)));
@@ -374,27 +333,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     return txHash;
   }
 
-  async getRedeemByCollateralType0Instruction(tokenMintAddress: string, amountCollateral: string, remainingAccounts: any, data: any) {
-    try {
-      const accountsPartial = this.getAccountsPartial(tokenMintAddress);
-
-      const ix = await this.program.methods
-        .type0RedeemByCollateral(new BN(amountCollateral), data)
-        .accountsPartial({
-          ...accountsPartial,
-          jupiterProgram: jupiterProgram,
-        })
-        .remainingAccounts(remainingAccounts)
-        .instruction();
-
-      return ix;
-    } catch (error) {
-      console.error('❌ Error get ins redeem config:', error);
-      throw error;
-    }
-  }
-
-  async getRedeemByCollateralType1Instruction(tokenMintAddress: string, amountCollateral: string, remainingAccounts: any, data: any) {
+  async getRedeemByCollateralInstruction(tokenMintAddress: string, amountCollateral: string, remainingAccounts: any, data: any) {
     try {
       const accountsPartial = this.getAccountsPartial(tokenMintAddress);
 
