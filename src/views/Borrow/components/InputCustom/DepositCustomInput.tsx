@@ -17,10 +17,22 @@ type Props = {
   selectProps?: SelectProps<string>;
   error?: string;
   selectOptions?: string[];
+  hideDropdownIcon?: boolean;
 };
 
 export default function DepositCustomInput(props: Props) {
-  const { subValue, readonly = false, onClickMax, loading, maxValue, endAdornment, inputProps, selectProps, error } = props;
+  const {
+    subValue,
+    readonly = false,
+    onClickMax,
+    loading,
+    maxValue,
+    endAdornment,
+    inputProps,
+    selectProps,
+    error,
+    hideDropdownIcon,
+  } = props;
   const [depositItems] = useDepositState();
 
   const options = Object.values(listTokenAvailable).map((item) => item.address);
@@ -45,12 +57,14 @@ export default function DepositCustomInput(props: Props) {
       >
         {Boolean(selectProps) && (
           <Select
-            id="demo-select"
             disabled={readonly}
             sx={{
               border: '1px solid #666662',
               mr: 2,
-              minWidth: '135px',
+              minWidth: hideDropdownIcon ? '115px' : '135px',
+              '& .MuiSvgIcon-root.Mui-disabled': {
+                display: hideDropdownIcon ? 'none' : 'block',
+              },
               ...selectProps?.sx,
             }}
             {...selectProps}

@@ -97,6 +97,7 @@ const BorrowSection = () => {
             subValue={borrowState?.price}
             error={borrowState.error}
             selectOptions={[borrowState.address]}
+            hideDropdownIcon={true}
             endAdornment={
               <Box sx={{ alignItems: 'center', gap: 1.5, height: '100%', display: 'flex' }}>
                 <Typography variant="h5" sx={{ cursor: 'pointer', fontWeight: 600, color: '#FCFFD8' }} onClick={handleMax}>

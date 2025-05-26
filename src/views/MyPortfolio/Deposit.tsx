@@ -6,15 +6,14 @@ import { listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ec
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { useModalFunction } from 'src/states/modal/hooks';
 import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN, copyTextToClipboard } from 'src/utils';
 import { compactNumber, formatNumber } from '../../utils/format';
 import DepositModal from './components/DepositModal';
-import SwitchCustom from './components/SwitchCustom';
 import WithdrawModal from './components/WithdrawModal';
-import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 
 export default function Deposit() {
   const { loading } = useAsyncExecute();
@@ -23,7 +22,7 @@ export default function Deposit() {
   const balance = useSolanaBalanceTokens(address, Object.keys(listTokenAvailable) as Array<TSolanaToken>);
   const { asset } = useMyPortfolio();
 
-  const tableHead = ['Asset', 'In Wallet', 'Deposited', 'Collateral', ''];
+  const tableHead = ['Asset', 'In Wallet', 'Deposited', ''];
   const tokens = Object.values(listTokenAvailable);
 
   const handleDeposit = (token: SolanaEcosystemTokenInfo) => {
@@ -96,11 +95,6 @@ export default function Deposit() {
                     <Typography variant="body3" sx={{ color: 'text.tertiary', fontSize: '10px' }}>
                       {asset?.[row.address] ? '$' + formatNumber(asset?.[row.address].depositedUSD) : '--'}
                     </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-                      <SwitchCustom _checked={true} />
-                    </Box>
                   </TableCell>
                   <TableCell align="right">
                     <Button
