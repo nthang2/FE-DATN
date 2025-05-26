@@ -39,17 +39,6 @@ export class LiquidatorContract extends SolanaContractAbstract<IdlLiquidator> {
     const userStablecoinAccount = getAssociatedTokenAddressSync(redeemableMint, this.provider.publicKey, true);
     const poolStablecoinAccount = getAssociatedTokenAddressSync(redeemableMint, pool, true);
 
-    console.log({
-      redeemableMint: redeemableMint.toString(),
-      pool: pool.toString(),
-      userStablecoinAccount: userStablecoinAccount.toString(),
-      controller: controller.toString(),
-      poolStablecoinAccount: poolStablecoinAccount.toString(),
-      lpAccount: lpAccount.toString(),
-      programId: this.program.programId.toString(),
-      rpcEndpoint: this.provider.connection.rpcEndpoint,
-    });
-
     return {
       redeemableMint,
       pool,
