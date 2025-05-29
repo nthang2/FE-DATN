@@ -46,7 +46,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
   };
 
   const handleMax = () => {
-    setValueDeposit(balance.toString());
+    setValueDeposit(balance.toFixed(token.decimals));
     if (!tokensPrice) return;
     const _valueInUSD = BN(balance).times(BN(tokensPrice[token.address].price)).toString();
     setValueInUSD(_valueInUSD);

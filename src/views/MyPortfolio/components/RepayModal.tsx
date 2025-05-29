@@ -47,7 +47,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
 
   const handleMax = () => {
     if (asset?.[token.address] != undefined) {
-      setValueRepay(maxValue);
+      setValueRepay(Number(maxValue).toFixed(token.decimals));
       const _valueInUSD = BN(assetTokenInfo?.usdaiToRedeem).toString();
       setValueInUSD(_valueInUSD);
     }

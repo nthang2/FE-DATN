@@ -49,7 +49,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
 
   const handleMax = () => {
     if (asset) {
-      setValueWithdraw(maxValue);
+      setValueWithdraw(Number(maxValue).toFixed(token.decimals));
       if (!tokensPrice) return;
       const _valueInUSD = BN(maxValue).times(BN(tokensPrice[token.address].price)).toString();
       setValueInUSD(_valueInUSD);
