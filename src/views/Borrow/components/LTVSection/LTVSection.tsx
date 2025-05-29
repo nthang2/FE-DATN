@@ -11,6 +11,8 @@ import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../ut
 import CustomMark from '../BorrowSlide/CustomMark';
 import CustomThumb from '../BorrowSlide/CustomThumb';
 import CustomTrack from '../BorrowSlide/CustomTrack';
+import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 
 const minZoom = 0;
 const maxZoom = 100;
@@ -18,10 +20,11 @@ const maxZoom = 100;
 const LTVSection = () => {
   const [borrowState, setBorrowState] = useBorrowState();
   const [depositItems] = useDepositState();
-  const { data: listPrice } = useQueryAllTokensPrice();
+  const { data: listPrice, status: priceStatus } = useQueryAllTokensPrice();
   const [borrowSubmitted] = useBorrowSubmitState();
   const [isSubmitted] = useBorrowSubmitState();
   const { totalDepositValue, yourBorrowByAddress, maxLtv, depositedByAddress } = useInvestedValue();
+  const { status: portfolioStatus } = useMyPortfolio();
 
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
 
@@ -102,25 +105,31 @@ const LTVSection = () => {
       </Stack>
 
       <Box mt={3.5}>
-        <Slider
-          marks={markList}
-          min={minZoom}
-          max={maxZoom}
-          value={sliderValue}
-          step={0.5}
-          onChange={(_e, value) => handleChangeSlider(value)}
-          slots={{ mark: CustomMark, track: CustomTrack, thumb: CustomThumb }}
-          sx={{
-            bgcolor: '#333331',
-            borderRadius: '100px',
-            '& .MuiSlider-rail': {
-              bgcolor: 'transparent',
-            },
-            '& .MuiSlider-thumb': {
-              transform: `translate(${Number(sliderValue) > 1 ? '-120%' : '-50%'}, -50%)`,
-            },
-          }}
-          disabled={borrowSubmitted || borrowPercent < 0}
+        <ValueWithStatus
+          status={[priceStatus, portfolioStatus]}
+          skeletonStyle={{ width: '100%', height: '50px' }}
+          value={
+            <Slider
+              marks={markList}
+              min={minZoom}
+              max={maxZoom}
+              value={sliderValue}
+              step={0.5}
+              onChange={(_e, value) => handleChangeSlider(value)}
+              slots={{ mark: CustomMark, track: CustomTrack, thumb: CustomThumb }}
+              sx={{
+                bgcolor: '#333331',
+                borderRadius: '100px',
+                '& .MuiSlider-rail': {
+                  bgcolor: 'transparent',
+                },
+                '& .MuiSlider-thumb': {
+                  transform: `translate(${Number(sliderValue) > 1 ? '-120%' : '-50%'}, -50%)`,
+                },
+              }}
+              disabled={borrowSubmitted || borrowPercent < 0}
+            />
+          }
         />
 
         {/* Label */}
