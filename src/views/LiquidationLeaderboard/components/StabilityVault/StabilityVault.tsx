@@ -14,12 +14,14 @@ import UnstakeModal from './UnstakeModal';
 import useGetVaultInfo from 'src/hooks/useQueryHook/queryLiquidation/useGetVaultInfo';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import useGetStaked from 'src/hooks/useQueryHook/queryLiquidation/useGetStaked';
+import useGetVaultApr from 'src/hooks/useQueryHook/queryLiquidation/useGetVaultApr';
 
 const StabilityVault = () => {
   const { address } = useSummarySolanaConnect();
   const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
   const { data: vaultInfo, status: vaultStatus } = useGetVaultInfo();
   const { data: totalStaked, status: totalStakedStatus } = useGetStaked();
+  const { data: apr, status: aprStatus } = useGetVaultApr();
   const modalFunction = useModalFunction();
 
   const handleOpenModalClaim = () => {
@@ -82,9 +84,14 @@ const StabilityVault = () => {
 
         <Stack justifyContent="space-between">
           <StabilityQuestionTooltip content="APR" tooltipText="Idk wait update" fontWeight={400} color="#fff" />
-          <Typography variant="body1" fontWeight={700} color="primary">
-            4%
-          </Typography>
+          <ValueWithStatus
+            status={[aprStatus]}
+            value={
+              <Typography variant="body1" fontWeight={700} color="primary">
+                {((apr?.apr || 104) - 100).toFixed(4)}%
+              </Typography>
+            }
+          />
         </Stack>
       </Stack>
 

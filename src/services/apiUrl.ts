@@ -26,4 +26,5 @@ export const apiUrl = {
   jupiterSwapInstructions: () => `${URL_JUPITER_API}/swap-instructions`,
   getUsdaiInPool: () => `${BACKEND_URL}/tokens/usdai/liquidity-pool`,
   getMeteoraTokenPrice: (tokenAddress: string) => `${URL_METEORA_API}/pair/${tokenAddress}`,
+  getPoolApr: () => `${BACKEND_URL}/liquidator-pool/apr`,
 };
