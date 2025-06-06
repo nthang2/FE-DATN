@@ -1,5 +1,5 @@
 import { Stack, Tooltip, Typography, TypographyProps } from '@mui/material';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
 
 interface IProps extends TypographyProps {
   content: string;
@@ -17,7 +17,7 @@ const StabilityQuestionTooltip = (props: IProps) => {
       </Typography>
       {showToolTip && (
         <Tooltip title={tooltipText}>
-          <HelpOutlineIcon sx={{ fontSize: '20px', ml: 1, color: '#D9D9D9' }} />
+          <InfoOutlineIcon sx={{ fontSize: '16px', ml: 1, color: '#D9D9D9' }} />
         </Tooltip>
       )}
     </Stack>
