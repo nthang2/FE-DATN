@@ -120,7 +120,7 @@ export default function YourPosition() {
             status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                {formatNumber(totalYourBorrowValue, { fractionDigits: 2, prefix: '$' })}
+                {formatNumber(totalYourBorrowValue, { fractionDigits: 2, prefix: '$', fallback: '$0' })}
               </Typography>
             }
           />

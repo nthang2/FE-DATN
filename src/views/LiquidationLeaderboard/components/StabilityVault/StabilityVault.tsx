@@ -57,7 +57,7 @@ const StabilityVault = () => {
       <Stack gap={1.5} alignItems="center">
         <IconToken tokenName={TokenName.USDAI} sx={{ fontSize: '42px' }} />
         <Box>
-          <StabilityQuestionTooltip content="Stability Pool" tooltipText="Idk wait update" />
+          <StabilityQuestionTooltip content="Liquidation Pool" tooltipText="Idk wait update" />
           <Typography variant="body2" color="info.main">
             Stake <strong style={{ color: '#E4E3D6' }}>USDAI </strong>
             to earn discounted crypto
@@ -83,12 +83,18 @@ const StabilityVault = () => {
         </Stack>
 
         <Stack justifyContent="space-between">
-          <StabilityQuestionTooltip content="APR" tooltipText="Idk wait update" fontWeight={400} color="#fff" />
+          <StabilityQuestionTooltip
+            showToolTip
+            content="APR"
+            tooltipText="This APR represents the estimated annual return based on liquidation activity from the last 14 days."
+            fontWeight={400}
+            color="#fff"
+          />
           <ValueWithStatus
             status={[aprStatus]}
             value={
               <Typography variant="body1" fontWeight={700} color="primary">
-                {((apr?.apr || 104) - 100).toFixed(4)}%
+                {(apr?.apr || 104).toFixed(2)}%
               </Typography>
             }
           />
