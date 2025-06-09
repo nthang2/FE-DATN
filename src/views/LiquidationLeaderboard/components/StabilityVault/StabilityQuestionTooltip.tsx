@@ -16,7 +16,7 @@ const StabilityQuestionTooltip = (props: IProps) => {
         {content}
       </Typography>
       {showToolTip && (
-        <Tooltip title={tooltipText}>
+        <Tooltip title={tooltipText} slotProps={{ tooltip: { sx: { width: 'fit-content', maxWidth: '340px' } } }}>
           <InfoOutlineIcon sx={{ fontSize: '16px', ml: 1, color: '#D9D9D9' }} />
         </Tooltip>
       )}
