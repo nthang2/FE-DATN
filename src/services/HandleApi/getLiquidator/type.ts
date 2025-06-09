@@ -11,3 +11,10 @@ export type TUserLiquidatorReward = {
   maxWithdrawable: number;
   collaterals: TLiquidatorCollateral[];
 };
+
+export type TPoolApr = {
+  startTimestamp: number;
+  endTimestamp: number;
+  rewardInUSD: number;
+  apr: number;
+};

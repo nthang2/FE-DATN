@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { PlusIcon } from 'src/assets/icons';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
-import { listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken, listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import { useCrossModeState } from 'src/states/hooks';
@@ -109,9 +109,12 @@ const DepositSection = () => {
   const handleMax = (index: number) => {
     const cloneArr = depositItems.map((item, arrIndex) => {
       if (arrIndex === index) {
+        const selectedToken = findTokenInfoByToken(item.address);
+        const decimals = selectedToken?.decimals || 6;
+
         return {
           ...item,
-          value: depositItemBalance(index)?.toString() || '0',
+          value: depositItemBalance(index)?.toFixed(decimals) || '0',
           price: convertToUsd(item.address, depositItemBalance(index)?.toString() || '0', listPrice),
           error: undefined,
         };

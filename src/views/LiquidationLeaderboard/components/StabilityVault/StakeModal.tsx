@@ -29,7 +29,7 @@ const StakeModal = () => {
   const inputInUsd = convertToUsd(usdaiInfo.address, input, priceList);
 
   const handleMax = () => {
-    setInput(balance.toString());
+    setInput(balance.toFixed(usdaiInfo.decimals));
   };
 
   const handleDeposit = () => {

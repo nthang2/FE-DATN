@@ -50,7 +50,11 @@ export default function Borrow() {
   };
 
   const handleMint = (tokenId: string) => {
-    navigate(`/?deposit=${tokenId}`);
+    if (crossMode) {
+      navigate(`/?deposit`);
+    } else {
+      navigate(`/?deposit=${tokenId}`);
+    }
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

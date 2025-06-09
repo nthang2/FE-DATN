@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useEffect, useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
-import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
@@ -55,12 +55,14 @@ const BorrowSection = () => {
   const handleMax = () => {
     if (isSubmitted) return;
     const borrowPrice = (Number(maxLtv) / 100) * totalDepositValue - yourBorrowByAddress;
+    const selectedToken = findTokenInfoByToken(borrowState.address);
     const minValue = borrowPrice < 0 ? 0 : borrowPrice;
     const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), listPrice);
+    const decimals = selectedToken?.decimals || 6;
 
     setBorrowState({
       ...borrowState,
-      value: borrowAmount ? borrowAmount.toString() : '0',
+      value: borrowAmount ? borrowAmount.toFixed(decimals) : '0',
       price: minValue,
       error: undefined,
     });
@@ -97,6 +99,7 @@ const BorrowSection = () => {
             subValue={borrowState?.price}
             error={borrowState.error}
             selectOptions={[borrowState.address]}
+            hideDropdownIcon={true}
             endAdornment={
               <Box sx={{ alignItems: 'center', gap: 1.5, height: '100%', display: 'flex' }}>
                 <Typography variant="h5" sx={{ cursor: 'pointer', fontWeight: 600, color: '#FCFFD8' }} onClick={handleMax}>

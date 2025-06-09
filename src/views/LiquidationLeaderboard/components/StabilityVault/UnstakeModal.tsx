@@ -20,17 +20,17 @@ const UnstakeModal = () => {
   const { asyncExecute, loading } = useAsyncExecute();
   const { data: vaultInfo, status: vaultStatus, refetch: refetchVaultInfo } = useGetVaultInfo();
   const { data: priceList, status: priceStatus } = useQueryAllTokensPrice();
+  const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
 
   const maxWithdrawAbleUsd = useMemo(() => {
     if (!vaultInfo) return 0;
     if (!priceList) return vaultInfo.maxWithdrawable;
-    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
 
     return BN(vaultInfo.maxWithdrawable).multipliedBy(priceList[usdaiInfo.address]?.price || 1);
-  }, [vaultInfo, priceList]);
+  }, [vaultInfo, priceList, usdaiInfo.address]);
 
   const handleMax = () => {
-    setInput(vaultInfo?.maxWithdrawable.toString() || '0');
+    setInput(vaultInfo?.maxWithdrawable.toFixed(usdaiInfo.decimals) || '0');
   };
 
   const handleWithdraw = () => {

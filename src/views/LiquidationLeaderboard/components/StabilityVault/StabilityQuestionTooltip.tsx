@@ -1,20 +1,26 @@
-import { Typography, TypographyProps } from '@mui/material';
+import { Stack, Tooltip, Typography, TypographyProps } from '@mui/material';
+import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
 
 interface IProps extends TypographyProps {
   content: string;
   tooltipText: string;
+  showToolTip?: boolean;
 }
 
 const StabilityQuestionTooltip = (props: IProps) => {
-  const { content, sx, ...rest } = props;
+  const { content, sx, showToolTip, tooltipText, ...rest } = props;
 
   return (
-    <Typography variant="body1" fontWeight={700} color="primary" sx={{ display: 'flex', alignItems: 'center', ...sx }} {...rest}>
-      {content}
-      {/* <Tooltip title={tooltipText}>
-        <HelpOutlineIcon sx={{ fontSize: '20px', ml: 1, color: '#D9D9D9' }} />
-      </Tooltip> */}
-    </Typography>
+    <Stack sx={{ display: 'flex', alignItems: 'center' }}>
+      <Typography variant="body1" fontWeight={700} color="primary" sx={sx} {...rest}>
+        {content}
+      </Typography>
+      {showToolTip && (
+        <Tooltip title={tooltipText} slotProps={{ tooltip: { sx: { width: 'fit-content', maxWidth: '340px' } } }}>
+          <InfoOutlineIcon sx={{ fontSize: '16px', ml: 1, color: '#D9D9D9' }} />
+        </Tooltip>
+      )}
+    </Stack>
   );
 };
 
