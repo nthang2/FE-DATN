@@ -3,7 +3,7 @@ import SwapForm from './SwapForm';
 import { SettingsOutlined } from '@mui/icons-material';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import { useState } from 'react';
-import ModalSettingTrans from './ModalSettingTrans';
+import ModalSettingSwap from './ModalSettingSwap';
 
 const SwapToken = () => {
   const [isOpenSetting, setIsOpenSetting] = useState(false);
@@ -38,7 +38,7 @@ const SwapToken = () => {
           <SwapForm />
         </BoxCustom>
       </Stack>
-      <ModalSettingTrans isOpen={isOpenSetting} onClose={() => setIsOpenSetting(false)} />
+      <ModalSettingSwap isOpen={isOpenSetting} onClose={() => setIsOpenSetting(false)} />
     </Box>
   );
 };

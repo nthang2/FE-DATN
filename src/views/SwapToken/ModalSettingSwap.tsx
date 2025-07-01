@@ -6,7 +6,7 @@ interface IProps {
   onClose: () => void;
 }
 
-const ModalSettingTrans = (props: IProps) => {
+const ModalSettingSwap = (props: IProps) => {
   const { isOpen, onClose } = props;
   const [slippageTolerance, setSlippageTolerance] = useSlippageSwapState();
   const [priorityFee, setPriorityFee] = usePriorityFeeSwapState();
@@ -32,4 +32,4 @@ const ModalSettingTrans = (props: IProps) => {
   );
 };
 
-export default ModalSettingTrans;
+export default ModalSettingSwap;
