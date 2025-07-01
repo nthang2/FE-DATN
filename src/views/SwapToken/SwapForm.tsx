@@ -9,9 +9,7 @@ import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/us
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { decimalFlood } from 'src/utils/format';
 import RepayCustomInput from '../MyPortfolio/components/InputCustom/RepayCustomInput';
-import { SettingsOutlined } from '@mui/icons-material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import SwapInfo from './SwapInfo';
 
@@ -21,9 +19,10 @@ const defaultTokenAddress = Object.values(listTokenAvailable)[0]?.address as str
 export default function SwapForm() {
   const wallet = useWallet();
   const { address } = useSummarySolanaConnect();
+  const { asyncExecute, loading } = useAsyncExecute();
 
   const [usdaiAmount, setUsdaiAmount] = useState(0);
-  const [usdcAmount, setUsdcAmount] = useState(0);
+  const [selectTokenAmount, setSelectTokenAmount] = useState(0);
   const [isReverse, setIsReverse] = useState(false);
   const [selectedToken, setSelectedToken] = useState(defaultTokenAddress);
 
@@ -37,19 +36,24 @@ export default function SwapForm() {
     isLoading: isLoadingUsdaiBalance,
     refetch: refetchUsdaiBalance,
   } = useSolanaBalanceToken(address, TokenName.USDAI);
-  const { asyncExecute, loading } = useAsyncExecute();
 
   const handleReverse = () => {
     setIsReverse(!isReverse);
     setUsdaiAmount(0);
-    setUsdcAmount(0);
+    setSelectTokenAmount(0);
   };
 
   const handleChangeAmount = (value: number) => {
     const maxBalance = !isReverse ? usdaiBalance.toNumber() : selectTokenBalance.toNumber();
     const validatedValue = Math.min(value, maxBalance);
     setUsdaiAmount(validatedValue);
-    setUsdcAmount(validatedValue);
+    setSelectTokenAmount(validatedValue);
+  };
+
+  const handleChangeSelectToken = (value: string) => {
+    setSelectedToken(value);
+    setSelectTokenAmount(0);
+    setUsdaiAmount(0);
   };
 
   const handleSwap = async () => {
@@ -57,7 +61,7 @@ export default function SwapForm() {
     // const swapTokenContract = new SwapTokenContract(wallet);
     // let transactionHash = '';
     // if (isReverse) {
-    //   transactionHash = await swapTokenContract.swapTokenToRedeemable({ swapAmount: usdcAmount });
+    //   transactionHash = await swapTokenContract.swapTokenToRedeemable({ swapAmount: selectTokenAmount });
     // } else {
     //   transactionHash = await swapTokenContract.swapRedeemableToToken({ swapAmount: usdaiAmount });
     // }
@@ -65,25 +69,7 @@ export default function SwapForm() {
   };
 
   return (
-    <BoxCustom
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        gap: 3,
-        borderRadius: '10px',
-        maxWidth: '550px',
-        padding: 3.5,
-      }}
-    >
-      <Stack justifyContent={'space-between'} alignItems={'center'}>
-        <Typography variant="h5">Swap</Typography>
-
-        <IconButton>
-          <SettingsOutlined sx={{ color: 'info.main' }} />
-        </IconButton>
-      </Stack>
-
+    <>
       <Stack direction={isReverse ? 'column-reverse' : 'column'} gap={2}>
         <Stack direction={'column'} gap={0.5}>
           <Stack justifyContent={'space-between'}>
@@ -91,25 +77,14 @@ export default function SwapForm() {
               {!isReverse ? 'From' : 'To'}
             </Typography>
 
-            {!isReverse ? (
-              <ValueWithStatus
-                status={[isLoadingUsdaiBalance ? 'pending' : 'success']}
-                value={
-                  <Typography variant="body2" sx={{ color: 'info.main' }}>
-                    Balance: {decimalFlood(usdaiBalance.toString(), 6)}
-                  </Typography>
-                }
-              />
-            ) : (
-              <ValueWithStatus
-                status={[isLoadingUsdaiBalance ? 'pending' : 'success']}
-                value={
-                  <Typography variant="body2" sx={{ color: 'info.main' }}>
-                    Available: {decimalFlood(usdaiBalance.toString(), 6)}
-                  </Typography>
-                }
-              />
-            )}
+            <ValueWithStatus
+              status={[isLoadingUsdaiBalance ? 'pending' : 'success']}
+              value={
+                <Typography variant="body2" sx={{ color: 'info.main' }}>
+                  {!isReverse ? 'Balance' : 'Available'}: {decimalFlood(usdaiBalance.toString(), 6)}
+                </Typography>
+              }
+            />
           </Stack>
 
           <RepayCustomInput
@@ -141,34 +116,23 @@ export default function SwapForm() {
               {!isReverse ? 'To' : 'From'}
             </Typography>
 
-            {!isReverse ? (
-              <ValueWithStatus
-                status={[isLoadingSelectTokenBalance ? 'pending' : 'success']}
-                value={
-                  <Typography variant="body2" sx={{ color: 'info.main' }}>
-                    Available: {decimalFlood(selectTokenBalance.toString(), 6)}
-                  </Typography>
-                }
-              />
-            ) : (
-              <ValueWithStatus
-                status={[isLoadingSelectTokenBalance ? 'pending' : 'success']}
-                value={
-                  <Typography variant="body2" sx={{ color: 'info.main' }}>
-                    Balance: {decimalFlood(selectTokenBalance.toString(), 6)}
-                  </Typography>
-                }
-              />
-            )}
+            <ValueWithStatus
+              status={[isLoadingSelectTokenBalance ? 'pending' : 'success']}
+              value={
+                <Typography variant="body2" sx={{ color: 'info.main' }}>
+                  {isReverse ? 'Balance' : 'Available'}: {decimalFlood(selectTokenBalance.toString(), 6)}
+                </Typography>
+              }
+            />
           </Stack>
 
           <RepayCustomInput
             selectProps={{
               value: selectedToken,
-              onChange: (e) => setSelectedToken(e.target.value),
+              onChange: (e) => handleChangeSelectToken(e.target.value),
             }}
             inputProps={{
-              value: usdcAmount.toString() || '0',
+              value: selectTokenAmount.toString() || '0',
               disabled: !isReverse,
               onChange: (e) => handleChangeAmount(Number(e.target.value)),
             }}
@@ -193,13 +157,13 @@ export default function SwapForm() {
               refetchSelectTokenBalance();
               refetchUsdaiBalance();
               setUsdaiAmount(0);
-              setUsdcAmount(0);
+              setSelectTokenAmount(0);
             },
           })
         }
       >
         Swap
       </ButtonLoading>
-    </BoxCustom>
+    </>
   );
 }
