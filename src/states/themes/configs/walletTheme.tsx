@@ -62,7 +62,7 @@ export function getWalletThemeConfig(mode: THEME_MODE): ThemeOptions {
     error: {
       main: getColor('#FD817A', '#8E1F0B'), // text color
       light: getColor('#2F0A04', '#FEE9E8'), // defaul bg color
-      dark: getColor('#FD817A', '#E51C00'), // filled bg color
+      dark: getColor('#ff4b41', '#E51C00'), // filled bg color
     },
 
     text: {

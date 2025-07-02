@@ -27,7 +27,7 @@ const CustomMark = ({ ...props }) => {
         mozTransform: 'translate(-1px, -50%)',
         msTransform: 'translate(-1px, -50%)',
         transform: 'translate(-1px, -50%)',
-        bgcolor: bgcolor,
+        bgcolor: isLiquidationMark ? 'error.dark' : bgcolor,
         height: '100%',
         display: !isMaxValueMark && !isLiquidationMark ? 'none' : 'block',
       }}
@@ -35,13 +35,13 @@ const CustomMark = ({ ...props }) => {
     >
       <Box position="relative" height="100%">
         {isMaxValueMark && (
-          <Box position="absolute" top={-18} right={0}>
+          <Box position="absolute" top={-18}>
             <Typography variant="body3">{decimalFlood(maxValue, 2)}%</Typography>
           </Box>
         )}
         {isLiquidationMark && (
           <Box position="absolute" top={isOverflow ? positionLiquidationTop : -18} right={isOverflow ? '-35px' : 'unset'}>
-            <Typography variant="body3" noWrap>
+            <Typography variant="body3" noWrap sx={{ color: 'error.dark' }}>
               {decimalFlood(liquidationValue, 2)}% Liquidation
             </Typography>
           </Box>

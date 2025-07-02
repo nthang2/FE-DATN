@@ -16,7 +16,7 @@ export default function Routes() {
       children: [
         { path: '/', element: <Borrow /> },
         { path: '/my-portfolio', element: <MyPortfolio /> },
-        { path: '/vaults', element: <Vaults /> },
+        { path: '/earn', element: <Vaults /> },
         { path: '/liquidation', element: <LiquidationLeaderboard /> },
         { path: '/swap', element: <SwapToken /> },
       ],
