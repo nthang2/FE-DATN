@@ -2,8 +2,10 @@ import { Box, Slider, Stack, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import FormatSmallNumber from 'src/components/General/FormatSmallNumber/FormatSmallNumber';
+import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import { decimalFlood } from 'src/utils/format';
 import { marks } from '../../constant';
 import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
@@ -11,8 +13,6 @@ import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../ut
 import CustomMark from '../BorrowSlide/CustomMark';
 import CustomThumb from '../BorrowSlide/CustomThumb';
 import CustomTrack from '../BorrowSlide/CustomTrack';
-import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 
 const minZoom = 0;
 const maxZoom = 100;
@@ -23,12 +23,14 @@ const LTVSection = () => {
   const { data: listPrice, status: priceStatus } = useQueryAllTokensPrice();
   const [borrowSubmitted] = useBorrowSubmitState();
   const [isSubmitted] = useBorrowSubmitState();
-  const { totalDepositValue, yourBorrowByAddress, maxLtv, depositedByAddress } = useInvestedValue();
+  const { totalDepositValue, yourBorrowByAddress, maxLtv, depositedByAddress, maxLiquidationThreshold } = useInvestedValue();
   const { status: portfolioStatus } = useMyPortfolio();
 
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
 
-  const markList = useMemo(() => [...marks, { value: maxLtv || 100 }], [maxLtv]);
+  const markList = useMemo(() => {
+    return [...marks, { value: maxLiquidationThreshold }, { value: maxLtv || 100 }];
+  }, [maxLiquidationThreshold, maxLtv]);
   //Total borrow include already mint amount and input amount
   const borrowPercent = useMemo(() => {
     return ((borrowState.price + yourBorrowByAddress) / totalDepositValue) * 100;
