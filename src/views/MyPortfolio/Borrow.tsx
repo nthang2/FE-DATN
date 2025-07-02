@@ -126,14 +126,14 @@ export default function Borrow() {
                       {asset?.[row.address] && tokensPrice
                         ? formatNumber(availableMint(row), {
                             fractionDigits: 2,
-                            prefix: '$',
+                            fallback: '0',
                           })
                         : '--'}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {borrowedValue ? formatNumber(Number(borrowedValue), { fractionDigits: 2, prefix: '$' }) : '--'}
+                      {borrowedValue ? formatNumber(Number(borrowedValue), { fractionDigits: 2, fallback: '0' }) : '--'}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
