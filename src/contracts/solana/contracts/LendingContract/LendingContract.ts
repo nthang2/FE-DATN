@@ -38,7 +38,10 @@ import {
   REDEEM_CONFIG,
   REDEEMABLE_MINT_SEED,
   RESERVE_ACCOUNT,
+  SWAP_CONFIG_SEED,
 } from './constant';
+import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { TokenName } from 'src/libs/crypto-icons';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -99,6 +102,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
     const reserveTokenAccount = getAssociatedTokenAddressSync(redeemable_mint, RESERVE_ACCOUNT, true);
     const redeemConfig = this.getPda(REDEEM_CONFIG);
+    const swapConfig = this.getPda(SWAP_CONFIG_SEED);
 
     return {
       user: this.provider.publicKey,
@@ -114,6 +118,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       reserve: RESERVE_ACCOUNT,
       reserveTokenAccount: reserveTokenAccount,
       redeemConfig: redeemConfig,
+      swapConfig: swapConfig,
     };
   }
 
@@ -354,5 +359,57 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       console.error('❌ Error get ins redeem config:', error);
       throw error;
     }
+  }
+
+  async swapToken(tokenAddress: string, amount: number, isReverse: boolean) {
+    const accountsPartial = this.getAccountsPartial(tokenAddress);
+    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
+    const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
+
+    if (!selectedTokenInfo) {
+      throw new Error('Token not found');
+    }
+
+    const amountRaw = isReverse
+      ? new BN(amount * Number(`1e${selectedTokenInfo.decimals}`))
+      : new BN(amount * Number(`1e${usdaiInfo.decimals}`));
+    let instruction: Transaction;
+
+    console.log({
+      user: accountsPartial.user.toString(),
+      controller: accountsPartial.controller.toString(),
+      stablecoinDepository: accountsPartial.depository.toString(),
+      stablecoinDepositoryVault: accountsPartial.depositoryVault.toString(),
+      stablecoinUserAta: accountsPartial.userCollateral.toString(),
+      usdaiUserAta: accountsPartial.userRedeemable.toString(),
+      usdai: accountsPartial.redeemableMint.toString(),
+      stablecoin: tokenAddress.toString(),
+      swapConfig: accountsPartial.swapConfig.toString(),
+    });
+
+    try {
+      instruction = await this.program.methods
+        .swapUsdaiType0(amountRaw, isReverse)
+        .accountsPartial({
+          user: accountsPartial.user,
+          controller: accountsPartial.controller,
+          stablecoinDepository: accountsPartial.depository,
+          stablecoinDepositoryVault: accountsPartial.depositoryVault,
+          stablecoinUserAta: accountsPartial.userCollateral,
+          usdaiUserAta: accountsPartial.userRedeemable,
+          usdai: accountsPartial.redeemableMint,
+          stablecoin: tokenAddress,
+          swapConfig: accountsPartial.swapConfig,
+        })
+        .transaction();
+    } catch (error) {
+      console.error('❌ Error get ins swap token:', error);
+      throw error;
+    }
+
+    console.log('🚀 ~ LendingContract ~ swapToken ~ instruction:', instruction);
+    const transactionHash = await this.sendTransaction(instruction);
+
+    return transactionHash;
   }
 }

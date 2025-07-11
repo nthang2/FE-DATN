@@ -12,6 +12,7 @@ import RepayCustomInput from '../MyPortfolio/components/InputCustom/RepayCustomI
 import { useWallet } from '@solana/wallet-adapter-react';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import SwapInfo from './SwapInfo';
+import { LendingContract } from 'src/contracts/solana/contracts/LendingContract/LendingContract';
 
 const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
 const defaultTokenAddress = Object.values(listTokenAvailable)[0]?.address as string;
@@ -46,8 +47,8 @@ export default function SwapForm() {
   const handleChangeAmount = (value: number) => {
     const maxBalance = !isReverse ? usdaiBalance.toNumber() : selectTokenBalance.toNumber();
     const validatedValue = Math.min(value, maxBalance);
-    setUsdaiAmount(validatedValue);
-    setSelectTokenAmount(validatedValue);
+    setUsdaiAmount(value);
+    setSelectTokenAmount(value);
   };
 
   const handleChangeSelectToken = (value: string) => {
@@ -57,15 +58,11 @@ export default function SwapForm() {
   };
 
   const handleSwap = async () => {
-    // if (!wallet) return;
-    // const swapTokenContract = new SwapTokenContract(wallet);
-    // let transactionHash = '';
-    // if (isReverse) {
-    //   transactionHash = await swapTokenContract.swapTokenToRedeemable({ swapAmount: selectTokenAmount });
-    // } else {
-    //   transactionHash = await swapTokenContract.swapRedeemableToToken({ swapAmount: usdaiAmount });
-    // }
-    // return transactionHash;
+    if (!wallet) return;
+    const swapTokenContract = new LendingContract(wallet);
+    let transactionHash = '';
+    transactionHash = await swapTokenContract.swapToken(selectedToken, selectTokenAmount, isReverse);
+    return transactionHash;
   };
 
   return (

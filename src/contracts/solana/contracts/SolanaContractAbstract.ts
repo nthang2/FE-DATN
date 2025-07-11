@@ -89,6 +89,7 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
     disableThrowSimulateError = false
   ) {
     const connection = publicClientSol();
+    console.log('🚀 ~ SolanaContractAbstract<IDL ~ connection:', connection);
     if (transaction instanceof VersionedTransaction) {
       const simulate = await connection.simulateTransaction(transaction, { replaceRecentBlockhash: true, commitment: 'finalized' });
       console.log('Simulation:', simulate);
