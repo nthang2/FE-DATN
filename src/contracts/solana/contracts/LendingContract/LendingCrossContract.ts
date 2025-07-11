@@ -19,7 +19,7 @@ import {
 } from '@solana/web3.js';
 import { toast } from 'react-toastify';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
-import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
 import { solTokenSolana } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { queryClient } from 'src/layout/Layout';
@@ -40,6 +40,7 @@ import {
   REDEEM_CONFIG,
   REDEEMABLE_MINT_SEED,
   RESERVE_ACCOUNT,
+  SWAP_CONFIG_SEED,
 } from './constant';
 
 export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
@@ -86,6 +87,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const collateral1 = new PublicKey(tokenAddress);
     const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
     const redeemConfig = this.getPda(REDEEM_CONFIG);
+    const swapConfig = this.getPda(SWAP_CONFIG_SEED);
 
     return {
       controller: controller,
@@ -102,6 +104,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
       collateral1: collateral1,
       userCollateral1: userCollateral1,
       redeemConfig: redeemConfig,
+      swapConfig: swapConfig,
     };
   }
 
@@ -355,5 +358,49 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
       console.error('❌ Error get ins redeem config:', error);
       throw error;
     }
+  }
+
+  async swapToken(tokenAddress: string, amount: number, isReverse: boolean) {
+    const accountsPartial = this.getAccountsPartial(tokenAddress);
+    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
+    const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
+
+    if (!selectedTokenInfo) {
+      throw new Error('Token not found');
+    }
+
+    const amountRaw = isReverse
+      ? new BN(amount * Number(`1e${selectedTokenInfo.decimals}`))
+      : new BN(amount * Number(`1e${usdaiInfo.decimals}`));
+
+    console.log({
+      user: accountsPartial.user.toString(),
+      controller: accountsPartial.controller.toString(),
+      stablecoinDepository: accountsPartial.depository.toString(),
+      stablecoinDepositoryVault: accountsPartial.depositoryVault.toString(),
+      stablecoinUserAta: accountsPartial.userCollateral1.toString(),
+      usdaiUserAta: accountsPartial.userRedeemable.toString(),
+      usdai: accountsPartial.redeemableMint.toString(),
+      stablecoin: tokenAddress.toString(),
+      swapConfig: accountsPartial.swapConfig.toString(),
+    });
+
+    const instruction = await this.program.methods
+      .swapUsdaiType0(amountRaw, isReverse)
+      .accountsPartial({
+        ...accountsPartial,
+        stablecoinDepository: accountsPartial.depository,
+        stablecoinDepositoryVault: accountsPartial.depositoryVault,
+        stablecoinUserAta: accountsPartial.userCollateral1,
+        usdaiUserAta: accountsPartial.userRedeemable,
+        usdai: accountsPartial.redeemableMint,
+        stablecoin: tokenAddress,
+        swapConfig: accountsPartial.swapConfig,
+      })
+      .transaction();
+
+    const transactionHash = await this.sendTransaction(instruction);
+
+    return transactionHash;
   }
 }

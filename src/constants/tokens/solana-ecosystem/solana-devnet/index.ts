@@ -2,7 +2,7 @@ import { TokenName } from 'src/libs/crypto-icons';
 import { SolanaDevnetTokenInfo } from './SolanaDevnetTokenInfo';
 
 export const usdcDevSolanaDevnet = new SolanaDevnetTokenInfo({
-  address: 'Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr',
+  address: '2xYwXELD5xB7E2b54Wk8xRg1yZkgctJgTfJyHdhenXtk',
   decimals: 6,
   symbol: TokenName.USDC,
   prettyName: 'USDC Dev',
@@ -23,7 +23,7 @@ export const scOraiSolanaMainnet = new SolanaDevnetTokenInfo({
 });
 
 export const usdaiSolanaDevnet = new SolanaDevnetTokenInfo({
-  address: '2PGLV5fBUJL9WvxB1MT7RH6DmDLX7N8poahBfXUm6BnT',
+  address: 'H15BrBRyz9aXbwN3GxYnfvHYNFkAxe3hN4NfVhXpmpZo',
   decimals: 6,
   symbol: TokenName.USDAI,
   prettyName: 'USDAI',

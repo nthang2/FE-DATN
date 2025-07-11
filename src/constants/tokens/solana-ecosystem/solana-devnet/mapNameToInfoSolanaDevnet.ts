@@ -34,4 +34,5 @@ export const findTokenNameSolanaDevnet: Record<string, TSolanaDevnetToken | unde
   [solanaDevnet.address]: TokenName.SOL,
   [virtualSolanaDevnet.address]: TokenName.VIRTUAL,
   [oraiSolanaDevnet.address]: TokenName.ORAI,
+  [usdcDevSolanaDevnet.address]: TokenName.USDC,
 };

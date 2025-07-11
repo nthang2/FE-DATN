@@ -28,6 +28,7 @@ export const listTokenAvailable = isDevNet
       [TokenName.MAX]: mapNameToInfoSolana[TokenName.MAX],
       [TokenName.AI16Z]: mapNameToInfoSolana[TokenName.AI16Z],
       [TokenName.SOL]: mapNameToInfoSolana[TokenName.SOL],
+      [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC],
     }
   : {
       [TokenName.ORAI]: mapNameToInfoSolana[TokenName.ORAI],
