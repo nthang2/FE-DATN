@@ -9,7 +9,7 @@ export const LOAN_TYPE1_SEED = 'LOAN_TYPE_1';
 export const DEPOSITORY_SEED = 'DEPOSITORY';
 export const RESERVE_ACCOUNT =
   NETWORK === 'devnet'
-    ? new PublicKey('8kmSBtXyQ5svS8qPiHLA5BTrQ2iUN86KATKn2EJUEpen')
+    ? new PublicKey('2CepR4toM7hqJf8yBM8xzkMM9UBu7BYvzGtqSyX2UAEL')
     : new PublicKey('HcYBeyAkXaDCvgULg22ijEuTHL1wj1zMKFNZgSKpDeU9');
 export const REDEEM_CONFIG = 'REDEEM_COL_CONFIG_V2';
 export const LOAN_TYPE0_SEED = 'LOAN';
