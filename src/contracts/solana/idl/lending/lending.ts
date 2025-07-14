@@ -687,13 +687,13 @@ export type IdlLending = {
           signer: true;
         },
         {
-          name: 'controller';
+          name: 'whitelistAdminAccount';
           writable: true;
           pda: {
             seeds: [
               {
                 kind: 'const';
-                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78];
               }
             ];
           };
@@ -2953,11 +2953,195 @@ export type IdlLending = {
           };
         },
         {
+          name: 'stablecoinReserveAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'reserve';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'stablecoin';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'usdaiReserveAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'reserve';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'usdai';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
           name: 'stablecoin';
           writable: true;
         },
         {
           name: 'usdai';
+          writable: true;
+        },
+        {
+          name: 'reserve';
           writable: true;
         },
         {
@@ -6537,6 +6721,21 @@ export type IdlLending = {
       code: 6137;
       name: 'swapUsdaiConfigPaused';
       msg: 'Swap USDAI is paused';
+    },
+    {
+      code: 6138;
+      name: 'invalidFeeValue';
+      msg: 'The fee is not in valid range';
+    },
+    {
+      code: 6139;
+      name: 'invalidPauseValue';
+      msg: 'The pause value is not in valid uint range';
+    },
+    {
+      code: 6140;
+      name: 'invalidSwapAmount';
+      msg: 'Swap amount must be > 0 in order to redeem.';
     }
   ];
   types: [
@@ -6836,13 +7035,19 @@ export type IdlLending = {
             };
           },
           {
-            name: 'minReserveAmount';
+            name: 'swapLimit';
             type: {
               option: 'u64';
             };
           },
           {
-            name: 'fee';
+            name: 'fee0';
+            type: {
+              option: 'u16';
+            };
+          },
+          {
+            name: 'fee1';
             type: {
               option: 'u16';
             };
@@ -7575,25 +7780,14 @@ export type IdlLending = {
           {
             name: 'stablecoins';
             type: {
-              array: ['pubkey', 7];
-            };
-          },
-          {
-            name: 'minReserveAmounts';
-            type: {
-              array: ['u64', 7];
-            };
-          },
-          {
-            name: 'swappedAmounts';
-            type: {
-              array: ['i64', 7];
-            };
-          },
-          {
-            name: 'fees';
-            type: {
-              array: ['u16', 7];
+              array: [
+                {
+                  defined: {
+                    name: 'swapUsdaiStablecoinInfo';
+                  };
+                },
+                7
+              ];
             };
           },
           {
@@ -7603,7 +7797,45 @@ export type IdlLending = {
           {
             name: 'padding';
             type: {
-              array: ['u8', 1];
+              array: ['u8', 7];
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: 'swapUsdaiStablecoinInfo';
+      serialization: 'bytemuck';
+      repr: {
+        kind: 'c';
+      };
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'address';
+            type: 'pubkey';
+          },
+          {
+            name: 'swapLimit';
+            type: 'u64';
+          },
+          {
+            name: 'swappedAmount';
+            type: 'i64';
+          },
+          {
+            name: 'fee0';
+            type: 'u16';
+          },
+          {
+            name: 'fee1';
+            type: 'u16';
+          },
+          {
+            name: 'padding';
+            type: {
+              array: ['u8', 4];
             };
           }
         ];
@@ -8461,13 +8693,13 @@ export const idlLending: IdlLending = {
           signer: true,
         },
         {
-          name: 'controller',
+          name: 'whitelistAdminAccount',
           writable: true,
           pda: {
             seeds: [
               {
                 kind: 'const',
-                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78],
               },
             ],
           },
@@ -10187,11 +10419,75 @@ export const idlLending: IdlLending = {
           },
         },
         {
+          name: 'stablecoinReserveAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'reserve',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'stablecoin',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'usdaiReserveAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'reserve',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'usdai',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
           name: 'stablecoin',
           writable: true,
         },
         {
           name: 'usdai',
+          writable: true,
+        },
+        {
+          name: 'reserve',
           writable: true,
         },
         {
@@ -12692,6 +12988,21 @@ export const idlLending: IdlLending = {
       name: 'swapUsdaiConfigPaused',
       msg: 'Swap USDAI is paused',
     },
+    {
+      code: 6138,
+      name: 'invalidFeeValue',
+      msg: 'The fee is not in valid range',
+    },
+    {
+      code: 6139,
+      name: 'invalidPauseValue',
+      msg: 'The pause value is not in valid uint range',
+    },
+    {
+      code: 6140,
+      name: 'invalidSwapAmount',
+      msg: 'Swap amount must be > 0 in order to redeem.',
+    },
   ],
   types: [
     {
@@ -12990,13 +13301,19 @@ export const idlLending: IdlLending = {
             },
           },
           {
-            name: 'minReserveAmount',
+            name: 'swapLimit',
             type: {
               option: 'u64',
             },
           },
           {
-            name: 'fee',
+            name: 'fee0',
+            type: {
+              option: 'u16',
+            },
+          },
+          {
+            name: 'fee1',
             type: {
               option: 'u16',
             },
@@ -13729,25 +14046,14 @@ export const idlLending: IdlLending = {
           {
             name: 'stablecoins',
             type: {
-              array: ['pubkey', 7],
-            },
-          },
-          {
-            name: 'minReserveAmounts',
-            type: {
-              array: ['u64', 7],
-            },
-          },
-          {
-            name: 'swappedAmounts',
-            type: {
-              array: ['i64', 7],
-            },
-          },
-          {
-            name: 'fees',
-            type: {
-              array: ['u16', 7],
+              array: [
+                {
+                  defined: {
+                    name: 'swapUsdaiStablecoinInfo',
+                  },
+                },
+                7,
+              ],
             },
           },
           {
@@ -13757,7 +14063,45 @@ export const idlLending: IdlLending = {
           {
             name: 'padding',
             type: {
-              array: ['u8', 1],
+              array: ['u8', 7],
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: 'swapUsdaiStablecoinInfo',
+      serialization: 'bytemuck',
+      repr: {
+        kind: 'c',
+      },
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'address',
+            type: 'pubkey',
+          },
+          {
+            name: 'swapLimit',
+            type: 'u64',
+          },
+          {
+            name: 'swappedAmount',
+            type: 'i64',
+          },
+          {
+            name: 'fee0',
+            type: 'u16',
+          },
+          {
+            name: 'fee1',
+            type: 'u16',
+          },
+          {
+            name: 'padding',
+            type: {
+              array: ['u8', 4],
             },
           },
         ],

@@ -1,11 +1,12 @@
 import { Box, FormHelperText, MenuItem, Select, SelectProps, Skeleton, Stack, Typography } from '@mui/material';
-import { ReactNode } from 'react';
+import { ReactNode, useRef } from 'react';
 import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { TokenName } from 'src/libs/crypto-icons';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
-import { BN } from 'src/utils';
+import { BN, regexConfigValue } from 'src/utils';
 import { roundNumber } from 'src/utils/format';
+import { TOptionValidate, validate } from 'src/utils/validateForm';
 
 type Props = {
   subValue?: string | ReactNode;
@@ -18,15 +19,47 @@ type Props = {
   selectProps?: SelectProps<string>;
   error?: string;
   selectOptions?: string[];
+  rule?: TOptionValidate;
+  _onError?: (error: string | undefined) => void;
 };
 
 export default function RepayCustomInput(props: Props) {
-  const { subValue, readonly = false, onClickMax, loading, maxValue, endAdornment, inputProps, selectProps, error, selectOptions } = props;
+  const {
+    subValue,
+    readonly = false,
+    onClickMax,
+    loading,
+    maxValue,
+    endAdornment,
+    inputProps,
+    selectProps,
+    error,
+    selectOptions,
+    rule,
+    _onError,
+  } = props;
   const { data: listPrice } = useQueryAllTokensPrice();
+  const ref = useRef<string | undefined>(undefined);
 
   const options = selectOptions ? selectOptions : Object.values(listTokenAvailable).map((item) => item.address);
   const inputValue = inputProps?.value ? roundNumber(Number(inputProps.value), 8) : undefined;
   const tokenPrice = listPrice?.[selectProps?.value || 0];
+
+  const handleOnChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    if (!inputProps || !inputProps.onChange) return undefined;
+    const inputValue = regexConfigValue(event.target.value);
+
+    if (rule) {
+      const { error } = validate(inputValue, rule);
+      ref.current = error[0];
+
+      if (_onError) {
+        _onError(error[0]);
+      }
+    }
+
+    inputProps.onChange({ ...event, target: { ...event.target, value: inputValue } } as React.ChangeEvent<HTMLInputElement>);
+  };
 
   return (
     <Box mb={1}>
@@ -115,6 +148,7 @@ export default function RepayCustomInput(props: Props) {
                 readOnly={readonly}
                 type="number"
                 {...inputProps}
+                onChange={handleOnChange}
                 value={inputValue}
                 style={{
                   display: 'block',
@@ -153,9 +187,9 @@ export default function RepayCustomInput(props: Props) {
         </Box>
       </Box>
 
-      {error ? (
-        <FormHelperText sx={{ px: 1, py: 0, minHeight: '20px' }} error>
-          <Typography variant="body3">{error}</Typography>
+      {ref.current ? (
+        <FormHelperText sx={{ px: 1, py: 1, minHeight: '20px' }} error>
+          <Typography variant="body3">{ref.current}</Typography>
         </FormHelperText>
       ) : null}
     </Box>

@@ -1,21 +1,22 @@
 import SwapVerticalCircleOutlinedIcon from '@mui/icons-material/SwapVerticalCircleOutlined';
 import { IconButton, Stack, Typography } from '@mui/material';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useState } from 'react';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import { findTokenNameSolana, listTokenAvailable, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenNameSolana, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { LendingContract } from 'src/contracts/solana/contracts/LendingContract/LendingContract';
+import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import { TokenName } from 'src/libs/crypto-icons';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { decimalFlood } from 'src/utils/format';
 import RepayCustomInput from '../MyPortfolio/components/InputCustom/RepayCustomInput';
-import { useWallet } from '@solana/wallet-adapter-react';
-import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import { listTokenAvailableSwap } from './constant';
 import SwapInfo from './SwapInfo';
-import { LendingContract } from 'src/contracts/solana/contracts/LendingContract/LendingContract';
 
 const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
-const defaultTokenAddress = Object.values(listTokenAvailable)[0]?.address as string;
+const defaultTokenAddress = Object.values(listTokenAvailableSwap)[0]?.address as string;
 
 export default function SwapForm() {
   const wallet = useWallet();
@@ -26,6 +27,7 @@ export default function SwapForm() {
   const [selectTokenAmount, setSelectTokenAmount] = useState(0);
   const [isReverse, setIsReverse] = useState(false);
   const [selectedToken, setSelectedToken] = useState(defaultTokenAddress);
+  const [isValidate, setIsValidate] = useState(false);
 
   const {
     balance: selectTokenBalance,
@@ -45,8 +47,6 @@ export default function SwapForm() {
   };
 
   const handleChangeAmount = (value: number) => {
-    const maxBalance = !isReverse ? usdaiBalance.toNumber() : selectTokenBalance.toNumber();
-    const validatedValue = Math.min(value, maxBalance);
     setUsdaiAmount(value);
     setSelectTokenAmount(value);
   };
@@ -98,6 +98,10 @@ export default function SwapForm() {
             maxValue={!isReverse ? usdaiBalance.toString() : undefined}
             subValue
             onClickMax={() => handleChangeAmount(usdaiBalance.toNumber())}
+            rule={{
+              max: usdaiBalance.toNumber(),
+            }}
+            _onError={(error) => setIsValidate(!!error)}
           />
         </Stack>
 
@@ -133,10 +137,14 @@ export default function SwapForm() {
               disabled: !isReverse,
               onChange: (e) => handleChangeAmount(Number(e.target.value)),
             }}
-            selectOptions={Object.values(listTokenAvailable).map((token) => token.address)}
+            selectOptions={Object.values(listTokenAvailableSwap).map((token) => token.address)}
             subValue
             maxValue={isReverse ? selectTokenBalance.toString() : undefined}
             onClickMax={() => handleChangeAmount(selectTokenBalance.toNumber())}
+            rule={{
+              max: selectTokenBalance.toNumber(),
+            }}
+            _onError={(error) => setIsValidate(!!error)}
           />
         </Stack>
       </Stack>
@@ -147,6 +155,7 @@ export default function SwapForm() {
         fullWidth
         loading={loading}
         variant="contained"
+        disabled={isValidate}
         onClick={() =>
           asyncExecute({
             fn: handleSwap,

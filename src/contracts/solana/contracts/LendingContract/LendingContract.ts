@@ -365,6 +365,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const accountsPartial = this.getAccountsPartial(tokenAddress);
     const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
     const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
+    const stablecoinReserveAta = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), RESERVE_ACCOUNT, true);
+    const usdaiReserveAta = getAssociatedTokenAddressSync(new PublicKey(usdaiInfo.address), RESERVE_ACCOUNT, true);
 
     if (!selectedTokenInfo) {
       throw new Error('Token not found');
@@ -374,18 +376,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       ? new BN(amount * Number(`1e${selectedTokenInfo.decimals}`))
       : new BN(amount * Number(`1e${usdaiInfo.decimals}`));
     let instruction: Transaction;
-
-    console.log({
-      user: accountsPartial.user.toString(),
-      controller: accountsPartial.controller.toString(),
-      stablecoinDepository: accountsPartial.depository.toString(),
-      stablecoinDepositoryVault: accountsPartial.depositoryVault.toString(),
-      stablecoinUserAta: accountsPartial.userCollateral.toString(),
-      usdaiUserAta: accountsPartial.userRedeemable.toString(),
-      usdai: accountsPartial.redeemableMint.toString(),
-      stablecoin: tokenAddress.toString(),
-      swapConfig: accountsPartial.swapConfig.toString(),
-    });
 
     try {
       instruction = await this.program.methods
@@ -400,14 +390,15 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
           usdai: accountsPartial.redeemableMint,
           stablecoin: tokenAddress,
           swapConfig: accountsPartial.swapConfig,
+          reserve: accountsPartial.reserve,
+          stablecoinReserveAta,
+          usdaiReserveAta,
         })
         .transaction();
     } catch (error) {
       console.error('❌ Error get ins swap token:', error);
       throw error;
     }
-
-    console.log('🚀 ~ LendingContract ~ swapToken ~ instruction:', instruction);
     const transactionHash = await this.sendTransaction(instruction);
 
     return transactionHash;
