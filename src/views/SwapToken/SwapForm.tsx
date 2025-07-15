@@ -1,10 +1,10 @@
 import SwapVerticalCircleOutlinedIcon from '@mui/icons-material/SwapVerticalCircleOutlined';
 import { IconButton, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import { findTokenNameSolana, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken, findTokenNameSolana, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract/LendingContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import { TokenName } from 'src/libs/crypto-icons';
@@ -14,6 +14,8 @@ import { decimalFlood } from 'src/utils/format';
 import RepayCustomInput from '../MyPortfolio/components/InputCustom/RepayCustomInput';
 import { listTokenAvailableSwap } from './constant';
 import SwapInfo from './SwapInfo';
+import useSwapConfig from 'src/hooks/useQueryHook/querySwap/useSwapConfig';
+import { BN } from 'src/utils';
 
 const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
 const defaultTokenAddress = Object.values(listTokenAvailableSwap)[0]?.address as string;
@@ -22,9 +24,10 @@ export default function SwapForm() {
   const wallet = useWallet();
   const { address } = useSummarySolanaConnect();
   const { asyncExecute, loading } = useAsyncExecute();
+  const { data: swapConfig } = useSwapConfig();
 
-  const [usdaiAmount, setUsdaiAmount] = useState(0);
-  const [selectTokenAmount, setSelectTokenAmount] = useState(0);
+  const [usdaiAmount, setUsdaiAmount] = useState('');
+  const [selectTokenAmount, setSelectTokenAmount] = useState('');
   const [isReverse, setIsReverse] = useState(false);
   const [selectedToken, setSelectedToken] = useState(defaultTokenAddress);
   const [isValidate, setIsValidate] = useState(false);
@@ -40,28 +43,57 @@ export default function SwapForm() {
     refetch: refetchUsdaiBalance,
   } = useSolanaBalanceToken(address, TokenName.USDAI);
 
+  const selectedTokenInfo = useMemo(() => {
+    return findTokenInfoByToken(selectedToken);
+  }, [selectedToken]);
+
+  const swapFee = useMemo(() => {
+    if (!swapConfig) return 0;
+    const stablecoin = swapConfig.stablecoins.find((stablecoin) => {
+      return stablecoin.address.toString() === selectedTokenInfo?.address;
+    });
+
+    if (isReverse) return stablecoin?.fee1 || 0;
+    return stablecoin?.fee0 || 0;
+  }, [swapConfig, isReverse, selectedTokenInfo]);
+
   const handleReverse = () => {
     setIsReverse(!isReverse);
-    setUsdaiAmount(0);
-    setSelectTokenAmount(0);
+    setUsdaiAmount('0');
+    setSelectTokenAmount('0');
   };
 
-  const handleChangeAmount = (value: number) => {
-    setUsdaiAmount(value);
-    setSelectTokenAmount(value);
+  const handleChangeAmount = (value: number | string) => {
+    if (value === undefined || value === '') {
+      setUsdaiAmount('');
+      setSelectTokenAmount('');
+      return;
+    }
+
+    const feeDecimal = isReverse ? 10 ** selectedTokenInfo!.decimals : 10 ** usdaiInfo.decimals;
+    const amountAfterFee =
+      Number(value) - BN(swapFee).div(feeDecimal).toNumber() < 0 ? 0 : Number(value) - BN(swapFee).div(feeDecimal).toNumber();
+
+    if (isReverse) {
+      setUsdaiAmount(amountAfterFee.toString());
+      setSelectTokenAmount(value.toString());
+    } else {
+      setUsdaiAmount(value.toString());
+      setSelectTokenAmount(amountAfterFee.toString());
+    }
   };
 
   const handleChangeSelectToken = (value: string) => {
     setSelectedToken(value);
-    setSelectTokenAmount(0);
-    setUsdaiAmount(0);
+    setSelectTokenAmount('');
+    setUsdaiAmount('');
   };
 
   const handleSwap = async () => {
     if (!wallet) return;
     const swapTokenContract = new LendingContract(wallet);
-    let transactionHash = '';
-    transactionHash = await swapTokenContract.swapToken(selectedToken, selectTokenAmount, isReverse);
+    const transactionHash = await swapTokenContract.swapToken(selectedToken, Number(selectTokenAmount), isReverse);
+
     return transactionHash;
   };
 
@@ -90,16 +122,20 @@ export default function SwapForm() {
               disabled: true,
             }}
             inputProps={{
-              value: usdaiAmount.toString() || '0',
-              onChange: (e) => handleChangeAmount(Number(e.target.value)),
+              value: usdaiAmount,
+              onChange: (e) => handleChangeAmount(e.target.value),
               disabled: isReverse,
+              placeholder: '0',
             }}
             selectOptions={[usdaiInfo.address]}
             maxValue={!isReverse ? usdaiBalance.toString() : undefined}
             subValue
             onClickMax={() => handleChangeAmount(usdaiBalance.toNumber())}
             rule={{
-              max: usdaiBalance.toNumber(),
+              max: {
+                max: usdaiBalance.toNumber(),
+                message: 'Input cannot exceed balance',
+              },
             }}
             _onError={(error) => setIsValidate(!!error)}
           />
@@ -133,16 +169,20 @@ export default function SwapForm() {
               onChange: (e) => handleChangeSelectToken(e.target.value),
             }}
             inputProps={{
-              value: selectTokenAmount.toString() || '0',
+              value: selectTokenAmount,
               disabled: !isReverse,
-              onChange: (e) => handleChangeAmount(Number(e.target.value)),
+              onChange: (e) => handleChangeAmount(e.target.value),
+              placeholder: '0',
             }}
             selectOptions={Object.values(listTokenAvailableSwap).map((token) => token.address)}
             subValue
             maxValue={isReverse ? selectTokenBalance.toString() : undefined}
             onClickMax={() => handleChangeAmount(selectTokenBalance.toNumber())}
             rule={{
-              max: selectTokenBalance.toNumber(),
+              max: {
+                max: selectTokenBalance.toNumber(),
+                message: 'Input cannot exceed balance',
+              },
             }}
             _onError={(error) => setIsValidate(!!error)}
           />
@@ -162,8 +202,8 @@ export default function SwapForm() {
             onSuccess: () => {
               refetchSelectTokenBalance();
               refetchUsdaiBalance();
-              setUsdaiAmount(0);
-              setSelectTokenAmount(0);
+              setUsdaiAmount('');
+              setSelectTokenAmount('');
             },
           })
         }

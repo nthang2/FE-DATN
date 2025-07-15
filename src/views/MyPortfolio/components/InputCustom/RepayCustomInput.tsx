@@ -42,7 +42,7 @@ export default function RepayCustomInput(props: Props) {
   const ref = useRef<string | undefined>(undefined);
 
   const options = selectOptions ? selectOptions : Object.values(listTokenAvailable).map((item) => item.address);
-  const inputValue = inputProps?.value ? roundNumber(Number(inputProps.value), 8) : undefined;
+  const inputValue = inputProps?.value ? roundNumber(Number(inputProps.value), 8) : '';
   const tokenPrice = listPrice?.[selectProps?.value || 0];
 
   const handleOnChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {

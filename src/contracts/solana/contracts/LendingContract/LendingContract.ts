@@ -403,4 +403,11 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
 
     return transactionHash;
   }
+
+  async getSwapConfig() {
+    const swapConfig = this.getPda(SWAP_CONFIG_SEED);
+    const swapConfigData = await this.program.account.swapUsdaiConfig.fetch(swapConfig);
+
+    return swapConfigData;
+  }
 }
