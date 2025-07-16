@@ -52,8 +52,8 @@ export default function SwapForm() {
       return stablecoin.address.toString() === selectedTokenInfo?.address;
     });
 
-    if (isReverse) return stablecoin?.fee1 || 0;
-    return stablecoin?.fee0 || 0;
+    if (isReverse) return stablecoin?.fee0 || 0;
+    return stablecoin?.fee1 || 0;
   }, [swapConfig, isReverse, selectedTokenInfo]);
 
   const handleReverse = () => {
