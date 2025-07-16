@@ -34,6 +34,34 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
     });
   }
 
+  async getNetWorkFee(tx?: Transaction): Promise<number> {
+    const connection = publicClientSol();
+    const transaction = tx || new Transaction();
+    try {
+      // Ensure transaction has a recent blockhash and feePayer
+      if (!transaction.recentBlockhash) {
+        const { blockhash } = await connection.getLatestBlockhash();
+        transaction.recentBlockhash = blockhash;
+      }
+      if (!transaction.feePayer) {
+        if (this.contextWallet.publicKey) {
+          transaction.feePayer = this.contextWallet.publicKey;
+        } else {
+          throw new Error('Wallet not connected: fee payer is required');
+        }
+      }
+      // Get the fee for the transaction message
+      const message = transaction.compileMessage();
+      const feeInfo = await connection.getFeeForMessage(message);
+      const fee = feeInfo.value || 0;
+
+      return fee;
+    } catch (error) {
+      console.log('🚀 ~ SolanaContractAbstract<IDL ~ getNetWorkFee ~ error:', error);
+      return 0;
+    }
+  }
+
   wrapNative(fromPubkey: PublicKey, amount: number): Transaction {
     const fromTokenAccount = getAssociatedTokenAddressSync(NATIVE_MINT, fromPubkey);
 

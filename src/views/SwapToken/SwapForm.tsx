@@ -15,7 +15,6 @@ import RepayCustomInput from '../MyPortfolio/components/InputCustom/RepayCustomI
 import { listTokenAvailableSwap } from './constant';
 import SwapInfo from './SwapInfo';
 import useSwapConfig from 'src/hooks/useQueryHook/querySwap/useSwapConfig';
-import { BN } from 'src/utils';
 
 const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
 const defaultTokenAddress = Object.values(listTokenAvailableSwap)[0]?.address as string;
@@ -59,8 +58,8 @@ export default function SwapForm() {
 
   const handleReverse = () => {
     setIsReverse(!isReverse);
-    setUsdaiAmount('0');
-    setSelectTokenAmount('0');
+    setUsdaiAmount('');
+    setSelectTokenAmount('');
   };
 
   const handleChangeAmount = (value: number | string) => {
@@ -70,9 +69,8 @@ export default function SwapForm() {
       return;
     }
 
-    const feeDecimal = isReverse ? 10 ** selectedTokenInfo!.decimals : 10 ** usdaiInfo.decimals;
-    const amountAfterFee =
-      Number(value) - BN(swapFee).div(feeDecimal).toNumber() < 0 ? 0 : Number(value) - BN(swapFee).div(feeDecimal).toNumber();
+    const feeValue = (swapFee / 100) * (Number(value) / 100);
+    const amountAfterFee = Number(value) - feeValue < 0 ? 0 : Number(value) - feeValue;
 
     if (isReverse) {
       setUsdaiAmount(amountAfterFee.toString());
