@@ -3139,10 +3139,17 @@ export type IdlLending = {
         {
           name: 'usdai';
           writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
         },
         {
           name: 'reserve';
-          writable: true;
         },
         {
           name: 'tokenProgram';
@@ -10485,10 +10492,17 @@ export const idlLending: IdlLending = {
         {
           name: 'usdai',
           writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
         },
         {
           name: 'reserve',
-          writable: true,
         },
         {
           name: 'tokenProgram',
