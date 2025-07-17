@@ -22,12 +22,13 @@ const SwapInfo = (props: Props) => {
   const [networkFee, setNetworkFee] = useState(0);
 
   const getNetworkFee = useCallback(async () => {
+    if (!wallet || networkFee > 0) return;
     const contract = new LendingContract(wallet);
     //simulate swap 1 token to get network fee
-    const instruction = await contract.getSwapTokenInstruction(selectedToken, 1, false);
+    const instruction = await contract.getSwapTokenInstruction(selectedToken, Number(amount), false);
     const fee = await getTransFee(instruction);
     setNetworkFee(fee);
-  }, [wallet, selectedToken, getTransFee]);
+  }, [wallet, getTransFee, networkFee, amount, selectedToken]);
 
   useEffect(() => {
     getNetworkFee();
