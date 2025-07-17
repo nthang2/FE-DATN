@@ -1,5 +1,5 @@
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
-import { Stack, Typography } from '@mui/material';
+import { Collapse, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useCallback, useEffect, useState } from 'react';
 import { MinimumReceivedIcon, PriceImpactIcon } from 'src/assets/icons';
@@ -7,19 +7,23 @@ import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapN
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract/LendingContract';
 import useGetTransFee from 'src/hooks/useContract/useGetTransFee';
 import { decimalFlood } from 'src/utils/format';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 interface Props {
   selectedToken: string;
   amount: string;
+  convertFee: number;
 }
 
 const SwapInfo = (props: Props) => {
-  const { selectedToken, amount } = props;
+  const { selectedToken, amount, convertFee } = props;
   const wallet = useWallet();
   const tokenInfo = findTokenInfoByToken(selectedToken);
   const amountValue = amount === '' ? 0 : decimalFlood(amount, tokenInfo?.decimals || 0);
   const { mutateAsync: getTransFee } = useGetTransFee();
+
   const [networkFee, setNetworkFee] = useState(0);
+  const [openCollapse, setOpenCollapse] = useState(false);
 
   const getNetworkFee = useCallback(async () => {
     if (!wallet || networkFee > 0) return;
@@ -56,15 +60,41 @@ const SwapInfo = (props: Props) => {
         </Typography>
       </Stack>
 
-      <Stack direction="row" justifyContent="space-between">
-        <Typography display="flex" alignItems="center" gap={1} variant="body1" color="text.secondary">
-          <LocalGasStationIcon /> Network Fee
-        </Typography>
+      <div>
+        <Stack sx={{ cursor: 'pointer' }} direction="row" justifyContent="space-between" onClick={() => setOpenCollapse(!openCollapse)}>
+          <Typography display="flex" alignItems="center" gap={1} variant="body1" color="text.secondary">
+            <LocalGasStationIcon /> Fee
+          </Typography>
 
-        <Typography variant="body1" color="text.secondary">
-          ~${networkFee}
-        </Typography>
-      </Stack>
+          <Typography variant="body1" color="text.secondary">
+            <KeyboardArrowDownIcon sx={{ transform: openCollapse ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+          </Typography>
+        </Stack>
+
+        <Collapse in={openCollapse}>
+          <Stack direction="column" gap={2} mt={2} pl={2}>
+            <Stack direction="row" justifyContent="space-between">
+              <Typography display="flex" alignItems="center" gap={1} variant="body2" color="text.secondary">
+                Convert fee
+              </Typography>
+
+              <Typography variant="body2" color="text.secondary">
+                {convertFee}%
+              </Typography>
+            </Stack>
+
+            <Stack direction="row" justifyContent="space-between">
+              <Typography display="flex" alignItems="center" gap={1} variant="body2" color="text.secondary">
+                Network fee
+              </Typography>
+
+              <Typography variant="body2" color="text.secondary">
+                ~${networkFee}
+              </Typography>
+            </Stack>
+          </Stack>
+        </Collapse>
+      </div>
     </Stack>
   );
 };
