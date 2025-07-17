@@ -361,7 +361,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     }
   }
 
-  async swapToken(tokenAddress: string, amount: number, isReverse: boolean) {
+  async getSwapTokenInstruction(tokenAddress: string, amount: number, isReverse: boolean) {
     const accountsPartial = this.getAccountsPartial(tokenAddress);
     const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
     const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
@@ -399,6 +399,12 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       console.error('❌ Error get ins swap token:', error);
       throw error;
     }
+
+    return instruction;
+  }
+
+  async swapToken(tokenAddress: string, amount: number, isReverse: boolean) {
+    const instruction = await this.getSwapTokenInstruction(tokenAddress, amount, isReverse);
     const transactionHash = await this.sendTransaction(instruction);
 
     return transactionHash;

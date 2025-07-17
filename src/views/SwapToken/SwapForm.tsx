@@ -89,8 +89,9 @@ export default function SwapForm() {
 
   const handleSwap = async () => {
     if (!wallet) return;
-    const swapTokenContract = new LendingContract(wallet);
-    const transactionHash = await swapTokenContract.swapToken(selectedToken, Number(selectTokenAmount), isReverse);
+    const contract = new LendingContract(wallet);
+    const amount = isReverse ? Number(selectTokenAmount) : Number(usdaiAmount);
+    const transactionHash = await contract.swapToken(selectedToken, amount, isReverse);
 
     return transactionHash;
   };
