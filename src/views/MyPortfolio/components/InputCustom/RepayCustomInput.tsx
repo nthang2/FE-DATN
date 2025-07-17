@@ -1,5 +1,5 @@
 import { Box, FormHelperText, MenuItem, Select, SelectProps, Skeleton, Stack, Typography } from '@mui/material';
-import { ReactNode, useRef } from 'react';
+import { ReactNode, useEffect, useReducer, useRef } from 'react';
 import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { TokenName } from 'src/libs/crypto-icons';
@@ -21,6 +21,7 @@ type Props = {
   selectOptions?: string[];
   rule?: TOptionValidate;
   _onError?: (error: string | undefined) => void;
+  resetFlag?: boolean;
 };
 
 export default function RepayCustomInput(props: Props) {
@@ -37,9 +38,11 @@ export default function RepayCustomInput(props: Props) {
     selectOptions,
     rule,
     _onError,
+    resetFlag,
   } = props;
   const { data: listPrice } = useQueryAllTokensPrice();
   const ref = useRef<string | undefined>(undefined);
+  const [, rerender] = useReducer((x) => x + 1, 0);
 
   const options = selectOptions ? selectOptions : Object.values(listTokenAvailable).map((item) => item.address);
   const inputValue = inputProps?.value ? roundNumber(Number(inputProps.value), 8) : '';
@@ -61,6 +64,11 @@ export default function RepayCustomInput(props: Props) {
     inputProps.onChange({ ...event, target: { ...event.target, value: inputValue } } as React.ChangeEvent<HTMLInputElement>);
   };
 
+  useEffect(() => {
+    ref.current = undefined;
+    rerender();
+  }, [resetFlag]);
+
   return (
     <Box mb={1}>
       <Box
@@ -74,7 +82,7 @@ export default function RepayCustomInput(props: Props) {
           bgcolor: 'background.secondary',
           borderRadius: '16px',
           border: `1px solid`,
-          borderColor: error ? 'error.main' : '#666662',
+          borderColor: error || ref.current ? 'error.main' : '#666662',
           color: '#fff',
         }}
       >
@@ -187,11 +195,9 @@ export default function RepayCustomInput(props: Props) {
         </Box>
       </Box>
 
-      {ref.current ? (
-        <FormHelperText sx={{ px: 1, py: 1, minHeight: '20px' }} error>
-          <Typography variant="body3">{ref.current}</Typography>
-        </FormHelperText>
-      ) : null}
+      <FormHelperText sx={{ px: 1, py: 1, minHeight: '20px' }} error hidden={!ref.current}>
+        <Typography variant="body3">{ref.current}</Typography>
+      </FormHelperText>
     </Box>
   );
 }

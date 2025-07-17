@@ -67,7 +67,7 @@ const SwapInfo = (props: Props) => {
           </Typography>
 
           <Typography variant="body1" color="text.secondary">
-            <KeyboardArrowDownIcon sx={{ transform: openCollapse ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+            <KeyboardArrowDownIcon sx={{ transform: openCollapse ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'all 0.3s ease' }} />
           </Typography>
         </Stack>
 

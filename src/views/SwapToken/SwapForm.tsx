@@ -15,6 +15,7 @@ import RepayCustomInput from '../MyPortfolio/components/InputCustom/RepayCustomI
 import { listTokenAvailableSwap } from './constant';
 import SwapInfo from './SwapInfo';
 import useSwapConfig from 'src/hooks/useQueryHook/querySwap/useSwapConfig';
+import { BN } from 'src/utils';
 
 const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
 const defaultTokenAddress = Object.values(listTokenAvailableSwap)[0]?.address as string;
@@ -56,6 +57,19 @@ export default function SwapForm() {
     return stablecoin?.fee1 || 0;
   }, [swapConfig, isReverse, selectedTokenInfo]);
 
+  const maxUsdaiValue = useMemo(() => {
+    if (!swapConfig) return 0;
+
+    const stablecoin = swapConfig.stablecoins.find((stablecoin) => {
+      return stablecoin.address.toString() === selectedTokenInfo?.address;
+    });
+    const selectTokenDecimal = Number(`1e${usdaiInfo.decimals}`) || 0;
+    const swapLimitMin = BN(BN(stablecoin.swapLimit).div(selectTokenDecimal)).minus(BN(stablecoin.swappedAmount).div(selectTokenDecimal));
+    const maxValueSelectToken = Math.min(swapLimitMin.toNumber(), usdaiBalance.toNumber());
+
+    return maxValueSelectToken;
+  }, [swapConfig, selectedTokenInfo?.address, usdaiBalance]);
+
   const handleReverse = () => {
     setIsReverse(!isReverse);
     setUsdaiAmount('');
@@ -85,6 +99,7 @@ export default function SwapForm() {
     setSelectedToken(value);
     setSelectTokenAmount('');
     setUsdaiAmount('');
+    setIsValidate(false);
   };
 
   const handleSwap = async () => {
@@ -98,7 +113,7 @@ export default function SwapForm() {
 
   return (
     <>
-      <Stack direction={isReverse ? 'column-reverse' : 'column'} gap={2}>
+      <Stack direction={isReverse ? 'column-reverse' : 'column'} gap={0.5}>
         <Stack direction={'column'} gap={0.5}>
           <Stack justifyContent={'space-between'}>
             <Typography variant="body2" sx={{ color: 'info.main' }}>
@@ -116,6 +131,12 @@ export default function SwapForm() {
           </Stack>
 
           <RepayCustomInput
+            selectOptions={[usdaiInfo.address]}
+            resetFlag={isReverse}
+            maxValue={!isReverse ? maxUsdaiValue.toString() : undefined}
+            subValue
+            onClickMax={() => handleChangeAmount(usdaiBalance.toNumber())}
+            _onError={(error) => setIsValidate(!!error)}
             selectProps={{
               value: usdaiInfo.address,
               disabled: true,
@@ -126,17 +147,12 @@ export default function SwapForm() {
               disabled: isReverse,
               placeholder: '0',
             }}
-            selectOptions={[usdaiInfo.address]}
-            maxValue={!isReverse ? usdaiBalance.toString() : undefined}
-            subValue
-            onClickMax={() => handleChangeAmount(usdaiBalance.toNumber())}
             rule={{
               max: {
                 max: usdaiBalance.toNumber(),
                 message: 'Input cannot exceed balance',
               },
             }}
-            _onError={(error) => setIsValidate(!!error)}
           />
         </Stack>
 
@@ -163,6 +179,12 @@ export default function SwapForm() {
           </Stack>
 
           <RepayCustomInput
+            selectOptions={Object.values(listTokenAvailableSwap).map((token) => token.address)}
+            subValue
+            maxValue={isReverse ? selectTokenBalance.toString() : undefined}
+            resetFlag={isReverse}
+            onClickMax={() => handleChangeAmount(selectTokenBalance.toNumber())}
+            _onError={(error) => setIsValidate(!!error)}
             selectProps={{
               value: selectedToken,
               onChange: (e) => handleChangeSelectToken(e.target.value),
@@ -173,17 +195,12 @@ export default function SwapForm() {
               onChange: (e) => handleChangeAmount(e.target.value),
               placeholder: '0',
             }}
-            selectOptions={Object.values(listTokenAvailableSwap).map((token) => token.address)}
-            subValue
-            maxValue={isReverse ? selectTokenBalance.toString() : undefined}
-            onClickMax={() => handleChangeAmount(selectTokenBalance.toNumber())}
             rule={{
               max: {
                 max: selectTokenBalance.toNumber(),
                 message: 'Input cannot exceed balance',
               },
             }}
-            _onError={(error) => setIsValidate(!!error)}
           />
         </Stack>
       </Stack>

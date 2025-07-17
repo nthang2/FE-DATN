@@ -15,7 +15,7 @@ const SwapToken = () => {
         height: 'calc(100vh - 115px)',
       }}
     >
-      <Stack margin="auto" mt={4} flexDirection="column">
+      <Stack margin="auto" mt={3} flexDirection="column">
         <BoxCustom
           sx={{
             display: 'flex',
