@@ -8,6 +8,7 @@ import DepositSection from './components/BorrowDepositSection/DepositSection';
 import LTVSection from './components/LTVSection/LTVSection';
 import MintBanner from './components/MintBanner/MintBanner';
 import { useBorrowSubmitState } from './state/hooks';
+import HealthFactor from './components/HealthFactor/HealthFactor';
 
 const Borrow = () => {
   const [isSubmitted] = useBorrowSubmitState();
@@ -45,6 +46,9 @@ const Borrow = () => {
             </Box>
           </Grid2> */}
       </Grid2>
+      <Box display="flex" justifyContent="center" mt={2}>
+        <HealthFactor healthFactor={'3'} />
+      </Box>
     </Box>
   );
 };
