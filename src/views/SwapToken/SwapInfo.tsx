@@ -85,11 +85,11 @@ const SwapInfo = (props: Props) => {
           <Stack direction="column" gap={2} mt={2} pl={2}>
             <Stack direction="row" justifyContent="space-between">
               <Typography display="flex" alignItems="center" gap={1} variant="body2" color="text.secondary">
-                Convert fee
+                Convert fee ({convertFee}%)
               </Typography>
 
               <Typography variant="body2" color="text.secondary">
-                ${decimalFlood(feeValue, 6)}
+                ~${decimalFlood(feeValue, 6)}
               </Typography>
             </Stack>
 
