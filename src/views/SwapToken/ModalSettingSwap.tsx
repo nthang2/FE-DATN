@@ -27,7 +27,7 @@ const ModalSettingSwap = (props: IProps) => {
       priorityFee={priorityFee}
       setSlippageTolerance={handleChangeSlippageTolerance}
       setPriorityFee={handleChangePriorityFee}
-      title="Setting Swap"
+      title="Setting Convert"
     />
   );
 };

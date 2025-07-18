@@ -1,7 +1,7 @@
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import { Collapse, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { MinimumReceivedIcon, PriceImpactIcon } from 'src/assets/icons';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract/LendingContract';
@@ -13,17 +13,27 @@ interface Props {
   selectedToken: string;
   amount: string;
   convertFee: number;
+  isReverse: boolean;
+  usdaiAmount: string;
 }
 
 const SwapInfo = (props: Props) => {
-  const { selectedToken, amount, convertFee } = props;
+  const { selectedToken, amount, convertFee, isReverse, usdaiAmount } = props;
   const wallet = useWallet();
   const tokenInfo = findTokenInfoByToken(selectedToken);
-  const amountValue = amount === '' ? 0 : decimalFlood(amount, tokenInfo?.decimals || 0);
   const { mutateAsync: getTransFee } = useGetTransFee();
 
   const [networkFee, setNetworkFee] = useState(0);
   const [openCollapse, setOpenCollapse] = useState(false);
+
+  const feeValue = (convertFee / 100) * (Number(amount) / 100);
+  const amountValue = useMemo(() => {
+    if (isReverse) {
+      return Number(decimalFlood(usdaiAmount, 9)) || 0;
+    }
+
+    return Number(decimalFlood(amount, tokenInfo?.decimals || 0)) || 0;
+  }, [amount, isReverse, tokenInfo?.decimals, usdaiAmount]);
 
   const getNetworkFee = useCallback(async () => {
     if (!wallet || networkFee > 0) return;
@@ -42,17 +52,17 @@ const SwapInfo = (props: Props) => {
     <Stack flexDirection="column" gap={2} borderTop="1px solid #323326" borderBottom="1px solid #323326" py={2}>
       <Stack direction="row" justifyContent="space-between">
         <Typography display="flex" alignItems="center" gap={1} variant="body1" color="text.secondary">
-          <MinimumReceivedIcon /> Minimum received after slippage (0%)
+          <MinimumReceivedIcon /> Minimum received
         </Typography>
 
         <Typography variant="body1" color="text.secondary">
-          {amountValue} {tokenInfo?.symbol}
+          {amountValue} {!isReverse ? tokenInfo?.symbol : 'USDAI'}
         </Typography>
       </Stack>
 
       <Stack direction="row" justifyContent="space-between">
         <Typography display="flex" alignItems="center" gap={1} variant="body1" color="text.secondary">
-          <PriceImpactIcon /> Price impact (0)
+          <PriceImpactIcon /> Price impact
         </Typography>
 
         <Typography variant="body1" color="text.secondary">
@@ -79,7 +89,7 @@ const SwapInfo = (props: Props) => {
               </Typography>
 
               <Typography variant="body2" color="text.secondary">
-                {convertFee}%
+                ${decimalFlood(feeValue, 6)}
               </Typography>
             </Stack>
 
@@ -89,7 +99,7 @@ const SwapInfo = (props: Props) => {
               </Typography>
 
               <Typography variant="body2" color="text.secondary">
-                ~${networkFee}
+                ~${decimalFlood(networkFee, 6)}
               </Typography>
             </Stack>
           </Stack>

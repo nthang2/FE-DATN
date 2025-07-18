@@ -365,8 +365,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const accountsPartial = this.getAccountsPartial(tokenAddress);
     const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
     const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
-    const stablecoinReserveAta = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), RESERVE_ACCOUNT, true);
-    const usdaiReserveAta = getAssociatedTokenAddressSync(new PublicKey(usdaiInfo.address), RESERVE_ACCOUNT, true);
 
     if (!selectedTokenInfo) {
       throw new Error('Token not found');
@@ -380,19 +378,10 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     try {
       instruction = await this.program.methods
         .swapUsdaiType0(amountRaw, isReverse)
-        .accountsPartial({
+        .accounts({
           user: accountsPartial.user,
-          controller: accountsPartial.controller,
-          stablecoinDepository: accountsPartial.depository,
-          stablecoinDepositoryVault: accountsPartial.depositoryVault,
-          stablecoinUserAta: accountsPartial.userCollateral,
-          usdaiUserAta: accountsPartial.userRedeemable,
-          usdai: accountsPartial.redeemableMint,
-          stablecoin: tokenAddress,
-          swapConfig: accountsPartial.swapConfig,
           reserve: accountsPartial.reserve,
-          stablecoinReserveAta,
-          usdaiReserveAta,
+          stablecoin: new PublicKey(tokenAddress),
         })
         .transaction();
     } catch (error) {

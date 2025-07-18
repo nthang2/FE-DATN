@@ -11,8 +11,9 @@ const useSwapConfig = () => {
     queryFn: async () => {
       if (!wallet) return null;
       const swapConfig = initLendingContract(wallet);
+      const config = await swapConfig.getSwapConfig();
 
-      return await swapConfig.getSwapConfig();
+      return config;
     },
     staleTime: 1000 * 60 * 15,
   });

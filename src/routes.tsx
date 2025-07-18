@@ -18,7 +18,7 @@ export default function Routes() {
         { path: '/my-portfolio', element: <MyPortfolio /> },
         { path: '/earn', element: <Vaults /> },
         { path: '/liquidation', element: <LiquidationLeaderboard /> },
-        { path: '/swap', element: <SwapToken /> },
+        { path: '/convert', element: <SwapToken /> },
       ],
     },
     {

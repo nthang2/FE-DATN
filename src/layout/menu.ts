@@ -21,7 +21,7 @@ export const menu: TMenu[] = [
     url: '/liquidation',
   },
   {
-    title: 'Swap',
-    url: '/swap',
+    title: 'Convert',
+    url: '/convert',
   },
 ];

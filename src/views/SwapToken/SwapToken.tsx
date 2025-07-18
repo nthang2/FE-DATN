@@ -1,9 +1,8 @@
-import { Box, IconButton, Stack, Typography } from '@mui/material';
-import SwapForm from './SwapForm';
-import { SettingsOutlined } from '@mui/icons-material';
-import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
+import { Box, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
+import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ModalSettingSwap from './ModalSettingSwap';
+import SwapForm from './SwapForm';
 
 const SwapToken = () => {
   const [isOpenSetting, setIsOpenSetting] = useState(false);
@@ -28,11 +27,7 @@ const SwapToken = () => {
           }}
         >
           <Stack justifyContent={'space-between'} alignItems={'center'}>
-            <Typography variant="h5">Swap</Typography>
-
-            <IconButton onClick={() => setIsOpenSetting(true)}>
-              <SettingsOutlined sx={{ color: 'info.main' }} />
-            </IconButton>
+            <Typography variant="h5">Convert</Typography>
           </Stack>
 
           <SwapForm />

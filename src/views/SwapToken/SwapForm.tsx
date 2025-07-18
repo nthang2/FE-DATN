@@ -205,7 +205,13 @@ export default function SwapForm() {
         </Stack>
       </Stack>
 
-      <SwapInfo selectedToken={selectedToken} amount={selectTokenAmount} convertFee={swapFee / 100} />
+      <SwapInfo
+        selectedToken={selectedToken}
+        amount={selectTokenAmount}
+        convertFee={swapFee / 100}
+        isReverse={isReverse}
+        usdaiAmount={usdaiAmount}
+      />
 
       <ButtonLoading
         fullWidth
@@ -224,7 +230,7 @@ export default function SwapForm() {
           })
         }
       >
-        Swap
+        Convert
       </ButtonLoading>
     </>
   );
