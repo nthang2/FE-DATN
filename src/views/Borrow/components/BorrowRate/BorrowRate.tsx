@@ -15,6 +15,7 @@ const BorrowRate = () => {
         gap: 1.5,
         height: 'fit-content',
         padding: '36px 20px 24px 20px',
+        maxHeight: '152px',
       }}
     >
       <Typography variant="h6" fontWeight={700}>
