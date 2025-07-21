@@ -9,12 +9,10 @@ const BorrowRate = () => {
     <Box
       sx={{
         borderRadius: '14px',
-        background: 'linear-gradient(0deg, #F2F9A5 0%, #FEFFF3 100%)',
+        background: '#2A2A2A',
         display: 'flex',
         flexDirection: 'column',
         gap: 1.5,
-        color: '#000',
-        minWidth: '332px',
         height: 'fit-content',
         padding: '36px 20px 24px 20px',
       }}
@@ -27,7 +25,7 @@ const BorrowRate = () => {
         3%
       </Typography>
 
-      <Typography variant="body2">Borrow USDAI from jpow.ai for the best rates</Typography>
+      {/* <Typography variant="body2">Borrow USDAI from jpow.ai for the best rates</Typography> */}
     </Box>
   );
 };

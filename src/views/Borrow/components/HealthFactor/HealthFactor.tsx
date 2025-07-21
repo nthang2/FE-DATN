@@ -1,44 +1,33 @@
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import HealthFactorNumberSvg from 'src/assets/HealthFactorNumberSvg';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import { TokenName } from 'src/libs/crypto-icons';
+import HealthFactorSection from './HealthFactorSection';
+import { useDepositState } from '../../state/hooks';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
+import { useCrossModeState } from 'src/states/hooks';
 import { useMemo } from 'react';
-import HealthFactorGauge from './HealthFactorGauge';
-import { BN } from 'src/utils';
 
-interface HealthFactorProps {
-  healthFactor: string;
-}
+const solInfo = mapNameToInfoSolana[TokenName.SOL];
+const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
 
-export default function HealthFactor({ healthFactor }: HealthFactorProps) {
-  const healthFactorAngle = useMemo(() => {
-    if (healthFactor == 'Infinity' || Number(healthFactor) > 4) {
-      return 180;
+export default function HealthFactor() {
+  const { data: listPrice } = useQueryAllTokensPrice();
+  const { data: assets } = useMyPortfolio();
+  const solPrice = listPrice?.[solInfo.address];
+  const [crossMode] = useCrossModeState();
+  const [depositItems] = useDepositState();
+
+  const healthFactor = useMemo(() => {
+    if (crossMode) {
+      return Object.values(assets?.asset || {}).find((item) => item.contractAddress === usdaiInfo.address)?.healthFactor;
     } else {
-      return ((Number(healthFactor) - 1) / 3) * 180;
+      return Object.values(assets?.asset || {}).find((item) => item.contractAddress === depositItems[0].address)?.healthFactor;
     }
-  }, [healthFactor]);
-
-  const healthFactorRank = useMemo(() => {
-    if (healthFactor) {
-      if (healthFactor == 'Infinity') {
-        return { rank: 'Healthy', color: '#34D564' };
-      } else if (BN(healthFactor).isLessThanOrEqualTo(1.2)) {
-        return { rank: 'Critical', color: '#E9321A' };
-      } else if (BN(healthFactor).isLessThanOrEqualTo(1.5)) {
-        return { rank: 'Risky', color: '#FF8B3E' };
-      } else if (BN(healthFactor).isLessThanOrEqualTo(3)) {
-        return { rank: 'Moderate', color: '#FFC95D' };
-      } else {
-        return { rank: 'Healthy', color: '#08DBA4' };
-      }
-    } else {
-      return { rank: '--', color: 'text.primary' };
-    }
-  }, [healthFactor]);
-
-  const healthFactorColor = `conic-gradient(from 0deg, #fff 0deg, #fff 90deg, ${healthFactorRank.color} ${healthFactorAngle}deg)`;
+  }, [crossMode, assets, depositItems]);
 
   return (
     <BoxCustom
@@ -49,40 +38,30 @@ export default function HealthFactor({ healthFactor }: HealthFactorProps) {
         display: 'flex',
         flexDirection: 'column',
         gap: 1.5,
-        minWidth: '332px',
         height: 'fit-content',
         padding: 3,
       }}
     >
       <Box className="flex-start">
-        <Typography variant="h6">HealthFactor</Typography>
+        <Typography variant="h6">Health Factor</Typography>
         <TooltipInfo title="HealthFactor" />
       </Box>
 
-      <Box sx={{ position: 'relative' }}>
-        <HealthFactorGauge healthFactorAngle={healthFactorAngle} bgColor={healthFactorColor} />
-        <Box sx={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '280px', height: '140px' }}>
-          <HealthFactorNumberSvg />
-        </Box>
-        <Box sx={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', textAlign: 'center' }}>
-          <Chip label={healthFactorRank.rank} sx={{ mb: 3, backgroundColor: healthFactorRank.color, color: '#000' }} />
-          <Typography variant="h4">{healthFactor}</Typography>
-        </Box>
-      </Box>
+      <HealthFactorSection healthFactor={healthFactor?.toFixed(2) || '0'} />
 
-      <Box className="flex-space-between">
+      <Box className="flex-space-between" mt={2}>
         <Box className="flex-start">
           <Typography>Liquidation Price</Typography>
           <TooltipInfo title="The price at which your collateral will be liquidated." />
         </Box>
-        <ValueWithStatus status={['success']} value={'--'} />
+        <ValueWithStatus status={['success']} value={`--`} />
       </Box>
       <Box className="flex-space-between">
         <Box className="flex-start">
-          <Typography>Current ETH Price</Typography>
+          <Typography>Current SOL Price</Typography>
           <TooltipInfo title="The current market price of this collateral." />
         </Box>
-        <ValueWithStatus status={['success']} value={'--'} />
+        <ValueWithStatus status={['success']} value={`${solPrice ? solPrice.price.toFixed(2) : '--'}`} />
       </Box>
     </BoxCustom>
   );

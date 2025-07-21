@@ -12,8 +12,8 @@ const HealthFactorGauge = ({ healthFactorAngle, bgColor }: HealthFactorGaugeProp
       sx={{
         mask: `url(${HealthFactorMask}) no-repeat 50% 50%`,
         maskSize: 'contain',
+        width: '284px',
         // background: 'transparent',
-        height: '180px',
         aspectRatio: 292 / 147,
         display: 'flex',
         justifyContent: 'center',

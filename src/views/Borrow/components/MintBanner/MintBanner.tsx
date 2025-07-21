@@ -17,6 +17,7 @@ const MintBanner = () => {
         mb: 2,
         flexDirection: { xs: 'column', md: 'row' },
         gap: { xs: 1, md: 0 },
+        alignItems: 'center',
       }}
     >
       <Box
@@ -49,7 +50,7 @@ const MintBanner = () => {
         gap={1}
         textAlign={'center'}
         flex={1}
-        borderRight={{ xs: 'none', md: '2px solid black' }}
+        // borderRight={{ xs: 'none', md: '2px solid black' }}
       >
         <Typography variant="h6" fontWeight={600}>
           Total Minted
@@ -67,14 +68,14 @@ const MintBanner = () => {
         </Typography>
       </Box>
 
-      <Box display={'flex'} flexDirection={'column'} gap={1} textAlign={'center'} flex={1}>
+      {/* <Box display={'flex'} flexDirection={'column'} gap={1} textAlign={'center'} flex={1}>
         <Typography variant="h6" fontWeight={600}>
           Borrow Rate
         </Typography>
         <Typography variant="h2" fontWeight={700} fontSize="42px">
           3%
         </Typography>
-      </Box>
+      </Box> */}
     </Stack>
   );
 };
