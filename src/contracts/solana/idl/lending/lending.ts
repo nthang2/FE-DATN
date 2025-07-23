@@ -1,4 +1,5 @@
 import { lendingProgramId } from 'src/constants/contractAddress/solana';
+// typeof lendingProgramId
 
 export type IdlLending = {
   address: typeof lendingProgramId;
@@ -560,6 +561,57 @@ export type IdlLending = {
       ];
     },
     {
+      name: 'editFarmingConfig';
+      discriminator: [162, 191, 87, 240, 125, 180, 48, 148];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'farmingConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [70, 65, 82, 77, 73, 78, 71, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'editFarmingFields';
+          type: {
+            vec: {
+              defined: {
+                name: 'editFarmingConfigFields';
+              };
+            };
+          };
+        }
+      ];
+    },
+    {
       name: 'editInvestment';
       discriminator: [112, 37, 241, 14, 199, 60, 76, 58];
       accounts: [
@@ -621,6 +673,63 @@ export type IdlLending = {
           name: 'reserve';
           type: {
             option: 'pubkey';
+          };
+        }
+      ];
+    },
+    {
+      name: 'editSwapUsdaiConfig';
+      discriminator: [95, 209, 22, 226, 80, 223, 30, 109];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'whitelistAdminAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78];
+              }
+            ];
+          };
+        },
+        {
+          name: 'swapConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [83, 87, 65, 80, 95, 85, 83, 68, 65, 73];
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'fields';
+          type: {
+            vec: {
+              defined: {
+                name: 'editSwapUsdaiConfigField';
+              };
+            };
+          };
+        },
+        {
+          name: 'pause';
+          type: {
+            option: 'u8';
           };
         }
       ];
@@ -783,6 +892,55 @@ export type IdlLending = {
       ];
     },
     {
+      name: 'initFarmingConfig';
+      discriminator: [7, 51, 28, 20, 75, 55, 157, 151];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'farmingConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [70, 65, 82, 77, 73, 78, 71, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'tokenFarming';
+          type: 'pubkey';
+        },
+        {
+          name: 'walletFarming';
+          type: 'pubkey';
+        }
+      ];
+    },
+    {
       name: 'initRedeemConfigV2';
       discriminator: [218, 141, 161, 235, 49, 156, 161, 152];
       accounts: [
@@ -936,6 +1094,46 @@ export type IdlLending = {
           type: 'pubkey';
         }
       ];
+    },
+    {
+      name: 'initializeSwapUsdaiConfig';
+      discriminator: [209, 187, 190, 127, 80, 46, 32, 223];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'swapConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [83, 87, 65, 80, 95, 85, 83, 68, 65, 73];
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [];
     },
     {
       name: 'initializeType0Depository';
@@ -2109,6 +2307,250 @@ export type IdlLending = {
       };
     },
     {
+      name: 'repayFarmingType0';
+      discriminator: [194, 154, 139, 232, 77, 236, 242, 174];
+      accounts: [
+        {
+          name: 'walletFarming';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'farmingConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [70, 65, 82, 77, 73, 78, 71, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'walletFarmingAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'walletFarming';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'mint';
+          writable: true;
+        },
+        {
+          name: 'depositoryType0';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              }
+            ];
+          };
+        },
+        {
+          name: 'depositoryVaultType0';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'depositoryType0';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        }
+      ];
+      args: [
+        {
+          name: 'usdcAmount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
       name: 'requestWithdrawSmartvault';
       discriminator: [165, 217, 18, 36, 123, 225, 42, 52];
       accounts: [
@@ -2188,6 +2630,552 @@ export type IdlLending = {
         {
           name: 'lendingAmount';
           type: 'f64';
+        }
+      ];
+    },
+    {
+      name: 'swapUsdaiType0';
+      discriminator: [172, 220, 228, 79, 147, 241, 173, 181];
+      accounts: [
+        {
+          name: 'user';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'stablecoinDepository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89];
+              },
+              {
+                kind: 'account';
+                path: 'stablecoin';
+              }
+            ];
+          };
+        },
+        {
+          name: 'swapConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [83, 87, 65, 80, 95, 85, 83, 68, 65, 73];
+              }
+            ];
+          };
+        },
+        {
+          name: 'stablecoinDepositoryVault';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'stablecoinDepository';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'stablecoin';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'stablecoinUserAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'user';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'stablecoin';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'usdaiUserAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'user';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'usdai';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'stablecoinReserveAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'reserve';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'stablecoin';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'usdaiReserveAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'reserve';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'usdai';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'stablecoin';
+          writable: true;
+        },
+        {
+          name: 'usdai';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'reserve';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'amount';
+          type: 'u64';
+        },
+        {
+          name: 'zeroForOne';
+          type: 'bool';
         }
       ];
     },
@@ -4746,6 +5734,176 @@ export type IdlLending = {
         }
       ];
       args: [];
+    },
+    {
+      name: 'withdrawToFarmingType0';
+      discriminator: [60, 46, 120, 96, 234, 106, 253, 16];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'farmingConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [70, 65, 82, 77, 73, 78, 71, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'walletFarmingAta';
+          writable: true;
+        },
+        {
+          name: 'mint';
+          writable: true;
+        },
+        {
+          name: 'depositoryType0';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              }
+            ];
+          };
+        },
+        {
+          name: 'depositoryVaultType0';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'depositoryType0';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'mint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        }
+      ];
+      args: [
+        {
+          name: 'usdcAmount';
+          type: 'u64';
+        }
+      ];
     }
   ];
   accounts: [
@@ -4756,6 +5914,10 @@ export type IdlLending = {
     {
       name: 'controller';
       discriminator: [184, 79, 171, 0, 183, 43, 113, 110];
+    },
+    {
+      name: 'farmingConfig';
+      discriminator: [227, 37, 190, 173, 145, 73, 54, 104];
     },
     {
       name: 'investment';
@@ -4772,6 +5934,10 @@ export type IdlLending = {
     {
       name: 'redeemByCollateralConfigV2';
       discriminator: [84, 193, 134, 218, 211, 27, 137, 25];
+    },
+    {
+      name: 'swapUsdaiConfig';
+      discriminator: [34, 190, 22, 120, 246, 58, 3, 167];
     },
     {
       name: 'type0Depository';
@@ -5532,6 +6698,51 @@ export type IdlLending = {
       code: 6131;
       name: 'collateralIsPaused';
       msg: 'Collateral is paused';
+    },
+    {
+      code: 6132;
+      name: 'invalidFarmingData';
+      msg: 'Invalid farming data';
+    },
+    {
+      code: 6133;
+      name: 'noMoreTokenSwapSlot';
+      msg: 'No more slot in USDAI Swap';
+    },
+    {
+      code: 6134;
+      name: 'invalidTokenSwapChange';
+      msg: 'Both replaced token and new token are null';
+    },
+    {
+      code: 6135;
+      name: 'invalidTokenAddress';
+      msg: 'The token address is invalid';
+    },
+    {
+      code: 6136;
+      name: 'swapOutOfBound';
+      msg: 'Users have to swap below limit amount';
+    },
+    {
+      code: 6137;
+      name: 'swapUsdaiConfigPaused';
+      msg: 'Swap USDAI is paused';
+    },
+    {
+      code: 6138;
+      name: 'invalidFeeValue';
+      msg: 'The fee is not in valid range';
+    },
+    {
+      code: 6139;
+      name: 'invalidPauseValue';
+      msg: 'The pause value is not in valid uint range';
+    },
+    {
+      code: 6140;
+      name: 'invalidSwapAmount';
+      msg: 'Swap amount must be > 0 in order to redeem.';
     }
   ];
   types: [
@@ -5782,6 +6993,76 @@ export type IdlLending = {
       };
     },
     {
+      name: 'editFarmingConfigFields';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'tokenFarmingOld';
+            type: {
+              option: 'pubkey';
+            };
+          },
+          {
+            name: 'tokenFarmingNew';
+            type: {
+              option: 'pubkey';
+            };
+          },
+          {
+            name: 'walletFarmingOld';
+            type: {
+              option: 'pubkey';
+            };
+          },
+          {
+            name: 'walletFarmingNew';
+            type: {
+              option: 'pubkey';
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: 'editSwapUsdaiConfigField';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'oldTokenAddress';
+            type: {
+              option: 'pubkey';
+            };
+          },
+          {
+            name: 'newTokenAddress';
+            type: {
+              option: 'pubkey';
+            };
+          },
+          {
+            name: 'swapLimit';
+            type: {
+              option: 'u64';
+            };
+          },
+          {
+            name: 'fee0';
+            type: {
+              option: 'u16';
+            };
+          },
+          {
+            name: 'fee1';
+            type: {
+              option: 'u16';
+            };
+          }
+        ];
+      };
+    },
+    {
       name: 'editType0DepositoryFields';
       type: {
         kind: 'struct';
@@ -5922,6 +7203,48 @@ export type IdlLending = {
             name: 'pause';
             type: {
               option: 'u8';
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: 'farmingConfig';
+      serialization: 'bytemuck';
+      repr: {
+        kind: 'c';
+      };
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'farmingTokens';
+            type: {
+              array: ['pubkey', 5];
+            };
+          },
+          {
+            name: 'farmingWallets';
+            type: {
+              array: ['pubkey', 5];
+            };
+          },
+          {
+            name: 'farmingAmountType0';
+            type: {
+              array: ['u64', 5];
+            };
+          },
+          {
+            name: 'farmingAmountType1';
+            type: {
+              array: ['u64', 5];
+            };
+          },
+          {
+            name: 'reserved';
+            type: {
+              array: ['u8', 160];
             };
           }
         ];
@@ -6448,6 +7771,79 @@ export type IdlLending = {
           {
             name: 'liquidationRatio';
             type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'swapUsdaiConfig';
+      serialization: 'bytemuck';
+      repr: {
+        kind: 'c';
+      };
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'stablecoins';
+            type: {
+              array: [
+                {
+                  defined: {
+                    name: 'swapUsdaiStablecoinInfo';
+                  };
+                },
+                7
+              ];
+            };
+          },
+          {
+            name: 'isPaused';
+            type: 'u8';
+          },
+          {
+            name: 'padding';
+            type: {
+              array: ['u8', 7];
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: 'swapUsdaiStablecoinInfo';
+      serialization: 'bytemuck';
+      repr: {
+        kind: 'c';
+      };
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'address';
+            type: 'pubkey';
+          },
+          {
+            name: 'swapLimit';
+            type: 'u64';
+          },
+          {
+            name: 'swappedAmount';
+            type: 'i64';
+          },
+          {
+            name: 'fee0';
+            type: 'u16';
+          },
+          {
+            name: 'fee1';
+            type: 'u16';
+          },
+          {
+            name: 'padding';
+            type: {
+              array: ['u8', 4];
+            };
           }
         ];
       };
@@ -7178,6 +8574,57 @@ export const idlLending: IdlLending = {
       ],
     },
     {
+      name: 'editFarmingConfig',
+      discriminator: [162, 191, 87, 240, 125, 180, 48, 148],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'farmingConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [70, 65, 82, 77, 73, 78, 71, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'editFarmingFields',
+          type: {
+            vec: {
+              defined: {
+                name: 'editFarmingConfigFields',
+              },
+            },
+          },
+        },
+      ],
+    },
+    {
       name: 'editInvestment',
       discriminator: [112, 37, 241, 14, 199, 60, 76, 58],
       accounts: [
@@ -7239,6 +8686,63 @@ export const idlLending: IdlLending = {
           name: 'reserve',
           type: {
             option: 'pubkey',
+          },
+        },
+      ],
+    },
+    {
+      name: 'editSwapUsdaiConfig',
+      discriminator: [95, 209, 22, 226, 80, 223, 30, 109],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'whitelistAdminAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78],
+              },
+            ],
+          },
+        },
+        {
+          name: 'swapConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [83, 87, 65, 80, 95, 85, 83, 68, 65, 73],
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'fields',
+          type: {
+            vec: {
+              defined: {
+                name: 'editSwapUsdaiConfigField',
+              },
+            },
+          },
+        },
+        {
+          name: 'pause',
+          type: {
+            option: 'u8',
           },
         },
       ],
@@ -7401,6 +8905,55 @@ export const idlLending: IdlLending = {
       ],
     },
     {
+      name: 'initFarmingConfig',
+      discriminator: [7, 51, 28, 20, 75, 55, 157, 151],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'farmingConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [70, 65, 82, 77, 73, 78, 71, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'tokenFarming',
+          type: 'pubkey',
+        },
+        {
+          name: 'walletFarming',
+          type: 'pubkey',
+        },
+      ],
+    },
+    {
       name: 'initRedeemConfigV2',
       discriminator: [218, 141, 161, 235, 49, 156, 161, 152],
       accounts: [
@@ -7554,6 +9107,46 @@ export const idlLending: IdlLending = {
           type: 'pubkey',
         },
       ],
+    },
+    {
+      name: 'initializeSwapUsdaiConfig',
+      discriminator: [209, 187, 190, 127, 80, 46, 32, 223],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'swapConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [83, 87, 65, 80, 95, 85, 83, 68, 65, 73],
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [],
     },
     {
       name: 'initializeType0Depository',
@@ -8487,6 +10080,130 @@ export const idlLending: IdlLending = {
       },
     },
     {
+      name: 'repayFarmingType0',
+      discriminator: [194, 154, 139, 232, 77, 236, 242, 174],
+      accounts: [
+        {
+          name: 'walletFarming',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'farmingConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [70, 65, 82, 77, 73, 78, 71, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'walletFarmingAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'walletFarming',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'mint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'mint',
+          writable: true,
+        },
+        {
+          name: 'depositoryType0',
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89],
+              },
+              {
+                kind: 'account',
+                path: 'mint',
+              },
+            ],
+          },
+        },
+        {
+          name: 'depositoryVaultType0',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'depositoryType0',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'mint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+      ],
+      args: [
+        {
+          name: 'usdcAmount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
       name: 'requestWithdrawSmartvault',
       discriminator: [165, 217, 18, 36, 123, 225, 42, 52],
       accounts: [
@@ -8566,6 +10283,252 @@ export const idlLending: IdlLending = {
         {
           name: 'lendingAmount',
           type: 'f64',
+        },
+      ],
+    },
+    {
+      name: 'swapUsdaiType0',
+      discriminator: [172, 220, 228, 79, 147, 241, 173, 181],
+      accounts: [
+        {
+          name: 'user',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'stablecoinDepository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89],
+              },
+              {
+                kind: 'account',
+                path: 'stablecoin',
+              },
+            ],
+          },
+        },
+        {
+          name: 'swapConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [83, 87, 65, 80, 95, 85, 83, 68, 65, 73],
+              },
+            ],
+          },
+        },
+        {
+          name: 'stablecoinDepositoryVault',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'stablecoinDepository',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'stablecoin',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'stablecoinUserAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'user',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'stablecoin',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'usdaiUserAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'user',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'usdai',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'stablecoinReserveAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'reserve',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'stablecoin',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'usdaiReserveAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'reserve',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'usdai',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'stablecoin',
+          writable: true,
+        },
+        {
+          name: 'usdai',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'reserve',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'amount',
+          type: 'u64',
+        },
+        {
+          name: 'zeroForOne',
+          type: 'bool',
         },
       ],
     },
@@ -10105,6 +12068,116 @@ export const idlLending: IdlLending = {
       ],
       args: [],
     },
+    {
+      name: 'withdrawToFarmingType0',
+      discriminator: [60, 46, 120, 96, 234, 106, 253, 16],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'farmingConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [70, 65, 82, 77, 73, 78, 71, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'walletFarmingAta',
+          writable: true,
+        },
+        {
+          name: 'mint',
+          writable: true,
+        },
+        {
+          name: 'depositoryType0',
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89],
+              },
+              {
+                kind: 'account',
+                path: 'mint',
+              },
+            ],
+          },
+        },
+        {
+          name: 'depositoryVaultType0',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'depositoryType0',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'mint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+      ],
+      args: [
+        {
+          name: 'usdcAmount',
+          type: 'u64',
+        },
+      ],
+    },
   ],
   accounts: [
     {
@@ -10114,6 +12187,10 @@ export const idlLending: IdlLending = {
     {
       name: 'controller',
       discriminator: [184, 79, 171, 0, 183, 43, 113, 110],
+    },
+    {
+      name: 'farmingConfig',
+      discriminator: [227, 37, 190, 173, 145, 73, 54, 104],
     },
     {
       name: 'investment',
@@ -10130,6 +12207,10 @@ export const idlLending: IdlLending = {
     {
       name: 'redeemByCollateralConfigV2',
       discriminator: [84, 193, 134, 218, 211, 27, 137, 25],
+    },
+    {
+      name: 'swapUsdaiConfig',
+      discriminator: [34, 190, 22, 120, 246, 58, 3, 167],
     },
     {
       name: 'type0Depository',
@@ -10891,6 +12972,51 @@ export const idlLending: IdlLending = {
       name: 'collateralIsPaused',
       msg: 'Collateral is paused',
     },
+    {
+      code: 6132,
+      name: 'invalidFarmingData',
+      msg: 'Invalid farming data',
+    },
+    {
+      code: 6133,
+      name: 'noMoreTokenSwapSlot',
+      msg: 'No more slot in USDAI Swap',
+    },
+    {
+      code: 6134,
+      name: 'invalidTokenSwapChange',
+      msg: 'Both replaced token and new token are null',
+    },
+    {
+      code: 6135,
+      name: 'invalidTokenAddress',
+      msg: 'The token address is invalid',
+    },
+    {
+      code: 6136,
+      name: 'swapOutOfBound',
+      msg: 'Users have to swap below limit amount',
+    },
+    {
+      code: 6137,
+      name: 'swapUsdaiConfigPaused',
+      msg: 'Swap USDAI is paused',
+    },
+    {
+      code: 6138,
+      name: 'invalidFeeValue',
+      msg: 'The fee is not in valid range',
+    },
+    {
+      code: 6139,
+      name: 'invalidPauseValue',
+      msg: 'The pause value is not in valid uint range',
+    },
+    {
+      code: 6140,
+      name: 'invalidSwapAmount',
+      msg: 'Swap amount must be > 0 in order to redeem.',
+    },
   ],
   types: [
     {
@@ -11140,6 +13266,76 @@ export const idlLending: IdlLending = {
       },
     },
     {
+      name: 'editFarmingConfigFields',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'tokenFarmingOld',
+            type: {
+              option: 'pubkey',
+            },
+          },
+          {
+            name: 'tokenFarmingNew',
+            type: {
+              option: 'pubkey',
+            },
+          },
+          {
+            name: 'walletFarmingOld',
+            type: {
+              option: 'pubkey',
+            },
+          },
+          {
+            name: 'walletFarmingNew',
+            type: {
+              option: 'pubkey',
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: 'editSwapUsdaiConfigField',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'oldTokenAddress',
+            type: {
+              option: 'pubkey',
+            },
+          },
+          {
+            name: 'newTokenAddress',
+            type: {
+              option: 'pubkey',
+            },
+          },
+          {
+            name: 'swapLimit',
+            type: {
+              option: 'u64',
+            },
+          },
+          {
+            name: 'fee0',
+            type: {
+              option: 'u16',
+            },
+          },
+          {
+            name: 'fee1',
+            type: {
+              option: 'u16',
+            },
+          },
+        ],
+      },
+    },
+    {
       name: 'editType0DepositoryFields',
       type: {
         kind: 'struct',
@@ -11280,6 +13476,48 @@ export const idlLending: IdlLending = {
             name: 'pause',
             type: {
               option: 'u8',
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: 'farmingConfig',
+      serialization: 'bytemuck',
+      repr: {
+        kind: 'c',
+      },
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'farmingTokens',
+            type: {
+              array: ['pubkey', 5],
+            },
+          },
+          {
+            name: 'farmingWallets',
+            type: {
+              array: ['pubkey', 5],
+            },
+          },
+          {
+            name: 'farmingAmountType0',
+            type: {
+              array: ['u64', 5],
+            },
+          },
+          {
+            name: 'farmingAmountType1',
+            type: {
+              array: ['u64', 5],
+            },
+          },
+          {
+            name: 'reserved',
+            type: {
+              array: ['u8', 160],
             },
           },
         ],
@@ -11806,6 +14044,79 @@ export const idlLending: IdlLending = {
           {
             name: 'liquidationRatio',
             type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'swapUsdaiConfig',
+      serialization: 'bytemuck',
+      repr: {
+        kind: 'c',
+      },
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'stablecoins',
+            type: {
+              array: [
+                {
+                  defined: {
+                    name: 'swapUsdaiStablecoinInfo',
+                  },
+                },
+                7,
+              ],
+            },
+          },
+          {
+            name: 'isPaused',
+            type: 'u8',
+          },
+          {
+            name: 'padding',
+            type: {
+              array: ['u8', 7],
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: 'swapUsdaiStablecoinInfo',
+      serialization: 'bytemuck',
+      repr: {
+        kind: 'c',
+      },
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'address',
+            type: 'pubkey',
+          },
+          {
+            name: 'swapLimit',
+            type: 'u64',
+          },
+          {
+            name: 'swappedAmount',
+            type: 'i64',
+          },
+          {
+            name: 'fee0',
+            type: 'u16',
+          },
+          {
+            name: 'fee1',
+            type: 'u16',
+          },
+          {
+            name: 'padding',
+            type: {
+              array: ['u8', 4],
+            },
           },
         ],
       },

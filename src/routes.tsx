@@ -6,6 +6,7 @@ const MyPortfolio = lazy(() => import('./views/MyPortfolio/MyPortfolio'));
 const NotFound = lazy(() => import('./views/NotFound/NotFound'));
 const Vaults = lazy(() => import('./views/Vaults/Vaults'));
 const LiquidationLeaderboard = lazy(() => import('./views/LiquidationLeaderboard/LiquidationLeaderboard'));
+const SwapToken = lazy(() => import('./views/SwapToken/SwapToken'));
 
 export default function Routes() {
   return useRoutes([
@@ -15,8 +16,9 @@ export default function Routes() {
       children: [
         { path: '/', element: <Borrow /> },
         { path: '/my-portfolio', element: <MyPortfolio /> },
-        { path: '/vaults', element: <Vaults /> },
+        { path: '/earn', element: <Vaults /> },
         { path: '/liquidation', element: <LiquidationLeaderboard /> },
+        { path: '/convert', element: <SwapToken /> },
       ],
     },
     {

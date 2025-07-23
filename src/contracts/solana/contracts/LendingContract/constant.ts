@@ -9,9 +9,12 @@ export const LOAN_TYPE1_SEED = 'LOAN_TYPE_1';
 export const DEPOSITORY_SEED = 'DEPOSITORY';
 export const RESERVE_ACCOUNT =
   NETWORK === 'devnet'
-    ? new PublicKey('8kmSBtXyQ5svS8qPiHLA5BTrQ2iUN86KATKn2EJUEpen')
+    ? new PublicKey('6cnRUXyctJcC6GbxJDu3n3k68cXH1jizLeMhGdmwgkhu')
     : new PublicKey('HcYBeyAkXaDCvgULg22ijEuTHL1wj1zMKFNZgSKpDeU9');
 export const REDEEM_CONFIG = 'REDEEM_COL_CONFIG_V2';
 export const LOAN_TYPE0_SEED = 'LOAN';
 export const computeUnits = 1_400_000;
 export const jupiterProgram = new PublicKey('JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4');
+
+//env for swap
+export const SWAP_CONFIG_SEED = 'SWAP_USDAI';

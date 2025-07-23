@@ -1,10 +1,28 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Collapse, Link, Typography } from '@mui/material';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import HealthFactorChart from './HealthFactorChart';
+import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useHealthFactor from 'src/hooks/useQueryHook/queryBorrow/useHealthFactor';
+import { useBorrowState, useDepositState } from '../../state/hooks';
+import HealthFactorSection from './HealthFactorSection';
+import { useCrossModeState } from 'src/states/hooks';
 
 export default function HealthFactor() {
+  const { data: listPrice } = useQueryAllTokensPrice();
+  const [depositItems] = useDepositState();
+  const [borrowItems] = useBorrowState();
+  const [crossMode] = useCrossModeState();
+
+  const { data: healthFactorData, status: healthFactorStatus } = useHealthFactor({
+    depositItems: depositItems,
+    mintAmount: Number(borrowItems.value),
+  });
+
+  const selectedTokenInfo = findTokenInfoByToken(depositItems[0].address);
+  const selectedTokenPrice = listPrice?.[selectedTokenInfo?.address || ''];
+
   return (
     <BoxCustom
       sx={{
@@ -14,30 +32,52 @@ export default function HealthFactor() {
         display: 'flex',
         flexDirection: 'column',
         gap: 1.5,
-        minWidth: '332px',
         height: 'fit-content',
         padding: 3,
       }}
     >
       <Box className="flex-start">
-        <Typography variant="h6">HealthFactor</Typography>
-        <TooltipInfo title="HealthFactor" />
+        <Typography variant="h6">Health Factor</Typography>
+        <TooltipInfo
+          title={
+            <Typography variant="body2">
+              Health Factor shows how safe your assets are in the protocol. A higher value means lower risk of liquidation. Calculations
+              follow protocol rules, which may change.{' '}
+              <Link
+                target="_blank"
+                href={'https://www.jpow.ai/Mechanism-for-Users-1ab930c1ef038079bc0ee0da4480e156'}
+                sx={{ color: 'rgb(0, 153, 255)', cursor: 'pointer', textDecoration: 'unset' }}
+              >
+                Learn more.
+              </Link>
+            </Typography>
+          }
+        />
       </Box>
-      <HealthFactorChart />
-      <Box className="flex-space-between">
-        <Box className="flex-start">
-          <Typography>Liquidation Price</Typography>
-          <TooltipInfo title="The price at which your collateral will be liquidated." />
-        </Box>
-        <ValueWithStatus status={['success']} value={'--'} />
-      </Box>
-      <Box className="flex-space-between">
-        <Box className="flex-start">
-          <Typography>Current ETH Price</Typography>
-          <TooltipInfo title="The current market price of this collateral." />
-        </Box>
-        <ValueWithStatus status={['success']} value={'--'} />
-      </Box>
+
+      <HealthFactorSection healthFactor={Number(healthFactorData?.healthFactor || 0).toFixed(2) || '0'} />
+
+      <Collapse in={!crossMode}>
+        <>
+          <Box className="flex-space-between" mt={2}>
+            <Box className="flex-start">
+              <Typography>Liquidation Price</Typography>
+              <TooltipInfo title="The price at which your collateral will be liquidated." />
+            </Box>
+            <ValueWithStatus
+              status={[healthFactorStatus]}
+              value={`${Number(healthFactorData?.estimateLiquidationPrice || 0).toFixed(2) || '--'}`}
+            />
+          </Box>
+          <Box className="flex-space-between">
+            <Box className="flex-start">
+              <Typography>Current {selectedTokenInfo?.symbol} Price</Typography>
+              <TooltipInfo title="The current market price of this collateral." />
+            </Box>
+            <ValueWithStatus status={['success']} value={`${selectedTokenPrice ? selectedTokenPrice.price.toFixed(2) : '--'}`} />
+          </Box>
+        </>
+      </Collapse>
     </BoxCustom>
   );
 }

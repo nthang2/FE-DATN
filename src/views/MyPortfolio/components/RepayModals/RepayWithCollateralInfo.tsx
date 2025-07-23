@@ -19,18 +19,20 @@ interface IProps {
   token: SolanaEcosystemTokenInfo;
   mintedAmount?: string;
   usdaiRepay: string;
+  repayValue: string;
 }
 
 const RepayWithCollateralInfo = (props: IProps) => {
-  const { priceImpact, minExpected, token, mintedAmount, usdaiRepay } = props;
+  const { priceImpact, minExpected, token, mintedAmount, usdaiRepay, repayValue } = props;
   const { data: listTokenPrice } = useQueryAllTokensPrice();
   const [isOpenSetting, setIsOpenSetting] = useState(false);
   const [slippageTolerance] = useSlippageToleranceState();
 
   const usdaiPrice = listTokenPrice?.[usdaiInfo.address].price;
-  const debt = BN(mintedAmount || 0)
+  const collateralAmount = BN(mintedAmount || 0)
     .dividedBy(BN(10).pow(BN(usdaiInfo.decimals)))
-    .minus(BN(usdaiRepay || 0));
+    .toString();
+  const debt = BN(collateralAmount).minus(BN(usdaiRepay || 0));
 
   return (
     <Stack direction={'column'} gap={1} mt={2}>
@@ -77,7 +79,7 @@ const RepayWithCollateralInfo = (props: IProps) => {
             Health factor:
           </Typography>
 
-          <CheckHealthFactor token={token} />
+          <CheckHealthFactor token={token} depositAmount={`-${repayValue}`} mintAmount={`-${usdaiRepay}`} />
         </Box>
       </Box>
 

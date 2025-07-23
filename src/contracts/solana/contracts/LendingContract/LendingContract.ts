@@ -38,7 +38,10 @@ import {
   REDEEM_CONFIG,
   REDEEMABLE_MINT_SEED,
   RESERVE_ACCOUNT,
+  SWAP_CONFIG_SEED,
 } from './constant';
+import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { TokenName } from 'src/libs/crypto-icons';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -99,6 +102,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
     const reserveTokenAccount = getAssociatedTokenAddressSync(redeemable_mint, RESERVE_ACCOUNT, true);
     const redeemConfig = this.getPda(REDEEM_CONFIG);
+    const swapConfig = this.getPda(SWAP_CONFIG_SEED);
 
     return {
       user: this.provider.publicKey,
@@ -114,6 +118,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       reserve: RESERVE_ACCOUNT,
       reserveTokenAccount: reserveTokenAccount,
       redeemConfig: redeemConfig,
+      swapConfig: swapConfig,
     };
   }
 
@@ -354,5 +359,50 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       console.error('❌ Error get ins redeem config:', error);
       throw error;
     }
+  }
+
+  async getSwapTokenInstruction(tokenAddress: string, amount: number, isReverse: boolean) {
+    const accountsPartial = this.getAccountsPartial(tokenAddress);
+    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
+    const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
+
+    if (!selectedTokenInfo) {
+      throw new Error('Token not found');
+    }
+
+    const amountRaw = isReverse
+      ? new BN(amount * Number(`1e${selectedTokenInfo.decimals}`))
+      : new BN(amount * Number(`1e${usdaiInfo.decimals}`));
+    let instruction: Transaction;
+
+    try {
+      instruction = await this.program.methods
+        .swapUsdaiType0(amountRaw, isReverse)
+        .accounts({
+          user: accountsPartial.user,
+          reserve: accountsPartial.reserve,
+          stablecoin: new PublicKey(tokenAddress),
+        })
+        .transaction();
+    } catch (error) {
+      console.error('❌ Error get ins swap token:', error);
+      throw error;
+    }
+
+    return instruction;
+  }
+
+  async swapToken(tokenAddress: string, amount: number, isReverse: boolean) {
+    const instruction = await this.getSwapTokenInstruction(tokenAddress, amount, isReverse);
+    const transactionHash = await this.sendTransaction(instruction);
+
+    return transactionHash;
+  }
+
+  async getSwapConfig() {
+    const swapConfig = this.getPda(SWAP_CONFIG_SEED);
+    const swapConfigData = await this.program.account.swapUsdaiConfig.fetch(swapConfig);
+
+    return swapConfigData;
   }
 }

@@ -204,6 +204,7 @@ const RepayWithCollateral = (props: IProps) => {
         token={token || usdaiInfo}
         usdaiRepay={usdaiAmount.toString() || '0'}
         mintedAmount={redeemConfig?.loan?.mintedAmount?.toString() || '0'}
+        repayValue={repayValue.repayInput}
       />
 
       <Box className={clsx(['box', 'flex-space-between'])} sx={{ border: '#666662 solid 1px', position: 'relative' }}>

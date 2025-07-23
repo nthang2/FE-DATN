@@ -7,6 +7,7 @@ import useQueryDepositValue from '../queryMyPortfolio/useQueryDepositValue';
 import useMyPortfolio from '../queryMyPortfolio/useMyPortfolio';
 import { useCrossModeState } from 'src/states/hooks';
 import { TokenName } from 'src/libs/crypto-icons';
+import { liquidationThreshold } from 'src/views/Borrow/constant';
 
 const useInvestedValue = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
@@ -97,6 +98,50 @@ const useInvestedValue = () => {
     return 30;
   }, [asset, crossMode, depositItems]);
 
+  const maxLiquidationThreshold = useMemo(() => {
+    if (crossMode && asset) {
+      const totalCollateralValue = depositItems.reduce((total, curr) => {
+        const tokenInfo = findTokenInfoByToken(curr.address);
+        const liquidationThresholdValue = liquidationThreshold[tokenInfo?.symbol as keyof typeof liquidationThreshold] || 0.3;
+        return total + Number(curr.price) * Number(liquidationThresholdValue);
+      }, 0);
+
+      const collaboratedValueRatio = Object.values(asset)
+        .filter((item) => item.depositedUSD > 0)
+        .reduce((total, item) => {
+          const key = item.name as keyof typeof mapNameToInfoSolana;
+          const tokenInfo = mapNameToInfoSolana[key];
+          const liquidationThresholdValue = liquidationThreshold[tokenInfo?.symbol as keyof typeof liquidationThreshold] || 0.3;
+
+          return total + Number(item.depositedUSD) * Number(liquidationThresholdValue);
+        }, 0);
+
+      const collaboratedTotalPrice = Object.values(asset)
+        .filter((item) => item.depositedUSD > 0)
+        .reduce((total, item) => {
+          return total + Number(item.depositedUSD);
+        }, 0);
+
+      const totalPrice = depositItems.reduce((total, curr) => {
+        return total + Number(curr.price);
+      }, 0);
+
+      const ltv = ((totalCollateralValue + collaboratedValueRatio) / (totalPrice + collaboratedTotalPrice)) * 100;
+      const fallbackLiquidationThreshold =
+        Number(liquidationThreshold[findTokenInfoByToken(depositItems[0].address)?.symbol as keyof typeof liquidationThreshold]) * 100;
+
+      return ltv || fallbackLiquidationThreshold || 30;
+    }
+
+    if (depositItems[0]) {
+      const tokenInfo = findTokenInfoByToken(depositItems[0].address);
+      const liquidationThresholdValue = liquidationThreshold[tokenInfo?.symbol as keyof typeof liquidationThreshold] || 0.3;
+      return Number(liquidationThresholdValue) * 100;
+    }
+
+    return 30;
+  }, [asset, crossMode, depositItems]);
+
   const maxBorrowPrice = useMemo(() => {
     const borrowPrice = (Number(maxLtv) / 100) * totalDepositValue - yourBorrowByAddress;
     return borrowPrice;
@@ -107,6 +152,7 @@ const useInvestedValue = () => {
     depositedByAddress,
     totalDepositValue,
     maxLtv,
+    maxLiquidationThreshold,
     maxBorrowPrice,
   };
 };

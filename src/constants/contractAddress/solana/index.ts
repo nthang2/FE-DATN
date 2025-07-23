@@ -6,7 +6,7 @@ export const vaultProgramId =
 export const liquidatorProgramId =
   NETWORK === 'devnet' ? 'HZcLmwCeKFfuvwihVNa7XJRiWXHm3PXg3vZ3rdcrA5w3' : 'CeuU7yCrwBt3pSj1UazU7heT6jQiBr9yWasY3NyJTcMo';
 export const lendingProgramId =
-  NETWORK === 'devnet' ? '9amUpMWHBYyCUZgqXhP87SUCAdpoVsgdGr2E4sYCE7D1' : '3APJcbC2iHEFGv4y6a8Fi5nQ5u75ML85TQreSr7cpRDs';
+  NETWORK === 'devnet' ? 'Dk1y3uSsbb3FPTo8BnoQpVKHr5LX4QykR4tH9HUqW5gK' : '3APJcbC2iHEFGv4y6a8Fi5nQ5u75ML85TQreSr7cpRDs';
 
 export const ctrAdsSolana = {
   oracle: new PublicKey('GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k'),

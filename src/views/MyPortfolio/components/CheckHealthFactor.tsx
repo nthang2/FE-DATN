@@ -1,52 +1,77 @@
 import { Box, Typography } from '@mui/material';
 import { useMemo } from 'react';
+import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
-import useMyPortfolioInfo from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
+import useHealthFactor from 'src/hooks/useQueryHook/queryBorrow/useHealthFactor';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 
-export default function CheckHealthFactor({ token }: { token: SolanaEcosystemTokenInfo }) {
-  const { asset } = useMyPortfolioInfo();
+interface IProps {
+  token: SolanaEcosystemTokenInfo;
+  mintAmount: string;
+  depositAmount: string;
+}
 
-  const healthFactor = useMemo(() => {
-    if (!asset) return {};
-    const assetHealFactor = asset[token.address]?.healthFactor;
-    return { healthFactor: BN(assetHealFactor).isGreaterThan(100) ? '100' : assetHealFactor?.toString() };
-  }, [asset, token.address]);
+export default function CheckHealthFactor({ token, mintAmount, depositAmount }: IProps) {
+  const { data: healthFactorData, status: healthFactorStatus } = useHealthFactor({
+    depositItems: [{ address: token.address, value: depositAmount }],
+    mintAmount: Number(mintAmount),
+  });
+
+  const { healthFactor } = useMemo(() => {
+    if (!healthFactorData) return { healthFactor: '0' };
+    if (BN(healthFactorData.healthFactor).isGreaterThan(15)) {
+      return { healthFactor: '15' };
+    }
+    return { healthFactor: healthFactorData.healthFactor };
+  }, [healthFactorData]);
 
   const checkRank = () => {
     if (healthFactor) {
-      if (healthFactor.healthFactor == 'Infinity') {
-        return { rank: 'Healthy', color: 'green' };
-      } else if (BN(healthFactor?.healthFactor).isLessThanOrEqualTo(1.2)) {
-        return { rank: 'Critical', color: 'red' };
-      } else if (BN(healthFactor?.healthFactor).isLessThanOrEqualTo(1.5)) {
-        return { rank: 'Risky', color: 'orange' };
-      } else if (BN(healthFactor?.healthFactor).isLessThanOrEqualTo(2)) {
-        return { rank: 'Moderate', color: 'yellow' };
+      if (BN(healthFactor).isLessThanOrEqualTo(0)) {
+        return { rank: 'Healthy', color: '#34D564' };
+      } else if (BN(healthFactor).isLessThanOrEqualTo(1.6)) {
+        return { rank: 'Critical', color: '#E9321A' };
+      } else if (BN(healthFactor).isLessThanOrEqualTo(2.5)) {
+        return { rank: 'Risky', color: '#FF8B3E' };
+      } else if (BN(healthFactor).isLessThanOrEqualTo(3.2)) {
+        return { rank: 'Moderate', color: '#FFC95D' };
       } else {
-        return { rank: 'Healthy', color: 'green' };
+        return { rank: 'Healthy', color: '#08DBA4' };
       }
     } else {
-      return { rank: '--', color: 'text.primary' };
+      return { rank: 'Healthy', color: '#08DBA4' };
     }
   };
 
   return (
     <Box className="flex-center">
-      <Box sx={{ height: '24px', borderRadius: '99px', ml: 4, p: '5px 8px', bgcolor: checkRank().color }} className="flex-center">
-        <Typography variant="body3" sx={{ color: 'background.default' }}>
-          {checkRank().rank}
-        </Typography>
-      </Box>
-      <Typography sx={{ fontWeight: 600, ml: 1 }}>
-        {healthFactor
-          ? formatNumber(healthFactor.healthFactor, {
-              fractionDigits: 2,
-              suffix: BN(healthFactor.healthFactor).isGreaterThanOrEqualTo(100) ? '+' : '',
-            })
-          : '--'}
-      </Typography>
+      <ValueWithStatus
+        status={[healthFactorStatus]}
+        skeletonStyle={{ ml: 1, height: '30px' }}
+        value={
+          <Box sx={{ height: '24px', borderRadius: '99px', ml: 4, p: '5px 8px', bgcolor: checkRank().color }} className="flex-center">
+            <Typography variant="body3" sx={{ color: 'background.default' }}>
+              {checkRank().rank}
+            </Typography>
+          </Box>
+        }
+      />
+
+      <ValueWithStatus
+        status={[healthFactorStatus]}
+        skeletonStyle={{ ml: 1, height: '20px' }}
+        value={
+          <Typography sx={{ fontWeight: 600, ml: 1 }}>
+            {healthFactor
+              ? formatNumber(healthFactor, {
+                  fractionDigits: 2,
+                  suffix: BN(healthFactor).isGreaterThanOrEqualTo(15) ? '+' : '',
+                })
+              : '--'}
+          </Typography>
+        }
+      />
     </Box>
   );
 }

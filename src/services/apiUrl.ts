@@ -27,4 +27,6 @@ export const apiUrl = {
   getUsdaiInPool: () => `${BACKEND_URL}/tokens/usdai/liquidity-pool`,
   getMeteoraTokenPrice: (tokenAddress: string) => `${URL_METEORA_API}/pair/${tokenAddress}`,
   getPoolApr: () => `${BACKEND_URL}/liquidator-pool/apr`,
+  getHealthFactor: (userAddress: string) => `${BACKEND_URL}/lending/users/${userAddress}/health-factor`,
+  getHealthFactorCrossMode: (userAddress: string) => `${BACKEND_URL}/lending/users/${userAddress}/cross-mode/health-factor`,
 };
