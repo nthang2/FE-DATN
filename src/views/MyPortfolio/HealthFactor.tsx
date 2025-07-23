@@ -10,7 +10,9 @@ import CustomSelectToken from './components/InputCustom/CustomSelectToken';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 
 export default function HealthFactor() {
-  const listToken = Object.values(listTokenAvailable).map((item) => item.address);
+  const listToken = Object.values(listTokenAvailable).map((item) => {
+    return item.address;
+  });
   const [selectedToken, setSelectedToken] = useState(listToken[0]);
 
   const { data: healthFactor, status: statusHealthFactor } = useHealthFactor({
@@ -21,7 +23,8 @@ export default function HealthFactor() {
   const { data: listPrice, status: statusListPrice } = useQueryAllTokensPrice();
 
   const selectedTokenInfo = useMemo(() => {
-    return listTokenAvailable[selectedToken as keyof typeof listTokenAvailable] || listTokenAvailable['ORAI'];
+    const token = Object.values(listTokenAvailable).find((item) => item.address === selectedToken);
+    return token || listTokenAvailable['ORAI'];
   }, [selectedToken]);
   const liquidationPrice = useMemo(() => {
     if (healthFactor?.estimateLiquidationPrice) {
@@ -29,7 +32,7 @@ export default function HealthFactor() {
     }
 
     const liquidationDetail = healthFactor?.liquidationDetails?.find((item) => item.token === selectedToken);
-    if (liquidationDetail) {
+    if (liquidationDetail?.estimateLiquidationPrice) {
       return Number(liquidationDetail?.estimateLiquidationPrice || '0').toFixed(2);
     }
 
@@ -73,7 +76,7 @@ export default function HealthFactor() {
       </Box>
       <Box className="flex-space-between">
         <Box className="flex-start">
-          <Typography>Current {selectedTokenInfo?.prettyName} Price</Typography>
+          <Typography>Current {selectedTokenInfo?.symbol} Price</Typography>
           <TooltipInfo title="The current market price of this collateral." />
         </Box>
         <ValueWithStatus status={[statusListPrice]} value={listPrice?.[selectedToken]?.price?.toFixed(2)} />

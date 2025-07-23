@@ -21,7 +21,7 @@ export default function CheckHealthFactor({ token, mintAmount, depositAmount }: 
 
   const checkRank = () => {
     if (healthFactor) {
-      if (BN(healthFactor).isLessThanOrEqualTo(1)) {
+      if (BN(healthFactor).isLessThanOrEqualTo(0)) {
         return { rank: 'Healthy', color: '#34D564' };
       } else if (BN(healthFactor).isLessThanOrEqualTo(1.6)) {
         return { rank: 'Critical', color: '#E9321A' };
