@@ -11,27 +11,36 @@ interface IProps {
     value: string;
   }[];
   mintAmount: number;
+  otherKeys?: string[];
 }
 
-const useHealthFactor = ({ depositItems, mintAmount }: IProps) => {
+const useHealthFactor = ({ depositItems, mintAmount, otherKeys }: IProps) => {
   const [crossMode] = useCrossModeState();
   const { address } = useSummarySolanaConnect();
 
   const totalDepositAmount = useMemo(() => {
     return depositItems.reduce((total, item) => Number(item.value) + total, 0);
   }, [depositItems]);
+  const tokens = useMemo(() => {
+    return depositItems.map((item) => ({
+      token: item.address,
+      amount: Number(item.value),
+    }));
+  }, [depositItems]);
 
   const [totalDepositDebounce] = useDebounce(totalDepositAmount, 500);
   const [mintAmountDebounce] = useDebounce(mintAmount, 500);
 
-  const query = useQuery({
-    queryKey: ['useHealthFactor', crossMode, address, totalDepositDebounce, mintAmountDebounce],
-    queryFn: () => {
-      const tokens = depositItems.map((item) => ({
-        token: item.address,
-        amount: Number(item.value),
-      }));
+  const queryKey = useMemo(() => {
+    if (crossMode) {
+      return ['useHealthFactor', crossMode, address, totalDepositDebounce, mintAmountDebounce, ...(otherKeys || [])];
+    }
+    return ['useHealthFactor', address, totalDepositDebounce, mintAmountDebounce, tokens, ...(otherKeys || [])];
+  }, [crossMode, address, totalDepositDebounce, mintAmountDebounce, tokens, otherKeys]);
 
+  const query = useQuery({
+    queryKey: queryKey,
+    queryFn: () => {
       try {
         if (crossMode) {
           return getHealthFactorCrossMode(address, { tokens, mintAmount: mintAmountDebounce });

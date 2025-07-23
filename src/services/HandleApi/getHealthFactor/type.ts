@@ -14,8 +14,13 @@ export type THealthFactorCrossBody = {
   mintAmount: number;
 };
 
+export type THealthFactorLiquidationDetails = {
+  estimateLiquidationPrice: string | null;
+  token: string;
+};
+
 export type THealthFactorResp = {
   healthFactor: string | null;
   estimateLiquidationPrice?: string;
-  liquidationDetails?: string[];
+  liquidationDetails?: THealthFactorLiquidationDetails[];
 };

@@ -1,10 +1,41 @@
 import { Box, Typography } from '@mui/material';
+import { useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
-import HealthFactorSection from '../Borrow/components/HealthFactor/HealthFactorSection';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
+import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import useHealthFactor from 'src/hooks/useQueryHook/queryBorrow/useHealthFactor';
+import HealthFactorSection from '../Borrow/components/HealthFactor/HealthFactorSection';
+import CustomSelectToken from './components/InputCustom/CustomSelectToken';
+import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 
 export default function HealthFactor() {
+  const listToken = Object.values(listTokenAvailable).map((item) => item.address);
+  const [selectedToken, setSelectedToken] = useState(listToken[0]);
+
+  const { data: healthFactor, status: statusHealthFactor } = useHealthFactor({
+    depositItems: [{ address: selectedToken, value: '0' }],
+    mintAmount: 0,
+    otherKeys: [selectedToken],
+  });
+  const { data: listPrice, status: statusListPrice } = useQueryAllTokensPrice();
+
+  const selectedTokenInfo = useMemo(() => {
+    return listTokenAvailable[selectedToken as keyof typeof listTokenAvailable] || listTokenAvailable['ORAI'];
+  }, [selectedToken]);
+  const liquidationPrice = useMemo(() => {
+    if (healthFactor?.estimateLiquidationPrice) {
+      return Number(healthFactor?.estimateLiquidationPrice || '0').toFixed(2);
+    }
+
+    const liquidationDetail = healthFactor?.liquidationDetails?.find((item) => item.token === selectedToken);
+    if (liquidationDetail) {
+      return Number(liquidationDetail?.estimateLiquidationPrice || '0').toFixed(2);
+    }
+
+    return '--';
+  }, [healthFactor?.estimateLiquidationPrice, healthFactor?.liquidationDetails, selectedToken]);
+
   return (
     <BoxCustom
       sx={{
@@ -19,26 +50,33 @@ export default function HealthFactor() {
         mb: 2,
       }}
     >
-      <Box className="flex-start">
-        <Typography variant="h6">Health Factor</Typography>
-        <TooltipInfo title="HealthFactor" />
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box className="flex-start">
+          <Typography variant="h6">Health Factor</Typography>
+          <TooltipInfo title="HealthFactor" />
+        </Box>
+
+        <CustomSelectToken value={selectedToken} onChange={(e) => setSelectedToken(e.target.value)} options={listToken} />
       </Box>
 
-      <HealthFactorSection healthFactor={'0'} styleSvgWrapper={{ width: '220px', height: '110px' }} />
+      <HealthFactorSection
+        healthFactor={Number(healthFactor?.healthFactor || '0').toFixed(2)}
+        styleSvgWrapper={{ width: '220px', height: '110px' }}
+      />
 
       <Box className="flex-space-between" mt={1}>
         <Box className="flex-start">
           <Typography>Liquidation Price</Typography>
           <TooltipInfo title="The price at which your collateral will be liquidated." />
         </Box>
-        <ValueWithStatus status={['success']} value={`--`} />
+        <ValueWithStatus status={[statusHealthFactor]} value={liquidationPrice} />
       </Box>
       <Box className="flex-space-between">
         <Box className="flex-start">
-          <Typography>Current SOL Price</Typography>
+          <Typography>Current {selectedTokenInfo?.prettyName} Price</Typography>
           <TooltipInfo title="The current market price of this collateral." />
         </Box>
-        <ValueWithStatus status={['success']} value={`--`} />
+        <ValueWithStatus status={[statusListPrice]} value={listPrice?.[selectedToken]?.price?.toFixed(2)} />
       </Box>
     </BoxCustom>
   );

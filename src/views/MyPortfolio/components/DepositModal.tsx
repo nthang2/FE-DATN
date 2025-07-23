@@ -1,9 +1,9 @@
 import { SettingsOutlined } from '@mui/icons-material';
-import { Box, FormHelperText, Stack, Typography } from '@mui/material';
+import { Box, Divider, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
@@ -19,6 +19,7 @@ import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import CheckHealthFactor from './CheckHealthFactor';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 
 export default function DepositModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
@@ -33,10 +34,15 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
   const { refetch: refetchDepositValue } = useQueryDepositValue();
   const { initLendingContract } = useLendingContract();
   const { asyncExecute, loading } = useAsyncExecute();
+  const { asset } = useMyPortfolio();
 
   const [valueDeposit, setValueDeposit] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
   const [valueDepositHelperText, setValueDepositHelperText] = useState<string | undefined>(undefined);
+
+  const collateral = useMemo(() => {
+    return asset?.[token.address] ? formatNumber(BN(asset?.[token.address].depositedAmount).plus(Number(valueDeposit))) : '--';
+  }, [asset, token.address, valueDeposit]);
 
   const handleChangeValueDeposit = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValueDeposit(e.target.value);
@@ -181,16 +187,40 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
       <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main', mt: 3 }}>
         Transaction overview
       </Typography>
-      <Box
-        className="box"
-        sx={{
-          bgcolor: 'background.secondary',
-        }}
-      >
-        <Typography variant="body2" sx={{ color: 'info.main' }}>
-          Health factor:
-        </Typography>
-        <CheckHealthFactor token={token} depositAmount={valueDeposit} mintAmount="0" />
+      <Box sx={{ bgcolor: 'background.secondary', borderRadius: '16px' }}>
+        <Box
+          className="box"
+          sx={{
+            bgcolor: 'background.secondary',
+          }}
+        >
+          <Box className="flex-space-between">
+            <Typography variant="body2" sx={{ color: 'info.main', minWidth: '100px' }}>
+              Collateral:
+            </Typography>
+            <IconToken tokenName={token.symbol} sx={{ ml: 4 }} />
+            <Box sx={{ ml: 2 }}>
+              <Typography sx={{ fontWeight: 600 }}>{collateral}</Typography>
+              <Typography variant="body3" sx={{ fontWeight: 600, color: 'info.main' }}>
+                {formatNumber(BN(collateral).times(BN(tokensPrice?.[token.address]?.price || 0)), { fractionDigits: 4, prefix: '$' })}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+        <Divider sx={{ borderColor: '#474744', height: '1px' }} />
+        <Box
+          className="box"
+          sx={{
+            bgcolor: 'background.secondary',
+          }}
+        >
+          <Box className="flex-space-between">
+            <Typography variant="body2" sx={{ color: 'info.main', minWidth: '100px' }}>
+              Health factor:
+            </Typography>
+            <CheckHealthFactor token={token} depositAmount={valueDeposit} mintAmount="0" />
+          </Box>
+        </Box>
       </Box>
       <Box>
         <Box className="flex-space-between" sx={{ mt: 3 }}>

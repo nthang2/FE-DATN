@@ -1,5 +1,5 @@
 import { SettingsOutlined } from '@mui/icons-material';
-import { Box, FormHelperText, Stack, Typography } from '@mui/material';
+import { Box, Divider, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
 import { useMemo, useState } from 'react';
@@ -34,6 +34,10 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const [valueWithdraw, setValueWithdraw] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
   const [valueWithdrawHelperText, setValueWithdrawHelperText] = useState<string | undefined>(undefined);
+
+  const collateral = useMemo(() => {
+    return asset?.[token.address] ? formatNumber(BN(asset?.[token.address].depositedAmount).minus(Number(valueWithdraw))) : '--';
+  }, [asset, token.address, valueWithdraw]);
 
   const handleChangeValueWithdraw = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValueWithdraw(e.target.value);
@@ -206,17 +210,40 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
       <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main', mt: 3 }}>
         Transaction overview
       </Typography>
-      <Box
-        className="box"
-        sx={{
-          bgcolor: 'background.secondary',
-          // borderColor: error ? 'error.main' : '#666662',
-        }}
-      >
-        <Typography variant="body2" sx={{ color: 'info.main' }}>
-          Health factor:
-        </Typography>
-        <CheckHealthFactor token={token} depositAmount={'0'} mintAmount={valueWithdraw} />
+      <Box sx={{ bgcolor: 'background.secondary', borderRadius: '16px' }}>
+        <Box
+          className="box"
+          sx={{
+            bgcolor: 'background.secondary',
+          }}
+        >
+          <Box className="flex-space-between">
+            <Typography variant="body2" sx={{ color: 'info.main', minWidth: '100px' }}>
+              Collateral:
+            </Typography>
+            <IconToken tokenName={token.symbol} sx={{ ml: 4 }} />
+            <Box sx={{ ml: 2 }}>
+              <Typography sx={{ fontWeight: 600 }}>{collateral}</Typography>
+              <Typography variant="body3" sx={{ fontWeight: 600, color: 'info.main' }}>
+                {formatNumber(BN(collateral).times(BN(tokensPrice?.[token.address]?.price || 0)), { fractionDigits: 4, prefix: '$' })}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+        <Divider sx={{ borderColor: '#474744', height: '1px' }} />
+        <Box
+          className="box"
+          sx={{
+            bgcolor: 'background.secondary',
+          }}
+        >
+          <Box className="flex-space-between">
+            <Typography variant="body2" sx={{ color: 'info.main', minWidth: '100px' }}>
+              Health factor:
+            </Typography>
+            <CheckHealthFactor token={token} depositAmount={'0'} mintAmount={valueWithdraw} />
+          </Box>
+        </Box>
       </Box>
       <Box>
         <Box className="flex-space-between" sx={{ mt: 3 }}>
