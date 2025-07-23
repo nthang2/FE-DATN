@@ -2,32 +2,24 @@ import { Box, Typography } from '@mui/material';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import { TokenName } from 'src/libs/crypto-icons';
+import useHealthFactor from 'src/hooks/useQueryHook/queryBorrow/useHealthFactor';
+import { useBorrowState, useDepositState } from '../../state/hooks';
 import HealthFactorSection from './HealthFactorSection';
-import { useDepositState } from '../../state/hooks';
-import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
-import { useCrossModeState } from 'src/states/hooks';
-import { useMemo } from 'react';
-
-const solInfo = mapNameToInfoSolana[TokenName.SOL];
-const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
 
 export default function HealthFactor() {
   const { data: listPrice } = useQueryAllTokensPrice();
-  const { data: assets } = useMyPortfolio();
-  const solPrice = listPrice?.[solInfo.address];
-  const [crossMode] = useCrossModeState();
   const [depositItems] = useDepositState();
+  const [borrowItems] = useBorrowState();
 
-  const healthFactor = useMemo(() => {
-    if (crossMode) {
-      return Object.values(assets?.asset || {}).find((item) => item.contractAddress === usdaiInfo.address)?.healthFactor;
-    } else {
-      return Object.values(assets?.asset || {}).find((item) => item.contractAddress === depositItems[0].address)?.healthFactor;
-    }
-  }, [crossMode, assets, depositItems]);
+  const { data: healthFactorData, status: healthFactorStatus } = useHealthFactor({
+    depositItems: depositItems,
+    mintAmount: Number(borrowItems.value),
+  });
+
+  const selectedTokenInfo = findTokenInfoByToken(depositItems[0].address);
+  const selectedTokenPrice = listPrice?.[selectedTokenInfo?.address || ''];
 
   return (
     <BoxCustom
@@ -47,21 +39,24 @@ export default function HealthFactor() {
         <TooltipInfo title="HealthFactor" />
       </Box>
 
-      <HealthFactorSection healthFactor={healthFactor?.toFixed(2) || '0'} />
+      <HealthFactorSection healthFactor={Number(healthFactorData?.healthFactor || 0).toFixed(2) || '0'} />
 
       <Box className="flex-space-between" mt={2}>
         <Box className="flex-start">
           <Typography>Liquidation Price</Typography>
           <TooltipInfo title="The price at which your collateral will be liquidated." />
         </Box>
-        <ValueWithStatus status={['success']} value={`--`} />
+        <ValueWithStatus
+          status={[healthFactorStatus]}
+          value={`${Number(healthFactorData?.estimateLiquidationPrice || 0).toFixed(2) || '--'}`}
+        />
       </Box>
       <Box className="flex-space-between">
         <Box className="flex-start">
-          <Typography>Current SOL Price</Typography>
+          <Typography>Current {selectedTokenInfo?.symbol} Price</Typography>
           <TooltipInfo title="The current market price of this collateral." />
         </Box>
-        <ValueWithStatus status={['success']} value={`${solPrice ? solPrice.price.toFixed(2) : '--'}`} />
+        <ValueWithStatus status={['success']} value={`${selectedTokenPrice ? selectedTokenPrice.price.toFixed(2) : '--'}`} />
       </Box>
     </BoxCustom>
   );

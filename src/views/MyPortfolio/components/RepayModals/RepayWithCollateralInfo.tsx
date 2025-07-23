@@ -77,7 +77,7 @@ const RepayWithCollateralInfo = (props: IProps) => {
             Health factor:
           </Typography>
 
-          <CheckHealthFactor token={token} />
+          <CheckHealthFactor token={token} depositAmount={'0'} mintAmount={usdaiRepay} />
         </Box>
       </Box>
 

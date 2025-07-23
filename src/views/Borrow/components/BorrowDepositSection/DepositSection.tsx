@@ -69,14 +69,15 @@ const DepositSection = () => {
   };
 
   const handleChangeSelectInput = (index: number, value: string) => {
-    const newBalance = balance.find((item) => item.address === value)?.balance.toFixed(4);
+    // const newBalance = balance.find((item) => item.address === value)?.balance.toFixed(4);
     const cloneArr = depositItems.map((item, arrIndex) => {
       if (arrIndex === index) {
         return {
           ...item,
+          value: '0',
           address: value,
-          price: convertToUsd(value, item.value, listPrice),
-          error: validateDepositItem(Number(item.value), Number(newBalance)),
+          price: 0,
+          error: undefined,
         };
       }
 
@@ -135,7 +136,7 @@ const DepositSection = () => {
   }, [searchParams]);
 
   return (
-    <Box flex={1}>
+    <Box flex={1} minHeight="225px">
       <BoxCustom sx={{ flex: 1, borderRadius: isHasDeposited ? '16px 16px 0px 0px' : '16px' }}>
         <Stack justifyContent="space-between" width="100%" mb={'36px'}>
           <Typography variant="h6" alignItems="center" display="flex" gap={1} fontWeight={700}>

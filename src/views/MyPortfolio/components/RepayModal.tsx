@@ -225,7 +225,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
           <Typography variant="body2" sx={{ color: 'info.main', minWidth: '100px' }}>
             Health factor:
           </Typography>
-          <CheckHealthFactor token={token} />
+          <CheckHealthFactor token={token} depositAmount={'0'} mintAmount={valueRepay} />
         </Box>
       </Box>
       <Box className="flex-space-between" sx={{ mt: 3 }}>

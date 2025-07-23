@@ -216,7 +216,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
         <Typography variant="body2" sx={{ color: 'info.main' }}>
           Health factor:
         </Typography>
-        <CheckHealthFactor token={token} />
+        <CheckHealthFactor token={token} depositAmount={'0'} mintAmount={valueWithdraw} />
       </Box>
       <Box>
         <Box className="flex-space-between" sx={{ mt: 3 }}>

@@ -1,4 +1,4 @@
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Chip, SxProps, Typography } from '@mui/material';
 import React, { useMemo } from 'react';
 import HealthFactorNumberSvg from 'src/assets/HealthFactorNumberSvg';
 import { BN } from 'src/utils';
@@ -6,11 +6,12 @@ import HealthFactorGauge from './HealthFactorGauge';
 
 interface HealthFactorProps {
   healthFactor: string;
+  styleSvgWrapper?: SxProps;
 }
 
-const HealthFactorSection = ({ healthFactor }: HealthFactorProps) => {
+const HealthFactorSection = ({ healthFactor, styleSvgWrapper }: HealthFactorProps) => {
   const healthFactorAngle = useMemo(() => {
-    if (healthFactor == '0') {
+    if (BN(healthFactor).isLessThanOrEqualTo(1)) {
       return 0;
     }
     if (healthFactor == 'Infinity' || Number(healthFactor) > 4) {
@@ -24,11 +25,11 @@ const HealthFactorSection = ({ healthFactor }: HealthFactorProps) => {
     if (healthFactor) {
       if (healthFactor == 'Infinity' || BN(healthFactor).isLessThan(1)) {
         return { rank: 'Healthy', color: '#34D564' };
-      } else if (BN(healthFactor).isLessThanOrEqualTo(1.2)) {
+      } else if (BN(healthFactor).isLessThanOrEqualTo(1.6)) {
         return { rank: 'Critical', color: '#E9321A' };
-      } else if (BN(healthFactor).isLessThanOrEqualTo(1.5)) {
+      } else if (BN(healthFactor).isLessThanOrEqualTo(2.5)) {
         return { rank: 'Risky', color: '#FF8B3E' };
-      } else if (BN(healthFactor).isLessThanOrEqualTo(3)) {
+      } else if (BN(healthFactor).isLessThanOrEqualTo(3.2)) {
         return { rank: 'Moderate', color: '#FFC95D' };
       } else {
         return { rank: 'Healthy', color: '#08DBA4' };
@@ -43,7 +44,17 @@ const HealthFactorSection = ({ healthFactor }: HealthFactorProps) => {
   return (
     <Box sx={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
       <HealthFactorGauge healthFactorAngle={healthFactorAngle} bgColor={healthFactorColor} />
-      <Box sx={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '200px', height: '99px' }}>
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '200px',
+          height: '99px',
+          ...styleSvgWrapper,
+        }}
+      >
         <HealthFactorNumberSvg />
       </Box>
       <Box sx={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', textAlign: 'center' }}>

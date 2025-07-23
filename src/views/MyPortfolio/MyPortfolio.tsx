@@ -7,6 +7,7 @@ import Deposit from './Deposit';
 import MyWallet from './MyWallet';
 import YourPosition from './YourPosition';
 import SwitchMode from './components/SwitchMode';
+import HealthFactor from './HealthFactor';
 
 export default function MyPortfolio() {
   const { status } = useSummarySolanaConnect();
@@ -23,7 +24,7 @@ export default function MyPortfolio() {
               <Borrow />
             </Grid2>
             <Grid2 size={{ xs: 12, md: 4 }}>
-              {/* <HealthFactor /> */}
+              <HealthFactor />
               <MyWallet />
             </Grid2>
           </Grid2>
