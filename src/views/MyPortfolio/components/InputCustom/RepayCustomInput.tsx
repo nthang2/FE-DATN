@@ -94,6 +94,9 @@ export default function RepayCustomInput(props: Props) {
               borderRadius: '8px',
               mr: 2,
               minWidth: '125px',
+              '& .MuiSelect-icon': {
+                color: selectProps?.disabled ? 'transparent' : 'white',
+              },
               ...selectProps?.sx,
             }}
             renderValue={(value) => {

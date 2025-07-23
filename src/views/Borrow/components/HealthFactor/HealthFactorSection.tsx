@@ -21,6 +21,13 @@ const HealthFactorSection = ({ healthFactor, styleSvgWrapper }: HealthFactorProp
     }
   }, [healthFactor]);
 
+  const healthFactorNumber = useMemo(() => {
+    if (healthFactor == 'Infinity' || BN(healthFactor).isGreaterThan(15)) {
+      return '15+';
+    }
+    return healthFactor;
+  }, [healthFactor]);
+
   const healthFactorRank = useMemo(() => {
     if (healthFactor) {
       if (healthFactor == 'Infinity' || BN(healthFactor).isLessThan(1)) {
@@ -71,7 +78,7 @@ const HealthFactorSection = ({ healthFactor, styleSvgWrapper }: HealthFactorProp
           }}
         />
         <Typography variant="h2" lineHeight={0.75}>
-          {healthFactor === 'Infinity' ? '0' : healthFactor}
+          {healthFactorNumber}
         </Typography>
       </Box>
     </Box>

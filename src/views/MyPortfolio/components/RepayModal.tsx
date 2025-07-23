@@ -47,7 +47,8 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
 
   const handleMax = () => {
     if (asset?.[token.address] != undefined) {
-      setValueRepay(Number(maxValue).toFixed(token.decimals));
+      // setValueRepay(Number(maxValue).toFixed(token.decimals));
+      setValueRepay(decimalFlood(maxValue, token.decimals));
       const _valueInUSD = BN(assetTokenInfo?.usdaiToRedeem).toString();
       setValueInUSD(_valueInUSD);
     }
@@ -225,7 +226,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
           <Typography variant="body2" sx={{ color: 'info.main', minWidth: '100px' }}>
             Health factor:
           </Typography>
-          <CheckHealthFactor token={token} depositAmount={'0'} mintAmount={valueRepay} />
+          <CheckHealthFactor token={token} depositAmount={'0'} mintAmount={`-${valueRepay || '0'}`} />
         </Box>
       </Box>
       <Box className="flex-space-between" sx={{ mt: 3 }}>

@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material';
+import { useMemo } from 'react';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useHealthFactor from 'src/hooks/useQueryHook/queryBorrow/useHealthFactor';
@@ -17,7 +18,13 @@ export default function CheckHealthFactor({ token, mintAmount, depositAmount }: 
     mintAmount: Number(mintAmount),
   });
 
-  const { healthFactor } = healthFactorData || { healthFactor: '0' };
+  const { healthFactor } = useMemo(() => {
+    if (!healthFactorData) return { healthFactor: '0' };
+    if (BN(healthFactorData.healthFactor).isGreaterThan(15)) {
+      return { healthFactor: '15' };
+    }
+    return { healthFactor: healthFactorData.healthFactor };
+  }, [healthFactorData]);
 
   const checkRank = () => {
     if (healthFactor) {
@@ -33,26 +40,33 @@ export default function CheckHealthFactor({ token, mintAmount, depositAmount }: 
         return { rank: 'Healthy', color: '#08DBA4' };
       }
     } else {
-      return { rank: '--', color: 'text.primary' };
+      return { rank: 'Healthy', color: '#08DBA4' };
     }
   };
 
   return (
     <Box className="flex-center">
-      <Box sx={{ height: '24px', borderRadius: '99px', ml: 4, p: '5px 8px', bgcolor: checkRank().color }} className="flex-center">
-        <Typography variant="body3" sx={{ color: 'background.default' }}>
-          {checkRank().rank}
-        </Typography>
-      </Box>
       <ValueWithStatus
         status={[healthFactorStatus]}
-        skeletonStyle={{ ml: 1 }}
+        skeletonStyle={{ ml: 1, height: '30px' }}
+        value={
+          <Box sx={{ height: '24px', borderRadius: '99px', ml: 4, p: '5px 8px', bgcolor: checkRank().color }} className="flex-center">
+            <Typography variant="body3" sx={{ color: 'background.default' }}>
+              {checkRank().rank}
+            </Typography>
+          </Box>
+        }
+      />
+
+      <ValueWithStatus
+        status={[healthFactorStatus]}
+        skeletonStyle={{ ml: 1, height: '20px' }}
         value={
           <Typography sx={{ fontWeight: 600, ml: 1 }}>
             {healthFactor
               ? formatNumber(healthFactor, {
                   fractionDigits: 2,
-                  suffix: BN(healthFactor).isGreaterThanOrEqualTo(100) ? '+' : '',
+                  suffix: BN(healthFactor).isGreaterThanOrEqualTo(15) ? '+' : '',
                 })
               : '--'}
           </Typography>

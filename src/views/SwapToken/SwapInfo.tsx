@@ -26,7 +26,13 @@ const SwapInfo = (props: Props) => {
   const [networkFee, setNetworkFee] = useState(0);
   const [openCollapse, setOpenCollapse] = useState(false);
 
-  const feeValue = (convertFee / 100) * (Number(amount) / 100);
+  const feeValue = useMemo(() => {
+    if (!isReverse) {
+      return convertFee * (Number(usdaiAmount) / 100);
+    }
+    return convertFee * (Number(amount) / 100);
+  }, [convertFee, amount, isReverse, usdaiAmount]);
+
   const amountValue = useMemo(() => {
     if (isReverse) {
       return Number(decimalFlood(usdaiAmount, 9)) || 0;
@@ -89,7 +95,7 @@ const SwapInfo = (props: Props) => {
               </Typography>
 
               <Typography variant="body2" color="text.secondary">
-                ~${decimalFlood(feeValue, 6)}
+                ~{decimalFlood(feeValue, 6)}
               </Typography>
             </Stack>
 

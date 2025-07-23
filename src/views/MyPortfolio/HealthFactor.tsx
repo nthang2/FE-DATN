@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
@@ -56,7 +56,21 @@ export default function HealthFactor() {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box className="flex-start">
           <Typography variant="h6">Health Factor</Typography>
-          <TooltipInfo title="HealthFactor" />
+          <TooltipInfo
+            title={
+              <Typography variant="body2">
+                Health Factor shows how safe your assets are in the protocol. A higher value means lower risk of liquidation. Calculations
+                follow protocol rules, which may change.{' '}
+                <Link
+                  target="_blank"
+                  href={'https://www.jpow.ai/Mechanism-for-Users-1ab930c1ef038079bc0ee0da4480e156'}
+                  sx={{ color: 'rgb(0, 153, 255)', cursor: 'pointer', textDecoration: 'unset' }}
+                >
+                  Learn more.
+                </Link>
+              </Typography>
+            }
+          />
         </Box>
 
         <CustomSelectToken value={selectedToken} onChange={(e) => setSelectedToken(e.target.value)} options={listToken} />

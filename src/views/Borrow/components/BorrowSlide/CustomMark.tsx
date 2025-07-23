@@ -40,7 +40,7 @@ const CustomMark = ({ ...props }) => {
           </Box>
         )}
         {isLiquidationMark && (
-          <Box position="absolute" top={isOverflow ? positionLiquidationTop : -18} right={isOverflow ? '-35px' : 'unset'}>
+          <Box position="absolute" top={positionLiquidationTop} right={isOverflow ? '-35px' : 'unset'}>
             <Typography variant="body3" noWrap sx={{ color: 'error.dark' }}>
               {decimalFlood(liquidationValue, 2)}% Liquidation
             </Typography>
