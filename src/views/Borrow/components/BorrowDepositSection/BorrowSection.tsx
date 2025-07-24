@@ -62,7 +62,7 @@ const BorrowSection = () => {
 
     setBorrowState({
       ...borrowState,
-      value: borrowAmount ? borrowAmount.toFixed(decimals) : '0',
+      value: borrowAmount ? decimalFlood(borrowAmount, decimals) : '0',
       price: minValue,
       error: undefined,
     });

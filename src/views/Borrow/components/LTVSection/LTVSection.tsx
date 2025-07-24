@@ -13,9 +13,12 @@ import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../ut
 import CustomMark from '../BorrowSlide/CustomMark';
 import CustomThumb from '../BorrowSlide/CustomThumb';
 import CustomTrack from '../BorrowSlide/CustomTrack';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { TokenName } from 'src/libs/crypto-icons';
 
 const minZoom = 0;
 const maxZoom = 100;
+const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
 
 const LTVSection = () => {
   const [borrowState, setBorrowState] = useBorrowState();
@@ -49,13 +52,13 @@ const LTVSection = () => {
     }
 
     const borrowValue = (Number(sliderCommitValue) / 100) * totalDepositValue - yourBorrowByAddress;
-    const minValue = borrowValue < 0 ? 0 : Number(decimalFlood(borrowValue, 6));
+    const minValue = borrowValue < 0 ? 0 : Number(decimalFlood(borrowValue, usdaiInfo.decimals));
     const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), listPrice);
     const error = validateBorrowItem(Number(borrowAmount), borrowPercent, maxLtv);
 
     setBorrowState({
       ...borrowState,
-      value: borrowAmount ? borrowAmount.toString() : '0',
+      value: borrowAmount ? decimalFlood(borrowAmount, usdaiInfo.decimals) : '0',
       price: minValue,
       error: error,
     });
