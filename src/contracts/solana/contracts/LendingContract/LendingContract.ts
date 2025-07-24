@@ -393,8 +393,16 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async swapToken(tokenAddress: string, amount: number, isReverse: boolean) {
+    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const resultTransaction = new Transaction();
+
+    if (isHasUserCollateral1 !== null) {
+      resultTransaction.add(isHasUserCollateral1);
+    }
+
     const instruction = await this.getSwapTokenInstruction(tokenAddress, amount, isReverse);
-    const transactionHash = await this.sendTransaction(instruction);
+    resultTransaction.add(instruction);
+    const transactionHash = await this.sendTransaction(resultTransaction);
 
     return transactionHash;
   }
