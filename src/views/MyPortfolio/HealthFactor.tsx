@@ -8,6 +8,8 @@ import useHealthFactor from 'src/hooks/useQueryHook/queryBorrow/useHealthFactor'
 import HealthFactorSection from '../Borrow/components/HealthFactor/HealthFactorSection';
 import CustomSelectToken from './components/InputCustom/CustomSelectToken';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import { displayDecimalByToken } from '../Borrow/components/HealthFactor/constant';
+import { decimalFlood } from 'src/utils/format';
 
 export default function HealthFactor() {
   const listToken = Object.values(listTokenAvailable).map((item) => {
@@ -38,6 +40,7 @@ export default function HealthFactor() {
 
     return '--';
   }, [healthFactor?.estimateLiquidationPrice, healthFactor?.liquidationDetails, selectedToken]);
+  const displayDecimal = displayDecimalByToken[selectedTokenInfo?.symbol as keyof typeof displayDecimalByToken] || 2;
 
   return (
     <BoxCustom
@@ -86,14 +89,17 @@ export default function HealthFactor() {
           <Typography>Liquidation Price</Typography>
           <TooltipInfo title="The price at which your collateral will be liquidated." />
         </Box>
-        <ValueWithStatus status={[statusHealthFactor]} value={liquidationPrice} />
+        <ValueWithStatus status={[statusHealthFactor]} value={decimalFlood(Number(liquidationPrice) || 0, displayDecimal)} />
       </Box>
       <Box className="flex-space-between">
         <Box className="flex-start">
           <Typography>Current {selectedTokenInfo?.symbol} Price</Typography>
           <TooltipInfo title="The current market price of this collateral." />
         </Box>
-        <ValueWithStatus status={[statusListPrice]} value={listPrice?.[selectedToken]?.price?.toFixed(2)} />
+        <ValueWithStatus
+          status={[statusListPrice]}
+          value={listPrice?.[selectedToken]?.price ? decimalFlood(listPrice?.[selectedToken]?.price || 0, displayDecimal) : '--'}
+        />
       </Box>
     </BoxCustom>
   );

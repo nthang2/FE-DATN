@@ -8,6 +8,8 @@ import useHealthFactor from 'src/hooks/useQueryHook/queryBorrow/useHealthFactor'
 import { useBorrowState, useDepositState } from '../../state/hooks';
 import HealthFactorSection from './HealthFactorSection';
 import { useCrossModeState } from 'src/states/hooks';
+import { displayDecimalByToken } from './constant';
+import { decimalFlood } from 'src/utils/format';
 
 export default function HealthFactor() {
   const { data: listPrice } = useQueryAllTokensPrice();
@@ -22,6 +24,7 @@ export default function HealthFactor() {
 
   const selectedTokenInfo = findTokenInfoByToken(depositItems[0].address);
   const selectedTokenPrice = listPrice?.[selectedTokenInfo?.address || ''];
+  const displayDecimal = displayDecimalByToken[selectedTokenInfo?.symbol as keyof typeof displayDecimalByToken] || 2;
 
   return (
     <BoxCustom
@@ -66,7 +69,7 @@ export default function HealthFactor() {
             </Box>
             <ValueWithStatus
               status={[healthFactorStatus]}
-              value={`${Number(healthFactorData?.estimateLiquidationPrice || 0).toFixed(2) || '--'}`}
+              value={`${decimalFlood(healthFactorData?.estimateLiquidationPrice || 0, displayDecimal) || '--'}`}
             />
           </Box>
           <Box className="flex-space-between">
@@ -74,7 +77,10 @@ export default function HealthFactor() {
               <Typography>Current {selectedTokenInfo?.symbol} Price</Typography>
               <TooltipInfo title="The current market price of this collateral." />
             </Box>
-            <ValueWithStatus status={['success']} value={`${selectedTokenPrice ? selectedTokenPrice.price.toFixed(2) : '--'}`} />
+            <ValueWithStatus
+              status={['success']}
+              value={`${selectedTokenPrice ? decimalFlood(selectedTokenPrice.price, displayDecimal) : '--'}`}
+            />
           </Box>
         </>
       </Collapse>
