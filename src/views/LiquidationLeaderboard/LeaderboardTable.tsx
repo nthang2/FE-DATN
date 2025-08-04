@@ -126,7 +126,10 @@ export default function LeaderboardTable() {
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
           Liquidation Leaderboard
         </Typography>
-        <Box className="flex-end" sx={{ mt: { xs: 4, sm: 0 } }}>
+        <Box
+          className="flex-end"
+          sx={{ mt: { xs: 4, sm: 0 }, flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'normal', sm: 'center' } }}
+        >
           <FormControl sx={{ m: 1 }} variant="standard">
             <Select
               labelId="path-select-label"

@@ -773,36 +773,32 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
           },
         },
       },
-      // MuiSwitch: {
-      //   styleOverrides: {
-      //     root: {
-      //       width: 24,
-      //       height: 16,
-      //       padding: 0,
-      //       '& .MuiSwitch-switchBase': {
-      //         padding: 0,
-      //         margin: 2,
-      //         '&.Mui-checked': {
-      //           color: '#2D3400',
-      //           transform: 'translateX(8px)',
-      //           '& + .MuiSwitch-track': {
-      //             backgroundColor: '#FCFFD8',
-      //             opacity: 1,
-      //             border: 0,
-      //           },
-      //         },
-      //       },
-      //       '& .MuiSwitch-thumb': {
-      //         boxSizing: 'border-box',
-      //         width: 12,
-      //         height: 12,
-      //       },
-      //       '& .MuiSwitch-track': {
-      //         borderRadius: 14,
-      //       },
-      //     },
-      //   },
-      // },
+      MuiTableContainer: {
+        styleOverrides: {
+          root: {
+            // iOS specific scrollbar styling
+            '&::-webkit-scrollbar': {
+              '-webkit-appearance': 'none',
+              width: '6px',
+              height: '6px',
+            },
+            '&::-webkit-scrollbar-track': {
+              '-webkit-border-radius': '4px',
+              borderRadius: '4px',
+              background: 'rgba(0, 0, 0, 0.1)',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              '-webkit-border-radius': '4px',
+              borderRadius: '4px',
+              background: 'rgba(255, 255, 255, 0.3)',
+              '-webkit-box-shadow': '0 0 1px rgba(255, 255, 255, 0.5)',
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+              background: 'rgba(255, 255, 255, 0.5)',
+            },
+          },
+        },
+      },
     },
   };
 }

@@ -79,7 +79,13 @@ const ActionSection = () => {
       <Typography variant="h6" mb={3.5}>
         Actions
       </Typography>
-      <TableContainer sx={{ border: '1px solid #474744', borderRadius: 2, bgcolor: '#333331' }}>
+      <TableContainer
+        sx={{
+          border: '1px solid #474744',
+          borderRadius: 2,
+          bgcolor: '#333331',
+        }}
+      >
         <Table>
           <TableBody>
             {initDepositItems.map((item, index) => (
