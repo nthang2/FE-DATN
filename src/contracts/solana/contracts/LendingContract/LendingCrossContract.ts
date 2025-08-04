@@ -6,6 +6,7 @@ import {
   getAccount,
   getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
+  getMint,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import { WalletContextState } from '@solana/wallet-adapter-react';
@@ -414,5 +415,13 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const swapConfigData = await this.program.account.swapUsdaiConfig.fetch(swapConfig);
 
     return swapConfigData;
+  }
+
+  async getTotalSupply() {
+    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
+    const mintInfo = await getMint(this.provider.connection, new PublicKey(usdaiInfo.address));
+    const totalSupply = utilBN(mintInfo.supply).div(utilBN(10).pow(utilBN(usdaiInfo.decimals)));
+
+    return totalSupply.toNumber();
   }
 }
