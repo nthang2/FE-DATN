@@ -6,6 +6,7 @@ import {
   getAccount,
   getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
+  getMint,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import { WalletContextState } from '@solana/wallet-adapter-react';
@@ -19,9 +20,11 @@ import {
 } from '@solana/web3.js';
 import { toast } from 'react-toastify';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
+import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
 import { solTokenSolana } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { queryClient } from 'src/layout/Layout';
+import { TokenName } from 'src/libs/crypto-icons';
 import { publicClientSol } from 'src/states/hooks';
 import { appStore, crossModeAtom } from 'src/states/state';
 import { getDecimalToken } from 'src/utils';
@@ -40,8 +43,6 @@ import {
   RESERVE_ACCOUNT,
   SWAP_CONFIG_SEED,
 } from './constant';
-import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import { TokenName } from 'src/libs/crypto-icons';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -412,5 +413,13 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const swapConfigData = await this.program.account.swapUsdaiConfig.fetch(swapConfig);
 
     return swapConfigData;
+  }
+
+  async getTotalSupply() {
+    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
+    const mintInfo = await getMint(this.provider.connection, new PublicKey(usdaiInfo.address));
+    const totalSupply = utilBN(mintInfo.supply).div(utilBN(10).pow(utilBN(usdaiInfo.decimals)));
+
+    return totalSupply.toNumber();
   }
 }
