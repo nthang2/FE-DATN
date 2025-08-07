@@ -1,8 +1,7 @@
 import { Box, Typography } from '@mui/material';
-import React from 'react';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
-import { compactNumber, roundNumber } from 'src/utils/format';
+import { roundNumber } from 'src/utils/format';
 
 const StakedAmount = () => {
   const { stakeInfo, status } = useStakedInfo();
@@ -27,7 +26,7 @@ const StakedAmount = () => {
           status={[status]}
           value={
             <Typography variant="h2" fontWeight={700} fontSize="42px">
-              ${compactNumber(stakeInfo?.amount || 0, 4)}
+              ${roundNumber(stakeInfo?.amount || 0, 4)}
             </Typography>
           }
           skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '50%' }}
