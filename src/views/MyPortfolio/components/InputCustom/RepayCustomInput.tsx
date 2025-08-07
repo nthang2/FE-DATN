@@ -1,5 +1,6 @@
 import { Box, FormHelperText, MenuItem, Select, SelectProps, Skeleton, Stack, Typography } from '@mui/material';
 import { ReactNode, useEffect, useReducer, useRef } from 'react';
+import { NumericFormat } from 'react-number-format';
 import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { TokenName } from 'src/libs/crypto-icons';
@@ -47,6 +48,8 @@ export default function RepayCustomInput(props: Props) {
   const options = selectOptions ? selectOptions : Object.values(listTokenAvailable).map((item) => item.address);
   const inputValue = inputProps?.value ? roundNumber(Number(inputProps.value), 8) : '';
   const tokenPrice = listPrice?.[selectProps?.value || 0];
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { defaultValue, ...restInputProps } = inputProps || {};
 
   const handleOnChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     if (!inputProps || !inputProps.onChange) return undefined;
@@ -155,12 +158,13 @@ export default function RepayCustomInput(props: Props) {
             />
           ) : (
             <>
-              <input
+              <NumericFormat
+                displayType="input"
                 readOnly={readonly}
-                type="number"
-                {...inputProps}
-                onChange={handleOnChange}
+                {...restInputProps}
+                type="text"
                 value={inputValue}
+                onChange={handleOnChange}
                 style={{
                   display: 'block',
                   border: 'none',
@@ -174,6 +178,7 @@ export default function RepayCustomInput(props: Props) {
                   ...inputProps?.style,
                 }}
               />
+
               {subValue ? (
                 <Typography variant="body3" sx={{ color: 'text.secondary' }}>
                   ~$
