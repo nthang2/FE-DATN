@@ -61,7 +61,7 @@ const DepositSection = () => {
 
     const feeValue = (stablecoin?.fee0 / 100) * (Number(inputValue) / 100);
     const amount = Number(inputValue) - feeValue < 0 ? 0 : Number(inputValue) - feeValue;
-    const instruction = await contract.getSwapTokenInstruction(selectedToken, amount, true);
+    const instruction = await contract.getSwapTokenInstruction(selectedToken, Number(inputValue), true);
 
     return { instruction, amount };
   };
