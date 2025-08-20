@@ -16,7 +16,6 @@ import { listTokenAvailableVault } from '../../constant';
 import { findTokenInfoByToken, findTokenNameSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useLendingContract from 'src/hooks/useContract/useLendingContract';
 import { Transaction } from '@solana/web3.js';
-import { BN } from 'src/utils';
 
 const DepositSection = () => {
   const wallet = useWallet();
@@ -61,7 +60,7 @@ const DepositSection = () => {
     });
 
     const feeValue = (stablecoin?.fee0 / 100) * (Number(inputValue) / 100);
-    const amount = BN(inputValue).minus(BN(feeValue)).toNumber();
+    const amount = Number(inputValue) - feeValue < 0 ? 0 : Number(inputValue) - feeValue;
     const instruction = await contract.getSwapTokenInstruction(selectedToken, amount, true);
 
     return { instruction, amount };

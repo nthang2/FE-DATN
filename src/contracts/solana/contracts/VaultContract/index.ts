@@ -28,7 +28,8 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     const result = new Transaction();
     result.add(instruction);
 
-    const transactionAmount = amount * getDecimalToken(usdaiAddress) - 1;
+    const transactionAmount = amount * getDecimalToken(usdaiAddress);
+    console.log('🚀 ~ VaultContract ~ deposit ~ transactionAmount:', transactionAmount);
     const trans = await this.program.methods
       .stake(new BN(transactionAmount))
       .accounts({
