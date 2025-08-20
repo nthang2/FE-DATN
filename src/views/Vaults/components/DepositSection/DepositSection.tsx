@@ -1,6 +1,5 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { TokenName } from 'src/libs/crypto-icons';
 import { useEffect, useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
@@ -11,15 +10,25 @@ import { queryClient } from 'src/layout/Layout';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import CustomSlider from '../CustomSlider/Slider';
+import useSwapConfig from 'src/hooks/useQueryHook/querySwap/useSwapConfig';
+import CustomSelectToken from 'src/views/MyPortfolio/components/InputCustom/CustomSelectToken';
+import { listTokenAvailableVault } from '../../constant';
+import { findTokenInfoByToken, findTokenNameSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import useLendingContract from 'src/hooks/useContract/useLendingContract';
+import { Transaction } from '@solana/web3.js';
+import { BN } from 'src/utils';
 
 const DepositSection = () => {
   const wallet = useWallet();
   const { address } = useSummarySolanaConnect();
-  const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
   const { asyncExecute, loading } = useAsyncExecute();
+  const { initLendingContract } = useLendingContract();
+  const { data: swapConfig } = useSwapConfig();
 
   const [inputValue, setInputValue] = useState<string>();
   const [sliderValue, setSliderValue] = useState(0);
+  const [selectedToken, setSelectedToken] = useState<string>(listTokenAvailableVault[TokenName.USDAI].address);
+  const { balance } = useSolanaBalanceToken(address, findTokenNameSolana[selectedToken]!);
 
   const isConnectedWallet = Boolean(wallet.publicKey);
   const isCanDeposit = useMemo(() => {
@@ -27,24 +36,53 @@ const DepositSection = () => {
     return Number(inputValue) <= balance.toNumber() && Number(inputValue) > 0;
   }, [balance, inputValue]);
 
+  const handleChangeSelectToken = (value: string) => {
+    setSliderValue(0);
+    setSelectedToken(value);
+    setInputValue('0');
+  };
+
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
     const amount = (Number(value) / 100) * balance.toNumber();
     setInputValue(amount.toString());
+  };
+
+  const handleGetSwapInstruction = async () => {
+    if (!wallet || !inputValue || !swapConfig) return { instruction: new Transaction(), amount: Number(inputValue) };
+    const selectedTokenInfo = findTokenInfoByToken(selectedToken);
+
+    if (selectedTokenInfo?.symbol === TokenName.USDAI) {
+      return { instruction: new Transaction(), amount: Number(inputValue) };
+    }
+
+    const contract = initLendingContract(wallet);
+    const stablecoin = swapConfig.stablecoins.find((stablecoin) => {
+      return stablecoin.address.toString() === selectedTokenInfo?.address;
+    });
+
+    const feeValue = (stablecoin?.fee0 / 100) * (Number(inputValue) / 100);
+    const amount = BN(inputValue).minus(BN(feeValue)).toNumber();
+    const instruction = await contract.getSwapTokenInstruction(selectedToken, amount, true);
+
+    return { instruction, amount };
   };
 
   const handleDeposit = async () => {
     if (!wallet || !inputValue) return;
 
     const vaultContract = new VaultContract(wallet);
+    const { instruction, amount } = await handleGetSwapInstruction();
+
     await asyncExecute({
       fn: async () => {
-        const hash = await vaultContract.deposit(Number(inputValue));
+        const hash = await vaultContract.deposit(amount, instruction);
         await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
 
         return hash;
       },
     });
-    setInputValue(undefined);
+
+    setInputValue('');
     setSliderValue(0);
   };
 
@@ -69,12 +107,15 @@ const DepositSection = () => {
         InputProps={{
           disableUnderline: true,
           endAdornment: (
-            <Stack alignItems="center" gap={0.5}>
-              <IconToken tokenName={TokenName.USDAI} />
-              <Typography variant="body1" sx={{ color: 'primary.main', pr: 2 }}>
-                USDAI
-              </Typography>
-            </Stack>
+            <CustomSelectToken
+              options={Object.values(listTokenAvailableVault).map((token) => token.address)}
+              value={selectedToken}
+              onChange={(e) => handleChangeSelectToken(e.target.value as string)}
+              sx={{
+                py: 3,
+                borderRadius: '10px',
+              }}
+            />
           ),
           sx: { padding: 2, fontSize: '24px', height: 'unset' },
         }}

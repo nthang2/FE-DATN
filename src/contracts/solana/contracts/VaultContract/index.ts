@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BN } from '@coral-xyz/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Transaction } from '@solana/web3.js';
 import { NETWORK } from 'src/constants';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { usdaiSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
@@ -23,16 +23,22 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     return '';
   }
 
-  async deposit(amount: number): Promise<string> {
+  async deposit(amount: number, instruction: Transaction): Promise<string> {
+    if (!this.wallet) throw new Error('Wallet not connected!');
+    const result = new Transaction();
+    result.add(instruction);
+
+    const transactionAmount = amount * getDecimalToken(usdaiAddress) - 1;
     const trans = await this.program.methods
-      .stake(new BN(amount * getDecimalToken(usdaiAddress)))
+      .stake(new BN(transactionAmount))
       .accounts({
         signer: this.provider.wallet.publicKey,
         stakeCurrencyMint: new PublicKey(usdaiAddress),
       })
       .transaction();
+    result.add(trans);
+    const hash = await this.sendTransaction(result);
 
-    const hash = await this.sendTransaction(trans);
     return hash;
   }
 
