@@ -366,6 +366,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const accountsPartial = this.getAccountsPartial(tokenAddress);
     const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
     const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
+    let instruction: Transaction;
 
     if (!selectedTokenInfo) {
       throw new Error('Token not found');
@@ -382,7 +383,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
             .multipliedBy(utilBN(10).pow(utilBN(usdaiInfo.decimals)))
             .toString()
         );
-    let instruction: Transaction;
 
     try {
       instruction = await this.program.methods
@@ -402,11 +402,17 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async swapToken(tokenAddress: string, amount: number, isReverse: boolean) {
+    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
     const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const isHasUserUsdaiAccount = await this.checkUserCollateral1(new PublicKey(usdaiInfo.address));
     const resultTransaction = new Transaction();
 
     if (isHasUserCollateral1 !== null) {
       resultTransaction.add(isHasUserCollateral1);
+    }
+
+    if (isHasUserUsdaiAccount !== null) {
+      resultTransaction.add(isHasUserUsdaiAccount);
     }
 
     const instruction = await this.getSwapTokenInstruction(tokenAddress, amount, isReverse);
