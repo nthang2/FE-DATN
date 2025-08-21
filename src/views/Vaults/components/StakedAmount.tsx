@@ -34,7 +34,7 @@ const StakedAmount = () => {
         />
       </Typography>
       <Typography variant="body2" color="text.secondary">
-        {roundNumber(Number(stakeInfo?.amount || 0), 6)} USDAI
+        {roundNumber(Number(stakeInfo?.amount || 0), 6)} USD
       </Typography>
     </Box>
   );

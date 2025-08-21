@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BN } from '@coral-xyz/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Transaction } from '@solana/web3.js';
 import { NETWORK } from 'src/constants';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { usdaiSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
@@ -10,6 +10,7 @@ import { getDecimalToken } from 'src/utils';
 import { IdlVault, idlVault } from '../../idl/vault/vault';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { STAKER_INFO_SEED, VAULT_CONFIG_SEED, VAULT_SEED } from './constant';
+import { BN as utilBN } from 'src/utils';
 
 const usdaiInfo = NETWORK === 'devnet' ? usdaiSolanaDevnet : usdaiSolanaMainnet;
 export const usdaiAddress = usdaiInfo.address;
@@ -23,20 +24,31 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     return '';
   }
 
-  async deposit(amount: number): Promise<string> {
+  async deposit(amount: number | string, instruction: Transaction): Promise<string> {
+    if (!this.wallet) throw new Error('Wallet not connected!');
+    const result = new Transaction();
+    result.add(instruction);
+
+    const transactionAmount = utilBN(amount)
+      .multipliedBy(utilBN(10).pow(utilBN(usdaiInfo.decimals)))
+      .toNumber();
+
     const trans = await this.program.methods
-      .stake(new BN(amount * getDecimalToken(usdaiAddress)))
+      .stake(new BN(transactionAmount))
       .accounts({
         signer: this.provider.wallet.publicKey,
         stakeCurrencyMint: new PublicKey(usdaiAddress),
       })
       .transaction();
+    result.add(trans);
+    const hash = await this.sendTransaction(result);
 
-    const hash = await this.sendTransaction(trans);
     return hash;
   }
 
-  async withdraw(amount: number): Promise<string> {
+  async withdraw(amount: number, instruction: Transaction): Promise<string> {
+    const result = new Transaction();
+
     const trans = await this.program.methods
       .unstake(new BN(amount * getDecimalToken(usdaiAddress)))
       .accounts({
@@ -44,8 +56,10 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
         stakeCurrencyMint: new PublicKey(usdaiAddress),
       })
       .transaction();
+    result.add(trans);
+    result.add(instruction);
 
-    const hash = await this.sendTransaction(trans);
+    const hash = await this.sendTransaction(result);
     return hash;
   }
 
