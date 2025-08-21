@@ -1,19 +1,21 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import useLendingContract from 'src/hooks/useContract/useLendingContract';
+import { LendingContract } from 'src/contracts/solana/contracts/LendingContract/LendingContract';
+// import useLendingContract from 'src/hooks/useContract/useLendingContract';
 import { TokenName } from 'src/libs/crypto-icons/types';
 import { BN } from 'src/utils';
 
 const useSwapConfig = () => {
   const wallet = useWallet();
-  const { initLendingContract } = useLendingContract();
+  //open when have swap in 2 mode
+  // const { initLendingContract } = useLendingContract();
 
   const query = useQuery({
     queryKey: ['swap-config'],
     queryFn: async () => {
       if (!wallet) return null;
-      const swapConfig = initLendingContract(wallet);
+      const swapConfig = new LendingContract(wallet);
       const config = await swapConfig.getSwapConfig();
 
       return config;
@@ -36,7 +38,7 @@ const useSwapConfig = () => {
       };
     }
 
-    const contract = initLendingContract(wallet);
+    const contract = new LendingContract(wallet);
     const stablecoin = query.data.stablecoins.find((stablecoin) => {
       return stablecoin.address.toString() === selectedTokenInfo?.address;
     });
