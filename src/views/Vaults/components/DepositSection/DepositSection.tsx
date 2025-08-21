@@ -36,7 +36,7 @@ const DepositSection = () => {
   const handleChangeSelectToken = (value: string) => {
     setSliderValue(0);
     setSelectedToken(value);
-    setInputValue('0');
+    setInputValue('');
   };
 
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
@@ -80,7 +80,6 @@ const DepositSection = () => {
         variant="filled"
         inputType="number"
         placeholder="0"
-        disabled={!isConnectedWallet}
         InputProps={{
           disableUnderline: true,
           endAdornment: (

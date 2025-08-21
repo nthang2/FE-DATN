@@ -48,7 +48,7 @@ const WithdrawSection = () => {
   const handleChangeSelectToken = (value: string) => {
     setSliderValue(0);
     setSelectedToken(value);
-    setInputValue('0');
+    setInputValue('');
   };
 
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
@@ -97,7 +97,6 @@ const WithdrawSection = () => {
           inputType="number"
           // inputMode="decimal"
           placeholder="0"
-          disabled={!isConnectedWallet}
           InputProps={{
             disableUnderline: true,
             endAdornment: (
