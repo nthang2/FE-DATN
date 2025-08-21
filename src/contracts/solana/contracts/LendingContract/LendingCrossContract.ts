@@ -15,6 +15,7 @@ import {
   ComputeBudgetProgram,
   PublicKey,
   Transaction,
+  TransactionInstruction,
   TransactionMessage,
   VersionedTransaction,
 } from '@solana/web3.js';
@@ -383,7 +384,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
             .multipliedBy(utilBN(10).pow(utilBN(usdaiInfo.decimals)))
             .toString()
         );
-    let instruction: Transaction;
+    let instruction: TransactionInstruction;
 
     try {
       instruction = await this.program.methods
@@ -402,7 +403,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
           stablecoinReserveAta,
           usdaiReserveAta,
         })
-        .transaction();
+        .instruction();
     } catch (error) {
       console.error('❌ Error get ins swap token:', error);
       throw error;
@@ -412,8 +413,10 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async swapToken(tokenAddress: string, amount: number, isReverse: boolean) {
+    const trans = new Transaction();
     const instruction = await this.getSwapTokenInstruction(tokenAddress, amount, isReverse);
-    const transactionHash = await this.sendTransaction(instruction);
+    trans.add(instruction);
+    const transactionHash = await this.sendTransaction(trans);
 
     return transactionHash;
   }

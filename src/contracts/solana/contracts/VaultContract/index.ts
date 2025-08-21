@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BN } from '@coral-xyz/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { PublicKey, Transaction } from '@solana/web3.js';
+import { PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js';
 import { NETWORK } from 'src/constants';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { usdaiSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
@@ -24,10 +24,12 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     return '';
   }
 
-  async deposit(amount: number | string, instruction: Transaction): Promise<string> {
+  async deposit(amount: number | string, instruction: TransactionInstruction | null): Promise<string> {
     if (!this.wallet) throw new Error('Wallet not connected!');
     const result = new Transaction();
-    result.add(instruction);
+    if (instruction) {
+      result.add(instruction);
+    }
 
     const transactionAmount = utilBN(amount)
       .multipliedBy(utilBN(10).pow(utilBN(usdaiInfo.decimals)))
@@ -46,7 +48,7 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     return hash;
   }
 
-  async withdraw(amount: number, instruction: Transaction): Promise<string> {
+  async withdraw(amount: number, instruction: TransactionInstruction | null): Promise<string> {
     const result = new Transaction();
 
     const trans = await this.program.methods
@@ -57,7 +59,9 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
       })
       .transaction();
     result.add(trans);
-    result.add(instruction);
+    if (instruction) {
+      result.add(instruction);
+    }
 
     const hash = await this.sendTransaction(result);
     return hash;

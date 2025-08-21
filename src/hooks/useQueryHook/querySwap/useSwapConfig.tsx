@@ -1,5 +1,4 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Transaction } from '@solana/web3.js';
 import { useQuery } from '@tanstack/react-query';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useLendingContract from 'src/hooks/useContract/useLendingContract';
@@ -23,11 +22,18 @@ const useSwapConfig = () => {
   });
 
   const handleGetSwapInstruction = async (inputValue: string, selectedToken: string, isReverse: boolean) => {
-    if (!wallet || !inputValue || !query.data) return { instruction: new Transaction(), amount: Number(inputValue) };
+    if (!wallet || !inputValue || !query.data)
+      return {
+        instruction: null,
+        amount: Number(inputValue),
+      };
     const selectedTokenInfo = findTokenInfoByToken(selectedToken);
 
     if (selectedTokenInfo?.symbol === TokenName.USDAI) {
-      return { instruction: new Transaction(), amount: Number(inputValue) };
+      return {
+        instruction: null,
+        amount: Number(inputValue),
+      };
     }
 
     const contract = initLendingContract(wallet);

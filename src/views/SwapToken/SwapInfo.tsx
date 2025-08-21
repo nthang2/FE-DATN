@@ -8,6 +8,7 @@ import { LendingContract } from 'src/contracts/solana/contracts/LendingContract/
 import useGetTransFee from 'src/hooks/useContract/useGetTransFee';
 import { decimalFlood } from 'src/utils/format';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Transaction } from '@solana/web3.js';
 
 interface Props {
   selectedToken: string;
@@ -46,7 +47,7 @@ const SwapInfo = (props: Props) => {
     const contract = new LendingContract(wallet);
     //simulate swap 1 token to get network fee
     const instruction = await contract.getSwapTokenInstruction(selectedToken, Number(amount), false);
-    const fee = await getTransFee(instruction);
+    const fee = await getTransFee(new Transaction().add(instruction));
     setNetworkFee(fee);
   }, [wallet, getTransFee, networkFee, amount, selectedToken]);
 
