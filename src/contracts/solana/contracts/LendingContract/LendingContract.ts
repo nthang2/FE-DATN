@@ -414,18 +414,18 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async swapToken(tokenAddress: string, amount: number, isReverse: boolean) {
-    // const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
+    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
     const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
-    // const isHasUserUsdaiAccount = await this.checkUserCollateral1(new PublicKey(usdaiInfo.address));
+    const isHasUserUsdaiAccount = await this.checkUserCollateral1(new PublicKey(usdaiInfo.address));
     const resultTransaction = new Transaction();
 
     if (isHasUserCollateral1 !== null) {
       resultTransaction.add(isHasUserCollateral1);
     }
 
-    // if (isHasUserUsdaiAccount !== null) {
-    //   resultTransaction.add(isHasUserUsdaiAccount);
-    // }
+    if (isHasUserUsdaiAccount !== null) {
+      resultTransaction.add(isHasUserUsdaiAccount);
+    }
 
     const instruction = await this.getSwapTokenInstruction(tokenAddress, amount, isReverse);
     resultTransaction.add(instruction);
