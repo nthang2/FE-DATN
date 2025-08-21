@@ -15,6 +15,7 @@ import {
   ComputeBudgetProgram,
   PublicKey,
   Transaction,
+  TransactionInstruction,
   TransactionMessage,
   VersionedTransaction,
 } from '@solana/web3.js';
@@ -366,7 +367,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const accountsPartial = this.getAccountsPartial(tokenAddress);
     const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
     const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
-    let instruction: Transaction;
+    let instruction: TransactionInstruction;
 
     if (!selectedTokenInfo) {
       throw new Error('Token not found');
@@ -392,7 +393,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
           reserve: accountsPartial.reserve,
           stablecoin: new PublicKey(tokenAddress),
         })
-        .transaction();
+        .instruction();
     } catch (error) {
       console.error('❌ Error get ins swap token:', error);
       throw error;
