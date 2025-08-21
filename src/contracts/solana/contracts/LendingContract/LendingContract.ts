@@ -44,6 +44,7 @@ import {
   RESERVE_ACCOUNT,
   SWAP_CONFIG_SEED,
 } from './constant';
+import { usdaiAddress } from '../VaultContract';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -96,15 +97,19 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   getAccountsPartial(tokenAddress: string) {
     const redeemable_mint = this.getPda(REDEEMABLE_MINT_SEED);
     const collateral = new PublicKey(tokenAddress);
+    const usdai = new PublicKey(usdaiAddress);
     const userCollateralATA = getAssociatedTokenAddressSync(collateral, this.provider.publicKey);
     const userRedeemATA = getAssociatedTokenAddressSync(redeemable_mint, this.provider.publicKey);
     const { pdAddress } = this.getUserLoanByToken(this.provider.publicKey, collateral);
     const controller = this.getPda(CONTROLLER_SEED);
     const depository = this.getPda(DEPOSITORY_SEED, collateral);
     const depositoryVault = getAssociatedTokenAddressSync(collateral, depository, true);
-    const reserveTokenAccount = getAssociatedTokenAddressSync(redeemable_mint, RESERVE_ACCOUNT, true);
     const redeemConfig = this.getPda(REDEEM_CONFIG);
     const swapConfig = this.getPda(SWAP_CONFIG_SEED);
+    const usdaiUserAta = getAssociatedTokenAddressSync(usdai, this.provider.publicKey, true);
+    const reserveTokenAccount = getAssociatedTokenAddressSync(redeemable_mint, RESERVE_ACCOUNT, true);
+    const stablecoinReserveAta = getAssociatedTokenAddressSync(collateral, RESERVE_ACCOUNT, true);
+    const usdaiReserveAta = getAssociatedTokenAddressSync(usdai, RESERVE_ACCOUNT, true);
 
     return {
       user: this.provider.publicKey,
@@ -121,6 +126,9 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       reserveTokenAccount: reserveTokenAccount,
       redeemConfig: redeemConfig,
       swapConfig: swapConfig,
+      usdaiUserAta: usdaiUserAta,
+      stablecoinReserveAta: stablecoinReserveAta,
+      usdaiReserveAta: usdaiReserveAta,
     };
   }
 
@@ -388,10 +396,13 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     try {
       instruction = await this.program.methods
         .swapUsdaiType0(amountRaw, isReverse)
-        .accounts({
-          user: accountsPartial.user,
-          reserve: accountsPartial.reserve,
-          stablecoin: new PublicKey(tokenAddress),
+        .accountsPartial({
+          ...accountsPartial,
+          stablecoinDepository: accountsPartial.depository,
+          stablecoinDepositoryVault: accountsPartial.depositoryVault,
+          stablecoinUserAta: accountsPartial.userCollateral,
+          usdai: new PublicKey(usdaiAddress),
+          stablecoin: accountsPartial.collateral,
         })
         .instruction();
     } catch (error) {
@@ -403,18 +414,18 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async swapToken(tokenAddress: string, amount: number, isReverse: boolean) {
-    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
+    // const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
     const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
-    const isHasUserUsdaiAccount = await this.checkUserCollateral1(new PublicKey(usdaiInfo.address));
+    // const isHasUserUsdaiAccount = await this.checkUserCollateral1(new PublicKey(usdaiInfo.address));
     const resultTransaction = new Transaction();
 
     if (isHasUserCollateral1 !== null) {
       resultTransaction.add(isHasUserCollateral1);
     }
 
-    if (isHasUserUsdaiAccount !== null) {
-      resultTransaction.add(isHasUserUsdaiAccount);
-    }
+    // if (isHasUserUsdaiAccount !== null) {
+    //   resultTransaction.add(isHasUserUsdaiAccount);
+    // }
 
     const instruction = await this.getSwapTokenInstruction(tokenAddress, amount, isReverse);
     resultTransaction.add(instruction);
