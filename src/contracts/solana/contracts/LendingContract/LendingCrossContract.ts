@@ -361,7 +361,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     }
   }
 
-  async getSwapTokenInstruction(tokenAddress: string, amount: number, isReverse: boolean) {
+  async getSwapTokenInstruction(tokenAddress: string, amount: number | string, isReverse: boolean) {
     const accountsPartial = this.getAccountsPartial(tokenAddress);
     const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
     const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
@@ -373,8 +373,16 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     }
 
     const amountRaw = isReverse
-      ? new BN(amount * Number(`1e${selectedTokenInfo.decimals}`))
-      : new BN(amount * Number(`1e${usdaiInfo.decimals}`));
+      ? new BN(
+          utilBN(amount)
+            .multipliedBy(utilBN(10).pow(utilBN(selectedTokenInfo.decimals)))
+            .toString()
+        )
+      : new BN(
+          utilBN(amount)
+            .multipliedBy(utilBN(10).pow(utilBN(usdaiInfo.decimals)))
+            .toString()
+        );
     let instruction: Transaction;
 
     try {

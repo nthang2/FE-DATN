@@ -1,28 +1,26 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { TokenName } from 'src/libs/crypto-icons';
 import { useEffect, useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
+import { findTokenNameSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import useSwapConfig from 'src/hooks/useQueryHook/querySwap/useSwapConfig';
 import { queryClient } from 'src/layout/Layout';
+import { TokenName } from 'src/libs/crypto-icons';
 import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
-import CustomSlider from '../CustomSlider/Slider';
-import useSwapConfig from 'src/hooks/useQueryHook/querySwap/useSwapConfig';
+import { decimalFlood } from 'src/utils/format';
 import CustomSelectToken from 'src/views/MyPortfolio/components/InputCustom/CustomSelectToken';
 import { listTokenAvailableVault } from '../../constant';
-import { findTokenInfoByToken, findTokenNameSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import useLendingContract from 'src/hooks/useContract/useLendingContract';
-import { Transaction } from '@solana/web3.js';
+import CustomSlider from '../CustomSlider/Slider';
 
 const DepositSection = () => {
   const wallet = useWallet();
   const { address } = useSummarySolanaConnect();
   const { asyncExecute, loading } = useAsyncExecute();
-  const { initLendingContract } = useLendingContract();
-  const { data: swapConfig } = useSwapConfig();
+  const { handleGetSwapInstruction } = useSwapConfig();
 
   const [inputValue, setInputValue] = useState<string>();
   const [sliderValue, setSliderValue] = useState(0);
@@ -43,38 +41,18 @@ const DepositSection = () => {
 
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
     const amount = (Number(value) / 100) * balance.toNumber();
-    setInputValue(amount.toString());
-  };
-
-  const handleGetSwapInstruction = async () => {
-    if (!wallet || !inputValue || !swapConfig) return { instruction: new Transaction(), amount: Number(inputValue) };
-    const selectedTokenInfo = findTokenInfoByToken(selectedToken);
-
-    if (selectedTokenInfo?.symbol === TokenName.USDAI) {
-      return { instruction: new Transaction(), amount: Number(inputValue) };
-    }
-
-    const contract = initLendingContract(wallet);
-    const stablecoin = swapConfig.stablecoins.find((stablecoin) => {
-      return stablecoin.address.toString() === selectedTokenInfo?.address;
-    });
-
-    const feeValue = (stablecoin?.fee0 / 100) * (Number(inputValue) / 100);
-    const amount = Number(inputValue) - feeValue < 0 ? 0 : Number(inputValue) - feeValue;
-    const instruction = await contract.getSwapTokenInstruction(selectedToken, Number(inputValue), true);
-
-    return { instruction, amount };
+    setInputValue(decimalFlood(amount, 6));
   };
 
   const handleDeposit = async () => {
     if (!wallet || !inputValue) return;
 
     const vaultContract = new VaultContract(wallet);
-    const { instruction, amount } = await handleGetSwapInstruction();
+    const { instruction, amount } = await handleGetSwapInstruction(inputValue, selectedToken, true);
 
     await asyncExecute({
       fn: async () => {
-        const hash = await vaultContract.deposit(amount, instruction);
+        const hash = await vaultContract.deposit(amount.toString(), instruction);
         await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
 
         return hash;

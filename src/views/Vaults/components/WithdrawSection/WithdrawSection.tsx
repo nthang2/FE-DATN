@@ -1,16 +1,20 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
-import { TokenName } from 'src/libs/crypto-icons';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
+import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import { VaultContract } from 'src/contracts/solana/contracts/VaultContract';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import useSwapConfig from 'src/hooks/useQueryHook/querySwap/useSwapConfig';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
 import { queryClient } from 'src/layout/Layout';
+import { TokenName } from 'src/libs/crypto-icons';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import { decimalFlood } from 'src/utils/format';
 import CustomSlider from '../CustomSlider/Slider';
-import CustomTextField from 'src/components/CustomForms/CustomTextField';
+import { listTokenAvailableVault } from '../../constant';
+import CustomSelectToken from 'src/views/MyPortfolio/components/InputCustom/CustomSelectToken';
 
 const TokenUSDAIAmount = ({ children }: { children: ReactNode }) => (
   <Typography variant="body2" display="flex" alignItems="center" gap={1}>
@@ -22,9 +26,11 @@ const WithdrawSection = () => {
   const wallet = useWallet();
   const { stakeInfo } = useStakedInfo();
   const { asyncExecute, loading } = useAsyncExecute();
+  const { handleGetSwapInstruction } = useSwapConfig();
 
   const [inputValue, setInputValue] = useState<string>();
   const [sliderValue, setSliderValue] = useState(0);
+  const [selectedToken, setSelectedToken] = useState<string>(listTokenAvailableVault[TokenName.USDAI].address);
 
   const isConnectedWallet = Boolean(wallet.publicKey);
   const removeAmount = useMemo(() => {
@@ -39,9 +45,15 @@ const WithdrawSection = () => {
     return Number(removeAmount) > 0;
   }, [removeAmount]);
 
+  const handleChangeSelectToken = (value: string) => {
+    setSliderValue(0);
+    setSelectedToken(value);
+    setInputValue('0');
+  };
+
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
     const amount = (Number(value) / 100) * Number(stakeInfo?.amount || 0);
-    setInputValue(amount.toString());
+    setInputValue(decimalFlood(amount, 6));
   };
 
   const handleWithdraw = async () => {
@@ -49,7 +61,8 @@ const WithdrawSection = () => {
     await asyncExecute({
       fn: async () => {
         const vaultContract = new VaultContract(wallet);
-        const hash = await vaultContract.withdraw((sliderValue / 100) * Number(stakeInfo?.amount));
+        const { instruction } = await handleGetSwapInstruction(inputValue || '0', selectedToken, false);
+        const hash = await vaultContract.withdraw((sliderValue / 100) * Number(stakeInfo?.amount), instruction);
         await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
         setSliderValue(0);
         setInputValue(undefined);
@@ -88,12 +101,15 @@ const WithdrawSection = () => {
           InputProps={{
             disableUnderline: true,
             endAdornment: (
-              <Stack alignItems="center" gap={0.5}>
-                <IconToken tokenName={TokenName.USDAI} />
-                <Typography variant="body1" sx={{ color: 'primary.main', pr: 2 }}>
-                  USDAI
-                </Typography>
-              </Stack>
+              <CustomSelectToken
+                options={Object.values(listTokenAvailableVault).map((token) => token.address)}
+                value={selectedToken}
+                onChange={(e) => handleChangeSelectToken(e.target.value as string)}
+                sx={{
+                  py: 3,
+                  borderRadius: '10px',
+                }}
+              />
             ),
             sx: { padding: 2, fontSize: '24px', height: 'unset' },
           }}
