@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AnchorProvider, Idl, Program } from '@coral-xyz/anchor';
 import {
+  createAssociatedTokenAccountInstruction,
   createCloseAccountInstruction,
   createSyncNativeInstruction,
+  getAccount,
   getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
   NATIVE_MINT,
@@ -97,6 +99,33 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
     const [pda] = PublicKey.findProgramAddressSync([Buffer.from(seed), ...addressParam], this.program.programId);
 
     return pda;
+  }
+
+  async checkUserCollateral(tokenAddress: PublicKey) {
+    try {
+      const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
+      await getAccount(this.provider.connection, userCollateral1);
+
+      return null;
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.name.includes('TokenAccountNotFoundError')) {
+          const newAssociatedTokenAddress = await getAssociatedTokenAddress(new PublicKey(tokenAddress), this.provider.publicKey);
+          const result = createAssociatedTokenAccountInstruction(
+            this.provider.publicKey,
+            newAssociatedTokenAddress,
+            this.provider.publicKey,
+            new PublicKey(tokenAddress)
+          );
+
+          return result;
+        }
+
+        throw new Error(error.message);
+      }
+
+      throw new Error('');
+    }
   }
 
   async awaitConfirmTransaction(signature: string) {

@@ -25,9 +25,20 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     return '';
   }
 
-  async deposit(amount: number | string, instruction: TransactionInstruction | null): Promise<string> {
+  async deposit(amount: number | string, tokenAddress: string, instruction: TransactionInstruction | null): Promise<string> {
     if (!this.wallet) throw new Error('Wallet not connected!');
     const listInstruction = instruction ? [instruction] : [];
+    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
+    const isHasUserUsdaiAccount = await this.checkUserCollateral(new PublicKey(usdaiInfo.address));
+
+    if (isHasUserCollateral1 !== null) {
+      listInstruction.push(isHasUserCollateral1);
+    }
+
+    if (isHasUserUsdaiAccount !== null) {
+      listInstruction.push(isHasUserUsdaiAccount);
+    }
+
     const transactionAmount = utilBN(amount)
       .multipliedBy(utilBN(10).pow(utilBN(usdaiInfo.decimals)))
       .toNumber();
@@ -52,8 +63,19 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     return hash;
   }
 
-  async withdraw(amount: number, instruction: TransactionInstruction | null): Promise<string> {
+  async withdraw(amount: number, tokenAddress: string, instruction: TransactionInstruction | null): Promise<string> {
     const listInstruction = instruction ? [instruction] : [];
+    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
+    const isHasUserUsdaiAccount = await this.checkUserCollateral(new PublicKey(usdaiInfo.address));
+    const checkUserCollateralInstruction = [];
+
+    if (isHasUserCollateral1 !== null) {
+      checkUserCollateralInstruction.push(isHasUserCollateral1);
+    }
+
+    if (isHasUserUsdaiAccount !== null) {
+      checkUserCollateralInstruction.push(isHasUserUsdaiAccount);
+    }
 
     const trans = await this.program.methods
       .unstake(new BN(amount * getDecimalToken(usdaiAddress)))
@@ -66,7 +88,7 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     const messageV0 = new TransactionMessage({
       payerKey: this.provider.publicKey,
       recentBlockhash: (await this.provider.connection.getLatestBlockhash()).blockhash,
-      instructions: [...listInstruction, trans],
+      instructions: [...checkUserCollateralInstruction, trans, ...listInstruction],
     }).compileToV0Message();
 
     const transaction = new VersionedTransaction(messageV0);

@@ -52,7 +52,7 @@ const DepositSection = () => {
 
     await asyncExecute({
       fn: async () => {
-        const hash = await vaultContract.deposit(amount.toString(), instruction);
+        const hash = await vaultContract.deposit(amount.toString(), selectedToken, instruction);
         await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
 
         return hash;

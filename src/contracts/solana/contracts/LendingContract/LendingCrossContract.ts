@@ -4,7 +4,6 @@ import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
   getAccount,
-  getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
   getMint,
   TOKEN_PROGRAM_ID,
@@ -48,33 +47,6 @@ import {
 export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
     super(wallet, ctrAdsSolana.lending, idlLending);
-  }
-
-  async checkUserCollateral1(tokenAddress: PublicKey) {
-    try {
-      const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
-      await getAccount(this.provider.connection, userCollateral1);
-
-      return null;
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.name.includes('TokenAccountNotFoundError')) {
-          const newAssociatedTokenAddress = await getAssociatedTokenAddress(new PublicKey(tokenAddress), this.provider.publicKey);
-          const temp = createAssociatedTokenAccountInstruction(
-            this.provider.publicKey,
-            newAssociatedTokenAddress,
-            this.provider.publicKey,
-            new PublicKey(tokenAddress)
-          );
-
-          return temp;
-        }
-
-        throw new Error(error.message);
-      }
-
-      throw new Error('');
-    }
   }
 
   getAccountsPartial(tokenAddress: string) {
@@ -237,7 +209,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const decimal = getDecimalToken(tokenAddress);
     const collateralAmount = new BN(depositAmount * decimal);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
-    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
     const resultTransaction = new Transaction();
 
     if (isHasUserCollateral1 !== null) {
@@ -321,7 +293,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const addressLookupTableAccounts: AddressLookupTableAccount[] = [];
     addressLookupTableAccounts.push(...(await getAddressLookupTableAccounts(resultSwapInstructions.addressLookupTableAddresses)));
     const instruction = [ComputeBudgetProgram.setComputeUnitLimit({ units: 1400000 }), addPriorityFee(priorityFee), redeemCollIns];
-    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(selectedToken));
+    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(selectedToken));
     if (isHasUserCollateral1 !== null) {
       instruction.unshift(isHasUserCollateral1);
     }

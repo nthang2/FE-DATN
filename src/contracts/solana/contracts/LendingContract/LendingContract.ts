@@ -4,7 +4,6 @@ import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
   getAccount,
-  getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
   getMint,
   TOKEN_PROGRAM_ID,
@@ -33,6 +32,7 @@ import { BN as utilBN } from 'src/utils/index';
 import { addPriorityFee, getAddressLookupTableAccounts } from 'src/views/MyPortfolio/utils';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
+import { usdaiAddress } from '../VaultContract';
 import {
   CONTROLLER_SEED,
   collateral as defaultCollateral,
@@ -44,7 +44,6 @@ import {
   RESERVE_ACCOUNT,
   SWAP_CONFIG_SEED,
 } from './constant';
-import { usdaiAddress } from '../VaultContract';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -65,33 +64,6 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     }
 
     return transaction;
-  }
-
-  async checkUserCollateral1(tokenAddress: PublicKey) {
-    try {
-      const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
-      await getAccount(this.provider.connection, userCollateral1);
-
-      return null;
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.name.includes('TokenAccountNotFoundError')) {
-          const newAssociatedTokenAddress = await getAssociatedTokenAddress(new PublicKey(tokenAddress), this.provider.publicKey);
-          const temp = createAssociatedTokenAccountInstruction(
-            this.provider.publicKey,
-            newAssociatedTokenAddress,
-            this.provider.publicKey,
-            new PublicKey(tokenAddress)
-          );
-
-          return temp;
-        }
-
-        throw new Error(error.message);
-      }
-
-      throw new Error('');
-    }
   }
 
   getAccountsPartial(tokenAddress: string) {
@@ -203,7 +175,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const maxAmount = utilBN(2).pow(64).minus(1);
     const usdaiAmount = isMax ? new BN(maxAmount.toString()) : new BN(borrowAmount * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
-    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
     const resultTransaction = new Transaction();
 
     if (isHasUserCollateral1 !== null) {
@@ -229,7 +201,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const maxAmount = utilBN(2).pow(64).minus(1);
     const usdaiAmount = isMax ? new BN(maxAmount.toString()) : new BN(debtAmount * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
-    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
     const resultTransaction = new Transaction();
 
     if (isHasUserCollateral1 !== null) {
@@ -253,7 +225,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const collateralAmount = new BN(depositAmount * decimal);
     const usdaiAmount = new BN(0 * 1e6);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
-    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
     const resultTransaction = new Transaction();
 
     if (isHasUserCollateral1 !== null) {
@@ -333,7 +305,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
 
     const instruction = [ComputeBudgetProgram.setComputeUnitLimit({ units: 1400000 }), addPriorityFee(priorityFee), redeemCollInsType0];
     const blockhash = (await this.provider.connection.getLatestBlockhash('finalized')).blockhash;
-    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(selectedToken));
+    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(selectedToken));
 
     if (isHasUserCollateral1 !== null) {
       instruction.unshift(isHasUserCollateral1);
@@ -415,8 +387,8 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
 
   async swapToken(tokenAddress: string, amount: number, isReverse: boolean) {
     const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
-    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
-    const isHasUserUsdaiAccount = await this.checkUserCollateral1(new PublicKey(usdaiInfo.address));
+    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
+    const isHasUserUsdaiAccount = await this.checkUserCollateral(new PublicKey(usdaiInfo.address));
     const resultTransaction = new Transaction();
 
     if (isHasUserCollateral1 !== null) {

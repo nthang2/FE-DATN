@@ -62,7 +62,7 @@ const WithdrawSection = () => {
       fn: async () => {
         const vaultContract = new VaultContract(wallet);
         const { instruction } = await handleGetSwapInstruction(inputValue || '0', selectedToken, false);
-        const hash = await vaultContract.withdraw((sliderValue / 100) * Number(stakeInfo?.amount), instruction);
+        const hash = await vaultContract.withdraw((sliderValue / 100) * Number(stakeInfo?.amount), selectedToken, instruction);
         await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
         setSliderValue(0);
         setInputValue(undefined);
