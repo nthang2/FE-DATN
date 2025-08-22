@@ -32,11 +32,11 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     const isHasUserUsdaiAccount = await this.checkUserCollateral(new PublicKey(usdaiInfo.address));
 
     if (isHasUserCollateral1 !== null) {
-      listInstruction.push(isHasUserCollateral1);
+      listInstruction.unshift(isHasUserCollateral1);
     }
 
     if (isHasUserUsdaiAccount !== null) {
-      listInstruction.push(isHasUserUsdaiAccount);
+      listInstruction.unshift(isHasUserUsdaiAccount);
     }
 
     const transactionAmount = utilBN(amount)
