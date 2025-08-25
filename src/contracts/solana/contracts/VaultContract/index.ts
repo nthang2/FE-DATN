@@ -6,16 +6,13 @@ import { NETWORK } from 'src/constants';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { usdaiSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
 import { usdaiSolanaMainnet } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
-import { getJupiterQuote, jupiterSwapInstructions } from 'src/services/HandleApi/getJupiterInfo/getJupiterInfo';
 import { getDecimalToken, BN as utilBN } from 'src/utils';
-import { getAddressLookupTableAccounts } from 'src/utils/contract';
 import { IdlVault, idlVault } from '../../idl/vault/vault';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { STAKER_INFO_SEED, VAULT_CONFIG_SEED, VAULT_SEED } from './constant';
 
 const usdaiInfo = NETWORK === 'devnet' ? usdaiSolanaDevnet : usdaiSolanaMainnet;
 export const usdaiAddress = usdaiInfo.address;
-const defaultSlippageBps = 50;
 export class VaultContract extends SolanaContractAbstract<IdlVault> {
   constructor(wallet: WalletContextState) {
     super(wallet as any, ctrAdsSolana.vault, idlVault);
@@ -25,7 +22,12 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     return '';
   }
 
-  async deposit(amount: number | string, tokenAddress: string, instruction: TransactionInstruction | null): Promise<string> {
+  async deposit(
+    amount: number | string,
+    tokenAddress: string,
+    instruction: TransactionInstruction | null,
+    addressLookupTable: AddressLookupTableAccount[] = []
+  ): Promise<string> {
     if (!this.wallet) throw new Error('Wallet not connected!');
     const listInstruction = instruction ? [instruction] : [];
     const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
@@ -55,7 +57,7 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
       payerKey: this.provider.publicKey,
       recentBlockhash: (await this.provider.connection.getLatestBlockhash()).blockhash,
       instructions: [...listInstruction, trans],
-    }).compileToV0Message();
+    }).compileToV0Message(addressLookupTable);
 
     const transaction = new VersionedTransaction(messageV0);
     const hash = await this.sendTransaction(transaction);
@@ -63,7 +65,12 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     return hash;
   }
 
-  async withdraw(amount: number, tokenAddress: string, instruction: TransactionInstruction | null): Promise<string> {
+  async withdraw(
+    amount: number,
+    tokenAddress: string,
+    instruction: TransactionInstruction | null,
+    addressLookupTable: AddressLookupTableAccount[] = []
+  ): Promise<string> {
     const listInstruction = instruction ? [instruction] : [];
     const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
     const isHasUserUsdaiAccount = await this.checkUserCollateral(new PublicKey(usdaiInfo.address));
@@ -89,7 +96,7 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
       payerKey: this.provider.publicKey,
       recentBlockhash: (await this.provider.connection.getLatestBlockhash()).blockhash,
       instructions: [...checkUserCollateralInstruction, trans, ...listInstruction],
-    }).compileToV0Message();
+    }).compileToV0Message(addressLookupTable);
 
     const transaction = new VersionedTransaction(messageV0);
     const hash = await this.sendTransaction(transaction);
@@ -156,60 +163,5 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     const apr = (rps / totalStaked) * new BN(86400 * 365 * 100);
 
     return { apr, tvl: Number(totalStaked) / getDecimalToken(usdaiAddress) };
-  }
-
-  async getSwapJupiterInstruction(inputMint: string, outputMint: string, amount: string, slippageBps: number = defaultSlippageBps) {
-    const jupiterQuote = await getJupiterQuote({
-      inputMint,
-      outputMint,
-      amount,
-      slippageBps,
-    });
-
-    const swapBody = {
-      quoteResponse: jupiterQuote,
-      userPublicKey: this.provider.publicKey.toString(),
-      wrapAndUnwrapSol: true,
-      includeLookupTableAddresses: true,
-    };
-
-    const instructions = await jupiterSwapInstructions(swapBody);
-
-    const { setupInstructions, swapInstruction: swapInstructionPayload, cleanupInstruction, addressLookupTableAddresses } = instructions;
-
-    const deserializeInstruction = (instruction: any) => {
-      return new TransactionInstruction({
-        programId: new PublicKey(instruction.programId),
-        keys: instruction.accounts.map((key: any) => ({
-          pubkey: new PublicKey(key.pubkey),
-          isSigner: key.isSigner,
-          isWritable: key.isWritable,
-        })),
-        data: Buffer.from(instruction.data, 'base64'),
-      });
-    };
-
-    const swapInstructions: TransactionInstruction[] = [];
-    if (Array.isArray(setupInstructions) && setupInstructions.length > 0) {
-      setupInstructions.forEach((ix: any) => {
-        swapInstructions.push(deserializeInstruction(ix));
-      });
-    }
-    if (swapInstructionPayload) {
-      swapInstructions.push(deserializeInstruction(swapInstructionPayload));
-    }
-
-    if (cleanupInstruction) {
-      swapInstructions.push(deserializeInstruction(cleanupInstruction));
-    }
-
-    const addressLookupTableAccounts: AddressLookupTableAccount[] = [];
-
-    addressLookupTableAccounts.push(...(await getAddressLookupTableAccounts(addressLookupTableAddresses, this.provider.connection)));
-
-    return {
-      swapInstructions,
-      addressLookupTableAccounts,
-    };
   }
 }

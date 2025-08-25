@@ -28,6 +28,7 @@ const useSwapConfig = () => {
       return {
         instruction: null,
         amount: Number(inputValue),
+        addressLookupTable: [],
       };
     const selectedTokenInfo = findTokenInfoByToken(selectedToken);
 
@@ -35,6 +36,7 @@ const useSwapConfig = () => {
       return {
         instruction: null,
         amount: Number(inputValue),
+        addressLookupTable: [],
       };
     }
 
@@ -45,9 +47,8 @@ const useSwapConfig = () => {
 
     const feeValue = BN(stablecoin?.fee0 / 100).multipliedBy(Number(inputValue) / 100);
     const amount = BN(inputValue).minus(feeValue).toNumber() < 0 ? 0 : BN(inputValue).minus(feeValue);
-    const instruction = await contract.getSwapTokenInstruction(selectedToken, inputValue.toString(), isReverse);
-
-    return { instruction, amount };
+    const { instruction, addressLookupTable } = await contract.getSwapTokenInstruction(selectedToken, inputValue.toString(), isReverse);
+    return { instruction, amount, addressLookupTable };
   };
 
   return { ...query, handleGetSwapInstruction };

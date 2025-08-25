@@ -25,6 +25,7 @@ import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devne
 import { solTokenSolana } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { queryClient } from 'src/layout/Layout';
 import { TokenName } from 'src/libs/crypto-icons';
+import { getJupiterQuote, jupiterSwapInstructions } from 'src/services/HandleApi/getJupiterInfo/getJupiterInfo';
 import { publicClientSol } from 'src/states/hooks';
 import { appStore, crossModeAtom } from 'src/states/state';
 import { getDecimalToken } from 'src/utils';
@@ -36,8 +37,10 @@ import { usdaiAddress } from '../VaultContract';
 import {
   CONTROLLER_SEED,
   collateral as defaultCollateral,
+  defaultSlippageBps,
   DEPOSITORY_SEED,
   jupiterProgram,
+  listTokenSwapWithJup,
   LOAN_TYPE0_SEED,
   REDEEM_CONFIG,
   REDEEMABLE_MINT_SEED,
@@ -343,11 +346,54 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     }
   }
 
+  async swapToken(tokenAddress: string, amount: number, isReverse: boolean) {
+    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
+    const listInstruction = [];
+    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
+    const isHasUserUsdaiAccount = await this.checkUserCollateral(new PublicKey(usdaiInfo.address));
+
+    if (isHasUserCollateral1 !== null) {
+      listInstruction.push(isHasUserCollateral1);
+    }
+
+    if (isHasUserUsdaiAccount !== null) {
+      listInstruction.push(isHasUserUsdaiAccount);
+    }
+
+    const { instruction, addressLookupTable } = await this.getSwapTokenInstruction(tokenAddress, amount, isReverse);
+    const messageV0 = new TransactionMessage({
+      payerKey: this.provider.publicKey,
+      recentBlockhash: (await this.provider.connection.getLatestBlockhash()).blockhash,
+      instructions: [...listInstruction, instruction],
+    }).compileToV0Message(addressLookupTable);
+    const transaction = new VersionedTransaction(messageV0);
+
+    const transactionHash = await this.sendTransaction(transaction);
+
+    return transactionHash;
+  }
+
+  async getSwapConfig() {
+    const swapConfig = this.getPda(SWAP_CONFIG_SEED);
+    const swapConfigData = await this.program.account.swapUsdaiConfig.fetch(swapConfig);
+
+    return swapConfigData;
+  }
+
+  async getTotalSupply() {
+    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
+    const mintInfo = await getMint(this.provider.connection, new PublicKey(usdaiInfo.address));
+    const totalSupply = utilBN(mintInfo.supply).div(utilBN(10).pow(utilBN(usdaiInfo.decimals)));
+
+    return totalSupply.toNumber();
+  }
+
   async getSwapTokenInstruction(tokenAddress: string, amount: number | string, isReverse: boolean) {
     const accountsPartial = this.getAccountsPartial(tokenAddress);
     const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
     const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
     let instruction: TransactionInstruction;
+    const addressLookupTable: AddressLookupTableAccount[] = [];
 
     if (!selectedTokenInfo) {
       throw new Error('Token not found');
@@ -366,58 +412,92 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
         );
 
     try {
-      instruction = await this.program.methods
-        .swapUsdaiType0(amountRaw, isReverse)
-        .accountsPartial({
-          ...accountsPartial,
-          stablecoinDepository: accountsPartial.depository,
-          stablecoinDepositoryVault: accountsPartial.depositoryVault,
-          stablecoinUserAta: accountsPartial.userCollateral,
-          usdai: new PublicKey(usdaiAddress),
-          stablecoin: accountsPartial.collateral,
-        })
-        .instruction();
+      if (listTokenSwapWithJup.includes(selectedTokenInfo.address)) {
+        const amountWithDecimal = utilBN(amount).multipliedBy(utilBN(10).pow(utilBN(selectedTokenInfo.decimals)));
+        const { swapInstructions, addressLookupTableAccounts } = await this.getSwapJupiterInstruction(
+          usdaiInfo.address,
+          selectedTokenInfo.address,
+          isReverse,
+          amountWithDecimal.toString(),
+          defaultSlippageBps
+        );
+        addressLookupTable.push(...addressLookupTableAccounts);
+        instruction = swapInstructions[0];
+      } else {
+        instruction = await this.program.methods
+          .swapUsdaiType0(amountRaw, isReverse)
+          .accountsPartial({
+            ...accountsPartial,
+            stablecoinDepository: accountsPartial.depository,
+            stablecoinDepositoryVault: accountsPartial.depositoryVault,
+            stablecoinUserAta: accountsPartial.userCollateral,
+            usdai: new PublicKey(usdaiAddress),
+            stablecoin: accountsPartial.collateral,
+          })
+          .instruction();
+      }
     } catch (error) {
       console.error('❌ Error get ins swap token:', error);
       throw error;
     }
 
-    return instruction;
+    return { instruction, addressLookupTable };
   }
 
-  async swapToken(tokenAddress: string, amount: number, isReverse: boolean) {
-    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
-    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
-    const isHasUserUsdaiAccount = await this.checkUserCollateral(new PublicKey(usdaiInfo.address));
-    const resultTransaction = new Transaction();
+  async getSwapJupiterInstruction(
+    usdaiAddress: string,
+    selectedTokenAddress: string,
+    isReverse: boolean,
+    amount: string,
+    slippageBps: number = defaultSlippageBps
+  ) {
+    const jupiterQuote = await getJupiterQuote({
+      inputMint: isReverse ? selectedTokenAddress : usdaiAddress,
+      outputMint: isReverse ? usdaiAddress : selectedTokenAddress,
+      amount,
+      slippageBps,
+    });
+    const swapBody = {
+      quoteResponse: jupiterQuote,
+      userPublicKey: this.provider.publicKey.toString(),
+      wrapAndUnwrapSol: true,
+      includeLookupTableAddresses: true,
+    };
+    const instructions = await jupiterSwapInstructions(swapBody);
+    const swapInstructions: TransactionInstruction[] = [];
+    const { setupInstructions, swapInstruction: swapInstructionPayload, cleanupInstruction, addressLookupTableAddresses } = instructions;
 
-    if (isHasUserCollateral1 !== null) {
-      resultTransaction.add(isHasUserCollateral1);
+    const deserializeInstruction = (instruction: any) => {
+      return new TransactionInstruction({
+        programId: new PublicKey(instruction.programId),
+        keys: instruction.accounts.map((key: any) => ({
+          pubkey: new PublicKey(key.pubkey),
+          isSigner: key.isSigner,
+          isWritable: key.isWritable,
+        })),
+        data: Buffer.from(instruction.data, 'base64'),
+      });
+    };
+
+    if (Array.isArray(setupInstructions) && setupInstructions.length > 0) {
+      setupInstructions.forEach((ix: any) => {
+        swapInstructions.push(deserializeInstruction(ix));
+      });
+    }
+    if (swapInstructionPayload) {
+      swapInstructions.push(deserializeInstruction(swapInstructionPayload));
     }
 
-    if (isHasUserUsdaiAccount !== null) {
-      resultTransaction.add(isHasUserUsdaiAccount);
+    if (cleanupInstruction) {
+      swapInstructions.push(deserializeInstruction(cleanupInstruction));
     }
 
-    const instruction = await this.getSwapTokenInstruction(tokenAddress, amount, isReverse);
-    resultTransaction.add(instruction);
-    const transactionHash = await this.sendTransaction(resultTransaction);
+    const addressLookupTableAccounts: AddressLookupTableAccount[] = [];
+    addressLookupTableAccounts.push(...(await getAddressLookupTableAccounts(addressLookupTableAddresses)));
 
-    return transactionHash;
-  }
-
-  async getSwapConfig() {
-    const swapConfig = this.getPda(SWAP_CONFIG_SEED);
-    const swapConfigData = await this.program.account.swapUsdaiConfig.fetch(swapConfig);
-
-    return swapConfigData;
-  }
-
-  async getTotalSupply() {
-    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
-    const mintInfo = await getMint(this.provider.connection, new PublicKey(usdaiInfo.address));
-    const totalSupply = utilBN(mintInfo.supply).div(utilBN(10).pow(utilBN(usdaiInfo.decimals)));
-
-    return totalSupply.toNumber();
+    return {
+      swapInstructions,
+      addressLookupTableAccounts,
+    };
   }
 }

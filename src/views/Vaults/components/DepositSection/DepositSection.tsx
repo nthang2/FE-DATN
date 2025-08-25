@@ -48,11 +48,11 @@ const DepositSection = () => {
     if (!wallet || !inputValue) return;
 
     const vaultContract = new VaultContract(wallet);
-    const { instruction, amount } = await handleGetSwapInstruction(inputValue, selectedToken, true);
+    const { instruction, addressLookupTable, amount } = await handleGetSwapInstruction(inputValue, selectedToken, true);
 
     await asyncExecute({
       fn: async () => {
-        const hash = await vaultContract.deposit(amount.toString(), selectedToken, instruction);
+        const hash = await vaultContract.deposit(amount.toString(), selectedToken, instruction, addressLookupTable);
         await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
 
         return hash;

@@ -108,5 +108,4 @@ export const usdtSolanaMainnet = new SolanaMainnetTokenInfo({
   isNative: false,
   isToken2022: false,
   oracle: 'GKRTJNwFFztK9LqaBU7kSg2sngDVwQkbsQEBQJhVMQ4k',
-  ratio: '0.95',
 });
