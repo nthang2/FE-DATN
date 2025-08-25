@@ -47,7 +47,7 @@ const SwapInfo = (props: Props) => {
     const contract = new LendingContract(wallet);
     //simulate swap 1 token to get network fee
     const { instruction } = await contract.getSwapTokenInstruction(selectedToken, Number(amount), false);
-    const fee = await getTransFee(new Transaction().add(instruction));
+    const fee = await getTransFee(new Transaction().add(...instruction));
     setNetworkFee(fee);
   }, [wallet, getTransFee, networkFee, amount, selectedToken]);
 

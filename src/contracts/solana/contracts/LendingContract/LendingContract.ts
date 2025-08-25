@@ -361,10 +361,11 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     }
 
     const { instruction, addressLookupTable } = await this.getSwapTokenInstruction(tokenAddress, amount, isReverse);
+
     const messageV0 = new TransactionMessage({
       payerKey: this.provider.publicKey,
       recentBlockhash: (await this.provider.connection.getLatestBlockhash()).blockhash,
-      instructions: [...listInstruction, instruction],
+      instructions: [...listInstruction, ...instruction],
     }).compileToV0Message(addressLookupTable);
     const transaction = new VersionedTransaction(messageV0);
 
@@ -392,7 +393,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const accountsPartial = this.getAccountsPartial(tokenAddress);
     const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
     const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
-    let instruction: TransactionInstruction;
+    const instruction: TransactionInstruction[] = [];
     const addressLookupTable: AddressLookupTableAccount[] = [];
 
     if (!selectedTokenInfo) {
@@ -422,25 +423,26 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
           defaultSlippageBps
         );
         addressLookupTable.push(...addressLookupTableAccounts);
-        instruction = swapInstructions[0];
-      } else {
-        instruction = await this.program.methods
-          .swapUsdaiType0(amountRaw, isReverse)
-          .accountsPartial({
-            ...accountsPartial,
-            stablecoinDepository: accountsPartial.depository,
-            stablecoinDepositoryVault: accountsPartial.depositoryVault,
-            stablecoinUserAta: accountsPartial.userCollateral,
-            usdai: new PublicKey(usdaiAddress),
-            stablecoin: accountsPartial.collateral,
-          })
-          .instruction();
+        instruction.concat(swapInstructions);
       }
+
+      const swapToUsdaiInstruction = await this.program.methods
+        .swapUsdaiType0(amountRaw, isReverse)
+        .accountsPartial({
+          ...accountsPartial,
+          stablecoinDepository: accountsPartial.depository,
+          stablecoinDepositoryVault: accountsPartial.depositoryVault,
+          stablecoinUserAta: accountsPartial.userCollateral,
+          usdai: new PublicKey(usdaiAddress),
+          stablecoin: accountsPartial.collateral,
+        })
+        .instruction();
+
+      instruction.push(swapToUsdaiInstruction);
     } catch (error) {
       console.error('❌ Error get ins swap token:', error);
       throw error;
     }
-
     return { instruction, addressLookupTable };
   }
 

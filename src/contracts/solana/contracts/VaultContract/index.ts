@@ -25,20 +25,20 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
   async deposit(
     amount: number | string,
     tokenAddress: string,
-    instruction: TransactionInstruction | null,
+    instruction: TransactionInstruction[] | null,
     addressLookupTable: AddressLookupTableAccount[] = []
   ): Promise<string> {
     if (!this.wallet) throw new Error('Wallet not connected!');
-    const listInstruction = instruction ? [instruction] : [];
+    let listInstruction = instruction ? instruction : [];
     const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
     const isHasUserUsdaiAccount = await this.checkUserCollateral(new PublicKey(usdaiInfo.address));
 
     if (isHasUserCollateral1 !== null) {
-      listInstruction.unshift(isHasUserCollateral1);
+      listInstruction = [isHasUserCollateral1, ...listInstruction];
     }
 
     if (isHasUserUsdaiAccount !== null) {
-      listInstruction.unshift(isHasUserUsdaiAccount);
+      listInstruction = [isHasUserUsdaiAccount, ...listInstruction];
     }
 
     const transactionAmount = utilBN(amount)
