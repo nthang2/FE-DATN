@@ -65,7 +65,7 @@ const WithdrawSection = () => {
         const hash = await vaultContract.withdraw(
           (sliderValue / 100) * Number(stakeInfo?.amount),
           selectedToken,
-          instruction,
+          instruction?.[0] || null,
           addressLookupTable
         );
         await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });

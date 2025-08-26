@@ -22,3 +22,4 @@ export const jupiterProgram = new PublicKey('JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5
 //env for swap
 export const SWAP_CONFIG_SEED = 'SWAP_USDAI';
 export const listTokenSwapWithJup = [mapNameToInfoSolana[TokenName.USDT].address];
+export const token = [mapNameToInfoSolana[TokenName.USDT].address];

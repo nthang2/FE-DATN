@@ -390,11 +390,13 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async getSwapTokenInstruction(tokenAddress: string, amount: number | string, isReverse: boolean) {
-    const accountsPartial = this.getAccountsPartial(tokenAddress);
     const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
     const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
     const instruction: TransactionInstruction[] = [];
     const addressLookupTable: AddressLookupTableAccount[] = [];
+    let tokenSwapToUsdai = tokenAddress;
+    //this is only for jupiter
+    let outAmount = null;
 
     if (!selectedTokenInfo) {
       throw new Error('Token not found');
@@ -415,17 +417,24 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     try {
       if (listTokenSwapWithJup.includes(selectedTokenInfo.address)) {
         const amountWithDecimal = utilBN(amount).multipliedBy(utilBN(10).pow(utilBN(selectedTokenInfo.decimals)));
-        const { swapInstructions, addressLookupTableAccounts } = await this.getSwapJupiterInstruction(
-          usdaiInfo.address,
+        const usdcInfo = mapNameToInfoSolana[TokenName.USDC];
+        const { swapInstructions, addressLookupTableAccounts, outAmountJupiter } = await this.getSwapJupiterInstruction(
           selectedTokenInfo.address,
           isReverse,
           amountWithDecimal.toString(),
           defaultSlippageBps
         );
+
         addressLookupTable.push(...addressLookupTableAccounts);
-        instruction.concat(swapInstructions);
+        instruction.push(...swapInstructions);
+        //this scope is only for jupiter swap from selected token to usdc and now we make it convert usdc to usdai
+        tokenSwapToUsdai = usdcInfo.address;
+        outAmount = utilBN(outAmountJupiter)
+          .div(utilBN(10).pow(utilBN(usdcInfo.decimals)))
+          .toNumber();
       }
 
+      const accountsPartial = this.getAccountsPartial(tokenSwapToUsdai);
       const swapToUsdaiInstruction = await this.program.methods
         .swapUsdaiType0(amountRaw, isReverse)
         .accountsPartial({
@@ -443,21 +452,24 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       console.error('❌ Error get ins swap token:', error);
       throw error;
     }
-    return { instruction, addressLookupTable };
+
+    return { instruction, addressLookupTable, outAmount };
   }
 
   async getSwapJupiterInstruction(
-    usdaiAddress: string,
     selectedTokenAddress: string,
     isReverse: boolean,
     amount: string,
     slippageBps: number = defaultSlippageBps
   ) {
+    const usdcInfo = mapNameToInfoSolana[TokenName.USDC];
     const jupiterQuote = await getJupiterQuote({
-      inputMint: isReverse ? selectedTokenAddress : usdaiAddress,
-      outputMint: isReverse ? usdaiAddress : selectedTokenAddress,
+      inputMint: isReverse ? selectedTokenAddress : usdcInfo.address,
+      outputMint: isReverse ? usdcInfo.address : selectedTokenAddress,
       amount,
       slippageBps,
+      swapMode: 'ExactOut',
+      maxAccounts: 40,
     });
     const swapBody = {
       quoteResponse: jupiterQuote,
@@ -500,6 +512,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     return {
       swapInstructions,
       addressLookupTableAccounts,
+      outAmountJupiter: jupiterQuote.outAmount,
     };
   }
 }
