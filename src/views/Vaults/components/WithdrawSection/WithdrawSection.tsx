@@ -123,6 +123,7 @@ const WithdrawSection = () => {
           value={inputValue}
           rule={{
             max: { max: Number(stakeInfo?.amount), message: 'Amount deposit must smaller then your balance' },
+            min: { min: 0.011, message: 'Amount deposit must greater then 0.01' },
           }}
         />
       </Stack>
