@@ -1,6 +1,6 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract/LendingContract';
 // import useLendingContract from 'src/hooks/useContract/useLendingContract';
 import { TokenName } from 'src/libs/crypto-icons/types';
@@ -41,24 +41,32 @@ const useSwapConfig = () => {
     }
 
     const contract = new LendingContract(wallet);
-    const stablecoin = query.data.stablecoins.find((stablecoin) => {
-      return stablecoin.address.toString() === selectedTokenInfo?.address;
+    const stablecoinUsdc = query.data.stablecoins.find((stablecoin) => {
+      return stablecoin.address.toString() === mapNameToInfoSolana[TokenName.USDC].address;
     });
 
-    const feeValue = BN(stablecoin?.fee0 / 100).multipliedBy(Number(inputValue) / 100);
-    const amount =
-      BN(inputValue)
-        .minus(feeValue.toNumber() || 0)
-        .toNumber() < 0
-        ? 0
-        : BN(inputValue).minus(feeValue.toNumber() || 0);
+    const stablecoin =
+      query.data.stablecoins.find((stablecoin) => {
+        return stablecoin.address.toString() === selectedTokenInfo?.address;
+      }) || stablecoinUsdc;
+
     const { instruction, addressLookupTable, outAmount } = await contract.getSwapTokenInstruction(
       selectedToken,
       inputValue.toString(),
       isReverse
     );
 
-    return { instruction, amount: outAmount ? outAmount : amount, addressLookupTable };
+    const amountBeforeSwap = outAmount ? outAmount : inputValue;
+
+    const feeValue = BN(stablecoin?.fee0 / 100).multipliedBy(Number(amountBeforeSwap) / 100);
+    const amount =
+      BN(amountBeforeSwap)
+        .minus(feeValue.toNumber() || 0)
+        .toNumber() < 0
+        ? 0
+        : BN(amountBeforeSwap).minus(feeValue.toNumber() || 0);
+
+    return { instruction, amount: amount, addressLookupTable };
   };
 
   return { ...query, handleGetSwapInstruction };
