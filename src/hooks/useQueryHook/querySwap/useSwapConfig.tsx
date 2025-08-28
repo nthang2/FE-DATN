@@ -31,6 +31,8 @@ const useSwapConfig = () => {
         addressLookupTable: [],
       };
     const selectedTokenInfo = findTokenInfoByToken(selectedToken);
+    let feeValue = BN(0);
+    let amount = BN(0);
 
     if (selectedTokenInfo?.symbol === TokenName.USDAI) {
       return {
@@ -50,21 +52,36 @@ const useSwapConfig = () => {
         return stablecoin.address.toString() === selectedTokenInfo?.address;
       }) || stablecoinUsdc;
 
+    const swapFee = isReverse ? stablecoin?.fee0 : stablecoin?.fee1;
+
+    if (!isReverse) {
+      feeValue = BN(swapFee / 100).multipliedBy(Number(inputValue) / 100);
+      amount =
+        BN(inputValue)
+          .minus(feeValue.toNumber() || 0)
+          .toNumber() < 0
+          ? BN(0)
+          : BN(inputValue).minus(feeValue.toNumber() || 0);
+    }
+
     const { instruction, addressLookupTable, outAmount } = await contract.getSwapTokenInstruction(
       selectedToken,
       inputValue.toString(),
-      isReverse
+      isReverse,
+      amount.toNumber()
     );
 
-    const amountBeforeSwap = outAmount ? outAmount : inputValue;
+    if (isReverse) {
+      const amountBeforeSwap = outAmount ? outAmount : inputValue;
 
-    const feeValue = BN(stablecoin?.fee0 / 100).multipliedBy(Number(amountBeforeSwap) / 100);
-    const amount =
-      BN(amountBeforeSwap)
-        .minus(feeValue.toNumber() || 0)
-        .toNumber() < 0
-        ? 0
-        : BN(amountBeforeSwap).minus(feeValue.toNumber() || 0);
+      feeValue = BN(swapFee / 100).multipliedBy(Number(amountBeforeSwap) / 100);
+      amount =
+        BN(amountBeforeSwap)
+          .minus(feeValue.toNumber() || 0)
+          .toNumber() < 0
+          ? BN(0)
+          : BN(amountBeforeSwap).minus(feeValue.toNumber() || 0);
+    }
 
     return { instruction, amount: amount, addressLookupTable };
   };
