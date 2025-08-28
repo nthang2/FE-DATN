@@ -44,6 +44,7 @@ import {
   REDEEMABLE_MINT_SEED,
   RESERVE_ACCOUNT,
   SWAP_CONFIG_SEED,
+  swapUsdcALT,
 } from './constant';
 import { getJupiterQuote, jupiterSwapInstructions } from 'src/services/HandleApi/getJupiterInfo/getJupiterInfo';
 import { usdaiAddress } from '../VaultContract';
@@ -365,8 +366,9 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   async getSwapTokenInstruction(tokenAddress: string, amount: number | string, isReverse: boolean) {
     const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
     const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
+    const lookupTableAccount = await this.provider.connection.getAddressLookupTable(new PublicKey(swapUsdcALT));
     const instruction: TransactionInstruction[] = [];
-    const addressLookupTable: AddressLookupTableAccount[] = [];
+    const addressLookupTable: AddressLookupTableAccount[] = lookupTableAccount.value ? [lookupTableAccount.value] : [];
     let tokenSwapToUsdai = tokenAddress;
     //this is only for jupiter
     let outAmount = null;
@@ -429,12 +431,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     return { instruction, addressLookupTable, outAmount };
   }
 
-  async getSwapJupiterInstruction(
-    selectedTokenAddress: string,
-    isReverse: boolean,
-    amount: string,
-    slippageBps: number = defaultSlippageBps
-  ) {
+  async getSwapJupiterInstruction(selectedTokenAddress: string, isReverse: boolean, amount: string, slippageBps: number = 100) {
     const usdcInfo = mapNameToInfoSolana[TokenName.USDC];
     const jupiterQuote = await getJupiterQuote({
       inputMint: isReverse ? selectedTokenAddress : usdcInfo.address,
@@ -452,7 +449,13 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     };
     const instructions = await jupiterSwapInstructions(swapBody);
     const swapInstructions: TransactionInstruction[] = [];
-    const { setupInstructions, swapInstruction: swapInstructionPayload, cleanupInstruction, addressLookupTableAddresses } = instructions;
+    const {
+      setupInstructions,
+      swapInstruction: swapInstructionPayload,
+      cleanupInstruction,
+      addressLookupTableAddresses,
+      computeBudgetInstructions,
+    } = instructions;
 
     const deserializeInstruction = (instruction: any) => {
       return new TransactionInstruction({
@@ -465,6 +468,12 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
         data: Buffer.from(instruction.data, 'base64'),
       });
     };
+
+    if (computeBudgetInstructions && Array.isArray(computeBudgetInstructions)) {
+      computeBudgetInstructions.forEach((ix: any) => {
+        swapInstructions.push(deserializeInstruction(ix));
+      });
+    }
 
     if (Array.isArray(setupInstructions) && setupInstructions.length > 0) {
       setupInstructions.forEach((ix: any) => {

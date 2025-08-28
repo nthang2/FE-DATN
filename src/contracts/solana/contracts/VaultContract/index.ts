@@ -68,10 +68,10 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
   async withdraw(
     amount: number,
     tokenAddress: string,
-    instruction: TransactionInstruction | null,
+    instruction: TransactionInstruction[] | null,
     addressLookupTable: AddressLookupTableAccount[] = []
   ): Promise<string> {
-    const listInstruction = instruction ? [instruction] : [];
+    const listInstruction = instruction ? instruction : [];
     const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
     const isHasUserUsdaiAccount = await this.checkUserCollateral(new PublicKey(usdaiInfo.address));
     const checkUserCollateralInstruction = [];
