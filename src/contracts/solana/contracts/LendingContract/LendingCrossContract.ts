@@ -4,7 +4,6 @@ import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
   getAccount,
-  getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
   getMint,
   TOKEN_PROGRAM_ID,
@@ -15,6 +14,7 @@ import {
   ComputeBudgetProgram,
   PublicKey,
   Transaction,
+  TransactionInstruction,
   TransactionMessage,
   VersionedTransaction,
 } from '@solana/web3.js';
@@ -35,45 +35,23 @@ import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import {
   CONTROLLER_SEED,
   collateral as defaultCollateral,
+  defaultSlippageBps,
   DEPOSITORY_TYPE1_SEED,
   jupiterProgram,
+  listTokenSwapWithJup,
   LOAN_TYPE1_SEED,
   REDEEM_CONFIG,
   REDEEMABLE_MINT_SEED,
   RESERVE_ACCOUNT,
   SWAP_CONFIG_SEED,
+  swapUsdcALT,
 } from './constant';
+import { getJupiterQuote, jupiterSwapInstructions } from 'src/services/HandleApi/getJupiterInfo/getJupiterInfo';
+import { usdaiAddress } from '../VaultContract';
 
 export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
     super(wallet, ctrAdsSolana.lending, idlLending);
-  }
-
-  async checkUserCollateral1(tokenAddress: PublicKey) {
-    try {
-      const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
-      await getAccount(this.provider.connection, userCollateral1);
-
-      return null;
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.name.includes('TokenAccountNotFoundError')) {
-          const newAssociatedTokenAddress = await getAssociatedTokenAddress(new PublicKey(tokenAddress), this.provider.publicKey);
-          const temp = createAssociatedTokenAccountInstruction(
-            this.provider.publicKey,
-            newAssociatedTokenAddress,
-            this.provider.publicKey,
-            new PublicKey(tokenAddress)
-          );
-
-          return temp;
-        }
-
-        throw new Error(error.message);
-      }
-
-      throw new Error('');
-    }
   }
 
   getAccountsPartial(tokenAddress: string) {
@@ -236,7 +214,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const decimal = getDecimalToken(tokenAddress);
     const collateralAmount = new BN(depositAmount * decimal);
     const accountsPartial = this.getAccountsPartial(tokenAddress);
-    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(tokenAddress));
+    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
     const resultTransaction = new Transaction();
 
     if (isHasUserCollateral1 !== null) {
@@ -320,7 +298,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const addressLookupTableAccounts: AddressLookupTableAccount[] = [];
     addressLookupTableAccounts.push(...(await getAddressLookupTableAccounts(resultSwapInstructions.addressLookupTableAddresses)));
     const instruction = [ComputeBudgetProgram.setComputeUnitLimit({ units: 1400000 }), addPriorityFee(priorityFee), redeemCollIns];
-    const isHasUserCollateral1 = await this.checkUserCollateral1(new PublicKey(selectedToken));
+    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(selectedToken));
     if (isHasUserCollateral1 !== null) {
       instruction.unshift(isHasUserCollateral1);
     }
@@ -361,59 +339,11 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     }
   }
 
-  async getSwapTokenInstruction(tokenAddress: string, amount: number | string, isReverse: boolean) {
-    const accountsPartial = this.getAccountsPartial(tokenAddress);
-    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
-    const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
-    const stablecoinReserveAta = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), RESERVE_ACCOUNT, true);
-    const usdaiReserveAta = getAssociatedTokenAddressSync(new PublicKey(usdaiInfo.address), RESERVE_ACCOUNT, true);
-
-    if (!selectedTokenInfo) {
-      throw new Error('Token not found');
-    }
-
-    const amountRaw = isReverse
-      ? new BN(
-          utilBN(amount)
-            .multipliedBy(utilBN(10).pow(utilBN(selectedTokenInfo.decimals)))
-            .toString()
-        )
-      : new BN(
-          utilBN(amount)
-            .multipliedBy(utilBN(10).pow(utilBN(usdaiInfo.decimals)))
-            .toString()
-        );
-    let instruction: Transaction;
-
-    try {
-      instruction = await this.program.methods
-        .swapUsdaiType0(amountRaw, isReverse)
-        .accountsPartial({
-          user: accountsPartial.user,
-          controller: accountsPartial.controller,
-          stablecoinDepository: accountsPartial.depository,
-          stablecoinDepositoryVault: accountsPartial.depositoryVault,
-          stablecoinUserAta: accountsPartial.userCollateral1,
-          usdaiUserAta: accountsPartial.userRedeemable,
-          usdai: accountsPartial.redeemableMint,
-          stablecoin: tokenAddress,
-          swapConfig: accountsPartial.swapConfig,
-          reserve: accountsPartial.reserve,
-          stablecoinReserveAta,
-          usdaiReserveAta,
-        })
-        .transaction();
-    } catch (error) {
-      console.error('❌ Error get ins swap token:', error);
-      throw error;
-    }
-
-    return instruction;
-  }
-
   async swapToken(tokenAddress: string, amount: number, isReverse: boolean) {
-    const instruction = await this.getSwapTokenInstruction(tokenAddress, amount, isReverse);
-    const transactionHash = await this.sendTransaction(instruction);
+    const trans = new Transaction();
+    const { instruction } = await this.getSwapTokenInstruction(tokenAddress, amount, isReverse);
+    trans.add(...instruction);
+    const transactionHash = await this.sendTransaction(trans);
 
     return transactionHash;
   }
@@ -431,5 +361,140 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const totalSupply = utilBN(mintInfo.supply).div(utilBN(10).pow(utilBN(usdaiInfo.decimals)));
 
     return totalSupply.toNumber();
+  }
+
+  async getSwapTokenInstruction(tokenAddress: string, amount: number | string, isReverse: boolean) {
+    const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
+    const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
+    const lookupTableAccount = await this.provider.connection.getAddressLookupTable(new PublicKey(swapUsdcALT));
+    const instruction: TransactionInstruction[] = [];
+    const addressLookupTable: AddressLookupTableAccount[] = lookupTableAccount.value ? [lookupTableAccount.value] : [];
+    let tokenSwapToUsdai = tokenAddress;
+    //this is only for jupiter
+    let outAmount = null;
+
+    if (!selectedTokenInfo) {
+      throw new Error('Token not found');
+    }
+
+    const amountRaw = isReverse
+      ? new BN(
+          utilBN(amount)
+            .multipliedBy(utilBN(10).pow(utilBN(selectedTokenInfo.decimals)))
+            .toString()
+        )
+      : new BN(
+          utilBN(amount)
+            .multipliedBy(utilBN(10).pow(utilBN(usdaiInfo.decimals)))
+            .toString()
+        );
+
+    try {
+      if (listTokenSwapWithJup.includes(selectedTokenInfo.address)) {
+        const amountWithDecimal = utilBN(amount).multipliedBy(utilBN(10).pow(utilBN(selectedTokenInfo.decimals)));
+        const usdcInfo = mapNameToInfoSolana[TokenName.USDC];
+        const { swapInstructions, addressLookupTableAccounts, outAmountJupiter } = await this.getSwapJupiterInstruction(
+          selectedTokenInfo.address,
+          isReverse,
+          amountWithDecimal.toString(),
+          defaultSlippageBps
+        );
+
+        addressLookupTable.push(...addressLookupTableAccounts);
+        instruction.push(...swapInstructions);
+        //this scope is only for jupiter swap from selected token to usdc and now we make it convert usdc to usdai
+        tokenSwapToUsdai = usdcInfo.address;
+        outAmount = utilBN(outAmountJupiter)
+          .div(utilBN(10).pow(utilBN(usdcInfo.decimals)))
+          .toNumber();
+      }
+
+      const accountsPartial = this.getAccountsPartial(tokenSwapToUsdai);
+      const swapToUsdaiInstruction = await this.program.methods
+        .swapUsdaiType0(amountRaw, isReverse)
+        .accountsPartial({
+          ...accountsPartial,
+          stablecoinDepository: accountsPartial.depository,
+          stablecoinDepositoryVault: accountsPartial.depositoryVault,
+          stablecoinUserAta: accountsPartial.userCollateral1,
+          usdai: new PublicKey(usdaiAddress),
+          stablecoin: accountsPartial.collateral1,
+        })
+        .instruction();
+
+      instruction.push(swapToUsdaiInstruction);
+    } catch (error) {
+      console.error('❌ Error get ins swap token:', error);
+      throw error;
+    }
+
+    return { instruction, addressLookupTable, outAmount };
+  }
+
+  async getSwapJupiterInstruction(selectedTokenAddress: string, isReverse: boolean, amount: string, slippageBps: number = 100) {
+    const usdcInfo = mapNameToInfoSolana[TokenName.USDC];
+    const jupiterQuote = await getJupiterQuote({
+      inputMint: isReverse ? selectedTokenAddress : usdcInfo.address,
+      outputMint: isReverse ? usdcInfo.address : selectedTokenAddress,
+      amount,
+      slippageBps,
+      swapMode: 'ExactOut',
+      maxAccounts: 40,
+    });
+    const swapBody = {
+      quoteResponse: jupiterQuote,
+      userPublicKey: this.provider.publicKey.toString(),
+      wrapAndUnwrapSol: true,
+      includeLookupTableAddresses: true,
+    };
+    const instructions = await jupiterSwapInstructions(swapBody);
+    const swapInstructions: TransactionInstruction[] = [];
+    const {
+      setupInstructions,
+      swapInstruction: swapInstructionPayload,
+      cleanupInstruction,
+      addressLookupTableAddresses,
+      computeBudgetInstructions,
+    } = instructions;
+
+    const deserializeInstruction = (instruction: any) => {
+      return new TransactionInstruction({
+        programId: new PublicKey(instruction.programId),
+        keys: instruction.accounts.map((key: any) => ({
+          pubkey: new PublicKey(key.pubkey),
+          isSigner: key.isSigner,
+          isWritable: key.isWritable,
+        })),
+        data: Buffer.from(instruction.data, 'base64'),
+      });
+    };
+
+    if (computeBudgetInstructions && Array.isArray(computeBudgetInstructions)) {
+      computeBudgetInstructions.forEach((ix: any) => {
+        swapInstructions.push(deserializeInstruction(ix));
+      });
+    }
+
+    if (Array.isArray(setupInstructions) && setupInstructions.length > 0) {
+      setupInstructions.forEach((ix: any) => {
+        swapInstructions.push(deserializeInstruction(ix));
+      });
+    }
+    if (swapInstructionPayload) {
+      swapInstructions.push(deserializeInstruction(swapInstructionPayload));
+    }
+
+    if (cleanupInstruction) {
+      swapInstructions.push(deserializeInstruction(cleanupInstruction));
+    }
+
+    const addressLookupTableAccounts: AddressLookupTableAccount[] = [];
+    addressLookupTableAccounts.push(...(await getAddressLookupTableAccounts(addressLookupTableAddresses)));
+
+    return {
+      swapInstructions,
+      addressLookupTableAccounts,
+      outAmountJupiter: jupiterQuote.outAmount,
+    };
   }
 }

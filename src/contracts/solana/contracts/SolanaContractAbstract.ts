@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AnchorProvider, Idl, Program } from '@coral-xyz/anchor';
 import {
+  createAssociatedTokenAccountInstruction,
   createCloseAccountInstruction,
   createSyncNativeInstruction,
+  getAccount,
   getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
   NATIVE_MINT,
@@ -99,6 +101,33 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
     return pda;
   }
 
+  async checkUserCollateral(tokenAddress: PublicKey) {
+    try {
+      const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
+      await getAccount(this.provider.connection, userCollateral1);
+
+      return null;
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.name.includes('TokenAccountNotFoundError')) {
+          const newAssociatedTokenAddress = await getAssociatedTokenAddress(new PublicKey(tokenAddress), this.provider.publicKey);
+          const result = createAssociatedTokenAccountInstruction(
+            this.provider.publicKey,
+            newAssociatedTokenAddress,
+            this.provider.publicKey,
+            new PublicKey(tokenAddress)
+          );
+
+          return result;
+        }
+
+        throw new Error(error.message);
+      }
+
+      throw new Error('');
+    }
+  }
+
   async awaitConfirmTransaction(signature: string) {
     const connection = publicClientSol();
     const latestBlockHash = await connection.getLatestBlockhash();
@@ -117,7 +146,6 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
     disableThrowSimulateError = false
   ) {
     const connection = publicClientSol();
-    console.log('🚀 ~ SolanaContractAbstract<IDL ~ connection:', connection);
     if (transaction instanceof VersionedTransaction) {
       const simulate = await connection.simulateTransaction(transaction, { replaceRecentBlockhash: true, commitment: 'finalized' });
       console.log('Simulation:', simulate);

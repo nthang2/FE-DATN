@@ -48,7 +48,7 @@ const WithdrawSection = () => {
   const handleChangeSelectToken = (value: string) => {
     setSliderValue(0);
     setSelectedToken(value);
-    setInputValue('0');
+    setInputValue('');
   };
 
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
@@ -61,8 +61,15 @@ const WithdrawSection = () => {
     await asyncExecute({
       fn: async () => {
         const vaultContract = new VaultContract(wallet);
-        const { instruction } = await handleGetSwapInstruction(inputValue || '0', selectedToken, false);
-        const hash = await vaultContract.withdraw((sliderValue / 100) * Number(stakeInfo?.amount), instruction);
+        const { instruction, addressLookupTable } = await handleGetSwapInstruction(inputValue || '0', selectedToken, false);
+
+        const hash = await vaultContract.withdraw(
+          Number(decimalFlood(Number(inputValue), 6)),
+          selectedToken,
+          instruction || null,
+          addressLookupTable
+        );
+
         await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
         setSliderValue(0);
         setInputValue(undefined);
@@ -97,7 +104,6 @@ const WithdrawSection = () => {
           inputType="number"
           // inputMode="decimal"
           placeholder="0"
-          disabled={!isConnectedWallet}
           InputProps={{
             disableUnderline: true,
             endAdornment: (
@@ -119,6 +125,7 @@ const WithdrawSection = () => {
           value={inputValue}
           rule={{
             max: { max: Number(stakeInfo?.amount), message: 'Amount deposit must smaller then your balance' },
+            min: { min: 0.011, message: 'Amount deposit must greater then 0.01' },
           }}
         />
       </Stack>

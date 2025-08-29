@@ -36,7 +36,7 @@ const DepositSection = () => {
   const handleChangeSelectToken = (value: string) => {
     setSliderValue(0);
     setSelectedToken(value);
-    setInputValue('0');
+    setInputValue('');
   };
 
   const handleChangeSlider = (_event: Event, value: number | number[]) => {
@@ -48,11 +48,11 @@ const DepositSection = () => {
     if (!wallet || !inputValue) return;
 
     const vaultContract = new VaultContract(wallet);
-    const { instruction, amount } = await handleGetSwapInstruction(inputValue, selectedToken, true);
+    const { instruction, addressLookupTable, amount } = await handleGetSwapInstruction(inputValue, selectedToken, true);
 
     await asyncExecute({
       fn: async () => {
-        const hash = await vaultContract.deposit(amount.toString(), instruction);
+        const hash = await vaultContract.deposit(amount.toString(), selectedToken, instruction, addressLookupTable);
         await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
 
         return hash;
@@ -80,7 +80,6 @@ const DepositSection = () => {
         variant="filled"
         inputType="number"
         placeholder="0"
-        disabled={!isConnectedWallet}
         InputProps={{
           disableUnderline: true,
           endAdornment: (
@@ -102,6 +101,7 @@ const DepositSection = () => {
         value={inputValue}
         rule={{
           max: { max: balance.toNumber(), message: 'Amount deposit must smaller then your balance' },
+          min: { min: 0.011, message: 'Amount deposit must greater then 0.01' },
         }}
       />
 

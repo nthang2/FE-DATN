@@ -1,20 +1,21 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Transaction } from '@solana/web3.js';
 import { useQuery } from '@tanstack/react-query';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import useLendingContract from 'src/hooks/useContract/useLendingContract';
+import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { LendingContract } from 'src/contracts/solana/contracts/LendingContract/LendingContract';
+// import useLendingContract from 'src/hooks/useContract/useLendingContract';
 import { TokenName } from 'src/libs/crypto-icons/types';
 import { BN } from 'src/utils';
 
 const useSwapConfig = () => {
   const wallet = useWallet();
-  const { initLendingContract } = useLendingContract();
+  //open when have swap in 2 mode
+  // const { initLendingContract } = useLendingContract();
 
   const query = useQuery({
     queryKey: ['swap-config'],
     queryFn: async () => {
       if (!wallet) return null;
-      const swapConfig = initLendingContract(wallet);
+      const swapConfig = new LendingContract(wallet);
       const config = await swapConfig.getSwapConfig();
 
       return config;
@@ -23,23 +24,66 @@ const useSwapConfig = () => {
   });
 
   const handleGetSwapInstruction = async (inputValue: string, selectedToken: string, isReverse: boolean) => {
-    if (!wallet || !inputValue || !query.data) return { instruction: new Transaction(), amount: Number(inputValue) };
+    if (!wallet || !inputValue || !query.data)
+      return {
+        instruction: null,
+        amount: Number(inputValue),
+        addressLookupTable: [],
+      };
     const selectedTokenInfo = findTokenInfoByToken(selectedToken);
+    let feeValue = BN(0);
+    let amount = BN(0);
 
     if (selectedTokenInfo?.symbol === TokenName.USDAI) {
-      return { instruction: new Transaction(), amount: Number(inputValue) };
+      return {
+        instruction: null,
+        amount: Number(inputValue),
+        addressLookupTable: [],
+      };
     }
 
-    const contract = initLendingContract(wallet);
-    const stablecoin = query.data.stablecoins.find((stablecoin) => {
-      return stablecoin.address.toString() === selectedTokenInfo?.address;
+    const contract = new LendingContract(wallet);
+    const stablecoinUsdc = query.data.stablecoins.find((stablecoin) => {
+      return stablecoin.address.toString() === mapNameToInfoSolana[TokenName.USDC].address;
     });
 
-    const feeValue = BN(stablecoin?.fee0 / 100).multipliedBy(Number(inputValue) / 100);
-    const amount = BN(inputValue).minus(feeValue).toNumber() < 0 ? 0 : BN(inputValue).minus(feeValue);
-    const instruction = await contract.getSwapTokenInstruction(selectedToken, inputValue.toString(), isReverse);
+    const stablecoin =
+      query.data.stablecoins.find((stablecoin) => {
+        return stablecoin.address.toString() === selectedTokenInfo?.address;
+      }) || stablecoinUsdc;
 
-    return { instruction, amount };
+    const swapFee = isReverse ? stablecoin?.fee0 : stablecoin?.fee1;
+
+    if (!isReverse) {
+      feeValue = BN(swapFee / 100).multipliedBy(Number(inputValue) / 100);
+      amount =
+        BN(inputValue)
+          .minus(feeValue.toNumber() || 0)
+          .toNumber() < 0
+          ? BN(0)
+          : BN(inputValue).minus(feeValue.toNumber() || 0);
+    }
+
+    const { instruction, addressLookupTable, outAmount } = await contract.getSwapTokenInstruction(
+      selectedToken,
+      inputValue.toString(),
+      isReverse,
+      amount.toNumber()
+    );
+
+    if (isReverse) {
+      const amountBeforeSwap = outAmount ? outAmount : inputValue;
+
+      feeValue = BN(swapFee / 100).multipliedBy(Number(amountBeforeSwap) / 100);
+      amount =
+        BN(amountBeforeSwap)
+          .minus(feeValue.toNumber() || 0)
+          .toNumber() < 0
+          ? BN(0)
+          : BN(amountBeforeSwap).minus(feeValue.toNumber() || 0);
+    }
+
+    return { instruction, amount: amount, addressLookupTable };
   };
 
   return { ...query, handleGetSwapInstruction };
