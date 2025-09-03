@@ -14,10 +14,10 @@ const HealthFactorSection = ({ healthFactor, styleSvgWrapper }: HealthFactorProp
     if (BN(healthFactor).isLessThanOrEqualTo(1)) {
       return 0;
     }
-    if (healthFactor == 'Infinity' || Number(healthFactor) > 4) {
+    if (healthFactor == 'Infinity' || Number(healthFactor) > 2) {
       return 180;
     } else {
-      return ((Number(healthFactor) - 1) / 3) * 180;
+      return ((Number(healthFactor) - 1) / 1) * 180;
     }
   }, [healthFactor]);
 
@@ -30,13 +30,13 @@ const HealthFactorSection = ({ healthFactor, styleSvgWrapper }: HealthFactorProp
 
   const healthFactorRank = useMemo(() => {
     if (healthFactor) {
-      if (healthFactor == 'Infinity' || BN(healthFactor).isLessThan(1)) {
+      if (healthFactor == 'Infinity') {
         return { rank: 'Healthy', color: '#34D564' };
-      } else if (BN(healthFactor).isLessThanOrEqualTo(1.6)) {
+      } else if (BN(healthFactor).isLessThanOrEqualTo(1.25)) {
         return { rank: 'Critical', color: '#E9321A' };
-      } else if (BN(healthFactor).isLessThanOrEqualTo(2.5)) {
+      } else if (BN(healthFactor).isLessThanOrEqualTo(1.5)) {
         return { rank: 'Risky', color: '#FF8B3E' };
-      } else if (BN(healthFactor).isLessThanOrEqualTo(3.2)) {
+      } else if (BN(healthFactor).isLessThanOrEqualTo(1.75)) {
         return { rank: 'Moderate', color: '#FFC95D' };
       } else {
         return { rank: 'Healthy', color: '#08DBA4' };
