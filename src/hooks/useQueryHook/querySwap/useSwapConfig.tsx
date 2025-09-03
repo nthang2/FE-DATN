@@ -55,6 +55,7 @@ const useSwapConfig = () => {
     const swapFee = isReverse ? stablecoin?.fee0 : stablecoin?.fee1;
 
     if (!isReverse) {
+      //this scope for swap usdai to selected token
       feeValue = BN(swapFee / 100).multipliedBy(Number(inputValue) / 100);
       amount =
         BN(inputValue)
@@ -68,10 +69,11 @@ const useSwapConfig = () => {
       selectedToken,
       inputValue.toString(),
       isReverse,
-      amount.toNumber()
+      amount.toNumber() // this param is amountAfterFee, only use when swap usdai to token with jupiter
     );
 
     if (isReverse) {
+      //this out amount is from jupiter, only use when swap with jupiter otherwise use input value like normal
       const amountBeforeSwap = outAmount ? outAmount : inputValue;
 
       feeValue = BN(swapFee / 100).multipliedBy(Number(amountBeforeSwap) / 100);
