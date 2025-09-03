@@ -30,7 +30,7 @@ const HealthFactorSection = ({ healthFactor, styleSvgWrapper }: HealthFactorProp
 
   const healthFactorRank = useMemo(() => {
     if (healthFactor) {
-      if (healthFactor == 'Infinity') {
+      if (healthFactor == 'Infinity' || BN(healthFactor).isEqualTo(0)) {
         return { rank: 'Healthy', color: '#34D564' };
       } else if (BN(healthFactor).isLessThanOrEqualTo(1.25)) {
         return { rank: 'Critical', color: '#E9321A' };
