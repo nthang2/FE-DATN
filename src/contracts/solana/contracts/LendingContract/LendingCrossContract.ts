@@ -363,7 +363,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     return totalSupply.toNumber();
   }
 
-  async getSwapTokenInstruction(tokenAddress: string, amount: number | string, isReverse: boolean) {
+  async getSwapTokenInstruction(tokenAddress: string, amount: number | string, isReverse: boolean, amountAfterFee: number | string = 0) {
     const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
     const selectedTokenInfo = findTokenInfoByToken(tokenAddress);
     const lookupTableAccount = await this.provider.connection.getAddressLookupTable(new PublicKey(swapUsdcALT));
@@ -377,26 +377,22 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
       throw new Error('Token not found');
     }
 
-    const amountRaw = isReverse
-      ? new BN(
-          utilBN(amount)
-            .multipliedBy(utilBN(10).pow(utilBN(selectedTokenInfo.decimals)))
-            .toString()
-        )
-      : new BN(
-          utilBN(amount)
-            .multipliedBy(utilBN(10).pow(utilBN(usdaiInfo.decimals)))
-            .toString()
-        );
+    const amountRaw = new BN(
+      utilBN(amount)
+        .multipliedBy(utilBN(10).pow(utilBN(isReverse ? selectedTokenInfo.decimals : usdaiInfo.decimals)))
+        .toNumber()
+    );
 
     try {
       if (listTokenSwapWithJup.includes(selectedTokenInfo.address)) {
-        const amountWithDecimal = utilBN(amount).multipliedBy(utilBN(10).pow(utilBN(selectedTokenInfo.decimals)));
+        const amountWithDecimal = utilBN(amountAfterFee ? amountAfterFee : amount).multipliedBy(
+          utilBN(10).pow(utilBN(selectedTokenInfo.decimals))
+        );
         const usdcInfo = mapNameToInfoSolana[TokenName.USDC];
         const { swapInstructions, addressLookupTableAccounts, outAmountJupiter } = await this.getSwapJupiterInstruction(
           selectedTokenInfo.address,
           isReverse,
-          amountWithDecimal.toString(),
+          amountWithDecimal.toFixed(0),
           defaultSlippageBps
         );
 
@@ -422,13 +418,17 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
         })
         .instruction();
 
-      instruction.push(swapToUsdaiInstruction);
+      if (!isReverse) {
+        instruction.unshift(swapToUsdaiInstruction);
+      } else {
+        instruction.push(swapToUsdaiInstruction);
+      }
     } catch (error) {
       console.error('❌ Error get ins swap token:', error);
       throw error;
     }
 
-    return { instruction, addressLookupTable, outAmount };
+    return { instruction, addressLookupTable, outAmount: isReverse ? outAmount : amount };
   }
 
   async getSwapJupiterInstruction(selectedTokenAddress: string, isReverse: boolean, amount: string, slippageBps: number = 100) {
@@ -438,7 +438,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
       outputMint: isReverse ? usdcInfo.address : selectedTokenAddress,
       amount,
       slippageBps,
-      swapMode: 'ExactOut',
+      swapMode: isReverse ? 'ExactOut' : 'ExactIn',
       maxAccounts: 40,
     });
     const swapBody = {
