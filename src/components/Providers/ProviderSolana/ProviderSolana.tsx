@@ -6,7 +6,12 @@ import { clusterApiUrl } from '@solana/web3.js';
 import { useMemo } from 'react';
 import { solNetworkSelect } from 'src/states/wallets/solana-blockchain/configs';
 
-export default function ProviderSolana({ children }: { children: React.ReactNode }) {
+type IProps = {
+  children: React.ReactNode;
+  localStorageKey?: string;
+};
+
+export default function ProviderSolana({ children, localStorageKey }: IProps) {
   // You can also provide a custom RPC endpoint.
   const endpoint = useMemo(() => clusterApiUrl(solNetworkSelect), []);
 
@@ -21,7 +26,7 @@ export default function ProviderSolana({ children }: { children: React.ReactNode
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect localStorageKey="solana.connectWallet">
+      <WalletProvider wallets={wallets} autoConnect localStorageKey={localStorageKey || 'solana.connectWallet'}>
         {children}
       </WalletProvider>
     </ConnectionProvider>

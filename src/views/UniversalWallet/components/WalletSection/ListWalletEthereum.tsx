@@ -1,20 +1,23 @@
 import SearchIcon from '@mui/icons-material/Search';
-import { Box, Button, Stack, Typography } from '@mui/material';
-import { Adapter } from '@solana/wallet-adapter-base';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { Box, Button, CircularProgress, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
+import useEVMData from 'src/hooks/useEVMData/useEVMData';
+import { Connector, useConnect } from 'wagmi';
 import { useDestinationWalletState } from '../../state/hooks';
 
-const ListWalletSolana = () => {
-  const { select, wallets, publicKey, wallet } = useWallet();
+const ListWalletEthereum = () => {
+  const { owner } = useEVMData();
+  const { connectAsync, isPending, connectors } = useConnect();
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
 
-  async function handleConnect(adapter: Adapter) {
+  const infoWalletConnected = connectors.find((connector) => connector.isConnected);
+
+  async function handleConnect(connector: Connector) {
     try {
-      select(adapter.name);
+      await connectAsync({ connector: connector });
     } catch (error) {
       console.error(error);
       toast.error((error as Error).message);
@@ -22,11 +25,11 @@ const ListWalletSolana = () => {
   }
 
   useEffect(() => {
-    if (publicKey && publicKey?.toString() !== destinationWallet.address) {
-      setDestinationWallet({ address: publicKey?.toString() || '', wallet: wallet?.adapter.icon || '' });
+    if (owner && owner?.toString() !== destinationWallet.address) {
+      setDestinationWallet({ address: owner?.toString() || '', wallet: infoWalletConnected?.icon || '' });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [publicKey]);
+  }, [owner]);
 
   return (
     <Stack gap={1} direction="column">
@@ -50,26 +53,27 @@ const ListWalletSolana = () => {
       </Stack>
 
       <Stack direction="column">
-        {wallets.map((wallet, index) => {
+        {connectors.map((connector, index) => {
           return (
             <Stack
-              key={wallet.adapter.name + index}
+              key={connector.id + index}
               direction="row"
               justifyContent="space-between"
               alignItems="center"
               p={1}
-              borderBottom={index !== wallets.length - 1 ? '1px solid #666662' : 0}
+              borderBottom={index !== connectors.length - 1 ? '1px solid #666662' : 0}
             >
               <Box className="flex-start" gap={1}>
-                <img src={wallet.adapter.icon} style={{ width: '20px', height: '20px', borderRadius: '10px' }} />
+                <img src={connector.icon} style={{ width: '20px', height: '20px', borderRadius: '10px' }} />
 
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {wallet.adapter.name}
+                  {connector.name}
                 </Typography>
               </Box>
 
-              <Button variant="outlined" onClick={() => handleConnect(wallet.adapter)} sx={{ height: '32px' }}>
-                {wallet.adapter.connected ? 'Connected' : 'Connect'}
+              <Button variant="outlined" onClick={() => handleConnect(connector)} sx={{ height: '32px' }}>
+                {isPending && <CircularProgress size={20} />}
+                {connector.isConnected ? 'Connected' : 'Connect'}
               </Button>
             </Stack>
           );
@@ -79,4 +83,4 @@ const ListWalletSolana = () => {
   );
 };
 
-export default ListWalletSolana;
+export default ListWalletEthereum;

@@ -4,14 +4,13 @@ import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { TokenName } from 'src/libs/crypto-icons';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
-import SelectedNetwork from '../SelectedNetwork';
+import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import DestinationDialog from './DestinationDialog';
-
-const listNetwork = ['solana', 'ethereum'];
+import SelectedNetwork from './SelectedNetwork';
 
 const WalletSection = () => {
-  const [sourceWallet, setSourceWallet] = useState<string>('');
-  const [selectedNetworkSource, setSelectedNetworkSource] = useState<string>('solana');
+  const { address: sourceWallet } = useSummarySolanaConnect();
+  const [selectedNetworkSource] = useState<string>('solana');
 
   return (
     <BoxCustom sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -30,20 +29,14 @@ const WalletSection = () => {
           inputType="number"
           placeholder="0"
           InputProps={{
-            endAdornment: (
-              <SelectedNetwork
-                options={listNetwork}
-                value={selectedNetworkSource}
-                onChange={(e) => setSelectedNetworkSource(e.target.value as string)}
-              />
-            ),
+            endAdornment: <SelectedNetwork value={selectedNetworkSource} />,
             startAdornment: <IconToken tokenName={TokenName.SOL} sx={{ mr: 1 }} />,
-            sx: { px: 2, py: 1, fontSize: '24px', height: 'unset' },
+            sx: { px: 2, py: 1, fontSize: '14px', height: 'unset' },
           }}
           inputProps={{ style: { padding: 0, paddingTop: 1 } }}
+          disabled
           sx={{ mt: 1 }}
-          onChange={(event) => setSourceWallet(event.target.value)}
-          value={sourceWallet}
+          value={sourceWallet || ''}
         />
       </Box>
 

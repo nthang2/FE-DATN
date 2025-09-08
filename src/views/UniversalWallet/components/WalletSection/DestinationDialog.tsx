@@ -4,18 +4,32 @@ import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import { listNetwork } from '../../constant';
 import { mapNameNetwork } from '../../network';
 import ListWalletSolana from './ListWalletSolana';
+import SelectedNetwork from './SelectedNetwork';
+import { useDestinationNetworkState, useDestinationWalletState } from '../../state/hooks';
+import ProviderSolana from 'src/components/Providers/ProviderSolana/ProviderSolana';
+import ListWalletEthereum from './ListWalletEthereum';
 
 const DestinationDialog = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [selectedNetwork, setSelectedNetwork] = useState<string>('');
+  const [destinationNetwork, setDestinationNetwork] = useDestinationNetworkState();
+  const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (!destinationNetwork.length) {
+      setDestinationNetwork('solana');
+    }
+
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleChangeNetwork = (network: string) => {
+    setDestinationNetwork(network);
+    setDestinationWallet({ address: '', wallet: '' });
   };
 
   return (
@@ -27,30 +41,14 @@ const DestinationDialog = () => {
           disabled
           placeholder="Select network, wallet and connect wallet..."
           InputProps={{
-            endAdornment: (
-              <Box
-                sx={{
-                  height: '48px',
-                  width: '131px',
-                  border: '1px solid #666662',
-                  borderRadius: '8px',
-                  bgcolor: 'secondary.dark',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  opacity: 0.5,
-                  gap: 1,
-                }}
-              >
-                <Box sx={{ width: '20px', height: '20px', borderRadius: '50%', bgcolor: 'text.secondary' }} />
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  Network
-                </Typography>
-              </Box>
+            startAdornment: destinationWallet.wallet && (
+              <img src={destinationWallet.wallet} style={{ width: '20px', height: '20px', borderRadius: '10px', marginRight: '8px' }} />
             ),
+            endAdornment: <SelectedNetwork value={destinationNetwork} />,
             sx: { px: 2, py: 1, fontSize: '14px', height: 'unset' },
           }}
           inputProps={{ style: { padding: 0, paddingTop: 1 } }}
+          value={destinationWallet.address}
           sx={{ mt: 1 }}
         />
         <Box sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }} />
@@ -96,10 +94,10 @@ const DestinationDialog = () => {
                       cursor: 'pointer',
                       border: '1px solid transparent',
                       ':hover': { bgcolor: 'secondary.dark', borderColor: 'primary.main' },
-                      bgcolor: selectedNetwork === networkInfo.id ? 'secondary.dark' : 'transparent',
-                      borderColor: selectedNetwork === networkInfo.id ? 'primary.main' : 'transparent',
+                      bgcolor: destinationNetwork === networkInfo.id ? 'secondary.dark' : 'transparent',
+                      borderColor: destinationNetwork === networkInfo.id ? 'primary.main' : 'transparent',
                     }}
-                    onClick={() => setSelectedNetwork(networkInfo.id)}
+                    onClick={() => handleChangeNetwork(networkInfo.id)}
                   >
                     {networkInfo.icon}
                     <Typography variant="body2" fontWeight={600}>
@@ -112,7 +110,10 @@ const DestinationDialog = () => {
             </Stack>
           </Stack>
 
-          <ListWalletSolana />
+          <ProviderSolana localStorageKey="destination.connectWallet">
+            {destinationNetwork === 'solana' && <ListWalletSolana />}
+            {destinationNetwork === 'ethereum' && <ListWalletEthereum />}
+          </ProviderSolana>
         </Box>
       </Popover>
     </Box>
