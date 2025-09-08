@@ -17,7 +17,7 @@ export function getWalletThemeConfig(mode: THEME_MODE): ThemeOptions {
       primary: getColor('#2D2D2D', '#F7F7F7'),
       secondary: getColor('#333331', '#D8D8D8'),
       content: getColor('#181817', '#181817'), // ? color content background
-      selection: '#4CADD3', // ? color selection sidebar
+      selection: getColor('#1B1C14', '#4CADD3'), // ? color selection sidebar
       hover: 'linear-gradient(90deg, #0E1713 0%, #246b87 48%, #0E1713 100%)',
       button: getColor('rgba(252, 255, 216, 1)', 'linear-gradient(142deg, #b6eaff 0%, #d3f1ff 35%, #a2d6ff 65%, #5dcdff 100%)'),
       border: getColor('#666662', '#E3E3E3'),
@@ -31,10 +31,11 @@ export function getWalletThemeConfig(mode: THEME_MODE): ThemeOptions {
     },
 
     secondary: {
-      main: getColor('#616161', '#131816'),
+      main: getColor('rgba(194, 205, 124, 0.12)', '#131816'),
       light: getColor('#242c28', '#C3C4C3'), // mau nen button text,
       dark: getColor('#444443', '#333331'),
     },
+
     action: {
       hover: getColor('#B5B5B5', '#8A8A8A'),
       active: getColor('#D4D4D4', '#484848'),
@@ -337,29 +338,13 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
       MuiOutlinedInput: {
         styleOverrides: {
           root: {
-            borderRadius: '12px',
+            borderRadius: '16px',
             //* border of text fields
-            [`.${outlinedInputClasses.notchedOutline}`]: {
-              //* background of text title of text field
-              ['& > legend']: {
-                marginLeft: '6px',
-              },
-              borderColor: 'var(--outlineInputBorderColor)',
-            },
-            '&:hover': {
-              background: 'var(--hoverOutlineInputBackgroundColor)',
-            },
             [`&:hover .${outlinedInputClasses.notchedOutline}`]: {
-              borderColor: 'var(--hoverOutlineInputBorderColor)',
-            },
-            '&.Mui-focused': {
-              background: 'var(--focusedOutlineInputBackgroundColor)',
+              borderColor: '#444443',
             },
             [`&.Mui-focused .${outlinedInputClasses.notchedOutline}`]: {
-              borderColor: 'var(--focusedOutlineInputBorderColor)',
-            },
-            '& .MuiInputBase-input': {
-              px: 'var(--filledInputPadding)',
+              borderColor: '#444443',
             },
           },
           error: {
@@ -475,7 +460,7 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
           },
           containedSecondary: {
             backgroundColor: theme.palette.secondary.main,
-            color: '#FFFFFF',
+            color: theme.palette.primary.main,
             '&:hover, &.Mui-focusVisible': {
               backgroundColor: darken(theme.palette.secondary.main, 0.2),
             },
