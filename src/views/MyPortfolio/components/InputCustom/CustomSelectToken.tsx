@@ -1,4 +1,5 @@
-import { MenuItem, Select, SelectProps, Stack, Typography } from '@mui/material';
+import { MenuItem, SelectProps, Stack, Typography } from '@mui/material';
+import { CustomSelect } from 'src/components/General/CustomSelect/CustomSelect';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { TokenName } from 'src/libs/crypto-icons/types';
@@ -11,7 +12,7 @@ type IProps = SelectProps & {
 
 const CustomSelectToken = ({ options, readonly, hideDropdownIcon, ...selectProps }: IProps) => {
   return (
-    <Select
+    <CustomSelect
       disabled={readonly}
       sx={{
         border: '1px solid #666662',
@@ -22,7 +23,7 @@ const CustomSelectToken = ({ options, readonly, hideDropdownIcon, ...selectProps
         height: '40px',
         borderRadius: '8px',
         '&:hover': {
-          bgcolor: 'transparent !important',
+          bgcolor: 'transparent',
         },
         ...selectProps?.sx,
       }}
@@ -49,7 +50,7 @@ const CustomSelectToken = ({ options, readonly, hideDropdownIcon, ...selectProps
           </MenuItem>
         );
       })}
-    </Select>
+    </CustomSelect>
   );
 };
 
