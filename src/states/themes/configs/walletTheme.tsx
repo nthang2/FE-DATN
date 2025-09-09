@@ -31,7 +31,7 @@ export function getWalletThemeConfig(mode: THEME_MODE): ThemeOptions {
     },
 
     secondary: {
-      main: getColor('rgba(194, 205, 124, 0.12)', '#131816'),
+      main: getColor('rgba(194, 205, 124, 0.2)', '#131816'),
       light: getColor('#242c28', '#C3C4C3'), // mau nen button text,
       dark: getColor('#444443', '#333331'),
     },

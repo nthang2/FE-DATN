@@ -68,7 +68,12 @@ const ListWalletSolana = () => {
                 </Typography>
               </Box>
 
-              <Button variant="outlined" onClick={() => handleConnect(wallet.adapter)} sx={{ height: '32px' }}>
+              <Button
+                variant="outlined"
+                disabled={wallet.adapter.connected}
+                onClick={() => handleConnect(wallet.adapter)}
+                sx={{ height: '32px' }}
+              >
                 {wallet.adapter.connected ? 'Connected' : 'Connect'}
               </Button>
             </Stack>

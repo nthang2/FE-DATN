@@ -1,19 +1,18 @@
 import SearchIcon from '@mui/icons-material/Search';
-import { Box, Button, CircularProgress, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import useEVMData from 'src/hooks/useEVMData/useEVMData';
 import { Connector, useConnect } from 'wagmi';
 import { useDestinationWalletState } from '../../state/hooks';
+import { mapNameWalletIcon } from '../../network';
 
 const ListWalletEthereum = () => {
-  const { owner } = useEVMData();
-  const { connectAsync, isPending, connectors } = useConnect();
+  const { owner, connector: connectorEVM } = useEVMData();
+  const { connectAsync, connectors } = useConnect();
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
-
-  const infoWalletConnected = connectors.find((connector) => connector.isConnected);
 
   async function handleConnect(connector: Connector) {
     try {
@@ -26,7 +25,11 @@ const ListWalletEthereum = () => {
 
   useEffect(() => {
     if (owner && owner?.toString() !== destinationWallet.address) {
-      setDestinationWallet({ address: owner?.toString() || '', wallet: infoWalletConnected?.icon || '' });
+      setDestinationWallet({
+        address: owner?.toString() || '',
+        wallet: connectorEVM?.icon || '',
+        iconWalletName: connectorEVM?.name || undefined,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [owner]);
@@ -54,6 +57,8 @@ const ListWalletEthereum = () => {
 
       <Stack direction="column">
         {connectors.map((connector, index) => {
+          const isConnected = connector.id === connectorEVM?.id;
+
           return (
             <Stack
               key={connector.id + index}
@@ -64,16 +69,17 @@ const ListWalletEthereum = () => {
               borderBottom={index !== connectors.length - 1 ? '1px solid #666662' : 0}
             >
               <Box className="flex-start" gap={1}>
-                <img src={connector.icon} style={{ width: '20px', height: '20px', borderRadius: '10px' }} />
+                {mapNameWalletIcon[connector.name] || (
+                  <img src={connector.icon} style={{ width: '20px', height: '20px', borderRadius: '10px' }} />
+                )}
 
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                   {connector.name}
                 </Typography>
               </Box>
 
-              <Button variant="outlined" onClick={() => handleConnect(connector)} sx={{ height: '32px' }}>
-                {isPending && <CircularProgress size={20} />}
-                {connector.isConnected ? 'Connected' : 'Connect'}
+              <Button variant="outlined" disabled={isConnected} onClick={() => handleConnect(connector)} sx={{ height: '32px' }}>
+                {isConnected ? 'Connected' : 'Connect'}
               </Button>
             </Stack>
           );

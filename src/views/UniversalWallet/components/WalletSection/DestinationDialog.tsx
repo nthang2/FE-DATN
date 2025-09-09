@@ -1,8 +1,8 @@
 import { Box, Popover, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import { listNetwork } from '../../constant';
-import { mapNameNetwork } from '../../network';
+import { mapNameNetwork, mapNameWalletIcon } from '../../network';
 import ListWalletSolana from './ListWalletSolana';
 import SelectedNetwork from './SelectedNetwork';
 import { useDestinationNetworkState, useDestinationWalletState } from '../../state/hooks';
@@ -14,6 +14,16 @@ const DestinationDialog = () => {
   const [destinationNetwork, setDestinationNetwork] = useDestinationNetworkState();
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
   const open = Boolean(anchorEl);
+
+  const walletIcon = useMemo(() => {
+    if (destinationWallet.iconWalletName || destinationWallet.wallet) {
+      return destinationWallet.iconWalletName && mapNameWalletIcon[destinationWallet.iconWalletName] ? (
+        mapNameWalletIcon[destinationWallet.iconWalletName]
+      ) : (
+        <img src={destinationWallet.wallet} style={{ width: '20px', height: '20px', borderRadius: '10px' }} />
+      );
+    }
+  }, [destinationWallet]);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!destinationNetwork.length) {
@@ -41,13 +51,11 @@ const DestinationDialog = () => {
           disabled
           placeholder="Select network, wallet and connect wallet..."
           InputProps={{
-            startAdornment: destinationWallet.wallet && (
-              <img src={destinationWallet.wallet} style={{ width: '20px', height: '20px', borderRadius: '10px', marginRight: '8px' }} />
-            ),
+            startAdornment: walletIcon,
             endAdornment: <SelectedNetwork value={destinationNetwork} />,
             sx: { px: 2, py: 1, fontSize: '14px', height: 'unset' },
           }}
-          inputProps={{ style: { padding: 0, paddingTop: 1 } }}
+          inputProps={{ style: { padding: 0, paddingTop: 1, paddingLeft: '8px' } }}
           value={destinationWallet.address}
           sx={{ mt: 1 }}
         />
