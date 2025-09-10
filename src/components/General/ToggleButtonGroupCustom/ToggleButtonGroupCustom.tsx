@@ -1,43 +1,50 @@
 import React from 'react';
-import { ToggleButton, ToggleButtonGroup, ToggleButtonGroupProps } from '@mui/material';
+import { ToggleButton, ToggleButtonGroup, ToggleButtonGroupProps, ToggleButtonProps, useTheme } from '@mui/material';
 
 export type IToggleButton = {
   value: string;
-  label: string;
+  label: string | React.ReactNode;
 };
 
 interface IProps extends Omit<ToggleButtonGroupProps, 'value'> {
   value: string;
   handleToggleChange(event: React.MouseEvent<HTMLElement>, newAlignment: string): void;
   data: IToggleButton[];
+  toggleBtnProps?: Omit<ToggleButtonProps, 'value'>;
 }
 
 const ToggleButtonGroupCustom = (props: IProps) => {
-  const { value, handleToggleChange, data, sx, ...rest } = props;
+  const { value, handleToggleChange, data, sx, toggleBtnProps = {} as ToggleButtonProps, ...rest } = props;
+  const { sx: sxBtn, ...btnProps } = toggleBtnProps;
+
+  const theme = useTheme();
 
   return (
     <ToggleButtonGroup
+      color="primary"
       value={value}
       defaultValue={value}
       exclusive
       onChange={handleToggleChange}
+      aria-label="Platform"
       sx={{
-        padding: '4px',
-        height: 'auto',
-        borderRadius: '12px',
-        background: '#333331',
-        color: 'white',
+        p: 0.5,
+        borderRadius: '24px',
+        background: theme.palette.background.secondary,
         '&.MuiTouchRipple-root': {
           display: 'none',
         },
         '&& .Mui-selected, && .Mui-selected:hover': {
-          backgroundColor: '#595958',
-          borderRadius: '12px',
-          border: '1px solid #82827F',
-          m: '2px',
+          color: 'white',
+          borderRadius: '24px',
+          bgcolor: theme.palette.action.focus,
+          // border: '1px solid',
+          // borderColor: theme.palette.primary.main,
         },
-        '&& .MuiButtonBase-root:hover': {
-          borderRadius: '12px',
+        '& .MuiButtonBase-root': {
+          paddingX: 2.5,
+          paddingY: 0.5,
+          lineHeight: 'normal',
         },
         ...sx,
       }}
@@ -53,7 +60,9 @@ const ToggleButtonGroupCustom = (props: IProps) => {
             '&.MuiTouchRipple-root': {
               display: 'none',
             },
+            ...sxBtn,
           }}
+          {...btnProps}
           value={item.value}
           key={item.value}
         >
