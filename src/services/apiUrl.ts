@@ -29,4 +29,8 @@ export const apiUrl = {
   getPoolApr: () => `${BACKEND_URL}/liquidator-pool/apr`,
   getHealthFactor: (userAddress: string) => `${BACKEND_URL}/lending/users/${userAddress}/health-factor`,
   getHealthFactorCrossMode: (userAddress: string) => `${BACKEND_URL}/lending/users/${userAddress}/cross-mode/health-factor`,
+
+  // Dashboard
+  getMetrics: () => `${BACKEND_URL}/lending/metrics`,
+  getMetricsCrossMode: () => `${BACKEND_URL}/lending/metrics/cross-mode`,
 };

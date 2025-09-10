@@ -29,16 +29,15 @@ export function getWalletThemeConfig(mode: THEME_MODE): ThemeOptions {
       light: 'rgba(242, 249, 165, 1)', // background color selected text,
       dark: 'rgba(254, 255, 243, 1)',
     },
-
     secondary: {
-      main: getColor('#616161', '#131816'),
+      main: getColor('rgba(194, 205, 124, 0.2)', '#131816'),
       light: getColor('#242c28', '#C3C4C3'), // mau nen button text,
       dark: getColor('#444443', '#333331'),
     },
     action: {
       hover: getColor('#B5B5B5', '#8A8A8A'),
       active: getColor('#D4D4D4', '#484848'),
-      focus: getColor('#D4D4D4', '#484848'),
+      focus: getColor('#595958', '#484848'),
     },
 
     info: {
@@ -249,7 +248,7 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
           root: {
             borderRadius: '16px',
             paddingInline: '10px',
-            background: (theme.palette.mode == 'dark' ? '#484848' : '#E3E3E3') + '!important',
+            background: theme.palette.mode == 'dark' ? '#484848' : '#E3E3E3',
             '& .MuiSelect-select': {
               padding: '4px 30px 4px 8px!important',
               fontSize: '14px',
@@ -475,7 +474,7 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
           },
           containedSecondary: {
             backgroundColor: theme.palette.secondary.main,
-            color: '#FFFFFF',
+            color: theme.palette.primary.main,
             '&:hover, &.Mui-focusVisible': {
               backgroundColor: darken(theme.palette.secondary.main, 0.2),
             },
