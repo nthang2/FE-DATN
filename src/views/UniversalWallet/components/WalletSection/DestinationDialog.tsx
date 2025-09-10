@@ -2,7 +2,6 @@ import { Box, Popover, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import { listNetwork } from '../../constant';
-import { mapNameNetwork } from '../../network';
 import ListWalletSolana from './ListWalletSolana';
 import SelectedNetwork from './SelectedNetwork';
 import { useDestinationNetworkState, useDestinationWalletState } from '../../state/hooks';
@@ -10,6 +9,7 @@ import ProviderSolana from 'src/components/Providers/ProviderSolana/ProviderSola
 import ListWalletEthereum from './ListWalletEthereum';
 import { walletIcon } from 'src/states/wallets/constants/walletIcon';
 import ProviderEVMUniversalWallet from 'src/components/Providers/ProviderEVM/ProviderEVMUniversalWallet';
+import { mapNameNetwork } from 'src/constants/network';
 
 const DestinationDialog = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);

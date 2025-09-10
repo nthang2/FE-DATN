@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { mapNameNetwork } from '../../network';
+import { mapNameNetwork } from 'src/constants/network';
 
 type IProps = {
   value: string;
