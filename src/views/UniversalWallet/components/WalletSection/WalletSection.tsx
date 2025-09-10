@@ -2,15 +2,14 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
-import { TokenName } from 'src/libs/crypto-icons';
-import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
+import WalletConnectIcon from 'src/components/General/WalletConnectIcon/WalletConnectIcon';
 import DestinationDialog from './DestinationDialog';
 import SelectedNetwork from './SelectedNetwork';
+import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 
 const WalletSection = () => {
-  const { address: sourceWallet } = useSummarySolanaConnect();
-  const [selectedNetworkSource] = useState<string>('solana');
+  const { address: sourceWallet, walletIcon: walletIconSource, networkName } = useSummaryConnect();
+  const [selectedNetworkSource] = useState<string>(networkName.toLowerCase());
 
   return (
     <BoxCustom sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -27,10 +26,10 @@ const WalletSection = () => {
           fullWidth
           variant="outlined"
           inputType="number"
-          placeholder="0"
+          placeholder="Connect your wallet"
           InputProps={{
             endAdornment: <SelectedNetwork value={selectedNetworkSource} />,
-            startAdornment: <IconToken tokenName={TokenName.SOL} sx={{ mr: 1 }} />,
+            startAdornment: <WalletConnectIcon Icon={walletIconSource} size="20" style={{ marginRight: '8px' }} />,
             sx: { px: 2, py: 1, fontSize: '14px', height: 'unset' },
           }}
           inputProps={{ style: { padding: 0, paddingTop: 1 } }}

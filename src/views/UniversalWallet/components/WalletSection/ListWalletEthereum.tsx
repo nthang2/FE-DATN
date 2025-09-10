@@ -3,13 +3,14 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
-import useEVMData from 'src/hooks/useEVMData/useEVMData';
-import { Connector, useConnect } from 'wagmi';
+import { Connector, useAccount, useConnect } from 'wagmi';
 import { useDestinationWalletState } from '../../state/hooks';
 import { mapNameWalletIcon } from '../../network';
+import useSummaryEVMConnect from 'src/states/wallets/evm-blockchain/hooks/useSummaryEVMConnect';
 
 const ListWalletEthereum = () => {
-  const { owner, connector: connectorEVM } = useEVMData();
+  const { address } = useSummaryEVMConnect();
+  const { connector: connectorEVM } = useAccount();
   const { connectAsync, connectors } = useConnect();
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
@@ -24,15 +25,15 @@ const ListWalletEthereum = () => {
   }
 
   useEffect(() => {
-    if (owner && owner?.toString() !== destinationWallet.address) {
+    if (address && address?.toString() !== destinationWallet.address) {
       setDestinationWallet({
-        address: owner?.toString() || '',
+        address: address?.toString() || '',
         wallet: connectorEVM?.icon || '',
         iconWalletName: connectorEVM?.name || undefined,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [owner]);
+  }, [address]);
 
   return (
     <Stack gap={1} direction="column">

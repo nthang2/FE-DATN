@@ -17,5 +17,6 @@ export default function useSummarySolanaConnect(): SummaryConnectInfo {
     walletName: wallet?.adapter.name || '',
     accountName: '',
     disconnect: () => disconnect(),
+    networkName: 'Solana',
   };
 }

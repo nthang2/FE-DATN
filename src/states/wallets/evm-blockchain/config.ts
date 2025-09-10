@@ -10,3 +10,11 @@ export const config = createConfig({
     [mainnet.id]: http(),
   },
 });
+
+export const configUniversalWallet = createConfig({
+  chains: [mainnet],
+  connectors: [metaMaskConnector, walletConnectConnector],
+  transports: {
+    [mainnet.id]: http(),
+  },
+});
