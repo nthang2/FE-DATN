@@ -21,3 +21,23 @@ export type TConvertedAmount = {
   address: string;
   swappedAmount: number;
 };
+
+export type TEarningMetrics = {
+  data: [
+    {
+      timestamp: number;
+      totalStaked: number;
+      earningRate: number;
+    }
+  ];
+};
+
+export type TTopDepositors = {
+  numberOfDocs: number;
+  data: [
+    {
+      address: string;
+      stakedAmount: number;
+    }
+  ];
+};

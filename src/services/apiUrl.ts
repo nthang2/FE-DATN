@@ -33,4 +33,6 @@ export const apiUrl = {
   // Dashboard
   getMetrics: () => `${BACKEND_URL}/lending/metrics`,
   getMetricsCrossMode: () => `${BACKEND_URL}/lending/metrics/cross-mode`,
+  getEarningMetrics: (day: number) => `${BACKEND_URL}/staking/tvl-history?nDays=${day}`,
+  getTopDepositors: () => `${BACKEND_URL}/staking/users`,
 };
