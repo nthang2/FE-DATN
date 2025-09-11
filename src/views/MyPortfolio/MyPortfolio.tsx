@@ -15,7 +15,7 @@ export default function MyPortfolio() {
   return (
     <>
       {status == 'Connected' && (
-        <Box sx={{ bgcolor: '#1B1C14', padding: '0px 32px 32px 32px', mt: 4, borderRadius: '32px' }}>
+        <Box sx={{ bgcolor: 'background.selection', padding: '0px 32px 32px 32px', mt: 4, borderRadius: '32px' }}>
           <SwitchMode />
           <Grid2 container spacing={3}>
             <Grid2 size={{ xs: 12, md: 8 }}>

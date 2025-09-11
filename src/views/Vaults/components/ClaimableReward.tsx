@@ -63,11 +63,11 @@ const ClaimableReward = () => {
         variant="contained"
         sx={{
           color: 'primary.main',
-          bgcolor: '#1B1C14',
+          bgcolor: 'background.selection',
           boxShadow: 'none',
           my: 'auto',
           ':hover': {
-            bgcolor: '#1B1C14',
+            bgcolor: 'background.selection',
             boxShadow: 'none',
           },
           maxWidth: '150px',

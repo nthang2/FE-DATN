@@ -25,4 +25,5 @@ export type SummaryConnectInfo = {
   walletName: string;
   walletIcon?: SvgComponent | string;
   disconnect: () => void;
+  networkName: string;
 };

@@ -104,3 +104,13 @@ export const PNG_SYSTEM_BSC: IconUrls = {
   lightmode: baseImgUrlSystem('BSC'),
   darkmode: baseImgUrlSystem('BSC'),
 };
+
+export const PNG_SYSTEM_Ethereum: IconUrls = {
+  lightmode: baseImgUrlSystem('Ethereum'),
+  darkmode: baseImgUrlSystem('Ethereum'),
+};
+
+export const PNG_SYSTEM_SOL: IconUrls = {
+  lightmode: baseImgUrlSystem('SOL'),
+  darkmode: baseImgUrlSystem('SOL'),
+};

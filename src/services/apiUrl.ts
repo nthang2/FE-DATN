@@ -33,6 +33,13 @@ export const apiUrl = {
   // Dashboard
   getMetrics: () => `${BACKEND_URL}/lending/metrics`,
   getMetricsCrossMode: () => `${BACKEND_URL}/lending/metrics/cross-mode`,
+
+  // Universal Wallet
+  generateMessage: (chainId: string, walletAddress: string) =>
+    `${BACKEND_URL}/universal/wallet-linking/generate-message?chainId=${chainId}&walletAddress=${walletAddress}`,
+  createUniversalWallet: (address: string) => `${BACKEND_URL}/liquidator-pool/users/${address}`,
+  walletLinkingRequest: () => `${BACKEND_URL}/universal/wallet-linking/request`,
+  signMessage: () => `${BACKEND_URL}/universal/wallet-linking/submit-signature`,
   getEarningMetrics: (day: number) => `${BACKEND_URL}/staking/tvl-history?nDays=${day}`,
   getTopDepositors: () => `${BACKEND_URL}/staking/users`,
   getAudits: () => `${BACKEND_URL}/yield-aggregator/audit`,
