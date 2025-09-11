@@ -1,24 +1,29 @@
 import { Box, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
+import useGetTopDepositor from '../../hooks/useGetTopDepositor';
+import { decimalFlood, formatAddress } from 'src/utils/format';
+import { useMemo, useState } from 'react';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { copyTextToClipboard } from 'src/utils';
+import { NumericFormat } from 'react-number-format';
 
-const topDepositorsTableHead = [{ label: '#', align: 'left' }, { label: 'Wallet', align: 'left' }, { label: 'Deposited' }];
-
-const mockTopDepositors = [
-  { id: '1', wallet: '0xe094...fa96', deposited: '2,883,264.22 USDC' },
-  { id: '2', wallet: '0x3a51...91c7', deposited: '2,541,110.08 USDC' },
-  { id: '3', wallet: '0x7bD2...0Ae1', deposited: '2,203,998.34 USDC' },
-  { id: '4', wallet: '0x9c10...bb44', deposited: '1,990,420.10 USDC' },
-  { id: '5', wallet: '0x12f0...a5d9', deposited: '1,768,205.77 USDC' },
-];
+const topDepositorsTableHead = [{ label: '#', align: 'left' }, { label: 'Wallet', align: 'left' }, { label: 'Staked Amount' }];
 
 const TopDepositors = () => {
+  const { data: topDepositors } = useGetTopDepositor();
+  const [page, setPage] = useState(1);
+
+  const dataRender = useMemo(() => {
+    return topDepositors?.data.slice(0, 20).slice((page - 1) * 5, (page - 1) * 5 + 5);
+  }, [page, topDepositors]);
+
   return (
-    <BoxCustom sx={{ bgcolor: '#000', gap: 2, display: 'flex', flexDirection: 'column' }}>
+    <BoxCustom sx={{ bgcolor: '#000', display: 'flex', flexDirection: 'column', py: 3 }}>
       <Typography variant="h6" fontWeight={600}>
-        Top Depositors
+        Top Stakers
       </Typography>
 
-      <TableContainer sx={{ mt: 2, borderRadius: '14px', p: 2 }}>
+      <TableContainer sx={{ borderRadius: '14px', p: 2 }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -37,21 +42,28 @@ const TopDepositors = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {mockTopDepositors.map((row) => (
-              <TableRow key={row.id}>
+            {dataRender?.map((row, index) => (
+              <TableRow key={row.address}>
                 <TableCell component="th" scope="row">
-                  <Typography variant="body2">{row.id}</Typography>
+                  <Typography variant="body2">{index + 1 + (page - 1) * 5}</Typography>
                 </TableCell>
                 <TableCell align="left">
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {row.wallet}
+                    {formatAddress(row.address, 5, 6)}
+                    <ContentCopyIcon sx={{ ml: 1, fontSize: '15px', cursor: 'pointer' }} onClick={() => copyTextToClipboard(row.address)} />
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
                   {/* height 32px for sync height with Audits table*/}
                   <Box sx={{ height: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {row.deposited}
+                      <NumericFormat
+                        displayType="text"
+                        value={decimalFlood(row.stakedAmount, 2)}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        fixedDecimalScale={false}
+                      />
                     </Typography>
                   </Box>
                 </TableCell>
@@ -61,7 +73,7 @@ const TopDepositors = () => {
         </Table>
       </TableContainer>
 
-      <Pagination sx={{ mx: 'auto' }} count={10} shape="rounded" />
+      <Pagination sx={{ mx: 'auto' }} count={Math.ceil(20 / 5)} shape="rounded" onChange={(_, value) => setPage(value)} page={page} />
     </BoxCustom>
   );
 };

@@ -1,24 +1,30 @@
 import { Box, Button, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
+import useGetAudit from '../../hooks/useGetAudit';
+import { useMemo, useState } from 'react';
 
 const auditsTableHead = [{ label: 'Protocol', align: 'left' }, { label: '' }];
-
-const mockAudits = [
-  { id: '1', protocol: 'Tokemak' },
-  { id: '2', protocol: 'Ethena' },
-  { id: '3', protocol: 'Maker' },
-  { id: '4', protocol: 'Sky' },
-  { id: '5', protocol: 'Curve' },
-];
+const PAGE_SIZE = 5;
 
 const Audits = () => {
+  const { data: audits, totalItems } = useGetAudit();
+  const [page, setPage] = useState(1);
+
+  const dataRender = useMemo(() => {
+    return audits?.slice((page - 1) * PAGE_SIZE, (page - 1) * PAGE_SIZE + PAGE_SIZE);
+  }, [page, audits]);
+
+  const handleClickAudit = (auditLink: string) => {
+    window.open(auditLink, '_blank');
+  };
+
   return (
-    <BoxCustom sx={{ bgcolor: '#000', gap: 2, display: 'flex', flexDirection: 'column' }}>
+    <BoxCustom sx={{ bgcolor: '#000', display: 'flex', flexDirection: 'column', py: 3, height: '100%' }}>
       <Typography variant="h6" fontWeight={600}>
         Audits
       </Typography>
 
-      <TableContainer sx={{ mt: 2, borderRadius: '14px', p: 2 }}>
+      <TableContainer sx={{ borderRadius: '14px', p: 2 }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -37,16 +43,22 @@ const Audits = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {mockAudits.map((row) => (
-              <TableRow key={row.id}>
+            {dataRender?.map((row) => (
+              <TableRow key={row.protocol}>
                 <TableCell align="left">
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  <Typography variant="body2" sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
                     {row.protocol}
                   </Typography>
                 </TableCell>
 
                 <TableCell align="right">
-                  <Button variant="contained" size="small" color="secondary" sx={{ fontSize: '14px' }}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="secondary"
+                    sx={{ fontSize: '14px' }}
+                    onClick={() => handleClickAudit(row.auditLink)}
+                  >
                     See Audits
                   </Button>
                 </TableCell>
@@ -56,7 +68,15 @@ const Audits = () => {
         </Table>
       </TableContainer>
 
-      <Pagination sx={{ mx: 'auto' }} count={10} shape="rounded" />
+      <Box className="flex-center" sx={{ flex: 1, alignItems: 'flex-end' }}>
+        <Pagination
+          sx={{ mx: 'auto' }}
+          count={Math.ceil(totalItems / PAGE_SIZE)}
+          shape="rounded"
+          onChange={(_, value) => setPage(value)}
+          page={page}
+        />
+      </Box>
     </BoxCustom>
   );
 };
