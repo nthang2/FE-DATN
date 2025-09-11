@@ -41,3 +41,18 @@ export type TTopDepositors = {
     }
   ];
 };
+
+export type TAudits = {
+  protocol: string;
+  auditLink: string;
+};
+
+export type TRebalanceActions = {
+  actionId: number;
+  txHash: string;
+  action: string;
+  chainId: string;
+  vaultId: string;
+  amount: number;
+  timestamp: number;
+};

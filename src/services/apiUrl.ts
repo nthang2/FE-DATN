@@ -35,4 +35,6 @@ export const apiUrl = {
   getMetricsCrossMode: () => `${BACKEND_URL}/lending/metrics/cross-mode`,
   getEarningMetrics: (day: number) => `${BACKEND_URL}/staking/tvl-history?nDays=${day}`,
   getTopDepositors: () => `${BACKEND_URL}/staking/users`,
+  getAudits: () => `${BACKEND_URL}/yield-aggregator/audit`,
+  getRebalanceActions: () => `${BACKEND_URL}/collateral-allocation/rebalance-actions`,
 };

@@ -18,12 +18,12 @@ const TopDepositors = () => {
   }, [page, topDepositors]);
 
   return (
-    <BoxCustom sx={{ bgcolor: '#000', gap: 2, display: 'flex', flexDirection: 'column' }}>
+    <BoxCustom sx={{ bgcolor: '#000', display: 'flex', flexDirection: 'column', py: 3 }}>
       <Typography variant="h6" fontWeight={600}>
         Top Stakers
       </Typography>
 
-      <TableContainer sx={{ mt: 2, borderRadius: '14px', p: 2 }}>
+      <TableContainer sx={{ borderRadius: '14px', p: 2 }}>
         <Table>
           <TableHead>
             <TableRow>

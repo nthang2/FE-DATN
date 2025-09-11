@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { apiUrl } from 'src/services/apiUrl';
-import { TEarningMetrics, TMetrics, TTopDepositors } from './type';
+import { TAudits, TEarningMetrics, TMetrics, TRebalanceActions, TTopDepositors } from './type';
 
 export const getMetrics = async () => {
   const resp = await axios.get(apiUrl.getMetrics());
@@ -20,4 +20,14 @@ export const getEarningMetrics = async (day: number) => {
 export const getTopDepositors = async () => {
   const resp = await axios.get(apiUrl.getTopDepositors());
   return resp.data as TTopDepositors;
+};
+
+export const getAudits = async () => {
+  const resp = await axios.get(apiUrl.getAudits());
+  return resp.data as TAudits[];
+};
+
+export const getRebalanceActions = async () => {
+  const resp = await axios.get(apiUrl.getRebalanceActions());
+  return resp.data as TRebalanceActions[];
 };

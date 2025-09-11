@@ -1,20 +1,37 @@
-import React, { useMemo, useState } from 'react';
+import { Stack, Typography } from '@mui/material';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
+import ToggleButtonGroupCustom from 'src/components/General/ToggleButtonGroupCustom/ToggleButtonGroupCustom';
 import useLineChartConfig from 'src/hooks/useHighcharts/useLineChartConfig';
-import { MenuItem, Stack, Typography } from '@mui/material';
-import { CustomSelect } from 'src/components/General/CustomSelect/CustomSelect';
 import useGetEarning from 'src/views/Vaults/hooks/useGetEarning';
 
-const selectOptions = [7, 30, 90];
+const ToggleButtonGroups = [
+  {
+    value: '-1',
+    label: 'ALL',
+  },
+  {
+    value: '7',
+    label: '7D',
+  },
+  {
+    value: '30',
+    label: '1M',
+  },
+  {
+    value: '90',
+    label: '3M',
+  },
+];
 
 const SupplyChart = () => {
-  const [selectedOption, setSelectedOption] = useState<string>('30');
-  const { data: earningData } = useGetEarning(Number(selectedOption));
+  const [toggleValue, setToggleValue] = useState<string>('7');
+  const { data: earningData } = useGetEarning(Number(toggleValue));
 
   const dataChart = useMemo(() => {
-    return earningData?.data.map((item) => [item.timestamp * 1000, Number(item.totalStaked.toFixed(0))]);
+    return earningData?.data.map((item) => [item.timestamp * 1000, Number(item.totalStaked.toFixed(0))]) || [];
   }, [earningData]);
 
   const options: Highcharts.Options = useLineChartConfig(
@@ -71,13 +88,11 @@ const SupplyChart = () => {
           USDAI Supply
         </Typography>
 
-        <CustomSelect value={selectedOption} onChange={(e) => setSelectedOption(e.target.value as string)} sx={{ height: '35px' }}>
-          {selectOptions.map((option) => (
-            <MenuItem value={option} key={option}>
-              {option}
-            </MenuItem>
-          ))}
-        </CustomSelect>
+        <ToggleButtonGroupCustom
+          value={toggleValue}
+          handleToggleChange={(_, newAlignment) => setToggleValue(newAlignment)}
+          data={ToggleButtonGroups}
+        />
       </Stack>
 
       <HighchartsReact highcharts={Highcharts} options={options} />
