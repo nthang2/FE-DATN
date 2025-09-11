@@ -4,7 +4,7 @@ import useSummarySolanaConnect from '../solana-blockchain/hooks/useSummarySolana
 const useSummaryConnect = () => {
   const evm = useSummaryEVMConnect();
   const solana = useSummarySolanaConnect();
-  const summary = [evm, solana].find((item) => item.status === 'Connected') || solana;
+  const summary = [solana, evm].find((item) => item.status === 'Connected') || solana;
 
   return summary;
 };

@@ -1,32 +1,22 @@
 import { Box, Popover, Stack, Typography } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
+import WalletConnectIcon from 'src/components/General/WalletConnectIcon/WalletConnectIcon';
 import { mapNameNetwork } from 'src/constants/network';
-import WalletConnectIcon from '../../../../components/General/WalletConnectIcon/WalletConnectIcon';
+import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 import { listNetwork } from '../../constant';
-import { useDestinationNetworkState, useDestinationWalletState, useSourceNetworkState } from '../../state/hooks';
 import ListWalletEthereum from './ListWalletEthereum';
 import ListWalletSolana from './ListWalletSolana';
 import SelectedNetwork from './SelectedNetwork';
+import { useDestinationNetworkState, useSourceNetworkState, useSourceWalletState } from '../../state/hooks';
 
-const DestinationDialog = () => {
+const SourceWalletDialog = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [destinationNetwork, setDestinationNetwork] = useDestinationNetworkState();
-  const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
-  const [sourceNetwork] = useSourceNetworkState();
+  const { address, walletIcon: walletIconSource, networkName } = useSummaryConnect();
+  const [sourceNetwork, setSourceNetwork] = useSourceNetworkState();
+  const [, setSourceWallet] = useSourceWalletState();
+  const [destinationNetwork] = useDestinationNetworkState();
   const open = Boolean(anchorEl);
-
-  const destinationWalletIcon = useMemo(() => {
-    if (destinationWallet.iconWalletName || destinationWallet.wallet) {
-      if (destinationWallet.iconWalletName) {
-        return <WalletConnectIcon Icon={destinationWallet.iconWalletName} size="20" style={{ marginRight: '8px', borderRadius: '50%' }} />;
-      }
-
-      return <img src={destinationWallet.wallet} style={{ width: '20px', height: '20px', borderRadius: '10px' }} />;
-    }
-
-    return <></>;
-  }, [destinationWallet.iconWalletName, destinationWallet.wallet]);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -37,16 +27,22 @@ const DestinationDialog = () => {
   };
 
   const handleChangeNetwork = (network: string) => {
-    if (sourceNetwork !== network) {
-      setDestinationNetwork(network);
-      setDestinationWallet({ address: '', wallet: '', chainId: '' });
+    if (destinationNetwork !== network) {
+      setSourceNetwork(network);
     }
   };
 
   const handleDisconnect = () => {
-    setDestinationWallet({ address: '', wallet: '', chainId: '' });
-    setDestinationNetwork('');
+    setSourceNetwork('');
   };
+
+  useEffect(() => {
+    if (address && networkName && networkName.toLowerCase() !== sourceNetwork) {
+      setSourceNetwork(networkName.toLowerCase());
+      setSourceWallet(address);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, networkName]);
 
   return (
     <Box>
@@ -54,16 +50,17 @@ const DestinationDialog = () => {
         <CustomTextField
           fullWidth
           variant="outlined"
-          disabled
-          placeholder="Select network, wallet and connect wallet..."
+          inputType="number"
+          placeholder="Connect your wallet"
           InputProps={{
-            startAdornment: destinationWalletIcon,
-            endAdornment: <SelectedNetwork value={destinationNetwork} />,
+            endAdornment: <SelectedNetwork value={sourceNetwork} />,
+            startAdornment: <WalletConnectIcon Icon={walletIconSource} size="20" style={{ marginRight: '8px', borderRadius: '50%' }} />,
             sx: { px: 2, py: 1, fontSize: '14px', height: 'unset' },
           }}
-          inputProps={{ style: { padding: 0, paddingTop: 1, paddingLeft: '8px' } }}
-          value={destinationWallet.address}
+          inputProps={{ style: { padding: 0, paddingTop: 1 } }}
+          disabled
           sx={{ mt: 1 }}
+          value={address || ''}
         />
         <Box sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }} />
       </Box>
@@ -105,12 +102,12 @@ const DestinationDialog = () => {
                       gap: 1,
                       width: '82px',
                       height: '70px',
-                      cursor: 'pointer',
                       border: '1px solid transparent',
-                      ':hover': sourceNetwork !== networkInfo.id ? { bgcolor: 'secondary.dark', borderColor: 'primary.main' } : {},
-                      bgcolor: destinationNetwork === networkInfo.id ? 'secondary.dark' : 'transparent',
-                      borderColor: destinationNetwork === networkInfo.id ? 'primary.main' : 'transparent',
-                      opacity: sourceNetwork === networkInfo.id ? '0.5' : '1',
+                      cursor: 'pointer',
+                      ':hover': destinationNetwork !== networkInfo.id ? { bgcolor: 'secondary.dark', borderColor: 'primary.main' } : {},
+                      bgcolor: sourceNetwork === networkInfo.id ? 'secondary.dark' : 'transparent',
+                      borderColor: sourceNetwork === networkInfo.id ? 'primary.main' : 'transparent',
+                      opacity: destinationNetwork === networkInfo.id ? '0.5' : '1',
                     }}
                     onClick={() => handleChangeNetwork(networkInfo.id)}
                   >
@@ -125,12 +122,12 @@ const DestinationDialog = () => {
             </Stack>
           </Stack>
 
-          {destinationNetwork === 'solana' && <ListWalletSolana onDisconnect={handleDisconnect} />}
-          {destinationNetwork === 'ethereum' && <ListWalletEthereum onDisconnect={handleDisconnect} />}
+          {sourceNetwork === 'solana' && <ListWalletSolana onDisconnect={handleDisconnect} />}
+          {sourceNetwork === 'ethereum' && <ListWalletEthereum onDisconnect={handleDisconnect} />}
         </Box>
       </Popover>
     </Box>
   );
 };
 
-export default DestinationDialog;
+export default SourceWalletDialog;

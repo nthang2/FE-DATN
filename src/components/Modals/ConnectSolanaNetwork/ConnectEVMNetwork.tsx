@@ -31,7 +31,7 @@ export default function ConnectEVMNetwork(props: IProps) {
 
   return (
     <Grid container spacing={1}>
-      {isConnecting && (
+      {/* {isConnecting && (
         <Box
           sx={{
             position: 'absolute',
@@ -50,7 +50,7 @@ export default function ConnectEVMNetwork(props: IProps) {
         >
           <LoadingIcon sx={{ width: '100px', height: '100px' }} />
         </Box>
-      )}
+      )} */}
       {connectors.map((connector, index) => {
         let status: TWalletStatus = 'Disconnected';
         let button;
@@ -81,9 +81,6 @@ export default function ConnectEVMNetwork(props: IProps) {
               Disconnect
             </ButtonCustom>
           );
-        } else if (isConnecting) {
-          status = 'Connecting';
-          button = <ButtonCustom>Connecting...</ButtonCustom>;
         } else {
           status = 'Disconnected';
           button = address ? (

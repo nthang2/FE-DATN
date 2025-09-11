@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { mapNameNetwork } from 'src/constants/network';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 type IProps = {
   value: string;
@@ -13,6 +14,7 @@ const SelectedNetwork = (props: IProps) => {
     <Box
       sx={{
         height: '48px',
+        minWidth: '130px',
         px: 2,
         border: '1px solid #666662',
         borderRadius: '8px',
@@ -34,12 +36,13 @@ const SelectedNetwork = (props: IProps) => {
       )}
 
       {networkInfo && (
-        <>
+        <Box className="flex-center" alignItems="center">
           {networkInfo.icon}
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 'unset', mt: '1px', ml: 0.5 }}>
             {networkInfo.name}
           </Typography>
-        </>
+          <ArrowDropDownIcon sx={{ width: '18px', height: '18px' }} />
+        </Box>
       )}
     </Box>
   );

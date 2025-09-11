@@ -1,15 +1,27 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
-import CustomTextField from 'src/components/CustomForms/CustomTextField';
+import { useEffect, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
-import WalletConnectIcon from 'src/components/General/WalletConnectIcon/WalletConnectIcon';
-import DestinationDialog from './DestinationDialog';
-import SelectedNetwork from './SelectedNetwork';
 import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
+import useRequestLink from '../../hooks/useRequestLink';
+import DestinationDialog from './DestinationDialog';
+import SourceWalletDialog from './SourceWalletDialog';
+import ProviderEVMUniversalWallet from 'src/components/Providers/ProviderEVM/ProviderEVMUniversalWallet';
+import ProviderSolana from 'src/components/Providers/ProviderSolana/ProviderSolana';
+import SignMessageBtn from './SignMessageBtn';
+import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 
 const WalletSection = () => {
-  const { address: sourceWallet, walletIcon: walletIconSource, networkName } = useSummaryConnect();
-  const [selectedNetworkSource] = useState<string>(networkName.toLowerCase());
+  const { mutate: requestLink, isPending: isRequestLinkPending } = useRequestLink();
+  const { address: sourceWallet, networkName } = useSummaryConnect();
+  const [selectedNetworkSource, setSelectedNetworkSource] = useState<string>(networkName.toLowerCase());
+  const [isShowRequestLink, setIsShowRequestLink] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (networkName && networkName.toLowerCase() !== selectedNetworkSource) {
+      setSelectedNetworkSource(networkName.toLowerCase());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sourceWallet, networkName]);
 
   return (
     <BoxCustom sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -22,39 +34,41 @@ const WalletSection = () => {
           Source Wallet
         </Typography>
 
-        <CustomTextField
-          fullWidth
-          variant="outlined"
-          inputType="number"
-          placeholder="Connect your wallet"
-          InputProps={{
-            endAdornment: <SelectedNetwork value={selectedNetworkSource} />,
-            startAdornment: <WalletConnectIcon Icon={walletIconSource} size="20" style={{ marginRight: '8px' }} />,
-            sx: { px: 2, py: 1, fontSize: '14px', height: 'unset' },
-          }}
-          inputProps={{ style: { padding: 0, paddingTop: 1 } }}
-          disabled
-          sx={{ mt: 1 }}
-          value={sourceWallet || ''}
-        />
+        <SourceWalletDialog />
       </Box>
 
-      <Box>
-        <Typography variant="body2" fontWeight={600} color="text.secondary">
-          Destination Wallet
-        </Typography>
+      <ProviderSolana localStorageKey="destination.connectWallet">
+        <ProviderEVMUniversalWallet>
+          {isShowRequestLink ? (
+            <Box>
+              <Typography variant="body2" fontWeight={600} color="text.secondary">
+                Destination Wallet
+              </Typography>
 
-        <DestinationDialog />
-      </Box>
+              <DestinationDialog />
+            </Box>
+          ) : (
+            <></>
+          )}
 
-      <Stack gap={2}>
-        <Button variant="outlined" fullWidth>
-          Add destination wallet
-        </Button>
-        <Button variant="contained" fullWidth>
-          Create universal wallet
-        </Button>
-      </Stack>
+          {isShowRequestLink ? (
+            <ButtonLoading variant="contained" fullWidth onClick={() => requestLink()} loading={isRequestLinkPending}>
+              Request to link wallet
+            </ButtonLoading>
+          ) : (
+            <Stack gap={2}>
+              <Button variant="outlined" fullWidth onClick={() => setIsShowRequestLink(true)}>
+                Add destination wallet
+              </Button>
+              <Button variant="contained" fullWidth>
+                Create universal wallet
+              </Button>
+            </Stack>
+          )}
+
+          <SignMessageBtn />
+        </ProviderEVMUniversalWallet>
+      </ProviderSolana>
     </BoxCustom>
   );
 };

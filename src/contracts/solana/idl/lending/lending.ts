@@ -117,6 +117,69 @@ export type IdlLending = {
       ];
     },
     {
+      name: 'addUniversalWallet';
+      discriminator: [110, 241, 67, 130, 26, 131, 127, 228];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'crosschainConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'user';
+          writable: true;
+        },
+        {
+          name: 'walletLinked';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [85, 78, 73, 86, 69, 82, 83, 65, 76, 95, 87, 65, 76, 76, 69, 84];
+              },
+              {
+                kind: 'arg';
+                path: 'walletAddress';
+              },
+              {
+                kind: 'arg';
+                path: 'chainId';
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'chainId';
+          type: 'u8';
+        },
+        {
+          name: 'walletAddress';
+          type: {
+            array: ['u8', 32];
+          };
+        }
+      ];
+    },
+    {
       name: 'addWhitelistAdmin';
       discriminator: [20, 72, 17, 49, 147, 29, 238, 218];
       accounts: [
@@ -324,6 +387,1401 @@ export type IdlLending = {
         {
           name: 'newAdmin';
           type: 'pubkey';
+        }
+      ];
+    },
+    {
+      name: 'checkAction';
+      discriminator: [43, 242, 57, 110, 178, 244, 40, 235];
+      accounts: [
+        {
+          name: 'guardian';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'crosschainConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'request';
+        },
+        {
+          name: 'instructionSysvar';
+          docs: ['CHECK'];
+          address: 'Sysvar1nstructions1111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'chainId';
+          type: 'u8';
+        },
+        {
+          name: 'walletAddress';
+          type: {
+            array: ['u8', 32];
+          };
+        }
+      ];
+    },
+    {
+      name: 'crosschainInitializeType1Depository';
+      discriminator: [215, 109, 30, 227, 112, 56, 151, 54];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'whitelistAdmin';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78];
+              }
+            ];
+          };
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainDepository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'arg';
+                path: 'chainId';
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'chainId';
+          type: 'u8';
+        }
+      ];
+    },
+    {
+      name: 'crosschainType1Burn';
+      discriminator: [176, 200, 147, 96, 196, 254, 21, 159];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'user';
+          writable: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainDepository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'arg';
+                path: 'chainId';
+              }
+            ];
+          };
+        },
+        {
+          name: 'loanAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemableMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'controller.reserve';
+                account: 'controller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'oracle';
+          docs: ['CHECK'];
+          writable: true;
+        },
+        {
+          name: 'request';
+          writable: true;
+        },
+        {
+          name: 'instructionSysvar';
+          docs: ['CHECK'];
+          address: 'Sysvar1nstructions1111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'chainId';
+          type: 'u8';
+        }
+      ];
+    },
+    {
+      name: 'crosschainType1Deposit';
+      discriminator: [21, 198, 181, 223, 169, 27, 118, 127];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'user';
+          writable: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainDepository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'arg';
+                path: 'chainId';
+              }
+            ];
+          };
+        },
+        {
+          name: 'loanAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateralToken';
+          writable: true;
+        },
+        {
+          name: 'request';
+          writable: true;
+        },
+        {
+          name: 'instructionSysvar';
+          docs: ['CHECK'];
+          address: 'Sysvar1nstructions1111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'chainId';
+          type: 'u8';
+        }
+      ];
+    },
+    {
+      name: 'crosschainType1Liquidate';
+      discriminator: [19, 246, 247, 113, 135, 103, 69, 84];
+      accounts: [
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'liquidator';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'user';
+          writable: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainDepository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'arg';
+                path: 'chainId';
+              }
+            ];
+          };
+        },
+        {
+          name: 'depositoryVault';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'collateralToken1';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'loan';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'stablecoinMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateralToken1';
+          writable: true;
+        },
+        {
+          name: 'liquidatorStablecoinAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'liquidator';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'stablecoinMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'liquidatorCollateralAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'liquidator';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'collateralToken1';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'controller.reserve';
+                account: 'controller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'stablecoinMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'oracle';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'chainId';
+          type: 'u8';
+        },
+        {
+          name: 'walletAddress';
+          type: {
+            array: ['u8', 32];
+          };
+        },
+        {
+          name: 'repayAmount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
+      name: 'crosschainType1Mint';
+      discriminator: [131, 217, 225, 199, 24, 185, 213, 173];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'user';
+          writable: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainDepository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'arg';
+                path: 'chainId';
+              }
+            ];
+          };
+        },
+        {
+          name: 'loanAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemableMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'controller.reserve';
+                account: 'controller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'oracle';
+          docs: ['CHECK'];
+          writable: true;
+        },
+        {
+          name: 'request';
+          writable: true;
+        },
+        {
+          name: 'instructionSysvar';
+          docs: ['CHECK'];
+          address: 'Sysvar1nstructions1111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'chainId';
+          type: 'u8';
+        }
+      ];
+    },
+    {
+      name: 'crosschainType1Withdraw';
+      discriminator: [182, 166, 105, 102, 201, 212, 211, 175];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'user';
+          writable: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainDepository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'arg';
+                path: 'chainId';
+              }
+            ];
+          };
+        },
+        {
+          name: 'loanAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateralToken';
+          writable: true;
+        },
+        {
+          name: 'redeemableMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'controller.reserve';
+                account: 'controller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'oracle';
+          docs: ['CHECK'];
+          writable: true;
+        },
+        {
+          name: 'request';
+          writable: true;
+        },
+        {
+          name: 'instructionSysvar';
+          docs: ['CHECK'];
+          address: 'Sysvar1nstructions1111111111111111111111111';
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'chainId';
+          type: 'u8';
         }
       ];
     },
@@ -555,6 +2013,131 @@ export type IdlLending = {
           type: {
             defined: {
               name: 'editControllerFields';
+            };
+          };
+        }
+      ];
+    },
+    {
+      name: 'editCrosschainConfig';
+      discriminator: [140, 176, 20, 165, 134, 22, 210, 135];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'whitelistAdminAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'newGuardianAddress';
+          type: {
+            option: 'pubkey';
+          };
+        },
+        {
+          name: 'newChainId';
+          type: {
+            option: 'u8';
+          };
+        }
+      ];
+    },
+    {
+      name: 'editCrosschainType1Depository';
+      discriminator: [241, 198, 253, 129, 86, 203, 172, 118];
+      accounts: [
+        {
+          name: 'authority';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'whitelistAdminAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78];
+              }
+            ];
+          };
+        },
+        {
+          name: 'depository';
+          writable: true;
+          optional: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainDepository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'arg';
+                path: 'chainId';
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'chainId';
+          type: 'u8';
+        },
+        {
+          name: 'fields';
+          type: {
+            vec: {
+              defined: {
+                name: 'editCrosschainCollateralTokenField';
+              };
             };
           };
         }
@@ -1351,6 +2934,65 @@ export type IdlLending = {
         {
           name: 'duty';
           type: 'u64';
+        }
+      ];
+    },
+    {
+      name: 'initializeUniversalWallet';
+      discriminator: [167, 121, 61, 186, 111, 218, 252, 208];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'crosschainConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'user';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [85, 78, 73, 86, 69, 82, 83, 65, 76, 95, 87, 65, 76, 76, 69, 84];
+              },
+              {
+                kind: 'arg';
+                path: 'firstWalletAddress';
+              },
+              {
+                kind: 'arg';
+                path: 'firstChainId';
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'firstChainId';
+          type: 'u8';
+        },
+        {
+          name: 'firstWalletAddress';
+          type: {
+            array: ['u8', 32];
+          };
         }
       ];
     },
@@ -2307,6 +3949,69 @@ export type IdlLending = {
       };
     },
     {
+      name: 'removeUniversalWallet';
+      discriminator: [163, 56, 123, 12, 122, 60, 125, 18];
+      accounts: [
+        {
+          name: 'signer';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'crosschainConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'user';
+          writable: true;
+        },
+        {
+          name: 'walletLinked';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [85, 78, 73, 86, 69, 82, 83, 65, 76, 95, 87, 65, 76, 76, 69, 84];
+              },
+              {
+                kind: 'arg';
+                path: 'walletAddress';
+              },
+              {
+                kind: 'arg';
+                path: 'chainId';
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'chainId';
+          type: 'u8';
+        },
+        {
+          name: 'walletAddress';
+          type: {
+            array: ['u8', 32];
+          };
+        }
+      ];
+    },
+    {
       name: 'repayFarmingType0';
       discriminator: [194, 154, 139, 232, 77, 236, 242, 174];
       accounts: [
@@ -2547,6 +4252,65 @@ export type IdlLending = {
         {
           name: 'usdcAmount';
           type: 'u64';
+        }
+      ];
+    },
+    {
+      name: 'requestLinkWallet';
+      discriminator: [24, 176, 7, 175, 165, 215, 152, 182];
+      accounts: [
+        {
+          name: 'user';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'linkingWalletRequest';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [87, 65, 76, 76, 69, 84, 95, 76, 73, 78, 75, 73, 78, 71, 95, 82, 69, 81, 85, 69, 83, 84];
+              },
+              {
+                kind: 'account';
+                path: 'user';
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainConfig';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'destinationWallet';
+          type: {
+            array: ['u8', 32];
+          };
+        },
+        {
+          name: 'destinationChainId';
+          type: 'u8';
+        },
+        {
+          name: 'action';
+          type: 'bool';
         }
       ];
     },
@@ -5325,6 +7089,1302 @@ export type IdlLending = {
       args: [];
     },
     {
+      name: 'userCrosschainType1Burn';
+      discriminator: [18, 197, 162, 143, 64, 107, 204, 153];
+      accounts: [
+        {
+          name: 'user';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainConfig';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'universalWallet';
+          writable: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainDepository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'crosschain_config.chain_id';
+                account: 'crosschainConfig';
+              }
+            ];
+          };
+        },
+        {
+          name: 'loanAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'universalWallet';
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemableMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'controller.reserve';
+                account: 'controller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'userRedeemableAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'user';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'oracle';
+          docs: ['CHECK'];
+          writable: true;
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'redeemAmount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
+      name: 'userCrosschainType1Deposit';
+      discriminator: [62, 40, 138, 236, 43, 86, 39, 6];
+      accounts: [
+        {
+          name: 'user';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'crosschainConfig';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'universalWallet';
+          writable: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'depositoryVault';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'collateralToken';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'userCollateralAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'user';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'collateralToken';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'crosschainDepository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'crosschain_config.chain_id';
+                account: 'crosschainConfig';
+              }
+            ];
+          };
+        },
+        {
+          name: 'loanAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'universalWallet';
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateralToken';
+          writable: true;
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'collateralAmount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
+      name: 'userCrosschainType1Mint';
+      discriminator: [214, 182, 157, 245, 178, 151, 229, 65];
+      accounts: [
+        {
+          name: 'user';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainConfig';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'universalWallet';
+          writable: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainDepository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'crosschain_config.chain_id';
+                account: 'crosschainConfig';
+              }
+            ];
+          };
+        },
+        {
+          name: 'loanAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'universalWallet';
+              }
+            ];
+          };
+        },
+        {
+          name: 'redeemableMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'userRedeemableAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'user';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'controller.reserve';
+                account: 'controller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'oracle';
+          docs: ['CHECK'];
+          writable: true;
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'debtAmount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
+      name: 'userCrosschainType1Withdraw';
+      discriminator: [251, 59, 165, 134, 96, 192, 194, 59];
+      accounts: [
+        {
+          name: 'user';
+          writable: true;
+          signer: true;
+        },
+        {
+          name: 'controller';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82];
+              }
+            ];
+          };
+        },
+        {
+          name: 'crosschainConfig';
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71];
+              }
+            ];
+          };
+        },
+        {
+          name: 'universalWallet';
+          writable: true;
+        },
+        {
+          name: 'depository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              }
+            ];
+          };
+        },
+        {
+          name: 'depositoryVault';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'collateralToken';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'userCollateralAta';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'user';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'collateralToken';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'crosschainDepository';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'crosschain_config.chain_id';
+                account: 'crosschainConfig';
+              }
+            ];
+          };
+        },
+        {
+          name: 'loanAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49];
+              },
+              {
+                kind: 'account';
+                path: 'depository';
+              },
+              {
+                kind: 'account';
+                path: 'universalWallet';
+              }
+            ];
+          };
+        },
+        {
+          name: 'collateralToken';
+          writable: true;
+        },
+        {
+          name: 'redeemableMint';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69];
+              }
+            ];
+          };
+        },
+        {
+          name: 'reserveTokenAccount';
+          writable: true;
+          pda: {
+            seeds: [
+              {
+                kind: 'account';
+                path: 'controller.reserve';
+                account: 'controller';
+              },
+              {
+                kind: 'const';
+                value: [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ];
+              },
+              {
+                kind: 'account';
+                path: 'redeemableMint';
+              }
+            ];
+            program: {
+              kind: 'const';
+              value: [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ];
+            };
+          };
+        },
+        {
+          name: 'oracle';
+          docs: ['CHECK'];
+          writable: true;
+        },
+        {
+          name: 'tokenProgram';
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        },
+        {
+          name: 'token2022Program';
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
+        },
+        {
+          name: 'associatedTokenProgram';
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+        },
+        {
+          name: 'systemProgram';
+          address: '11111111111111111111111111111111';
+        }
+      ];
+      args: [
+        {
+          name: 'collateralAmount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
       name: 'withdrawInvestment';
       discriminator: [157, 158, 101, 11, 240, 193, 192, 92];
       accounts: [
@@ -5916,6 +8976,14 @@ export type IdlLending = {
       discriminator: [184, 79, 171, 0, 183, 43, 113, 110];
     },
     {
+      name: 'crosschainConfig';
+      discriminator: [29, 3, 68, 189, 250, 99, 9, 205];
+    },
+    {
+      name: 'crosschainType1Depository';
+      discriminator: [183, 8, 117, 91, 202, 45, 216, 77];
+    },
+    {
       name: 'farmingConfig';
       discriminator: [227, 37, 190, 173, 145, 73, 54, 104];
     },
@@ -5936,6 +9004,10 @@ export type IdlLending = {
       discriminator: [84, 193, 134, 218, 211, 27, 137, 25];
     },
     {
+      name: 'request';
+      discriminator: [125, 172, 150, 161, 162, 115, 39, 71];
+    },
+    {
       name: 'swapUsdaiConfig';
       discriminator: [34, 190, 22, 120, 246, 58, 3, 167];
     },
@@ -5948,6 +9020,10 @@ export type IdlLending = {
       discriminator: [132, 68, 105, 249, 215, 58, 64, 100];
     },
     {
+      name: 'universalWallet';
+      discriminator: [209, 219, 212, 246, 186, 188, 20, 71];
+    },
+    {
       name: 'userInfo';
       discriminator: [83, 134, 200, 56, 144, 56, 10, 62];
     },
@@ -5956,11 +9032,23 @@ export type IdlLending = {
       discriminator: [133, 250, 161, 78, 246, 27, 55, 187];
     },
     {
+      name: 'walletLinked';
+      discriminator: [249, 171, 22, 59, 3, 203, 66, 87];
+    },
+    {
+      name: 'walletLinkingRequest';
+      discriminator: [181, 36, 95, 59, 66, 125, 29, 78];
+    },
+    {
       name: 'whitelistAdmin';
       discriminator: [163, 150, 229, 143, 243, 38, 17, 133];
     }
   ];
   events: [
+    {
+      name: 'burnCrosschainEvent';
+      discriminator: [250, 129, 213, 104, 145, 4, 37, 19];
+    },
     {
       name: 'burnType1Event';
       discriminator: [11, 185, 25, 36, 190, 113, 131, 112];
@@ -5968,6 +9056,18 @@ export type IdlLending = {
     {
       name: 'changeNewCollateralType1';
       discriminator: [204, 46, 186, 111, 9, 18, 59, 191];
+    },
+    {
+      name: 'convertStablecoinToUsdaiEvent';
+      discriminator: [99, 30, 253, 4, 50, 59, 62, 74];
+    },
+    {
+      name: 'convertUsdaiToStablecoinEvent';
+      discriminator: [16, 241, 186, 230, 151, 143, 94, 217];
+    },
+    {
+      name: 'depositCrosschainEvent';
+      discriminator: [229, 61, 12, 30, 151, 62, 209, 19];
     },
     {
       name: 'depositType1Event';
@@ -5990,8 +9090,16 @@ export type IdlLending = {
       discriminator: [3, 13, 21, 93, 173, 136, 72, 144];
     },
     {
+      name: 'mintCrosschainEvent';
+      discriminator: [252, 171, 83, 88, 253, 76, 11, 119];
+    },
+    {
       name: 'mintType1Event';
       discriminator: [126, 100, 125, 84, 68, 45, 186, 158];
+    },
+    {
+      name: 'requestLinkWalletEvent';
+      discriminator: [65, 192, 247, 72, 208, 34, 229, 213];
     },
     {
       name: 'setType0DepositoryCollateralizationRatioEvent';
@@ -6032,6 +9140,10 @@ export type IdlLending = {
     {
       name: 'setType1LiquidationRatioEvent';
       discriminator: [60, 113, 146, 120, 221, 42, 2, 133];
+    },
+    {
+      name: 'withdrawCrosschainEvent';
+      discriminator: [255, 230, 73, 11, 247, 222, 185, 204];
     },
     {
       name: 'withdrawType1Event';
@@ -6743,9 +9855,105 @@ export type IdlLending = {
       code: 6140;
       name: 'invalidSwapAmount';
       msg: 'Swap amount must be > 0 in order to redeem.';
+    },
+    {
+      code: 6141;
+      name: 'invalidGuardianSignature';
+      msg: 'The signer of crosschain instruction is not the guardian';
+    },
+    {
+      code: 6142;
+      name: 'invalidChainId';
+      msg: 'The chain id is not valid';
+    },
+    {
+      code: 6143;
+      name: 'noMoreGuardianSlot';
+      msg: 'No more guardian slot';
+    },
+    {
+      code: 6144;
+      name: 'collateralHasRemainingDepositedAmount';
+      msg: 'The crosschain collateral has remaining deposited amount';
+    },
+    {
+      code: 6145;
+      name: 'chainWalletAlreadyExists';
+      msg: 'The wallet of this chain id already exists';
+    },
+    {
+      code: 6146;
+      name: 'chainWalletNotFound';
+      msg: 'The wallet of this chain id is not found in this universal wallet';
+    },
+    {
+      code: 6147;
+      name: 'noMoreChainWalletSlot';
+      msg: 'No more wallet slot in this universal wallet';
+    },
+    {
+      code: 6148;
+      name: 'invalidUniversalWallet';
+      msg: 'The universal wallet is not valid';
+    },
+    {
+      code: 6149;
+      name: 'invalidWalletLinked';
+      msg: 'Invalid wallet linked';
+    },
+    {
+      code: 6150;
+      name: 'invalidRequestPda';
+      msg: 'The request PDA is invalid';
+    },
+    {
+      code: 6151;
+      name: 'invalidNextInstruction';
+      msg: 'Invalid next instruction';
+    },
+    {
+      code: 6152;
+      name: 'invalidPreviousInstruction';
+      msg: 'Invalid previous instruction';
+    },
+    {
+      code: 6153;
+      name: 'invalidInstructionIndex';
+      msg: 'Invalid instruction index';
+    },
+    {
+      code: 6154;
+      name: 'invalidNonce';
+      msg: 'Invalid nonce';
     }
   ];
   types: [
+    {
+      name: 'burnCrosschainEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'universalWallet';
+            type: 'pubkey';
+          },
+          {
+            name: 'walletAddress';
+            type: {
+              array: ['u8', 32];
+            };
+          },
+          {
+            name: 'chainId';
+            type: 'u8';
+          },
+          {
+            name: 'burnedAmount';
+            type: 'u64';
+          }
+        ];
+      };
+    },
     {
       name: 'burnType1Event';
       type: {
@@ -6762,6 +9970,38 @@ export type IdlLending = {
           {
             name: 'newDebt';
             type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'chainWallet';
+      serialization: 'bytemuck';
+      repr: {
+        kind: 'c';
+      };
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'walletAddress';
+            type: {
+              array: ['u8', 32];
+            };
+          },
+          {
+            name: 'nonce';
+            type: 'u64';
+          },
+          {
+            name: 'chainId';
+            type: 'u8';
+          },
+          {
+            name: 'padding';
+            type: {
+              array: ['u8', 7];
+            };
           }
         ];
       };
@@ -6935,6 +10175,159 @@ export type IdlLending = {
       };
     },
     {
+      name: 'convertStablecoinToUsdaiEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'user';
+            type: 'pubkey';
+          },
+          {
+            name: 'stablecoinMint';
+            type: 'pubkey';
+          },
+          {
+            name: 'amount';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'convertUsdaiToStablecoinEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'user';
+            type: 'pubkey';
+          },
+          {
+            name: 'stablecoinMint';
+            type: 'pubkey';
+          },
+          {
+            name: 'amount';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'crosschainCollateralToken';
+      serialization: 'bytemuck';
+      repr: {
+        kind: 'c';
+      };
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'address';
+            type: 'pubkey';
+          },
+          {
+            name: 'deposited';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
+      name: 'crosschainConfig';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'guardians';
+            type: 'pubkey';
+          },
+          {
+            name: 'chainId';
+            type: 'u8';
+          },
+          {
+            name: 'bump';
+            type: 'u8';
+          }
+        ];
+      };
+    },
+    {
+      name: 'crosschainType1Depository';
+      serialization: 'bytemuck';
+      repr: {
+        kind: 'c';
+      };
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'collateralTokens';
+            type: {
+              array: [
+                {
+                  defined: {
+                    name: 'crosschainCollateralToken';
+                  };
+                },
+                32
+              ];
+            };
+          },
+          {
+            name: 'depository';
+            type: 'pubkey';
+          },
+          {
+            name: 'debtTotal';
+            type: 'u64';
+          },
+          {
+            name: 'chainId';
+            type: 'u8';
+          },
+          {
+            name: 'padding';
+            type: {
+              array: ['u8', 7];
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: 'depositCrosschainEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'universalWallet';
+            type: 'pubkey';
+          },
+          {
+            name: 'walletAddress';
+            type: {
+              array: ['u8', 32];
+            };
+          },
+          {
+            name: 'chainId';
+            type: 'u8';
+          },
+          {
+            name: 'collateral';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateralAmount';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
       name: 'depositType1Event';
       type: {
         kind: 'struct';
@@ -6985,6 +10378,26 @@ export type IdlLending = {
           },
           {
             name: 'reserve';
+            type: {
+              option: 'pubkey';
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: 'editCrosschainCollateralTokenField';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'oldCollateralToken';
+            type: {
+              option: 'pubkey';
+            };
+          },
+          {
+            name: 'newCollateralToken';
             type: {
               option: 'pubkey';
             };
@@ -7455,6 +10868,32 @@ export type IdlLending = {
       };
     },
     {
+      name: 'mintCrosschainEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'universalWallet';
+            type: 'pubkey';
+          },
+          {
+            name: 'walletAddress';
+            type: {
+              array: ['u8', 32];
+            };
+          },
+          {
+            name: 'chainId';
+            type: 'u8';
+          },
+          {
+            name: 'mintedAmount';
+            type: 'u64';
+          }
+        ];
+      };
+    },
+    {
       name: 'mintType1Event';
       type: {
         kind: 'struct';
@@ -7571,6 +11010,90 @@ export type IdlLending = {
           {
             name: 'isPausedFunction';
             type: 'u8';
+          }
+        ];
+      };
+    },
+    {
+      name: 'request';
+      serialization: 'bytemuck';
+      repr: {
+        kind: 'c';
+      };
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'tokenMint';
+            type: 'pubkey';
+          },
+          {
+            name: 'user';
+            type: {
+              array: ['u8', 32];
+            };
+          },
+          {
+            name: 'amount';
+            type: 'u64';
+          },
+          {
+            name: 'nonce';
+            type: 'u64';
+          },
+          {
+            name: 'chainId';
+            type: 'u8';
+          },
+          {
+            name: 'actionType';
+            type: 'u8';
+          },
+          {
+            name: 'padding';
+            type: {
+              array: ['u8', 6];
+            };
+          }
+        ];
+      };
+    },
+    {
+      name: 'requestLinkWalletEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'requestId';
+            type: 'u64';
+          },
+          {
+            name: 'sourceWallet';
+            type: {
+              array: ['u8', 32];
+            };
+          },
+          {
+            name: 'destinationWallet';
+            type: {
+              array: ['u8', 32];
+            };
+          },
+          {
+            name: 'sourceChainId';
+            type: 'u8';
+          },
+          {
+            name: 'destinationChainId';
+            type: 'u8';
+          },
+          {
+            name: 'deadline';
+            type: 'u64';
+          },
+          {
+            name: 'action';
+            type: 'bool';
           }
         ];
       };
@@ -7990,6 +11513,47 @@ export type IdlLending = {
       };
     },
     {
+      name: 'universalWallet';
+      serialization: 'bytemuck';
+      repr: {
+        kind: 'c';
+      };
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'wallets';
+            type: {
+              array: [
+                {
+                  defined: {
+                    name: 'chainWallet';
+                  };
+                },
+                8
+              ];
+            };
+          },
+          {
+            name: 'firstWalletAddress';
+            type: {
+              array: ['u8', 32];
+            };
+          },
+          {
+            name: 'firstChainId';
+            type: 'u8';
+          },
+          {
+            name: 'padding';
+            type: {
+              array: ['u8', 7];
+            };
+          }
+        ];
+      };
+    },
+    {
       name: 'userInfo';
       type: {
         kind: 'struct';
@@ -8038,6 +11602,53 @@ export type IdlLending = {
       };
     },
     {
+      name: 'walletLinked';
+      type: {
+        kind: 'struct';
+        fields: [];
+      };
+    },
+    {
+      name: 'walletLinkingRequest';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'requestId';
+            type: 'u64';
+          },
+          {
+            name: 'sourceWallet';
+            type: {
+              array: ['u8', 32];
+            };
+          },
+          {
+            name: 'destinationWallet';
+            type: {
+              array: ['u8', 32];
+            };
+          },
+          {
+            name: 'sourceChainId';
+            type: 'u8';
+          },
+          {
+            name: 'destinationChainId';
+            type: 'u8';
+          },
+          {
+            name: 'deadline';
+            type: 'u64';
+          },
+          {
+            name: 'action';
+            type: 'bool';
+          }
+        ];
+      };
+    },
+    {
       name: 'whitelistAdmin';
       type: {
         kind: 'struct';
@@ -8047,6 +11658,36 @@ export type IdlLending = {
             type: {
               array: ['pubkey', 5];
             };
+          }
+        ];
+      };
+    },
+    {
+      name: 'withdrawCrosschainEvent';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'universalWallet';
+            type: 'pubkey';
+          },
+          {
+            name: 'walletAddress';
+            type: {
+              array: ['u8', 32];
+            };
+          },
+          {
+            name: 'chainId';
+            type: 'u8';
+          },
+          {
+            name: 'collateral';
+            type: 'pubkey';
+          },
+          {
+            name: 'collateralAmount';
+            type: 'u64';
           }
         ];
       };
@@ -8185,6 +11826,69 @@ export const idlLending: IdlLending = {
             defined: {
               name: 'metadataFields',
             },
+          },
+        },
+      ],
+    },
+    {
+      name: 'addUniversalWallet',
+      discriminator: [110, 241, 67, 130, 26, 131, 127, 228],
+      accounts: [
+        {
+          name: 'signer',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'crosschainConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'user',
+          writable: true,
+        },
+        {
+          name: 'walletLinked',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [85, 78, 73, 86, 69, 82, 83, 65, 76, 95, 87, 65, 76, 76, 69, 84],
+              },
+              {
+                kind: 'arg',
+                path: 'walletAddress',
+              },
+              {
+                kind: 'arg',
+                path: 'chainId',
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'chainId',
+          type: 'u8',
+        },
+        {
+          name: 'walletAddress',
+          type: {
+            array: ['u8', 32],
           },
         },
       ],
@@ -8401,6 +12105,981 @@ export const idlLending: IdlLending = {
       ],
     },
     {
+      name: 'checkAction',
+      discriminator: [43, 242, 57, 110, 178, 244, 40, 235],
+      accounts: [
+        {
+          name: 'guardian',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'crosschainConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'request',
+        },
+        {
+          name: 'instructionSysvar',
+          docs: ['CHECK'],
+          address: 'Sysvar1nstructions1111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'chainId',
+          type: 'u8',
+        },
+        {
+          name: 'walletAddress',
+          type: {
+            array: ['u8', 32],
+          },
+        },
+      ],
+    },
+    {
+      name: 'crosschainInitializeType1Depository',
+      discriminator: [215, 109, 30, 227, 112, 56, 151, 54],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'whitelistAdmin',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78],
+              },
+            ],
+          },
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainDepository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'arg',
+                path: 'chainId',
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'chainId',
+          type: 'u8',
+        },
+      ],
+    },
+    {
+      name: 'crosschainType1Burn',
+      discriminator: [176, 200, 147, 96, 196, 254, 21, 159],
+      accounts: [
+        {
+          name: 'signer',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'user',
+          writable: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainDepository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'arg',
+                path: 'chainId',
+              },
+            ],
+          },
+        },
+        {
+          name: 'loanAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemableMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'controller.reserve',
+                account: 'controller',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'oracle',
+          docs: ['CHECK'],
+          writable: true,
+        },
+        {
+          name: 'request',
+          writable: true,
+        },
+        {
+          name: 'instructionSysvar',
+          docs: ['CHECK'],
+          address: 'Sysvar1nstructions1111111111111111111111111',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'chainId',
+          type: 'u8',
+        },
+      ],
+    },
+    {
+      name: 'crosschainType1Deposit',
+      discriminator: [21, 198, 181, 223, 169, 27, 118, 127],
+      accounts: [
+        {
+          name: 'signer',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'user',
+          writable: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainDepository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'arg',
+                path: 'chainId',
+              },
+            ],
+          },
+        },
+        {
+          name: 'loanAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateralToken',
+          writable: true,
+        },
+        {
+          name: 'request',
+          writable: true,
+        },
+        {
+          name: 'instructionSysvar',
+          docs: ['CHECK'],
+          address: 'Sysvar1nstructions1111111111111111111111111',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'chainId',
+          type: 'u8',
+        },
+      ],
+    },
+    {
+      name: 'crosschainType1Liquidate',
+      discriminator: [19, 246, 247, 113, 135, 103, 69, 84],
+      accounts: [
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'liquidator',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'user',
+          writable: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainDepository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'arg',
+                path: 'chainId',
+              },
+            ],
+          },
+        },
+        {
+          name: 'depositoryVault',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'collateralToken1',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'loan',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'stablecoinMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateralToken1',
+          writable: true,
+        },
+        {
+          name: 'liquidatorStablecoinAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'liquidator',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'stablecoinMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'liquidatorCollateralAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'liquidator',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'collateralToken1',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'controller.reserve',
+                account: 'controller',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'stablecoinMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'oracle',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'chainId',
+          type: 'u8',
+        },
+        {
+          name: 'walletAddress',
+          type: {
+            array: ['u8', 32],
+          },
+        },
+        {
+          name: 'repayAmount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
+      name: 'crosschainType1Mint',
+      discriminator: [131, 217, 225, 199, 24, 185, 213, 173],
+      accounts: [
+        {
+          name: 'signer',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'user',
+          writable: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainDepository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'arg',
+                path: 'chainId',
+              },
+            ],
+          },
+        },
+        {
+          name: 'loanAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemableMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'controller.reserve',
+                account: 'controller',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'oracle',
+          docs: ['CHECK'],
+          writable: true,
+        },
+        {
+          name: 'request',
+          writable: true,
+        },
+        {
+          name: 'instructionSysvar',
+          docs: ['CHECK'],
+          address: 'Sysvar1nstructions1111111111111111111111111',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'chainId',
+          type: 'u8',
+        },
+      ],
+    },
+    {
+      name: 'crosschainType1Withdraw',
+      discriminator: [182, 166, 105, 102, 201, 212, 211, 175],
+      accounts: [
+        {
+          name: 'signer',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'user',
+          writable: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainDepository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'arg',
+                path: 'chainId',
+              },
+            ],
+          },
+        },
+        {
+          name: 'loanAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateralToken',
+          writable: true,
+        },
+        {
+          name: 'redeemableMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'controller.reserve',
+                account: 'controller',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'oracle',
+          docs: ['CHECK'],
+          writable: true,
+        },
+        {
+          name: 'request',
+          writable: true,
+        },
+        {
+          name: 'instructionSysvar',
+          docs: ['CHECK'],
+          address: 'Sysvar1nstructions1111111111111111111111111',
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'chainId',
+          type: 'u8',
+        },
+      ],
+    },
+    {
       name: 'depositUsdcSmartVault',
       discriminator: [159, 229, 32, 185, 153, 72, 30, 120],
       accounts: [
@@ -8568,6 +13247,131 @@ export const idlLending: IdlLending = {
           type: {
             defined: {
               name: 'editControllerFields',
+            },
+          },
+        },
+      ],
+    },
+    {
+      name: 'editCrosschainConfig',
+      discriminator: [140, 176, 20, 165, 134, 22, 210, 135],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'whitelistAdminAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'newGuardianAddress',
+          type: {
+            option: 'pubkey',
+          },
+        },
+        {
+          name: 'newChainId',
+          type: {
+            option: 'u8',
+          },
+        },
+      ],
+    },
+    {
+      name: 'editCrosschainType1Depository',
+      discriminator: [241, 198, 253, 129, 86, 203, 172, 118],
+      accounts: [
+        {
+          name: 'authority',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'whitelistAdminAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [87, 72, 73, 84, 69, 76, 73, 83, 84, 95, 65, 68, 77, 73, 78],
+              },
+            ],
+          },
+        },
+        {
+          name: 'depository',
+          writable: true,
+          optional: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainDepository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'arg',
+                path: 'chainId',
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'chainId',
+          type: 'u8',
+        },
+        {
+          name: 'fields',
+          type: {
+            vec: {
+              defined: {
+                name: 'editCrosschainCollateralTokenField',
+              },
             },
           },
         },
@@ -9368,6 +14172,65 @@ export const idlLending: IdlLending = {
       ],
     },
     {
+      name: 'initializeUniversalWallet',
+      discriminator: [167, 121, 61, 186, 111, 218, 252, 208],
+      accounts: [
+        {
+          name: 'signer',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'crosschainConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'user',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [85, 78, 73, 86, 69, 82, 83, 65, 76, 95, 87, 65, 76, 76, 69, 84],
+              },
+              {
+                kind: 'arg',
+                path: 'firstWalletAddress',
+              },
+              {
+                kind: 'arg',
+                path: 'firstChainId',
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'firstChainId',
+          type: 'u8',
+        },
+        {
+          name: 'firstWalletAddress',
+          type: {
+            array: ['u8', 32],
+          },
+        },
+      ],
+    },
+    {
       name: 'interactWithType0Depository',
       discriminator: [100, 95, 23, 115, 241, 176, 198, 171],
       accounts: [
@@ -10080,6 +14943,69 @@ export const idlLending: IdlLending = {
       },
     },
     {
+      name: 'removeUniversalWallet',
+      discriminator: [163, 56, 123, 12, 122, 60, 125, 18],
+      accounts: [
+        {
+          name: 'signer',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'crosschainConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'user',
+          writable: true,
+        },
+        {
+          name: 'walletLinked',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [85, 78, 73, 86, 69, 82, 83, 65, 76, 95, 87, 65, 76, 76, 69, 84],
+              },
+              {
+                kind: 'arg',
+                path: 'walletAddress',
+              },
+              {
+                kind: 'arg',
+                path: 'chainId',
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'chainId',
+          type: 'u8',
+        },
+        {
+          name: 'walletAddress',
+          type: {
+            array: ['u8', 32],
+          },
+        },
+      ],
+    },
+    {
       name: 'repayFarmingType0',
       discriminator: [194, 154, 139, 232, 77, 236, 242, 174],
       accounts: [
@@ -10200,6 +15126,65 @@ export const idlLending: IdlLending = {
         {
           name: 'usdcAmount',
           type: 'u64',
+        },
+      ],
+    },
+    {
+      name: 'requestLinkWallet',
+      discriminator: [24, 176, 7, 175, 165, 215, 152, 182],
+      accounts: [
+        {
+          name: 'user',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'linkingWalletRequest',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [87, 65, 76, 76, 69, 84, 95, 76, 73, 78, 75, 73, 78, 71, 95, 82, 69, 81, 85, 69, 83, 84],
+              },
+              {
+                kind: 'account',
+                path: 'user',
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainConfig',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'destinationWallet',
+          type: {
+            array: ['u8', 32],
+          },
+        },
+        {
+          name: 'destinationChainId',
+          type: 'u8',
+        },
+        {
+          name: 'action',
+          type: 'bool',
         },
       ],
     },
@@ -11838,6 +16823,762 @@ export const idlLending: IdlLending = {
       args: [],
     },
     {
+      name: 'userCrosschainType1Burn',
+      discriminator: [18, 197, 162, 143, 64, 107, 204, 153],
+      accounts: [
+        {
+          name: 'user',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainConfig',
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'universalWallet',
+          writable: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainDepository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'crosschain_config.chain_id',
+                account: 'crosschainConfig',
+              },
+            ],
+          },
+        },
+        {
+          name: 'loanAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'universalWallet',
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemableMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'controller.reserve',
+                account: 'controller',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'userRedeemableAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'user',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'oracle',
+          docs: ['CHECK'],
+          writable: true,
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'redeemAmount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
+      name: 'userCrosschainType1Deposit',
+      discriminator: [62, 40, 138, 236, 43, 86, 39, 6],
+      accounts: [
+        {
+          name: 'user',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'crosschainConfig',
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'universalWallet',
+          writable: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'depositoryVault',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'collateralToken',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'userCollateralAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'user',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'collateralToken',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'crosschainDepository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'crosschain_config.chain_id',
+                account: 'crosschainConfig',
+              },
+            ],
+          },
+        },
+        {
+          name: 'loanAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'universalWallet',
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateralToken',
+          writable: true,
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'collateralAmount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
+      name: 'userCrosschainType1Mint',
+      discriminator: [214, 182, 157, 245, 178, 151, 229, 65],
+      accounts: [
+        {
+          name: 'user',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainConfig',
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'universalWallet',
+          writable: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainDepository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'crosschain_config.chain_id',
+                account: 'crosschainConfig',
+              },
+            ],
+          },
+        },
+        {
+          name: 'loanAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'universalWallet',
+              },
+            ],
+          },
+        },
+        {
+          name: 'redeemableMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'userRedeemableAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'user',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'controller.reserve',
+                account: 'controller',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'oracle',
+          docs: ['CHECK'],
+          writable: true,
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'debtAmount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
+      name: 'userCrosschainType1Withdraw',
+      discriminator: [251, 59, 165, 134, 96, 192, 194, 59],
+      accounts: [
+        {
+          name: 'user',
+          writable: true,
+          signer: true,
+        },
+        {
+          name: 'controller',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 79, 78, 84, 82, 79, 76, 76, 69, 82],
+              },
+            ],
+          },
+        },
+        {
+          name: 'crosschainConfig',
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 67, 79, 78, 70, 73, 71],
+              },
+            ],
+          },
+        },
+        {
+          name: 'universalWallet',
+          writable: true,
+        },
+        {
+          name: 'depository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+            ],
+          },
+        },
+        {
+          name: 'depositoryVault',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'collateralToken',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'userCollateralAta',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'user',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'collateralToken',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'crosschainDepository',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [67, 82, 79, 83, 83, 67, 72, 65, 73, 78, 95, 68, 69, 80, 79, 83, 73, 84, 79, 82, 89, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'crosschain_config.chain_id',
+                account: 'crosschainConfig',
+              },
+            ],
+          },
+        },
+        {
+          name: 'loanAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [76, 79, 65, 78, 95, 84, 89, 80, 69, 95, 49],
+              },
+              {
+                kind: 'account',
+                path: 'depository',
+              },
+              {
+                kind: 'account',
+                path: 'universalWallet',
+              },
+            ],
+          },
+        },
+        {
+          name: 'collateralToken',
+          writable: true,
+        },
+        {
+          name: 'redeemableMint',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                value: [82, 69, 68, 69, 69, 77, 65, 66, 76, 69],
+              },
+            ],
+          },
+        },
+        {
+          name: 'reserveTokenAccount',
+          writable: true,
+          pda: {
+            seeds: [
+              {
+                kind: 'account',
+                path: 'controller.reserve',
+                account: 'controller',
+              },
+              {
+                kind: 'const',
+                value: [
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169,
+                ],
+              },
+              {
+                kind: 'account',
+                path: 'redeemableMint',
+              },
+            ],
+            program: {
+              kind: 'const',
+              value: [
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142, 13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123,
+                216, 219, 233, 248, 89,
+              ],
+            },
+          },
+        },
+        {
+          name: 'oracle',
+          docs: ['CHECK'],
+          writable: true,
+        },
+        {
+          name: 'tokenProgram',
+          address: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+        },
+        {
+          name: 'token2022Program',
+          address: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+        },
+        {
+          name: 'associatedTokenProgram',
+          address: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+        },
+        {
+          name: 'systemProgram',
+          address: '11111111111111111111111111111111',
+        },
+      ],
+      args: [
+        {
+          name: 'collateralAmount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
       name: 'withdrawInvestment',
       discriminator: [157, 158, 101, 11, 240, 193, 192, 92],
       accounts: [
@@ -12189,6 +17930,14 @@ export const idlLending: IdlLending = {
       discriminator: [184, 79, 171, 0, 183, 43, 113, 110],
     },
     {
+      name: 'crosschainConfig',
+      discriminator: [29, 3, 68, 189, 250, 99, 9, 205],
+    },
+    {
+      name: 'crosschainType1Depository',
+      discriminator: [183, 8, 117, 91, 202, 45, 216, 77],
+    },
+    {
       name: 'farmingConfig',
       discriminator: [227, 37, 190, 173, 145, 73, 54, 104],
     },
@@ -12209,6 +17958,10 @@ export const idlLending: IdlLending = {
       discriminator: [84, 193, 134, 218, 211, 27, 137, 25],
     },
     {
+      name: 'request',
+      discriminator: [125, 172, 150, 161, 162, 115, 39, 71],
+    },
+    {
       name: 'swapUsdaiConfig',
       discriminator: [34, 190, 22, 120, 246, 58, 3, 167],
     },
@@ -12221,6 +17974,10 @@ export const idlLending: IdlLending = {
       discriminator: [132, 68, 105, 249, 215, 58, 64, 100],
     },
     {
+      name: 'universalWallet',
+      discriminator: [209, 219, 212, 246, 186, 188, 20, 71],
+    },
+    {
       name: 'userInfo',
       discriminator: [83, 134, 200, 56, 144, 56, 10, 62],
     },
@@ -12229,11 +17986,23 @@ export const idlLending: IdlLending = {
       discriminator: [133, 250, 161, 78, 246, 27, 55, 187],
     },
     {
+      name: 'walletLinked',
+      discriminator: [249, 171, 22, 59, 3, 203, 66, 87],
+    },
+    {
+      name: 'walletLinkingRequest',
+      discriminator: [181, 36, 95, 59, 66, 125, 29, 78],
+    },
+    {
       name: 'whitelistAdmin',
       discriminator: [163, 150, 229, 143, 243, 38, 17, 133],
     },
   ],
   events: [
+    {
+      name: 'burnCrosschainEvent',
+      discriminator: [250, 129, 213, 104, 145, 4, 37, 19],
+    },
     {
       name: 'burnType1Event',
       discriminator: [11, 185, 25, 36, 190, 113, 131, 112],
@@ -12241,6 +18010,18 @@ export const idlLending: IdlLending = {
     {
       name: 'changeNewCollateralType1',
       discriminator: [204, 46, 186, 111, 9, 18, 59, 191],
+    },
+    {
+      name: 'convertStablecoinToUsdaiEvent',
+      discriminator: [99, 30, 253, 4, 50, 59, 62, 74],
+    },
+    {
+      name: 'convertUsdaiToStablecoinEvent',
+      discriminator: [16, 241, 186, 230, 151, 143, 94, 217],
+    },
+    {
+      name: 'depositCrosschainEvent',
+      discriminator: [229, 61, 12, 30, 151, 62, 209, 19],
     },
     {
       name: 'depositType1Event',
@@ -12263,8 +18044,16 @@ export const idlLending: IdlLending = {
       discriminator: [3, 13, 21, 93, 173, 136, 72, 144],
     },
     {
+      name: 'mintCrosschainEvent',
+      discriminator: [252, 171, 83, 88, 253, 76, 11, 119],
+    },
+    {
       name: 'mintType1Event',
       discriminator: [126, 100, 125, 84, 68, 45, 186, 158],
+    },
+    {
+      name: 'requestLinkWalletEvent',
+      discriminator: [65, 192, 247, 72, 208, 34, 229, 213],
     },
     {
       name: 'setType0DepositoryCollateralizationRatioEvent',
@@ -12305,6 +18094,10 @@ export const idlLending: IdlLending = {
     {
       name: 'setType1LiquidationRatioEvent',
       discriminator: [60, 113, 146, 120, 221, 42, 2, 133],
+    },
+    {
+      name: 'withdrawCrosschainEvent',
+      discriminator: [255, 230, 73, 11, 247, 222, 185, 204],
     },
     {
       name: 'withdrawType1Event',
@@ -13017,8 +18810,104 @@ export const idlLending: IdlLending = {
       name: 'invalidSwapAmount',
       msg: 'Swap amount must be > 0 in order to redeem.',
     },
+    {
+      code: 6141,
+      name: 'invalidGuardianSignature',
+      msg: 'The signer of crosschain instruction is not the guardian',
+    },
+    {
+      code: 6142,
+      name: 'invalidChainId',
+      msg: 'The chain id is not valid',
+    },
+    {
+      code: 6143,
+      name: 'noMoreGuardianSlot',
+      msg: 'No more guardian slot',
+    },
+    {
+      code: 6144,
+      name: 'collateralHasRemainingDepositedAmount',
+      msg: 'The crosschain collateral has remaining deposited amount',
+    },
+    {
+      code: 6145,
+      name: 'chainWalletAlreadyExists',
+      msg: 'The wallet of this chain id already exists',
+    },
+    {
+      code: 6146,
+      name: 'chainWalletNotFound',
+      msg: 'The wallet of this chain id is not found in this universal wallet',
+    },
+    {
+      code: 6147,
+      name: 'noMoreChainWalletSlot',
+      msg: 'No more wallet slot in this universal wallet',
+    },
+    {
+      code: 6148,
+      name: 'invalidUniversalWallet',
+      msg: 'The universal wallet is not valid',
+    },
+    {
+      code: 6149,
+      name: 'invalidWalletLinked',
+      msg: 'Invalid wallet linked',
+    },
+    {
+      code: 6150,
+      name: 'invalidRequestPda',
+      msg: 'The request PDA is invalid',
+    },
+    {
+      code: 6151,
+      name: 'invalidNextInstruction',
+      msg: 'Invalid next instruction',
+    },
+    {
+      code: 6152,
+      name: 'invalidPreviousInstruction',
+      msg: 'Invalid previous instruction',
+    },
+    {
+      code: 6153,
+      name: 'invalidInstructionIndex',
+      msg: 'Invalid instruction index',
+    },
+    {
+      code: 6154,
+      name: 'invalidNonce',
+      msg: 'Invalid nonce',
+    },
   ],
   types: [
+    {
+      name: 'burnCrosschainEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'universalWallet',
+            type: 'pubkey',
+          },
+          {
+            name: 'walletAddress',
+            type: {
+              array: ['u8', 32],
+            },
+          },
+          {
+            name: 'chainId',
+            type: 'u8',
+          },
+          {
+            name: 'burnedAmount',
+            type: 'u64',
+          },
+        ],
+      },
+    },
     {
       name: 'burnType1Event',
       type: {
@@ -13035,6 +18924,38 @@ export const idlLending: IdlLending = {
           {
             name: 'newDebt',
             type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'chainWallet',
+      serialization: 'bytemuck',
+      repr: {
+        kind: 'c',
+      },
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'walletAddress',
+            type: {
+              array: ['u8', 32],
+            },
+          },
+          {
+            name: 'nonce',
+            type: 'u64',
+          },
+          {
+            name: 'chainId',
+            type: 'u8',
+          },
+          {
+            name: 'padding',
+            type: {
+              array: ['u8', 7],
+            },
           },
         ],
       },
@@ -13208,6 +19129,159 @@ export const idlLending: IdlLending = {
       },
     },
     {
+      name: 'convertStablecoinToUsdaiEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'user',
+            type: 'pubkey',
+          },
+          {
+            name: 'stablecoinMint',
+            type: 'pubkey',
+          },
+          {
+            name: 'amount',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'convertUsdaiToStablecoinEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'user',
+            type: 'pubkey',
+          },
+          {
+            name: 'stablecoinMint',
+            type: 'pubkey',
+          },
+          {
+            name: 'amount',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'crosschainCollateralToken',
+      serialization: 'bytemuck',
+      repr: {
+        kind: 'c',
+      },
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'address',
+            type: 'pubkey',
+          },
+          {
+            name: 'deposited',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
+      name: 'crosschainConfig',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'guardians',
+            type: 'pubkey',
+          },
+          {
+            name: 'chainId',
+            type: 'u8',
+          },
+          {
+            name: 'bump',
+            type: 'u8',
+          },
+        ],
+      },
+    },
+    {
+      name: 'crosschainType1Depository',
+      serialization: 'bytemuck',
+      repr: {
+        kind: 'c',
+      },
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'collateralTokens',
+            type: {
+              array: [
+                {
+                  defined: {
+                    name: 'crosschainCollateralToken',
+                  },
+                },
+                32,
+              ],
+            },
+          },
+          {
+            name: 'depository',
+            type: 'pubkey',
+          },
+          {
+            name: 'debtTotal',
+            type: 'u64',
+          },
+          {
+            name: 'chainId',
+            type: 'u8',
+          },
+          {
+            name: 'padding',
+            type: {
+              array: ['u8', 7],
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: 'depositCrosschainEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'universalWallet',
+            type: 'pubkey',
+          },
+          {
+            name: 'walletAddress',
+            type: {
+              array: ['u8', 32],
+            },
+          },
+          {
+            name: 'chainId',
+            type: 'u8',
+          },
+          {
+            name: 'collateral',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateralAmount',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
       name: 'depositType1Event',
       type: {
         kind: 'struct',
@@ -13258,6 +19332,26 @@ export const idlLending: IdlLending = {
           },
           {
             name: 'reserve',
+            type: {
+              option: 'pubkey',
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: 'editCrosschainCollateralTokenField',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'oldCollateralToken',
+            type: {
+              option: 'pubkey',
+            },
+          },
+          {
+            name: 'newCollateralToken',
             type: {
               option: 'pubkey',
             },
@@ -13728,6 +19822,32 @@ export const idlLending: IdlLending = {
       },
     },
     {
+      name: 'mintCrosschainEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'universalWallet',
+            type: 'pubkey',
+          },
+          {
+            name: 'walletAddress',
+            type: {
+              array: ['u8', 32],
+            },
+          },
+          {
+            name: 'chainId',
+            type: 'u8',
+          },
+          {
+            name: 'mintedAmount',
+            type: 'u64',
+          },
+        ],
+      },
+    },
+    {
       name: 'mintType1Event',
       type: {
         kind: 'struct',
@@ -13844,6 +19964,90 @@ export const idlLending: IdlLending = {
           {
             name: 'isPausedFunction',
             type: 'u8',
+          },
+        ],
+      },
+    },
+    {
+      name: 'request',
+      serialization: 'bytemuck',
+      repr: {
+        kind: 'c',
+      },
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'tokenMint',
+            type: 'pubkey',
+          },
+          {
+            name: 'user',
+            type: {
+              array: ['u8', 32],
+            },
+          },
+          {
+            name: 'amount',
+            type: 'u64',
+          },
+          {
+            name: 'nonce',
+            type: 'u64',
+          },
+          {
+            name: 'chainId',
+            type: 'u8',
+          },
+          {
+            name: 'actionType',
+            type: 'u8',
+          },
+          {
+            name: 'padding',
+            type: {
+              array: ['u8', 6],
+            },
+          },
+        ],
+      },
+    },
+    {
+      name: 'requestLinkWalletEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'requestId',
+            type: 'u64',
+          },
+          {
+            name: 'sourceWallet',
+            type: {
+              array: ['u8', 32],
+            },
+          },
+          {
+            name: 'destinationWallet',
+            type: {
+              array: ['u8', 32],
+            },
+          },
+          {
+            name: 'sourceChainId',
+            type: 'u8',
+          },
+          {
+            name: 'destinationChainId',
+            type: 'u8',
+          },
+          {
+            name: 'deadline',
+            type: 'u64',
+          },
+          {
+            name: 'action',
+            type: 'bool',
           },
         ],
       },
@@ -14263,6 +20467,47 @@ export const idlLending: IdlLending = {
       },
     },
     {
+      name: 'universalWallet',
+      serialization: 'bytemuck',
+      repr: {
+        kind: 'c',
+      },
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'wallets',
+            type: {
+              array: [
+                {
+                  defined: {
+                    name: 'chainWallet',
+                  },
+                },
+                8,
+              ],
+            },
+          },
+          {
+            name: 'firstWalletAddress',
+            type: {
+              array: ['u8', 32],
+            },
+          },
+          {
+            name: 'firstChainId',
+            type: 'u8',
+          },
+          {
+            name: 'padding',
+            type: {
+              array: ['u8', 7],
+            },
+          },
+        ],
+      },
+    },
+    {
       name: 'userInfo',
       type: {
         kind: 'struct',
@@ -14311,6 +20556,53 @@ export const idlLending: IdlLending = {
       },
     },
     {
+      name: 'walletLinked',
+      type: {
+        kind: 'struct',
+        fields: [],
+      },
+    },
+    {
+      name: 'walletLinkingRequest',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'requestId',
+            type: 'u64',
+          },
+          {
+            name: 'sourceWallet',
+            type: {
+              array: ['u8', 32],
+            },
+          },
+          {
+            name: 'destinationWallet',
+            type: {
+              array: ['u8', 32],
+            },
+          },
+          {
+            name: 'sourceChainId',
+            type: 'u8',
+          },
+          {
+            name: 'destinationChainId',
+            type: 'u8',
+          },
+          {
+            name: 'deadline',
+            type: 'u64',
+          },
+          {
+            name: 'action',
+            type: 'bool',
+          },
+        ],
+      },
+    },
+    {
       name: 'whitelistAdmin',
       type: {
         kind: 'struct',
@@ -14320,6 +20612,36 @@ export const idlLending: IdlLending = {
             type: {
               array: ['pubkey', 5],
             },
+          },
+        ],
+      },
+    },
+    {
+      name: 'withdrawCrosschainEvent',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'universalWallet',
+            type: 'pubkey',
+          },
+          {
+            name: 'walletAddress',
+            type: {
+              array: ['u8', 32],
+            },
+          },
+          {
+            name: 'chainId',
+            type: 'u8',
+          },
+          {
+            name: 'collateral',
+            type: 'pubkey',
+          },
+          {
+            name: 'collateralAmount',
+            type: 'u64',
           },
         ],
       },

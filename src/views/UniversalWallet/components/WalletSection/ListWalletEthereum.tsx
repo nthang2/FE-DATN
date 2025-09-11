@@ -3,20 +3,28 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
-import { Connector, useAccount, useConnect } from 'wagmi';
-import { useDestinationWalletState } from '../../state/hooks';
-import { mapNameWalletIcon } from '../../network';
 import useSummaryEVMConnect from 'src/states/wallets/evm-blockchain/hooks/useSummaryEVMConnect';
+import { Connector, useAccount, useConnect } from 'wagmi';
+import { mapNameWalletIcon } from '../../network';
+import { useDestinationWalletState, useSourceWalletState } from '../../state/hooks';
 
-const ListWalletEthereum = () => {
-  const { address } = useSummaryEVMConnect();
+type IProps = {
+  onDisconnect: () => void;
+};
+
+const ListWalletEthereum = (props: IProps) => {
+  const { onDisconnect } = props;
+  const { disconnect, status } = useSummaryEVMConnect();
   const { connector: connectorEVM } = useAccount();
   const { connectAsync, connectors } = useConnect();
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
+  const { address, chainId, walletIcon } = useSummaryEVMConnect();
+  const [sourceWallet] = useSourceWalletState();
 
   async function handleConnect(connector: Connector) {
     try {
+      disconnect();
       await connectAsync({ connector: connector });
     } catch (error) {
       console.error(error);
@@ -24,12 +32,31 @@ const ListWalletEthereum = () => {
     }
   }
 
+  const handleDisconnect = () => {
+    disconnect();
+    onDisconnect();
+  };
+
+  const handleClickBtn = (connector: Connector) => {
+    if (status === 'Connected') {
+      handleDisconnect();
+    } else {
+      handleConnect(connector);
+    }
+  };
+
   useEffect(() => {
+    if (sourceWallet === address) {
+      setDestinationWallet({ address: '', wallet: '', chainId: '' });
+      return;
+    }
+
     if (address && address?.toString() !== destinationWallet.address) {
       setDestinationWallet({
         address: address?.toString() || '',
         wallet: connectorEVM?.icon || '',
-        iconWalletName: connectorEVM?.name || undefined,
+        iconWalletName: walletIcon || undefined,
+        chainId: chainId || '',
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,8 +106,13 @@ const ListWalletEthereum = () => {
                 </Typography>
               </Box>
 
-              <Button variant="outlined" disabled={isConnected} onClick={() => handleConnect(connector)} sx={{ height: '32px' }}>
-                {isConnected ? 'Connected' : 'Connect'}
+              <Button
+                variant="outlined"
+                color={isConnected ? 'error' : 'primary'}
+                onClick={() => handleClickBtn(connector)}
+                sx={{ height: '32px' }}
+              >
+                {isConnected ? 'Disconnect' : 'Connect'}
               </Button>
             </Stack>
           );

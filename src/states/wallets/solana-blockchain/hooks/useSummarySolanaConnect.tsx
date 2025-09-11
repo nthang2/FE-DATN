@@ -1,5 +1,5 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { TSolanaNetworkId } from '../types';
+// import { TSolanaNetworkId } from '../types';
 import { SummaryConnectInfo } from '../../types';
 import { walletIcon } from '../../constants/walletIcon';
 import { IconSOL } from 'src/libs/crypto-icons';
@@ -9,7 +9,8 @@ export default function useSummarySolanaConnect(): SummaryConnectInfo {
 
   return {
     address: publicKey?.toString() || '',
-    chainId: TSolanaNetworkId.sol_devnet as string,
+    // chainId: TSolanaNetworkId.sol_devnet as string,
+    chainId: '2', // for now
     chainIcon: IconSOL,
     chainName: 'Solana',
     status: wallet ? (wallet.adapter.connecting ? 'Connecting' : wallet.adapter.connected ? 'Connected' : 'Disconnected') : 'Disconnected',
