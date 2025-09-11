@@ -5,20 +5,20 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
-import { useDestinationWalletState, useSourceWalletState } from '../../state/hooks';
+import { useDestinationWalletState } from '../../state/hooks';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 
 interface IProps {
   onDisconnect: () => void;
+  isDestinationWallet?: boolean;
 }
 
 const ListWalletSolana = (props: IProps) => {
-  const { onDisconnect } = props;
+  const { onDisconnect, isDestinationWallet } = props;
   const { select, wallets, publicKey, wallet } = useWallet();
   const { chainId, disconnect, status } = useSummarySolanaConnect();
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
-  const [sourceWallet] = useSourceWalletState();
 
   async function handleConnect(adapter: Adapter) {
     try {
@@ -43,16 +43,14 @@ const ListWalletSolana = (props: IProps) => {
   };
 
   useEffect(() => {
-    if (sourceWallet === publicKey?.toString()) {
-      setDestinationWallet({ address: '', wallet: '', chainId: '' });
-      return;
-    }
-    //Only can do it in here bc we can't access wallet.adapter of destination wallet outside
-    if (publicKey && publicKey?.toString() !== destinationWallet.address) {
-      setDestinationWallet({ address: publicKey?.toString() || '', wallet: wallet?.adapter.icon || '', chainId: chainId || '' });
+    if (isDestinationWallet) {
+      //Only can do it in here bc we can't access wallet.adapter of destination wallet outside
+      if (publicKey && publicKey?.toString() !== destinationWallet.address) {
+        setDestinationWallet({ address: publicKey?.toString() || '', wallet: wallet?.adapter.icon || '', chainId: chainId || '' });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [publicKey, sourceWallet]);
+  }, [publicKey]);
 
   return (
     <Stack gap={1} direction="column">

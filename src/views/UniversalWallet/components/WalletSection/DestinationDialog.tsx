@@ -125,8 +125,8 @@ const DestinationDialog = () => {
             </Stack>
           </Stack>
 
-          {destinationNetwork === 'solana' && <ListWalletSolana onDisconnect={handleDisconnect} />}
-          {destinationNetwork === 'ethereum' && <ListWalletEthereum onDisconnect={handleDisconnect} />}
+          {destinationNetwork === 'solana' && <ListWalletSolana onDisconnect={handleDisconnect} isDestinationWallet={true} />}
+          {destinationNetwork === 'ethereum' && <ListWalletEthereum onDisconnect={handleDisconnect} isDestinationWallet={true} />}
         </Box>
       </Popover>
     </Box>

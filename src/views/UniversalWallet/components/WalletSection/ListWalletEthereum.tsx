@@ -6,21 +6,21 @@ import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import useSummaryEVMConnect from 'src/states/wallets/evm-blockchain/hooks/useSummaryEVMConnect';
 import { Connector, useAccount, useConnect } from 'wagmi';
 import { mapNameWalletIcon } from '../../network';
-import { useDestinationWalletState, useSourceWalletState } from '../../state/hooks';
+import { useDestinationWalletState } from '../../state/hooks';
 
 type IProps = {
   onDisconnect: () => void;
+  isDestinationWallet?: boolean;
 };
 
 const ListWalletEthereum = (props: IProps) => {
-  const { onDisconnect } = props;
+  const { onDisconnect, isDestinationWallet } = props;
   const { disconnect, status } = useSummaryEVMConnect();
   const { connector: connectorEVM } = useAccount();
   const { connectAsync, connectors } = useConnect();
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
   const { address, chainId, walletIcon } = useSummaryEVMConnect();
-  const [sourceWallet] = useSourceWalletState();
 
   async function handleConnect(connector: Connector) {
     try {
@@ -46,18 +46,15 @@ const ListWalletEthereum = (props: IProps) => {
   };
 
   useEffect(() => {
-    if (sourceWallet === address) {
-      setDestinationWallet({ address: '', wallet: '', chainId: '' });
-      return;
-    }
-
-    if (address && address?.toString() !== destinationWallet.address) {
-      setDestinationWallet({
-        address: address?.toString() || '',
-        wallet: connectorEVM?.icon || '',
-        iconWalletName: walletIcon || undefined,
-        chainId: chainId || '',
-      });
+    if (isDestinationWallet) {
+      if (address && address?.toString() !== destinationWallet.address) {
+        setDestinationWallet({
+          address: address?.toString() || '',
+          wallet: connectorEVM?.icon || '',
+          iconWalletName: walletIcon || undefined,
+          chainId: chainId || '',
+        });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
