@@ -40,4 +40,8 @@ export const apiUrl = {
   createUniversalWallet: (address: string) => `${BACKEND_URL}/liquidator-pool/users/${address}`,
   walletLinkingRequest: () => `${BACKEND_URL}/universal/wallet-linking/request`,
   signMessage: () => `${BACKEND_URL}/universal/wallet-linking/submit-signature`,
+  getEarningMetrics: (day: number) => `${BACKEND_URL}/staking/tvl-history?nDays=${day}`,
+  getTopDepositors: () => `${BACKEND_URL}/staking/users`,
+  getAudits: () => `${BACKEND_URL}/yield-aggregator/audit`,
+  getRebalanceActions: () => `${BACKEND_URL}/collateral-allocation/rebalance-actions`,
 };

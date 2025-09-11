@@ -4,31 +4,36 @@ import HighchartsReact from 'highcharts-react-official';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import ToggleButtonGroupCustom from 'src/components/General/ToggleButtonGroupCustom/ToggleButtonGroupCustom';
 import useLineChartConfig from 'src/hooks/useHighcharts/useLineChartConfig';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import useGetEarning from 'src/views/Vaults/hooks/useGetEarning';
 
 const ToggleButtonGroups = [
   {
-    value: '1',
-    label: '1',
+    value: '-1',
+    label: 'ALL',
   },
   {
-    value: '2',
-    label: '2',
+    value: '7',
+    label: '7D',
   },
-];
-
-const mockDataChart = [
-  [Date.UTC(2020, 0, 1), 3],
-  [Date.UTC(2020, 2, 1), 5],
-  [Date.UTC(2020, 5, 1), 7],
-  [Date.UTC(2020, 8, 1), 10],
-  [Date.UTC(2020, 10, 1), 20],
-  [Date.UTC(2020, 11, 1), 10],
-  [Date.UTC(2021, 0, 1), 10],
+  {
+    value: '30',
+    label: '1M',
+  },
+  {
+    value: '90',
+    label: '3M',
+  },
 ];
 
 const EarningRateChart = () => {
-  const [toggleValue, setToggleValue] = useState<string>('1');
+  const [toggleValue, setToggleValue] = useState<string>('7');
+  const { data: earningData } = useGetEarning(Number(toggleValue));
+
+  const dataChart = useMemo(() => {
+    return earningData?.data.map((item) => [item.timestamp * 1000, item.earningRate]) || [];
+  }, [earningData]);
+
   const options: Highcharts.Options = useLineChartConfig(
     {
       chart: {
@@ -55,11 +60,11 @@ const EarningRateChart = () => {
       series: [
         {
           name: 'Earning Rate',
-          data: mockDataChart,
+          data: dataChart,
         } as Highcharts.SeriesOptionsType,
       ],
     },
-    []
+    [dataChart]
   );
 
   return (
