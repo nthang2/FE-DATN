@@ -33,6 +33,10 @@ export const apiUrl = {
   // Dashboard
   getMetrics: () => `${BACKEND_URL}/lending/metrics`,
   getMetricsCrossMode: () => `${BACKEND_URL}/lending/metrics/cross-mode`,
+  getEarningMetrics: (day: number) => `${BACKEND_URL}/staking/tvl-history?nDays=${day}`,
+  getTopDepositors: () => `${BACKEND_URL}/staking/users`,
+  getAudits: () => `${BACKEND_URL}/yield-aggregator/audit`,
+  getRebalanceActions: () => `${BACKEND_URL}/collateral-allocation/rebalance-actions`,
 
   // Universal Wallet
   generateMessage: (chainId: string, walletAddress: string) =>
@@ -40,8 +44,4 @@ export const apiUrl = {
   createUniversalWallet: (address: string) => `${BACKEND_URL}/liquidator-pool/users/${address}`,
   walletLinkingRequest: () => `${BACKEND_URL}/universal/wallet-linking/request`,
   signMessage: () => `${BACKEND_URL}/universal/wallet-linking/submit-signature`,
-  getEarningMetrics: (day: number) => `${BACKEND_URL}/staking/tvl-history?nDays=${day}`,
-  getTopDepositors: () => `${BACKEND_URL}/staking/users`,
-  getAudits: () => `${BACKEND_URL}/yield-aggregator/audit`,
-  getRebalanceActions: () => `${BACKEND_URL}/collateral-allocation/rebalance-actions`,
 };
