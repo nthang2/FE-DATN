@@ -1,66 +1,12 @@
 import { TableContainer, Table, TableHead, TableRow, TableCell, Box, Typography, TableBody } from '@mui/material';
-import ListIconToken from './ListIconToken';
+import ListIconToken from '../ListIconToken';
+import useGetProtocolPositions from 'src/views/Vaults/hooks/useGetProtocolPositions';
 
 const collateralTableHead = [{ label: 'Destinations', width: '250', align: 'left' }, { label: 'Allocation' }, { label: 'Percent' }];
 
-const mockCollateralData = [
-  {
-    id: '1',
-    name: 'Seamless USDC Vault',
-    protocol: 'Morpho',
-    icons: ['USDC'],
-    allocation: '13,496,428.80',
-    percent: '46.8%',
-    isSelected: false,
-  },
-  {
-    id: '2',
-    name: 'Seamless USDC Vault',
-    protocol: 'Morpho',
-    icons: ['USDC'],
-    allocation: '13,496,428.80',
-    percent: '46.8%',
-    isSelected: true,
-  },
-  {
-    id: '3',
-    name: 'Seamless USDC Vault',
-    protocol: 'Morpho',
-    icons: ['USDC', 'USDT'],
-    allocation: '13,496,428.80',
-    percent: '46.8%',
-    isSelected: false,
-  },
-  {
-    id: '4',
-    name: 'Seamless USDC Vault',
-    protocol: 'Morpho',
-    icons: ['USDC'],
-    allocation: '13,496,428.80',
-    percent: '46.8%',
-    isSelected: false,
-  },
-  {
-    id: '5',
-    name: 'Seamless USDC Vault',
-    protocol: 'Morpho',
-    icons: ['USDC'],
-    allocation: '13,496,428.80',
-    percent: '46.8%',
-    isSelected: false,
-  },
-  {
-    id: '6',
-    name: 'Seamless USDC Vault',
-    protocol: 'Morpho',
-    icons: ['USDC'],
-    allocation: '13,496,428.80',
-    percent: '46.8%',
-    isSelected: false,
-  },
-];
+const ProtocolTable = () => {
+  const { data } = useGetProtocolPositions();
 
-const CollateralTable = () => {
   return (
     <TableContainer sx={{ mt: 2, borderRadius: '14px', p: 2 }}>
       <Table>
@@ -81,24 +27,24 @@ const CollateralTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {mockCollateralData.map((row) => (
-            <TableRow key={row.id}>
+          {data?.map((row) => (
+            <TableRow key={row.protocol}>
               <TableCell component="th" scope="row">
                 <Box className="flex-start">
-                  <ListIconToken tokenNames={row.icons} network={'solana'} />
+                  <ListIconToken tokenNames={['USDC']} network={'solana'} />
                   <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 0.5 }}>
-                    {row.name}
+                    {row.protocol}
                   </Typography>
                 </Box>
               </TableCell>
               <TableCell align="right">
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {row.allocation}
+                  {row.tvl.toFixed(2)}
                 </Typography>
               </TableCell>
               <TableCell align="right">
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {row.percent}
+                  {row.percentage.toFixed(2)}
                 </Typography>
               </TableCell>
             </TableRow>
@@ -109,4 +55,4 @@ const CollateralTable = () => {
   );
 };
 
-export default CollateralTable;
+export default ProtocolTable;

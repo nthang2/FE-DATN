@@ -2,24 +2,22 @@ import { Typography } from '@mui/material';
 import { Box } from '@mui/material';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { useMemo } from 'react';
 import useDonutChartConfig from 'src/hooks/useHighcharts/useDonutChartConfig';
 import { formatNumber } from 'src/utils/format';
+import useGetProtocolPositions from 'src/views/Vaults/hooks/useGetProtocolPositions';
 
-const mockData = [
-  {
-    id: '1',
-    name: Object.keys(listTokenAvailable)[0],
-    y: 100,
-  },
-  {
-    id: '2',
-    name: Object.keys(listTokenAvailable)[1],
-    y: 200,
-  },
-];
+const ProtocolChart = () => {
+  const { data } = useGetProtocolPositions();
 
-const CollateralFarmingChart = () => {
+  const chartData = useMemo(() => {
+    return data?.map((item) => ({
+      id: item.protocol,
+      name: item.protocol,
+      y: item.percentage * 100,
+    }));
+  }, [data]);
+
   const options: Highcharts.Options = useDonutChartConfig(
     {
       chart: {
@@ -33,13 +31,13 @@ const CollateralFarmingChart = () => {
       },
       tooltip: {
         formatter: function () {
-          return `${this.name}: <b>${this.y != undefined && formatNumber(this.y, { fractionDigits: 2, prefix: '$' })}</b>`;
+          return `${this.name}: <b>${this.y != undefined && formatNumber(this.y, { fractionDigits: 2 })}%</b>`;
         },
       },
       series: [
         {
           type: 'pie',
-          data: mockData,
+          data: chartData,
         },
       ],
     },
@@ -64,4 +62,4 @@ const CollateralFarmingChart = () => {
   );
 };
 
-export default CollateralFarmingChart;
+export default ProtocolChart;

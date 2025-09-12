@@ -36,7 +36,9 @@ export const apiUrl = {
   getEarningMetrics: (day: number) => `${BACKEND_URL}/staking/tvl-history?nDays=${day}`,
   getTopDepositors: () => `${BACKEND_URL}/staking/users`,
   getAudits: () => `${BACKEND_URL}/yield-aggregator/audit`,
-  getRebalanceActions: () => `${BACKEND_URL}/collateral-allocation/rebalance-actions`,
+  getRebalanceActions: () => `${BACKEND_URL}/yield-aggregator/collateral-allocation/rebalance-actions`,
+  getProtocolPositions: () => `${BACKEND_URL}/yield-aggregator/collateral-allocation/protocol-positions`,
+  getVaultsPositions: () => `${BACKEND_URL}/yield-aggregator/collateral-allocation/vault-positions`,
 
   // Universal Wallet
   generateMessage: (chainId: string, walletAddress: string) =>

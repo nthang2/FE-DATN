@@ -176,6 +176,12 @@ export type IdlLending = {
           type: {
             array: ['u8', 32];
           };
+        },
+        {
+          name: 'nonce';
+          type: {
+            option: 'u64';
+          };
         }
       ];
     },
@@ -2993,6 +2999,12 @@ export type IdlLending = {
           type: {
             array: ['u8', 32];
           };
+        },
+        {
+          name: 'nonce';
+          type: {
+            option: 'u64';
+          };
         }
       ];
     },
@@ -3975,6 +3987,7 @@ export type IdlLending = {
         },
         {
           name: 'walletLinked';
+          docs: ['CHECK'];
           writable: true;
           pda: {
             seeds: [
@@ -9925,6 +9938,11 @@ export type IdlLending = {
       code: 6154;
       name: 'invalidNonce';
       msg: 'Invalid nonce';
+    },
+    {
+      code: 6155;
+      name: 'cannotRemoveFirstWallet';
+      msg: 'Cannot remove the first wallet if there are other wallets existing';
     }
   ];
   types: [
@@ -11889,6 +11907,12 @@ export const idlLending: IdlLending = {
           name: 'walletAddress',
           type: {
             array: ['u8', 32],
+          },
+        },
+        {
+          name: 'nonce',
+          type: {
+            option: 'u64',
           },
         },
       ],
@@ -14228,6 +14252,12 @@ export const idlLending: IdlLending = {
             array: ['u8', 32],
           },
         },
+        {
+          name: 'nonce',
+          type: {
+            option: 'u64',
+          },
+        },
       ],
     },
     {
@@ -14969,6 +14999,7 @@ export const idlLending: IdlLending = {
         },
         {
           name: 'walletLinked',
+          docs: ['CHECK'],
           writable: true,
           pda: {
             seeds: [
@@ -18879,6 +18910,11 @@ export const idlLending: IdlLending = {
       code: 6154,
       name: 'invalidNonce',
       msg: 'Invalid nonce',
+    },
+    {
+      code: 6155,
+      name: 'cannotRemoveFirstWallet',
+      msg: 'Cannot remove the first wallet if there are other wallets existing',
     },
   ],
   types: [

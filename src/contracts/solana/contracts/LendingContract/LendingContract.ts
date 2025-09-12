@@ -47,7 +47,9 @@ import {
   RESERVE_ACCOUNT,
   SWAP_CONFIG_SEED,
   swapUsdcALT,
+  WALLET_LINKING_REQUEST_SEED,
 } from './constant';
+import { pad } from 'viem';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -523,5 +525,26 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
       addressLookupTableAccounts,
       outAmountJupiter: jupiterQuote.outAmount,
     };
+  }
+
+  async linkWallet(destinationWallet: string, destinationChainId: string, action: boolean, sourceWallet: string) {
+    const destinationWalletBytes = Array.from(Buffer.from(pad(destinationWallet as `0x${string}`, { size: 32 }).slice(2), 'hex'));
+
+    const instruction = await this.program.methods
+      .requestLinkWallet(destinationWalletBytes, Number(destinationChainId), action)
+      .accounts({
+        user: new PublicKey(sourceWallet),
+      })
+      .transaction();
+
+    const transactionHash = await this.sendTransaction(instruction);
+    return transactionHash;
+  }
+
+  async getLinkWalletInfo(sourceWallet: string) {
+    const pda = this.getPda(WALLET_LINKING_REQUEST_SEED, new PublicKey(sourceWallet));
+    const linkWalletInfo = await this.program.account.walletLinkingRequest.fetch(pda);
+
+    return linkWalletInfo;
   }
 }

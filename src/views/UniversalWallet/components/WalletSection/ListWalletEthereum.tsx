@@ -14,8 +14,8 @@ type IProps = {
 };
 
 const ListWalletEthereum = (props: IProps) => {
-  const { onDisconnect, isDestinationWallet } = props;
-  const { disconnect, status } = useSummaryEVMConnect();
+  const { isDestinationWallet, onDisconnect } = props;
+  const { disconnect } = useSummaryEVMConnect();
   const { connector: connectorEVM } = useAccount();
   const { connectAsync, connectors } = useConnect();
   const [search, setSearch] = useState<string>('');
@@ -38,7 +38,7 @@ const ListWalletEthereum = (props: IProps) => {
   };
 
   const handleClickBtn = (connector: Connector) => {
-    if (status === 'Connected') {
+    if (connector.id === connectorEVM?.id) {
       handleDisconnect();
     } else {
       handleConnect(connector);

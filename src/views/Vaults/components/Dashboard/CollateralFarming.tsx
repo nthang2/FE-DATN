@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
-import { Grid2 as Grid, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { listTokenAvailableVault } from '../../constant';
 import CustomSelectToken from 'src/views/MyPortfolio/components/InputCustom/CustomSelectToken';
 import ToggleButtonGroupCustom from 'src/components/General/ToggleButtonGroupCustom/ToggleButtonGroupCustom';
-import CollateralFarmingChart from './Chart/CollateralFarmingChart';
-import CollateralTable from './CollateralTable';
+import DestinationsSection from './CollateralFarming/DestinationsSection';
+import ProtocolSection from './CollateralFarming/ProtocolSection';
+import RebalanceSection from './CollateralFarming/RebalanceSection';
 
 const ToggleButtonGroups = [
   {
@@ -18,6 +19,7 @@ const ToggleButtonGroups = [
   },
   { value: 'rebalance', label: 'Rebalance' },
 ];
+
 const CollateralFarming = () => {
   const [selectedToken, setSelectedToken] = useState<string>(listTokenAvailableVault['USDC'].address);
   const [toggleValue, setToggleValue] = useState<string>('destinations');
@@ -30,7 +32,7 @@ const CollateralFarming = () => {
         </Typography>
 
         <CustomSelectToken
-          options={Object.values(listTokenAvailableVault).map((token) => token.address)}
+          options={[listTokenAvailableVault['USDC']].map((token) => token.address)}
           value={selectedToken}
           onChange={(e) => setSelectedToken(e.target.value as string)}
           sx={{
@@ -61,14 +63,9 @@ const CollateralFarming = () => {
         }}
       />
 
-      <Grid container spacing={2} width="100%">
-        <Grid size={{ xs: 12, md: 4 }}>
-          <CollateralFarmingChart />
-        </Grid>
-        <Grid size={{ xs: 12, md: 8 }}>
-          <CollateralTable />
-        </Grid>
-      </Grid>
+      {toggleValue === 'destinations' && <DestinationsSection />}
+      {toggleValue === 'protocols' && <ProtocolSection />}
+      {toggleValue === 'rebalance' && <RebalanceSection />}
     </BoxCustom>
   );
 };
