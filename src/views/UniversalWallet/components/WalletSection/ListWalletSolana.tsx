@@ -14,9 +14,9 @@ interface IProps {
 }
 
 const ListWalletSolana = (props: IProps) => {
-  const { onDisconnect, isDestinationWallet } = props;
+  const { isDestinationWallet, onDisconnect } = props;
   const { select, wallets, publicKey, wallet } = useWallet();
-  const { chainId, disconnect, status } = useSummarySolanaConnect();
+  const { chainId, disconnect } = useSummarySolanaConnect();
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
 
@@ -35,7 +35,7 @@ const ListWalletSolana = (props: IProps) => {
   };
 
   const handleClickBtn = (adapter: Adapter) => {
-    if (status === 'Connected') {
+    if (adapter.connected) {
       handleDisconnect();
     } else {
       handleConnect(adapter);

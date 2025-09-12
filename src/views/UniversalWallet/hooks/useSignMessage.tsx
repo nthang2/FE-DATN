@@ -1,7 +1,7 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useDestinationNetworkState, useDestinationWalletState, useGenMessageState } from '../state/hooks';
 import { useMutation } from '@tanstack/react-query';
-import { useSignMessage } from 'wagmi';
+import { useDisconnect, useSignMessage } from 'wagmi';
 import { handleSignMessageApi } from 'src/services/HandleApi/requestToLink/requestToLink';
 import { toast } from 'react-toastify';
 
@@ -9,7 +9,8 @@ const useSignMessageDestination = () => {
   const [genMessage, setGenMessage] = useGenMessageState();
   const [destinationNetwork] = useDestinationNetworkState();
   const { signMessageAsync: signMessageEVM } = useSignMessage();
-  const { signMessage: signMessageSolana } = useWallet();
+  const { signMessage: signMessageSolana, disconnect: disconnectSolana } = useWallet();
+  const { disconnect: disconnectEVM } = useDisconnect();
   const [destinationWallet] = useDestinationWalletState();
 
   const mutation = useMutation({
@@ -37,6 +38,8 @@ const useSignMessageDestination = () => {
         }
       } catch (error) {
         console.log(error);
+        toast.error('Signature submitted failed: ' + error);
+        throw error;
       }
 
       return true;
@@ -44,6 +47,11 @@ const useSignMessageDestination = () => {
     onSuccess: () => {
       toast.success('Signature submitted successfully');
       setGenMessage(undefined);
+      if (destinationNetwork === 'solana') {
+        disconnectSolana();
+      } else {
+        disconnectEVM();
+      }
     },
   });
 
