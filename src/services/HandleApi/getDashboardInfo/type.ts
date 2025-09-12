@@ -56,3 +56,18 @@ export type TRebalanceActions = {
   amount: number;
   timestamp: number;
 };
+
+export type TProtocolPositions = {
+  protocol: string;
+  tvl: number;
+  percentage: number;
+  pnl: number;
+};
+
+export type TVaultsPositions = {
+  vaultId: string;
+  name: string;
+  tvl: number;
+  percentage: number;
+  pnl: number;
+};
