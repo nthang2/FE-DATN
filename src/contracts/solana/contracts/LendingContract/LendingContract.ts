@@ -528,7 +528,7 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
   }
 
   async linkWallet(destinationWallet: string, destinationChainId: string, action: boolean, sourceWallet: string) {
-    const destinationWalletBytes = Array.from(Buffer.from(pad(destinationWallet as `0x${string}`, { size: 32 })));
+    const destinationWalletBytes = Array.from(Buffer.from(pad(destinationWallet as `0x${string}`, { size: 32 }).slice(2), 'hex'));
 
     const instruction = await this.program.methods
       .requestLinkWallet(destinationWalletBytes, Number(destinationChainId), action)

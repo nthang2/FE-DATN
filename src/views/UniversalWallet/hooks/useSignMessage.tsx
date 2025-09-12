@@ -1,16 +1,17 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useDestinationNetworkState, useDestinationWalletState, useGenMessageState } from '../state/hooks';
 import { useMutation } from '@tanstack/react-query';
-import { useDisconnect, useSignMessage } from 'wagmi';
+import { useSignMessage } from 'wagmi';
 import { handleSignMessageApi } from 'src/services/HandleApi/requestToLink/requestToLink';
 import { toast } from 'react-toastify';
+import { disconnect as disconnectEVM } from '@wagmi/core';
+import { configUniversalWallet } from 'src/states/wallets/evm-blockchain/config';
 
 const useSignMessageDestination = () => {
   const [genMessage, setGenMessage] = useGenMessageState();
   const [destinationNetwork] = useDestinationNetworkState();
   const { signMessageAsync: signMessageEVM } = useSignMessage();
   const { signMessage: signMessageSolana, disconnect: disconnectSolana } = useWallet();
-  const { disconnect: disconnectEVM } = useDisconnect();
   const [destinationWallet] = useDestinationWalletState();
 
   const mutation = useMutation({
@@ -50,7 +51,7 @@ const useSignMessageDestination = () => {
       if (destinationNetwork === 'solana') {
         disconnectSolana();
       } else {
-        disconnectEVM();
+        disconnectEVM(configUniversalWallet);
       }
     },
   });
