@@ -4,7 +4,7 @@ export const FontOxanium = "'Oxanium', serif";
 
 export const ProjectID_WalletConnect = '349c73495596fe0938c2557979bddc8c';
 
-export const NETWORK: 'mainnet' | 'devnet' = 'mainnet'; //change to mainnet later
+export const NETWORK: 'mainnet' | 'devnet' = 'devnet'; //change to mainnet later
 
 export const defaultRpc = NETWORK !== 'mainnet' ? clusterApiUrl('devnet') : 'https://solana-woker.distilled.ai/';
 

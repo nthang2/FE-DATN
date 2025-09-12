@@ -12,6 +12,7 @@ const collateralTableHead = [
   { label: 'Date' },
 ];
 const itemPerPage = 5;
+
 const RebalanceActionTable = () => {
   const { data } = useGetRebalanceActions();
   const [page, setPage] = useState(1);

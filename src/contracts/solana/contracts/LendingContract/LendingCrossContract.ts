@@ -45,6 +45,7 @@ import {
   RESERVE_ACCOUNT,
   SWAP_CONFIG_SEED,
   swapUsdcALT,
+  WALLET_LINKING_REQUEST_SEED,
 } from './constant';
 import { getJupiterQuote, jupiterSwapInstructions } from 'src/services/HandleApi/getJupiterInfo/getJupiterInfo';
 import { usdaiAddress } from '../VaultContract';
@@ -496,5 +497,26 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
       addressLookupTableAccounts,
       outAmountJupiter: jupiterQuote.outAmount,
     };
+  }
+
+  async linkWallet(destinationWallet: string, destinationChainId: string, action: boolean, sourceWallet: string) {
+    const destinationWalletBytes = Array.from(Buffer.from(new PublicKey(destinationWallet).toBytes()));
+
+    const instruction = await this.program.methods
+      .requestLinkWallet(destinationWalletBytes, Number(destinationChainId), action)
+      .accounts({
+        user: new PublicKey(sourceWallet),
+      })
+      .transaction();
+
+    const transactionHash = await this.sendTransaction(instruction);
+    return transactionHash;
+  }
+
+  async getLinkWalletInfo(sourceWallet: string) {
+    const pda = this.getPda(WALLET_LINKING_REQUEST_SEED, new PublicKey(sourceWallet));
+    const linkWalletInfo = await this.program.account.walletLinkingRequest.fetch(pda);
+
+    return linkWalletInfo;
   }
 }
