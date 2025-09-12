@@ -8,6 +8,7 @@ const useGetAudit = () => {
       const resp = await getAudits();
       return resp;
     },
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   return { ...query, totalItems: query.data?.length || 0 };

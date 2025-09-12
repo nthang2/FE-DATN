@@ -31,6 +31,7 @@ import { appStore, crossModeAtom } from 'src/states/state';
 import { getDecimalToken } from 'src/utils';
 import { BN as utilBN } from 'src/utils/index';
 import { addPriorityFee, getAddressLookupTableAccounts } from 'src/views/MyPortfolio/utils';
+import { pad } from 'viem';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { usdaiAddress } from '../VaultContract';
@@ -49,7 +50,6 @@ import {
   swapUsdcALT,
   WALLET_LINKING_REQUEST_SEED,
 } from './constant';
-import { pad } from 'viem';
 
 export class LendingContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -546,5 +546,19 @@ export class LendingContract extends SolanaContractAbstract<IdlLending> {
     const linkWalletInfo = await this.program.account.walletLinkingRequest.fetch(pda);
 
     return linkWalletInfo;
+  }
+
+  async removeUniversalWallet(wallet: string, chainId: number) {
+    const destinationWalletBytes = Array.from(new PublicKey(wallet).toBytes());
+
+    const instruction = await this.program.methods
+      .requestLinkWallet(destinationWalletBytes, Number(chainId), false)
+      .accounts({
+        user: new PublicKey(wallet),
+      })
+      .transaction();
+
+    const transactionHash = await this.sendTransaction(instruction);
+    return transactionHash;
   }
 }

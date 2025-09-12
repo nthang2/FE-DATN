@@ -58,7 +58,7 @@ export default function ConnectEVMNetwork(props: IProps) {
 
         // Check if wallet is installed (for MetaMask, check if window.ethereum exists)
         const isWalletInstalled =
-          connector.name === 'MetaMask' ? typeof window !== 'undefined' && (window as unknown as { ethereum?: unknown }).ethereum : true; // For other connectors, assume they're available
+          connector.name === 'MetaMask' ? typeof window !== 'undefined' && (window as unknown as { ethereum?: unknown }).ethereum : true; // For other connectors, ase they're available
 
         if (!isWalletInstalled) {
           status = 'NotInstalled';

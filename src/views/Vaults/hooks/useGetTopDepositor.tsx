@@ -8,6 +8,7 @@ const useGetTopDepositor = () => {
       const resp = await getTopDepositors();
       return resp;
     },
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   return query;

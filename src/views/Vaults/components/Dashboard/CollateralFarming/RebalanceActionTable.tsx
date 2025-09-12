@@ -1,7 +1,7 @@
 import { TableContainer, Table, TableHead, TableRow, TableCell, Box, Typography, TableBody, Pagination } from '@mui/material';
 import useGetRebalanceActions from 'src/views/Vaults/hooks/useGetRebalanceActions';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { formatDate } from 'date-fns';
 import { listActionRebalanceScanLink } from 'src/views/Vaults/constant';
 
@@ -14,12 +14,8 @@ const collateralTableHead = [
 const itemPerPage = 5;
 
 const RebalanceActionTable = () => {
-  const { data } = useGetRebalanceActions();
   const [page, setPage] = useState(1);
-
-  const displayData = useMemo(() => {
-    return data?.slice((page - 1) * itemPerPage, (page - 1) * itemPerPage + itemPerPage);
-  }, [page, data]);
+  const { data } = useGetRebalanceActions(page, itemPerPage);
 
   const handleDisplayVaultId = (vaultId: string) => {
     return vaultId.replace(/-/g, ' ').replace(/_/g, ' ');
@@ -52,7 +48,7 @@ const RebalanceActionTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {displayData?.map((row) => (
+          {data?.data?.map((row) => (
             <TableRow key={row.actionId}>
               <TableCell align="left">
                 <Typography variant="caption" sx={{ color: 'text.disabled' }} mb={0.5}>
@@ -94,7 +90,7 @@ const RebalanceActionTable = () => {
       <Box className="flex-center" sx={{ flex: 1, alignItems: 'flex-end', width: '100%' }}>
         <Pagination
           sx={{ mx: 'auto', mt: 2 }}
-          count={Math.ceil(data?.length ? data.length / itemPerPage : 1)}
+          count={Math.ceil(data?.total ? data.total / itemPerPage : 1)}
           shape="rounded"
           onChange={(_, value) => setPage(value)}
           page={page}

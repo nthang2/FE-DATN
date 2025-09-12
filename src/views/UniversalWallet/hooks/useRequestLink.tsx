@@ -37,7 +37,7 @@ const useRequestLink = () => {
             sourceAddress
           );
 
-          await sleep(1000 * 5); // wait 20 seconds
+          await sleep(1000 * 5); // wait 5 seconds
 
           const linkWalletInfo = await contractSolana.getLinkWalletInfo(sourceAddress);
           await walletLinkingRequest({
@@ -50,7 +50,7 @@ const useRequestLink = () => {
             action: linkWalletInfo.action,
           });
 
-          const response = await requestToLink(destinationWallet.chainId, destinationWallet.address);
+          const response = await requestToLink(destinationWallet.chainId, destinationWallet.address, sourceAddress, sourceChainId);
           setGenMessage(response.message);
 
           return transactionHash as string;
@@ -82,7 +82,7 @@ const useRequestLink = () => {
             deadline: Number(walletRequest[5]),
             action: walletRequest[6],
           });
-          const response = await requestToLink(destinationWallet.chainId, destinationWallet.address);
+          const response = await requestToLink(destinationWallet.chainId, destinationWallet.address, sourceAddress, sourceChainId);
           setGenMessage(response.message);
 
           return response.message;

@@ -48,13 +48,10 @@ export type TAudits = {
 };
 
 export type TRebalanceActions = {
-  actionId: number;
-  txHash: string;
-  action: string;
-  chainId: string;
-  vaultId: string;
-  amount: number;
-  timestamp: number;
+  total: 10;
+  pageIndex: 1;
+  pageSize: 10;
+  data: [{ actionId: number; txHash: string; action: string; chainId: string; vaultId: string; amount: number; timestamp: number }];
 };
 
 export type TProtocolPositions = {

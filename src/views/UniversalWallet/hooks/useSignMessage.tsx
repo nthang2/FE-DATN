@@ -6,6 +6,7 @@ import { handleSignMessageApi } from 'src/services/HandleApi/requestToLink/reque
 import { toast } from 'react-toastify';
 import { disconnect as disconnectEVM } from '@wagmi/core';
 import { configUniversalWallet } from 'src/states/wallets/evm-blockchain/config';
+import { queryClient } from 'src/layout/Layout';
 
 const useSignMessageDestination = () => {
   const [genMessage, setGenMessage] = useGenMessageState();
@@ -47,6 +48,7 @@ const useSignMessageDestination = () => {
     },
     onSuccess: () => {
       toast.success('Signature submitted successfully');
+      queryClient.invalidateQueries({ queryKey: ['listWalletLinkingRequests'] });
       setGenMessage(undefined);
       if (destinationNetwork === 'solana') {
         disconnectSolana();

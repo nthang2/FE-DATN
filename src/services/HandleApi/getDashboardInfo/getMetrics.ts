@@ -27,9 +27,9 @@ export const getAudits = async () => {
   return resp.data as TAudits[];
 };
 
-export const getRebalanceActions = async () => {
-  const resp = await axios.get(apiUrl.getRebalanceActions());
-  return resp.data as TRebalanceActions[];
+export const getRebalanceActions = async (page: number, pageSize: number) => {
+  const resp = await axios.get(apiUrl.getRebalanceActions(page, pageSize));
+  return resp.data as TRebalanceActions;
 };
 
 export const getProtocolPositions = async () => {

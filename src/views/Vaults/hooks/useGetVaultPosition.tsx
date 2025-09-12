@@ -8,6 +8,7 @@ const useGetVaultPosition = () => {
       const resp = await getVaultsPositions();
       return resp;
     },
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   return query;

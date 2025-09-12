@@ -1,35 +1,26 @@
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { listWalletTableHead } from '../../constant';
 // import Failed from 'src/components/StatusData/Failed';
 // import JPowLoading from 'src/components/StatusData/Loading';
 // import NoData from 'src/components/StatusData/NoData';
-import { IconETH, IconSOL } from 'src/libs/crypto-icons';
-
-const mockData = [
-  {
-    id: 1,
-    name: 'Wallet 1',
-    address: '0x1234567890',
-    network: 'Solana',
-    networkIcon: <IconSOL />,
-  },
-  {
-    id: 2,
-    name: 'Wallet 2',
-    address: '0x1234567890',
-    network: 'Solana',
-    networkIcon: <IconSOL />,
-  },
-  {
-    id: 3,
-    name: 'Wallet 3',
-    address: '0x1234567890',
-    network: 'Ethereum',
-    networkIcon: <IconETH />,
-  },
-];
+import { formatAddress } from 'src/utils/format';
+import useRemoveWallet from '../../hooks/useRemoveWallet';
+import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
+import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
+import useGetListWallet from '../../hooks/useGetListWallet';
+import { chainIconNetwork, chainNetwork } from 'src/states/wallets/constants/chainIcon';
 
 const ListWallet = () => {
+  const { address, chainId } = useSummaryConnect();
+  const { mutateAsync: removeWallet, isPending: loading } = useRemoveWallet();
+  const { data: listWallet } = useGetListWallet(chainId, address);
+
+  const asyncRemoveWallet = async (wallet: string, network: string) => {
+    if (wallet === address) {
+      await removeWallet({ wallet, network });
+    }
+  };
+
   return (
     <TableContainer sx={{ mt: 2, borderRadius: '14px' }}>
       <Table>
@@ -48,25 +39,37 @@ const ListWallet = () => {
         </TableHead>
 
         <TableBody>
-          {mockData.length > 0 ? (
-            mockData.map((item) => (
-              <TableRow key={item.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell>
-                  <Box className="flex-start" gap={1}>
-                    {item.networkIcon}
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {item.network}
-                    </Typography>
-                  </Box>
-                </TableCell>
-                <TableCell>{item.address}</TableCell>
-                <TableCell>
-                  <Button variant="contained" sx={{ height: '32px' }} color="secondary">
-                    Remove
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))
+          {listWallet?.wallets ? (
+            listWallet?.wallets.map((item) => {
+              const IconNetwork = chainIconNetwork[item.chainId];
+              const network = Object.keys(chainNetwork).find((key) => chainNetwork[key] === item.chainId.toString());
+
+              return (
+                <TableRow key={item.key} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <TableCell>
+                    <Box className="flex-start" gap={1}>
+                      {IconNetwork && <IconNetwork />}
+                      <Typography variant="body2" sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+                        {network}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>{formatAddress(item.walletAddress)}</TableCell>
+                  <TableCell>
+                    <ButtonLoading
+                      variant="contained"
+                      disabled={item.walletAddress !== address}
+                      sx={{ height: '32px' }}
+                      color="secondary"
+                      loading={item.walletAddress === address && loading}
+                      onClick={() => asyncRemoveWallet(item.walletAddress, item.chainId.toString())}
+                    >
+                      Remove
+                    </ButtonLoading>
+                  </TableCell>
+                </TableRow>
+              );
+            })
           ) : (
             <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
               {/* <TableCell colSpan={liquidationTableHead.length}>
