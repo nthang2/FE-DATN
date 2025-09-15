@@ -3,10 +3,12 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
-import useSummaryEVMConnect from 'src/states/wallets/evm-blockchain/hooks/useSummaryEVMConnect';
-import { Connector, useAccount, useConnect } from 'wagmi';
+import { configUniversalWallet } from 'src/states/wallets/evm-blockchain/config';
+import { Connector, useConnect } from 'wagmi';
+import { disconnect, getAccount } from 'wagmi/actions';
 import { mapNameWalletIcon } from '../../network';
 import { useDestinationWalletState } from '../../state/hooks';
+import { walletIcon as walletIconEVM } from 'src/states/wallets/constants/walletIcon';
 
 type IProps = {
   onDisconnect: () => void;
@@ -15,16 +17,15 @@ type IProps = {
 
 const ListWalletEthereum = (props: IProps) => {
   const { isDestinationWallet, onDisconnect } = props;
-  const { disconnect } = useSummaryEVMConnect();
-  const { connector: connectorEVM } = useAccount();
   const { connectAsync, connectors } = useConnect();
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
-  const { address, chainId, walletIcon } = useSummaryEVMConnect();
+  const { address, chainId, connector: connectorEVM } = getAccount(configUniversalWallet);
+  const walletIcon = connectorEVM ? connectorEVM.icon || walletIconEVM[connectorEVM.name] : undefined;
 
   async function handleConnect(connector: Connector) {
     try {
-      disconnect();
+      disconnect(configUniversalWallet);
       await connectAsync({ connector: connector });
     } catch (error) {
       console.error(error);
@@ -33,7 +34,7 @@ const ListWalletEthereum = (props: IProps) => {
   }
 
   const handleDisconnect = () => {
-    disconnect();
+    disconnect(configUniversalWallet);
     onDisconnect();
   };
 
@@ -49,10 +50,10 @@ const ListWalletEthereum = (props: IProps) => {
     if (isDestinationWallet) {
       if (address && address?.toString() !== destinationWallet.address) {
         setDestinationWallet({
-          address: address?.toString() || '',
+          address: address?.toString(),
           wallet: connectorEVM?.icon || '',
-          iconWalletName: walletIcon || undefined,
-          chainId: chainId || '',
+          iconWalletName: walletIcon,
+          chainId: String(chainId) || '',
         });
       }
     }
