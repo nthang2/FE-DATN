@@ -35,7 +35,7 @@ const ProtocolTable = () => {
               <TableRow key={row.protocol}>
                 <TableCell component="th" scope="row">
                   <Box className="flex-start">
-                    <ListIconToken tokenNames={['USDC']} network={'solana'} />
+                    <ListIconToken tokenNames={['USDC']} network={'solana'} protocol={row.protocol} />
                     <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 0.5, textTransform: 'capitalize' }}>
                       {row.protocol}
                     </Typography>

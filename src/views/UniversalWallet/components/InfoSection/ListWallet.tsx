@@ -3,17 +3,18 @@ import { listWalletTableHead } from '../../constant';
 // import Failed from 'src/components/StatusData/Failed';
 // import JPowLoading from 'src/components/StatusData/Loading';
 // import NoData from 'src/components/StatusData/NoData';
-import { formatAddress } from 'src/utils/format';
-import useRemoveWallet from '../../hooks/useRemoveWallet';
-import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
-import useGetListWallet from '../../hooks/useGetListWallet';
+import NoData from 'src/components/StatusData/NoData';
 import { chainIconNetwork, chainNetwork } from 'src/states/wallets/constants/chainIcon';
+import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
+import { formatAddress } from 'src/utils/format';
+import useGetListWallet from '../../hooks/useGetListWallet';
+import useRemoveWallet from '../../hooks/useRemoveWallet';
 
 const ListWallet = () => {
   const { address, chainId } = useSummaryConnect();
   const { mutateAsync: removeWallet, isPending: loading } = useRemoveWallet();
-  const { data: listWallet } = useGetListWallet(chainId, address);
+  const { data: listWallet, status } = useGetListWallet(chainId, address);
 
   const asyncRemoveWallet = async (wallet: string, network: string) => {
     if (wallet === address) {
@@ -72,13 +73,12 @@ const ListWallet = () => {
             })
           ) : (
             <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-              {/* <TableCell colSpan={liquidationTableHead.length}>
+              <TableCell colSpan={listWalletTableHead.length}>
                 <Box className="flex-center">
-                  {liquidation.status == 'fetching' && <JPowLoading />}
-                  {liquidation.status == 'error' && <Failed />}
-                  {liquidation.status == 'success' && liquidation.data && liquidation.data.numberOfDocs == 0 && <NoData />}
+                  {status == 'error' && <NoData text="No information !" />}
+                  {status == 'success' && listWallet && listWallet.wallets.length == 0 && <NoData text="No information !" />}
                 </Box>
-              </TableCell> */}
+              </TableCell>
             </TableRow>
           )}
         </TableBody>

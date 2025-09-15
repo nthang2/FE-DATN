@@ -1,17 +1,22 @@
 import { Box, Stack } from '@mui/material';
 import { mapNameNetwork } from 'src/constants/network';
+import { mapNameProtocolToIcon } from 'src/constants/protocols';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { TokenName } from 'src/libs/crypto-icons/types';
 
 type Props = {
   tokenNames: string[];
   network: string;
+  protocol?: string;
 };
 
 const ListIconToken = (props: Props) => {
-  const { tokenNames, network } = props;
+  const { tokenNames, network, protocol } = props;
   const networkInfo = mapNameNetwork[network];
   const networkPosition = tokenNames.length > 2 ? 3.5 : tokenNames.length;
+
+  const protocolKey = protocol ? Object.keys(mapNameProtocolToIcon).find((key) => protocol.toLowerCase().includes(key)) : null;
+  const protocolIcon = protocolKey ? mapNameProtocolToIcon[protocolKey] : null;
 
   return (
     <Stack direction="row" width="fit-content">
@@ -62,7 +67,7 @@ const ListIconToken = (props: Props) => {
           width: tokenNames.length > 1 ? '0px' : '8px',
         }}
       >
-        {networkInfo?.icon}
+        {protocolIcon ? protocolIcon : networkInfo?.icon}
       </Box>
     </Stack>
   );
