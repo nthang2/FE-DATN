@@ -15,7 +15,7 @@ const StakedAmount = () => {
         flexDirection: 'column',
         gap: 1.5,
         minWidth: '350px',
-        bgcolor: '#2A2A2A',
+        bgcolor: 'background.content',
         borderRadius: '14px',
       }}
     >

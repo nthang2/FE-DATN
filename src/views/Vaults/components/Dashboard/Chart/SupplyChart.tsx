@@ -41,7 +41,6 @@ const SupplyChart = () => {
   const options: Highcharts.Options = useAreaChartConfig(
     {
       chart: {
-        type: 'line',
         backgroundColor: 'transparent',
         height: 250,
       },
@@ -87,6 +86,7 @@ const SupplyChart = () => {
           fillOpacity: 0.1,
           data: dataChart,
           lineColor: '#d8ff9180',
+          name: 'USDAI Supply',
         },
       ],
     },

@@ -31,7 +31,7 @@ const EarningRateChart = () => {
   const { data: earningData } = useGetEarning(Number(toggleValue));
 
   const dataChart = useMemo(() => {
-    return earningData?.data.map((item) => [item.timestamp * 1000, item.earningRate]) || [];
+    return earningData?.data.map((item) => [item.timestamp * 1000, item.earningRate]).sort((a, b) => a[0] - b[0]) || [];
   }, [earningData]);
 
   const options: Highcharts.Options = useAreaChartConfig(

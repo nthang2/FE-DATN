@@ -36,7 +36,7 @@ const ClaimableReward = () => {
         display: 'flex',
         flexDirection: 'column',
         gap: 3.5,
-        bgcolor: '#2A2A2A',
+        bgcolor: 'background.content',
         borderRadius: '14px',
       }}
     >
