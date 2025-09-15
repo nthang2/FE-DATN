@@ -66,6 +66,7 @@ const ListIconToken = (props: Props) => {
           flexDirection: 'column',
           justifyContent: 'flex-end',
           width: tokenNames.length > 1 ? '0px' : '8px',
+          mr: 0.5,
         }}
       >
         {protocolIcon ? protocolIcon : networkInfo?.icon}
