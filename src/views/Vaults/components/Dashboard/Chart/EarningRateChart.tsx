@@ -1,5 +1,5 @@
 import { Stack, Typography } from '@mui/material';
-import Highcharts from 'highcharts';
+import Highcharts, { LinearGradientColorObject } from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import ToggleButtonGroupCustom from 'src/components/General/ToggleButtonGroupCustom/ToggleButtonGroupCustom';
@@ -59,9 +59,20 @@ const EarningRateChart = () => {
       },
       series: [
         {
-          name: 'Earning Rate',
+          type: 'area',
+          fillColor: {
+            linearGradient: [5, 0, 5, 250] as unknown as LinearGradientColorObject,
+            stops: [
+              [0, '#d8ff9180'],
+              [0.7, 'rgba(226, 231, 150, 0.06)'],
+              [1, 'rgba(182, 204, 244, 0.1)'],
+            ],
+          },
+          fillOpacity: 0.1,
           data: dataChart,
-        } as Highcharts.SeriesOptionsType,
+          lineColor: '#d8ff9180',
+          name: 'Earning Rate',
+        },
       ],
     },
     [dataChart]

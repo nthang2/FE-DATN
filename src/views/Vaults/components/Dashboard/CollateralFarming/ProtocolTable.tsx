@@ -1,7 +1,7 @@
-import { TableContainer, Table, TableHead, TableRow, TableCell, Box, Typography, TableBody } from '@mui/material';
-import ListIconToken from '../ListIconToken';
-import useGetProtocolPositions from 'src/views/Vaults/hooks/useGetProtocolPositions';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import SkeletonTableBody from 'src/components/TableLoading/SkeletonTableBody';
+import { mapNameProtocolToIcon } from 'src/constants/protocols';
+import useGetProtocolPositions from 'src/views/Vaults/hooks/useGetProtocolPositions';
 
 const collateralTableHead = [{ label: 'Protocol', width: '250', align: 'left' }, { label: 'TVL' }, { label: 'Percent' }];
 
@@ -31,28 +31,35 @@ const ProtocolTable = () => {
           {isLoading ? (
             <SkeletonTableBody cols={3} rows={3} />
           ) : (
-            data?.map((row) => (
-              <TableRow key={row.protocol}>
-                <TableCell component="th" scope="row">
-                  <Box className="flex-start">
-                    <ListIconToken tokenNames={['USDC']} network={'solana'} protocol={row.protocol} />
-                    <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 0.5, textTransform: 'capitalize' }}>
-                      {row.protocol}
+            data?.map((row) => {
+              const protocolKey = row.protocol
+                ? Object.keys(mapNameProtocolToIcon).find((key) => row.protocol.toLowerCase().includes(key))
+                : null;
+              const protocolIcon = protocolKey ? mapNameProtocolToIcon[protocolKey] : null;
+
+              return (
+                <TableRow key={row.protocol}>
+                  <TableCell component="th" scope="row">
+                    <Box className="flex-start" sx={{ '& svg': { fontSize: '30px' } }}>
+                      {protocolIcon}
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 0.5, textTransform: 'capitalize' }}>
+                        {row.protocol}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      {row.tvl.toFixed(2)}
                     </Typography>
-                  </Box>
-                </TableCell>
-                <TableCell align="right">
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {row.tvl.toFixed(2)}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {row.percentage.toFixed(2)}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            ))
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      {row.percentage.toFixed(2)}
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              );
+            })
           )}
         </TableBody>
       </Table>
