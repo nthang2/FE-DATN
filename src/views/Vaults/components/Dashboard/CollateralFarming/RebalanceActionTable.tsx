@@ -4,6 +4,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { useState } from 'react';
 import { formatDate } from 'date-fns';
 import { listActionRebalanceScanLink } from 'src/views/Vaults/constant';
+import SkeletonTableBody from 'src/components/TableLoading/SkeletonTableBody';
 
 const collateralTableHead = [
   { label: 'Tx Hash', align: 'left', width: '230' },
@@ -15,7 +16,7 @@ const itemPerPage = 5;
 
 const RebalanceActionTable = () => {
   const [page, setPage] = useState(1);
-  const { data } = useGetRebalanceActions(page, itemPerPage);
+  const { data, isLoading } = useGetRebalanceActions(page, itemPerPage);
 
   const handleDisplayVaultId = (vaultId: string) => {
     return vaultId.replace(/-/g, ' ').replace(/_/g, ' ');
@@ -48,42 +49,46 @@ const RebalanceActionTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data?.data?.map((row) => (
-            <TableRow key={row.actionId}>
-              <TableCell align="left">
-                <Typography variant="caption" sx={{ color: 'text.disabled' }} mb={0.5}>
-                  Rebalance #{row.actionId}{' '}
-                  <OpenInNewIcon
-                    sx={{ fontSize: '12px', cursor: 'pointer' }}
-                    onClick={() => handleRedirectToScanLink(row.chainId, row.txHash)}
-                  />
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                  {handleDisplayVaultId(row.vaultId)}
-                </Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {row.amount.toFixed(2)}
-                </Typography>
-              </TableCell>
-              <TableCell component="th" scope="row" align="right">
-                <Box className="flex-end">
-                  <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 0.5, textTransform: 'capitalize' }}>
-                    {row.action}
+          {isLoading ? (
+            <SkeletonTableBody cols={4} rows={5} />
+          ) : (
+            data?.data?.map((row) => (
+              <TableRow key={row.actionId}>
+                <TableCell align="left">
+                  <Typography variant="caption" sx={{ color: 'text.disabled' }} mb={0.5}>
+                    Rebalance #{row.actionId}{' '}
+                    <OpenInNewIcon
+                      sx={{ fontSize: '12px', cursor: 'pointer' }}
+                      onClick={() => handleRedirectToScanLink(row.chainId, row.txHash)}
+                    />
                   </Typography>
-                </Box>
-              </TableCell>
-              <TableCell align="right">
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {formatDate(new Date(row.timestamp * 1000), 'MM/dd/yyyy')}
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {formatDate(new Date(row.timestamp * 1000), 'h:mm a')}
-                </Typography>
-              </TableCell>
-            </TableRow>
-          ))}
+                  <Typography variant="body2" sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+                    {handleDisplayVaultId(row.vaultId)}
+                  </Typography>
+                </TableCell>
+                <TableCell align="right">
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    {row.amount.toFixed(2)}
+                  </Typography>
+                </TableCell>
+                <TableCell component="th" scope="row" align="right">
+                  <Box className="flex-end">
+                    <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 0.5, textTransform: 'capitalize' }}>
+                      {row.action}
+                    </Typography>
+                  </Box>
+                </TableCell>
+                <TableCell align="right">
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    {formatDate(new Date(row.timestamp * 1000), 'MM/dd/yyyy')}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    {formatDate(new Date(row.timestamp * 1000), 'h:mm a')}
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
 

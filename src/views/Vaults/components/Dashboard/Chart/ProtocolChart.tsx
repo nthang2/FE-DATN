@@ -18,6 +18,10 @@ const ProtocolChart = () => {
     }));
   }, [data]);
 
+  const totalTvl = useMemo(() => {
+    return data?.reduce((acc, item) => acc + item.tvl, 0) || 0;
+  }, [data]);
+
   const options: Highcharts.Options = useDonutChartConfig(
     {
       chart: {
@@ -41,7 +45,7 @@ const ProtocolChart = () => {
         },
       ],
     },
-    []
+    [chartData]
   );
 
   return (
@@ -55,7 +59,7 @@ const ProtocolChart = () => {
           Total
         </Typography>
         <Typography variant="h6" fontWeight={700}>
-          $100,000
+          ${totalTvl.toFixed(2)}
         </Typography>
       </Box>
     </Box>

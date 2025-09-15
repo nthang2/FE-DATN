@@ -2,7 +2,7 @@ import Highcharts from 'highcharts';
 import { useMemo } from 'react';
 import useHighchartsDefaultConfig from './useHighchartsDefaultConfig';
 
-export default function useLineChartConfig(extraOptions: Highcharts.Options, deps: unknown[] = []) {
+export default function useAreaChartConfig(extraOptions: Highcharts.Options, deps: unknown[] = []) {
   const defaultConfig = useHighchartsDefaultConfig();
 
   return useMemo(() => {

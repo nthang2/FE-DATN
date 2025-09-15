@@ -7,7 +7,7 @@ import useDonutChartConfig from 'src/hooks/useHighcharts/useDonutChartConfig';
 import { formatNumber } from 'src/utils/format';
 import useGetVaultPosition from 'src/views/Vaults/hooks/useGetVaultPosition';
 
-const CollateralFarmingChart = () => {
+const DestinationsChart = () => {
   const { data } = useGetVaultPosition();
 
   const chartData = useMemo(() => {
@@ -16,6 +16,10 @@ const CollateralFarmingChart = () => {
       name: item.name,
       y: item.percentage * 100,
     }));
+  }, [data]);
+
+  const totalAllocation = useMemo(() => {
+    return data?.reduce((acc, item) => acc + item.tvl, 0) || 0;
   }, [data]);
 
   const options: Highcharts.Options = useDonutChartConfig(
@@ -41,7 +45,7 @@ const CollateralFarmingChart = () => {
         },
       ],
     },
-    []
+    [data]
   );
 
   return (
@@ -55,11 +59,11 @@ const CollateralFarmingChart = () => {
           Total
         </Typography>
         <Typography variant="h6" fontWeight={700}>
-          $100,000
+          ${totalAllocation.toFixed(2)}
         </Typography>
       </Box>
     </Box>
   );
 };
 
-export default CollateralFarmingChart;
+export default DestinationsChart;

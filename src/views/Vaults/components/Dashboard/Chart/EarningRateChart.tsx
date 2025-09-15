@@ -3,7 +3,7 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import ToggleButtonGroupCustom from 'src/components/General/ToggleButtonGroupCustom/ToggleButtonGroupCustom';
-import useLineChartConfig from 'src/hooks/useHighcharts/useLineChartConfig';
+import useAreaChartConfig from 'src/hooks/useHighcharts/useAreaChartConfig';
 import { useMemo, useState } from 'react';
 import useGetEarning from 'src/views/Vaults/hooks/useGetEarning';
 
@@ -34,7 +34,7 @@ const EarningRateChart = () => {
     return earningData?.data.map((item) => [item.timestamp * 1000, item.earningRate]) || [];
   }, [earningData]);
 
-  const options: Highcharts.Options = useLineChartConfig(
+  const options: Highcharts.Options = useAreaChartConfig(
     {
       chart: {
         backgroundColor: 'transparent',

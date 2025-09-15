@@ -1,10 +1,10 @@
 import { Stack, Typography } from '@mui/material';
-import Highcharts from 'highcharts';
+import Highcharts, { LinearGradientColorObject } from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import ToggleButtonGroupCustom from 'src/components/General/ToggleButtonGroupCustom/ToggleButtonGroupCustom';
-import useLineChartConfig from 'src/hooks/useHighcharts/useLineChartConfig';
+import useAreaChartConfig from 'src/hooks/useHighcharts/useAreaChartConfig';
 import useGetEarning from 'src/views/Vaults/hooks/useGetEarning';
 
 const ToggleButtonGroups = [
@@ -31,10 +31,14 @@ const SupplyChart = () => {
   const { data: earningData } = useGetEarning(Number(toggleValue));
 
   const dataChart = useMemo(() => {
-    return earningData?.data.map((item) => [item.timestamp * 1000, Number(item.totalStaked.toFixed(0))]) || [];
+    return earningData?.data.map((item) => [item.timestamp * 1000, Number(item.totalStaked.toFixed(0))]).sort((a, b) => a[0] - b[0]) || [];
   }, [earningData]);
 
-  const options: Highcharts.Options = useLineChartConfig(
+  const chartMinItem = useMemo(() => {
+    return dataChart.reduce((min, item) => Math.min(min, item[1]), Infinity) || 0;
+  }, [dataChart]);
+
+  const options: Highcharts.Options = useAreaChartConfig(
     {
       chart: {
         type: 'line',
@@ -55,6 +59,7 @@ const SupplyChart = () => {
         gridLineColor: '#222',
         max: null,
         opposite: false,
+        min: chartMinItem,
       },
       tooltip: {
         valuePrefix: '$',
@@ -67,15 +72,22 @@ const SupplyChart = () => {
           marker: { enabled: false },
           lineWidth: 1.2,
         },
-        line: {
-          color: '#d8ff91',
-        },
       },
       series: [
         {
-          name: 'USDAI Supply',
+          type: 'area',
+          fillColor: {
+            linearGradient: [5, 0, 5, 250] as unknown as LinearGradientColorObject,
+            stops: [
+              [0, '#d8ff9180'],
+              [0.7, 'rgba(226, 231, 150, 0.06)'],
+              [1, 'rgba(182, 204, 244, 0.1)'],
+            ],
+          },
+          fillOpacity: 0.1,
           data: dataChart,
-        } as Highcharts.SeriesOptionsType,
+          lineColor: '#d8ff9180',
+        },
       ],
     },
     [dataChart]

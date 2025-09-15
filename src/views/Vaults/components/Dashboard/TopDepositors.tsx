@@ -6,11 +6,12 @@ import { useMemo, useState } from 'react';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { copyTextToClipboard } from 'src/utils';
 import { NumericFormat } from 'react-number-format';
+import SkeletonTableBody from 'src/components/TableLoading/SkeletonTableBody';
 
 const topDepositorsTableHead = [{ label: '#', align: 'left' }, { label: 'Wallet', align: 'left' }, { label: 'Staked Amount' }];
 
 const TopDepositors = () => {
-  const { data: topDepositors } = useGetTopDepositor();
+  const { data: topDepositors, isLoading } = useGetTopDepositor();
   const [page, setPage] = useState(1);
 
   const dataRender = useMemo(() => {
@@ -42,33 +43,40 @@ const TopDepositors = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {dataRender?.map((row, index) => (
-              <TableRow key={row.address}>
-                <TableCell component="th" scope="row">
-                  <Typography variant="body2">{index + 1 + (page - 1) * 5}</Typography>
-                </TableCell>
-                <TableCell align="left">
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {formatAddress(row.address, 5, 6)}
-                    <ContentCopyIcon sx={{ ml: 1, fontSize: '15px', cursor: 'pointer' }} onClick={() => copyTextToClipboard(row.address)} />
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  {/* height 32px for sync height with Audits table*/}
-                  <Box sx={{ height: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            {isLoading ? (
+              <SkeletonTableBody cols={3} rows={5} />
+            ) : (
+              dataRender?.map((row, index) => (
+                <TableRow key={row.address}>
+                  <TableCell component="th" scope="row">
+                    <Typography variant="body2">{index + 1 + (page - 1) * 5}</Typography>
+                  </TableCell>
+                  <TableCell align="left">
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      <NumericFormat
-                        displayType="text"
-                        value={decimalFlood(row.stakedAmount, 2)}
-                        thousandSeparator={true}
-                        decimalScale={2}
-                        fixedDecimalScale={false}
+                      {formatAddress(row.address, 5, 6)}
+                      <ContentCopyIcon
+                        sx={{ ml: 1, fontSize: '15px', cursor: 'pointer' }}
+                        onClick={() => copyTextToClipboard(row.address)}
                       />
                     </Typography>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+                  <TableCell align="right">
+                    {/* height 32px for sync height with Audits table*/}
+                    <Box sx={{ height: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        <NumericFormat
+                          displayType="text"
+                          value={decimalFlood(row.stakedAmount, 2)}
+                          thousandSeparator={true}
+                          decimalScale={2}
+                          fixedDecimalScale={false}
+                        />
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>
