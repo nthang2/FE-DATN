@@ -35,7 +35,7 @@ const DestinationsTable = () => {
               <TableRow key={row.vaultId}>
                 <TableCell component="th" scope="row">
                   <Box className="flex-start">
-                    <ListIconToken tokenNames={['USDC']} network={'solana'} protocol={row.name} />
+                    <ListIconToken tokenNames={['USDC']} network={'solana'} protocol={row.vaultId} />
                     <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 0.5 }}>
                       {row.name}
                     </Typography>

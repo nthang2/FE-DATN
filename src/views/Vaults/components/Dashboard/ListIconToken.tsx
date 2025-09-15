@@ -58,7 +58,8 @@ const ListIconToken = (props: Props) => {
       <Box
         sx={{
           '& svg': {
-            fontSize: '16px',
+            fontSize: '20px',
+            transform: 'translateY(4px)',
           },
           transform: `translateX(-${networkPosition * 8}px)`,
           display: 'flex',

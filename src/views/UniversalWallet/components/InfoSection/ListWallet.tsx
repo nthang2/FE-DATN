@@ -1,8 +1,5 @@
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { listWalletTableHead } from '../../constant';
-// import Failed from 'src/components/StatusData/Failed';
-// import JPowLoading from 'src/components/StatusData/Loading';
-// import NoData from 'src/components/StatusData/NoData';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import NoData from 'src/components/StatusData/NoData';
 import { chainIconNetwork, chainNetwork } from 'src/states/wallets/constants/chainIcon';
@@ -14,7 +11,7 @@ import useRemoveWallet from '../../hooks/useRemoveWallet';
 const ListWallet = () => {
   const { address, chainId } = useSummaryConnect();
   const { mutateAsync: removeWallet, isPending: loading } = useRemoveWallet();
-  const { data: listWallet, status } = useGetListWallet(chainId, address);
+  const { data: listWallet } = useGetListWallet(chainId, address);
 
   const asyncRemoveWallet = async (wallet: string, network: string) => {
     if (wallet === address) {
@@ -40,7 +37,7 @@ const ListWallet = () => {
         </TableHead>
 
         <TableBody>
-          {listWallet?.wallets ? (
+          {listWallet?.wallets?.length && listWallet?.wallets?.length > 0 ? (
             listWallet?.wallets.map((item) => {
               const IconNetwork = chainIconNetwork[item.chainId];
               const network = Object.keys(chainNetwork).find((key) => chainNetwork[key] === item.chainId.toString());
@@ -75,8 +72,7 @@ const ListWallet = () => {
             <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
               <TableCell colSpan={listWalletTableHead.length}>
                 <Box className="flex-center">
-                  {status == 'error' && <NoData text="No information !" />}
-                  {status == 'success' && listWallet && listWallet.wallets.length == 0 && <NoData text="No information !" />}
+                  <NoData text="No information !" />
                 </Box>
               </TableCell>
             </TableRow>
