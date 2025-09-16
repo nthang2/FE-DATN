@@ -1,14 +1,15 @@
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
-import { configUniversalWallet } from 'src/states/wallets/evm-blockchain/config';
+import { config, configUniversalWallet } from 'src/states/wallets/evm-blockchain/config';
 import { Connector, useConnect } from 'wagmi';
 import { disconnect, getAccount } from 'wagmi/actions';
 import { mapNameWalletIcon } from '../../network';
 import { useDestinationWalletState } from '../../state/hooks';
 import { walletIcon as walletIconEVM } from 'src/states/wallets/constants/walletIcon';
+import { useDebounce } from 'use-debounce';
 
 type IProps = {
   onDisconnect: () => void;
@@ -20,12 +21,18 @@ const ListWalletEthereum = (props: IProps) => {
   const { connectAsync, connectors } = useConnect();
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
-  const { address, chainId, connector: connectorEVM } = getAccount(configUniversalWallet);
+  const evmConfig = isDestinationWallet ? configUniversalWallet : config;
+  const { address, chainId, connector: connectorEVM } = getAccount(evmConfig);
   const walletIcon = connectorEVM ? connectorEVM.icon || walletIconEVM[connectorEVM.name] : undefined;
+  const [searchDebounce] = useDebounce(search, 200);
+
+  const listConnecter = useMemo(() => {
+    return connectors.filter((connector) => connector.name.toLowerCase().includes(searchDebounce.toLowerCase()));
+  }, [connectors, searchDebounce]);
 
   async function handleConnect(connector: Connector) {
     try {
-      disconnect(configUniversalWallet);
+      disconnect(evmConfig);
       await connectAsync({ connector: connector });
     } catch (error) {
       console.error(error);
@@ -34,7 +41,7 @@ const ListWalletEthereum = (props: IProps) => {
   }
 
   const handleDisconnect = () => {
-    disconnect(configUniversalWallet);
+    disconnect(evmConfig);
     onDisconnect();
   };
 
@@ -82,7 +89,7 @@ const ListWalletEthereum = (props: IProps) => {
       </Stack>
 
       <Stack direction="column">
-        {connectors.map((connector, index) => {
+        {listConnecter.map((connector, index) => {
           const isConnected = connector.id === connectorEVM?.id;
 
           return (

@@ -9,12 +9,16 @@ import ProviderEVMUniversalWallet from 'src/components/Providers/ProviderEVM/Pro
 import ProviderSolana from 'src/components/Providers/ProviderSolana/ProviderSolana';
 import SignMessageBtn from './SignMessageBtn';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
+import { useDestinationWalletState } from '../../state/hooks';
 
 const WalletSection = () => {
   const { mutate: requestLink, isPending: isRequestLinkPending } = useRequestLink();
   const { address: sourceWallet, networkName } = useSummaryConnect();
+  const [destinationWallet] = useDestinationWalletState();
   const [selectedNetworkSource, setSelectedNetworkSource] = useState<string>(networkName.toLowerCase());
   const [isShowRequestLink, setIsShowRequestLink] = useState<boolean>(false);
+
+  const isDisableRequest = destinationWallet.wallet === '' || sourceWallet === '' || destinationWallet.wallet === sourceWallet;
 
   useEffect(() => {
     if (networkName && networkName.toLowerCase() !== selectedNetworkSource) {
@@ -52,7 +56,13 @@ const WalletSection = () => {
           )}
 
           {isShowRequestLink ? (
-            <ButtonLoading variant="contained" fullWidth onClick={() => requestLink()} loading={isRequestLinkPending}>
+            <ButtonLoading
+              variant="contained"
+              disabled={isDisableRequest}
+              fullWidth
+              onClick={() => requestLink()}
+              loading={isRequestLinkPending}
+            >
               Request to link wallet
             </ButtonLoading>
           ) : (

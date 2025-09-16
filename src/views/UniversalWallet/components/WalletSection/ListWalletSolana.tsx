@@ -2,11 +2,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { Adapter } from '@solana/wallet-adapter-base';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import { useDestinationWalletState } from '../../state/hooks';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
+import { useDebounce } from 'use-debounce';
 
 interface IProps {
   onDisconnect: () => void;
@@ -19,6 +20,11 @@ const ListWalletSolana = (props: IProps) => {
   const { chainId, disconnect } = useSummarySolanaConnect();
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
+  const [searchDebounce] = useDebounce(search, 200);
+
+  const listConnecter = useMemo(() => {
+    return wallets.filter((walletItem) => walletItem.adapter.name.toLowerCase().includes(searchDebounce.toLowerCase()));
+  }, [searchDebounce, wallets]);
 
   async function handleConnect(adapter: Adapter) {
     try {
@@ -74,10 +80,10 @@ const ListWalletSolana = (props: IProps) => {
       </Stack>
 
       <Stack direction="column">
-        {wallets.map((wallet, index) => {
+        {listConnecter.map((walletItem, index) => {
           return (
             <Stack
-              key={wallet.adapter.name + index}
+              key={walletItem.adapter.name + index}
               direction="row"
               justifyContent="space-between"
               alignItems="center"
@@ -85,20 +91,20 @@ const ListWalletSolana = (props: IProps) => {
               borderBottom={index !== wallets.length - 1 ? '1px solid #666662' : 0}
             >
               <Box className="flex-start" gap={1}>
-                <img src={wallet.adapter.icon} style={{ width: '20px', height: '20px', borderRadius: '10px' }} />
+                <img src={walletItem.adapter.icon} style={{ width: '20px', height: '20px', borderRadius: '10px' }} />
 
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {wallet.adapter.name}
+                  {walletItem.adapter.name}
                 </Typography>
               </Box>
 
               <Button
                 variant="outlined"
-                color={wallet.adapter.connected ? 'error' : 'primary'}
-                onClick={() => handleClickBtn(wallet.adapter)}
+                color={walletItem.adapter.connected ? 'error' : 'primary'}
+                onClick={() => handleClickBtn(walletItem.adapter)}
                 sx={{ height: '32px' }}
               >
-                {wallet.adapter.connected ? 'Disconnect' : 'Connect'}
+                {walletItem.adapter.connected ? 'Disconnect' : 'Connect'}
               </Button>
             </Stack>
           );

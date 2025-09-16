@@ -8,14 +8,15 @@ import { listNetwork } from '../../constant';
 import ListWalletEthereum from './ListWalletEthereum';
 import ListWalletSolana from './ListWalletSolana';
 import SelectedNetwork from './SelectedNetwork';
-import { useDestinationNetworkState, useSourceNetworkState, useSourceWalletState } from '../../state/hooks';
+import { useDestinationNetworkState, useDestinationWalletState, useSourceNetworkState, useSourceWalletState } from '../../state/hooks';
 
 const SourceWalletDialog = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const { address, walletIcon: walletIconSource, networkName } = useSummaryConnect();
   const [sourceNetwork, setSourceNetwork] = useSourceNetworkState();
   const [, setSourceWallet] = useSourceWalletState();
-  const [destinationNetwork] = useDestinationNetworkState();
+  const [destinationNetwork, setDestinationNetwork] = useDestinationNetworkState();
+  const [, setDestinationWallet] = useDestinationWalletState();
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -34,6 +35,8 @@ const SourceWalletDialog = () => {
 
   const handleDisconnect = () => {
     setSourceNetwork('');
+    setDestinationNetwork('');
+    setDestinationWallet({ address: '', wallet: '', chainId: '' });
   };
 
   useEffect(() => {
