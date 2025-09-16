@@ -7,6 +7,7 @@ const collateralTableHead = [{ label: 'Destinations', width: '250', align: 'left
 
 const DestinationsTable = () => {
   const { data, isLoading } = useGetVaultPosition();
+  const listVaultPositions = data?.vaultPositions || [];
 
   return (
     <TableContainer sx={{ mt: 2, borderRadius: '14px', p: 2 }}>
@@ -31,11 +32,11 @@ const DestinationsTable = () => {
           {isLoading ? (
             <SkeletonTableBody cols={3} rows={3} />
           ) : (
-            data?.map((row) => (
+            listVaultPositions?.map?.((row) => (
               <TableRow key={row.vaultId}>
                 <TableCell component="th" scope="row">
                   <Box className="flex-start">
-                    <ListIconToken tokenNames={['USDC']} network={'solana'} protocol={row.vaultId} />
+                    <ListIconToken tokenNames={[row.depositToken]} network={'solana'} protocol={row.vaultId} />
                     <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.secondary', ml: 0.5 }}>
                       {row.name}
                     </Typography>

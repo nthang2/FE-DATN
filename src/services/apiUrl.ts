@@ -39,7 +39,7 @@ export const apiUrl = {
   getRebalanceActions: (page: number, pageSize: number) =>
     `${BACKEND_URL}/yield-aggregator/collateral-allocation/rebalance-actions?pageIndex=${page}&pageSize=${pageSize}`,
   getProtocolPositions: () => `${BACKEND_URL}/yield-aggregator/collateral-allocation/protocol-positions`,
-  getVaultsPositions: () => `${BACKEND_URL}/yield-aggregator/collateral-allocation/vault-positions`,
+  getVaultsPositions: () => `${BACKEND_URL}/yield-aggregator/collateral-allocation/positions`,
 
   // Universal Wallet
   generateMessage: (chainId: string, walletAddress: string, sourceWalletAddress: string, sourceChainId: string) =>

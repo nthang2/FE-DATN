@@ -54,17 +54,31 @@ export type TRebalanceActions = {
   data: [{ actionId: number; txHash: string; action: string; chainId: string; vaultId: string; amount: number; timestamp: number }];
 };
 
-export type TProtocolPositions = {
-  protocol: string;
-  tvl: number;
-  percentage: number;
-  pnl: number;
+export type TVaultsPositions = {
+  idleBalances: TIdleBalances;
+  vaultPositions: TVaultPositions[];
 };
 
-export type TVaultsPositions = {
-  vaultId: string;
+export type TVaultPositions = {
+  apy: number;
+  chain: string;
+  depositToken: string;
   name: string;
-  tvl: number;
   percentage: number;
   pnl: number;
+  tvl: number;
+  vaultId: string;
+};
+
+export type TIdleBalances = {
+  0x2105: number;
+  0xa4b1: number;
+  solana: number;
+};
+
+export type TProtocolPositions = {
+  percentage: number;
+  pnl: number;
+  protocol: string;
+  tvl: number;
 };

@@ -39,5 +39,5 @@ export const getProtocolPositions = async () => {
 
 export const getVaultsPositions = async () => {
   const resp = await axios.get(apiUrl.getVaultsPositions());
-  return resp.data as TVaultsPositions[];
+  return resp.data as TVaultsPositions;
 };

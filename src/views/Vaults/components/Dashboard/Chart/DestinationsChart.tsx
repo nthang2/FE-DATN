@@ -8,10 +8,11 @@ import { formatNumber } from 'src/utils/format';
 import useGetVaultPosition from 'src/views/Vaults/hooks/useGetVaultPosition';
 
 const DestinationsChart = () => {
-  const { data } = useGetVaultPosition();
+  const { data: respData } = useGetVaultPosition();
+  const data = useMemo(() => respData?.vaultPositions || [], [respData]);
 
   const chartData = useMemo(() => {
-    return data?.map((item) => ({
+    return data?.map?.((item) => ({
       id: item.vaultId,
       name: item.name,
       y: item.percentage * 100,
@@ -19,7 +20,7 @@ const DestinationsChart = () => {
   }, [data]);
 
   const totalAllocation = useMemo(() => {
-    return data?.reduce((acc, item) => acc + item.tvl, 0) || 0;
+    return data?.reduce?.((acc, item) => acc + item.tvl, 0) || 0;
   }, [data]);
 
   const options: Highcharts.Options = useDonutChartConfig(
