@@ -18,7 +18,8 @@ const WalletSection = () => {
   const [selectedNetworkSource, setSelectedNetworkSource] = useState<string>(networkName.toLowerCase());
   const [isShowRequestLink, setIsShowRequestLink] = useState<boolean>(false);
 
-  const isDisableRequest = destinationWallet.wallet === '' || sourceWallet === '' || destinationWallet.wallet === sourceWallet;
+  const isDisableRequest = destinationWallet.address === '' || sourceWallet === '' || destinationWallet.address === sourceWallet;
+  console.log('🚀 ~ WalletSection ~ destinationWallet:', { destinationWallet, sourceWallet });
 
   useEffect(() => {
     if (networkName && networkName.toLowerCase() !== selectedNetworkSource) {
