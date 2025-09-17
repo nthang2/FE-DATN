@@ -8,6 +8,8 @@ import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import { useDestinationWalletState } from '../../state/hooks';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { useDebounce } from 'use-debounce';
+import { config, configUniversalWallet } from 'src/states/wallets/evm-blockchain/config';
+import { disconnect as disconnectEVM } from 'wagmi/actions';
 
 interface IProps {
   onDisconnect: () => void;
@@ -21,6 +23,7 @@ const ListWalletSolana = (props: IProps) => {
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
   const [searchDebounce] = useDebounce(search, 200);
+  const evmConfig = isDestinationWallet ? configUniversalWallet : config;
 
   const listConnecter = useMemo(() => {
     return wallets.filter((walletItem) => walletItem.adapter.name.toLowerCase().includes(searchDebounce.toLowerCase()));
@@ -28,6 +31,7 @@ const ListWalletSolana = (props: IProps) => {
 
   async function handleConnect(adapter: Adapter) {
     try {
+      disconnectEVM(evmConfig);
       select(adapter.name);
     } catch (error) {
       console.error(error);

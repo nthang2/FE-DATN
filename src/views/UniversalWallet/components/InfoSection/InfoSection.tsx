@@ -33,6 +33,7 @@ const InfoSection = () => {
         sx={{
           '& .MuiButtonBase-root': {
             padding: '10px 16px',
+            borderRadius: '24px',
           },
         }}
       />

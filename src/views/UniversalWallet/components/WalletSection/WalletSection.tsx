@@ -9,7 +9,7 @@ import ProviderEVMUniversalWallet from 'src/components/Providers/ProviderEVM/Pro
 import ProviderSolana from 'src/components/Providers/ProviderSolana/ProviderSolana';
 import SignMessageBtn from './SignMessageBtn';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
-import { useDestinationWalletState } from '../../state/hooks';
+import { useDestinationWalletState, useGenMessageState } from '../../state/hooks';
 
 const WalletSection = () => {
   const { mutate: requestLink, isPending: isRequestLinkPending } = useRequestLink();
@@ -17,9 +17,9 @@ const WalletSection = () => {
   const [destinationWallet] = useDestinationWalletState();
   const [selectedNetworkSource, setSelectedNetworkSource] = useState<string>(networkName.toLowerCase());
   const [isShowRequestLink, setIsShowRequestLink] = useState<boolean>(false);
+  const [genMessage] = useGenMessageState();
 
   const isDisableRequest = destinationWallet.address === '' || sourceWallet === '' || destinationWallet.address === sourceWallet;
-  console.log('🚀 ~ WalletSection ~ destinationWallet:', { destinationWallet, sourceWallet });
 
   useEffect(() => {
     if (networkName && networkName.toLowerCase() !== selectedNetworkSource) {
@@ -44,7 +44,7 @@ const WalletSection = () => {
 
       <ProviderSolana localStorageKey="destination.connectWallet">
         <ProviderEVMUniversalWallet>
-          {isShowRequestLink ? (
+          {isShowRequestLink && (
             <Box>
               <Typography variant="body2" fontWeight={600} color="text.secondary">
                 Destination Wallet
@@ -52,11 +52,9 @@ const WalletSection = () => {
 
               <DestinationDialog />
             </Box>
-          ) : (
-            <></>
           )}
 
-          {isShowRequestLink ? (
+          {isShowRequestLink && (!genMessage || genMessage === '') && (
             <ButtonLoading
               variant="contained"
               disabled={isDisableRequest}
@@ -66,7 +64,9 @@ const WalletSection = () => {
             >
               Request to link wallet
             </ButtonLoading>
-          ) : (
+          )}
+
+          {!isShowRequestLink && (!genMessage || genMessage === '') && (
             <Stack gap={2}>
               <Button variant="outlined" fullWidth onClick={() => setIsShowRequestLink(true)}>
                 Add destination wallet

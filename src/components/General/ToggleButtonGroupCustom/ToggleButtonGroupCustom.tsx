@@ -26,7 +26,6 @@ const ToggleButtonGroupCustom = (props: IProps) => {
       defaultValue={value}
       exclusive
       onChange={handleToggleChange}
-      aria-label="Platform"
       sx={{
         p: 0.5,
         borderRadius: '24px',
@@ -41,10 +40,14 @@ const ToggleButtonGroupCustom = (props: IProps) => {
           // border: '1px solid',
           // borderColor: theme.palette.primary.main,
         },
+        '& .Mui-selected:hover': {
+          borderRadius: '24px',
+          // border: '1px solid',
+          // borderColor: theme.palette.primary.main,
+        },
         '& .MuiButtonBase-root': {
-          paddingX: 2.5,
-          paddingY: 0.5,
-          lineHeight: 'normal',
+          padding: '10px 16px',
+          borderRadius: '24px',
         },
         ...sx,
       }}

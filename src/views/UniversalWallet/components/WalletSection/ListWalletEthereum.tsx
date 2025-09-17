@@ -10,6 +10,7 @@ import { mapNameWalletIcon } from '../../network';
 import { useDestinationWalletState } from '../../state/hooks';
 import { walletIcon as walletIconEVM } from 'src/states/wallets/constants/walletIcon';
 import { useDebounce } from 'use-debounce';
+import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 
 type IProps = {
   onDisconnect: () => void;
@@ -23,6 +24,7 @@ const ListWalletEthereum = (props: IProps) => {
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
   const evmConfig = isDestinationWallet ? configUniversalWallet : config;
   const { address, chainId, connector: connectorEVM } = getAccount(evmConfig);
+  const { disconnect: disconnectSolana } = useSummarySolanaConnect();
   const walletIcon = connectorEVM ? connectorEVM.icon || walletIconEVM[connectorEVM.name] : undefined;
   const [searchDebounce] = useDebounce(search, 200);
 
@@ -32,6 +34,7 @@ const ListWalletEthereum = (props: IProps) => {
 
   async function handleConnect(connector: Connector) {
     try {
+      disconnectSolana();
       disconnect(evmConfig);
       await connectAsync({ connector: connector });
     } catch (error) {
