@@ -27,14 +27,14 @@ const ModalConnectWallet = (props: IProps) => {
       </DialogTitle>
       <DialogContent>
         <Box mb={2}>
-          <Tabs value={value} onChange={handleChange}>
+          {/* <Tabs value={value} onChange={handleChange}>
             <Tab label="Solana" value={0} />
             <Tab label="Ethereum" value={1} />
-          </Tabs>
+          </Tabs> */}
         </Box>
-
-        {value === 0 && <ConnectSolanaNetwork onClose={onClose} />}
-        {value === 1 && <ConnectEVMNetwork onClose={onClose} />}
+        <ConnectSolanaNetwork onClose={onClose} />
+        {/* {value === 0 && <ConnectSolanaNetwork onClose={onClose} />} */}
+        {/* {value === 1 && <ConnectEVMNetwork onClose={onClose} />} */}
       </DialogContent>
     </Dialog>
   );
