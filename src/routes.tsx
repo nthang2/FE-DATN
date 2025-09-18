@@ -2,7 +2,7 @@ import { useRoutes } from 'react-router-dom';
 import Layout from './layout/Layout';
 import { lazy } from 'react';
 
-// const UniversalWallet = lazy(() => import('./views/UniversalWallet/UniversalWallet'));
+const UniversalWallet = lazy(() => import('./views/UniversalWallet/UniversalWallet'));
 const Borrow = lazy(() => import('./views/Borrow/Borrow'));
 const MyPortfolio = lazy(() => import('./views/MyPortfolio/MyPortfolio'));
 const NotFound = lazy(() => import('./views/NotFound/NotFound'));
@@ -21,7 +21,7 @@ export default function Routes() {
         { path: '/earn', element: <Vaults /> },
         { path: '/liquidation', element: <LiquidationLeaderboard /> },
         { path: '/convert', element: <SwapToken /> },
-        // { path: '/universal-wallet', element: <UniversalWallet /> },
+        { path: '/universal-wallet', element: <UniversalWallet /> },
       ],
     },
     {
