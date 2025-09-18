@@ -1,6 +1,8 @@
-import { Dialog, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
-import ConnectSolanaNetwork from './ConnectSolanaNetwork';
 import CloseIcon from '@mui/icons-material/Close';
+import { Box, Dialog, DialogContent, DialogTitle, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { useState } from 'react';
+import ConnectSolanaNetwork from './ConnectSolanaNetwork';
+import ConnectEVMNetwork from './ConnectEVMNetwork';
 
 interface IProps {
   open: boolean;
@@ -9,6 +11,11 @@ interface IProps {
 
 const ModalConnectWallet = (props: IProps) => {
   const { open, onClose } = props;
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
   return (
     <Dialog open={open} onClose={onClose} onTransitionExited={onClose}>
@@ -19,7 +26,15 @@ const ModalConnectWallet = (props: IProps) => {
         </Stack>
       </DialogTitle>
       <DialogContent>
+        <Box mb={2}>
+          {/* <Tabs value={value} onChange={handleChange}>
+            <Tab label="Solana" value={0} />
+            <Tab label="Ethereum" value={1} />
+          </Tabs> */}
+        </Box>
         <ConnectSolanaNetwork onClose={onClose} />
+        {/* {value === 0 && <ConnectSolanaNetwork onClose={onClose} />} */}
+        {/* {value === 1 && <ConnectEVMNetwork onClose={onClose} />} */}
       </DialogContent>
     </Dialog>
   );

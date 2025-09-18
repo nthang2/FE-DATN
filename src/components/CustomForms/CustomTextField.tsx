@@ -29,7 +29,7 @@ const CustomTextField = (props: TProp) => {
     onChange({ ...event, target: { ...event.target, value: inputValue } });
   };
 
-  return <TextField onChange={handleOnChange} helperText={ref.current} error={Boolean(ref.current)} {...rest} />;
+  return <TextField onChange={handleOnChange} helperText={ref.current} error={Boolean(ref.current)} autoComplete="off" {...rest} />;
 };
 
 export default CustomTextField;

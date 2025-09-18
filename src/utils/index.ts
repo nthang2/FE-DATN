@@ -4,6 +4,7 @@ import { Buffer } from 'buffer';
 import { toast, ToastOptions } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { bs58 } from '@coral-xyz/anchor/dist/cjs/utils/bytes';
 
 export const uuid = uuidv4;
 
@@ -121,3 +122,9 @@ export const getDecimalToken = (address: string) => {
 };
 
 export const regexConfigValue = (input: string) => input.replace(/[^0-9.]|(\..*?)\..*/g, (match, group) => group || '');
+
+export const padAddressSolana = (address: string) => {
+  const pkBytes = bs58.decode(address); // Uint8Array 32 bytes
+  const pkHex = '0x' + Buffer.from(pkBytes).toString('hex');
+  return pkHex as `0x${string}`;
+};

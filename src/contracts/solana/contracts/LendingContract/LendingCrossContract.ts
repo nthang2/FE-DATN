@@ -25,6 +25,7 @@ import { solanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devne
 import { solTokenSolana } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
 import { queryClient } from 'src/layout/Layout';
 import { TokenName } from 'src/libs/crypto-icons';
+import { getJupiterQuote, jupiterSwapInstructions } from 'src/services/HandleApi/getJupiterInfo/getJupiterInfo';
 import { publicClientSol } from 'src/states/hooks';
 import { appStore, crossModeAtom } from 'src/states/state';
 import { getDecimalToken } from 'src/utils';
@@ -32,6 +33,7 @@ import { BN as utilBN } from 'src/utils/index';
 import { addPriorityFee, getAddressLookupTableAccounts } from 'src/views/MyPortfolio/utils';
 import { IdlLending, idlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
+import { usdaiAddress } from '../VaultContract';
 import {
   CONTROLLER_SEED,
   collateral as defaultCollateral,
@@ -45,9 +47,8 @@ import {
   RESERVE_ACCOUNT,
   SWAP_CONFIG_SEED,
   swapUsdcALT,
+  WALLET_LINKING_REQUEST_SEED,
 } from './constant';
-import { getJupiterQuote, jupiterSwapInstructions } from 'src/services/HandleApi/getJupiterInfo/getJupiterInfo';
-import { usdaiAddress } from '../VaultContract';
 
 export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -496,5 +497,40 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
       addressLookupTableAccounts,
       outAmountJupiter: jupiterQuote.outAmount,
     };
+  }
+
+  async linkWallet(destinationWallet: string, destinationChainId: string, action: boolean, sourceWallet: string) {
+    const destinationWalletBytes = Array.from(Buffer.from(new PublicKey(destinationWallet).toBytes()));
+
+    const instruction = await this.program.methods
+      .requestLinkWallet(destinationWalletBytes, Number(destinationChainId), action)
+      .accounts({
+        user: new PublicKey(sourceWallet),
+      })
+      .transaction();
+
+    const transactionHash = await this.sendTransaction(instruction);
+    return transactionHash;
+  }
+
+  async getLinkWalletInfo(sourceWallet: string) {
+    const pda = this.getPda(WALLET_LINKING_REQUEST_SEED, new PublicKey(sourceWallet));
+    const linkWalletInfo = await this.program.account.walletLinkingRequest.fetch(pda);
+
+    return linkWalletInfo;
+  }
+
+  async removeUniversalWallet(wallet: string, chainId: number) {
+    const destinationWalletBytes = Array.from(new PublicKey(wallet).toBytes());
+
+    const instruction = await this.program.methods
+      .requestLinkWallet(destinationWalletBytes, Number(chainId), false)
+      .accounts({
+        user: new PublicKey(wallet),
+      })
+      .transaction();
+
+    const transactionHash = await this.sendTransaction(instruction);
+    return transactionHash;
   }
 }

@@ -6,3 +6,10 @@ export const listTokenAvailableVault = {
   [TokenName.USDT]: mapNameToInfoSolana[TokenName.USDT],
   [TokenName.USDAI]: mapNameToInfoSolana[TokenName.USDAI],
 };
+
+export const listActionRebalanceScanLink: Record<string, string> = {
+  '0x2105': 'https://basescan.org/tx',
+  '0xa4b1': 'https://arbiscan.io/tx',
+  solana: 'https://solscan.io/tx',
+  '0x38': 'https://bscscan.com/tx',
+};

@@ -2,7 +2,20 @@ import { useTheme } from '@mui/material';
 import Highcharts from 'highcharts';
 import { useMemo } from 'react';
 
-export const chartColors = ['#FCFFD8', '#DEE995', '#AEBC59', '#5A631F', '#BDECDE', '#A2D0C2'];
+export const chartColors = [
+  '#FCFFD8',
+  '#DEE995',
+  '#AEBC59',
+  '#5A631F',
+  '#BDECDE',
+  '#A2D0C2',
+  '#86B6A1',
+  '#6E8F5C',
+  '#C7D59F',
+  '#E3F2C1',
+  '#9DC08B',
+  '#52734D',
+];
 
 export default function useHighchartsDefaultConfig(): Highcharts.Options {
   const theme = useTheme();

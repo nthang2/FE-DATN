@@ -13,7 +13,7 @@ const Lockout = () => {
         </Box>
         <Box display="flex" flexDirection="column" alignItems="center">
           <Typography textAlign="center" variant="h4">
-            You need connect wallet to see this content
+            You need connect Solana wallet to see this content
           </Typography>
           <ConnectWalletSection />
         </Box>
