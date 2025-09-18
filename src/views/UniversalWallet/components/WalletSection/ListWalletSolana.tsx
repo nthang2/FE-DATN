@@ -5,11 +5,9 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
-import { useDestinationWalletState } from '../../state/hooks';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { useDebounce } from 'use-debounce';
-import { config, configUniversalWallet } from 'src/states/wallets/evm-blockchain/config';
-import { disconnect as disconnectEVM } from 'wagmi/actions';
+import { useDestinationWalletState, useSourceWalletState } from '../../state/hooks';
 
 interface IProps {
   onDisconnect: () => void;
@@ -22,8 +20,8 @@ const ListWalletSolana = (props: IProps) => {
   const { chainId, disconnect } = useSummarySolanaConnect();
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
+  const [sourceWallet, setSourceWallet] = useSourceWalletState();
   const [searchDebounce] = useDebounce(search, 200);
-  const evmConfig = isDestinationWallet ? configUniversalWallet : config;
 
   const listConnecter = useMemo(() => {
     return wallets.filter((walletItem) => walletItem.adapter.name.toLowerCase().includes(searchDebounce.toLowerCase()));
@@ -31,7 +29,6 @@ const ListWalletSolana = (props: IProps) => {
 
   async function handleConnect(adapter: Adapter) {
     try {
-      disconnectEVM(evmConfig);
       select(adapter.name);
     } catch (error) {
       console.error(error);
@@ -57,6 +54,10 @@ const ListWalletSolana = (props: IProps) => {
       //Only can do it in here bc we can't access wallet.adapter of destination wallet outside
       if (publicKey && publicKey?.toString() !== destinationWallet.address) {
         setDestinationWallet({ address: publicKey?.toString() || '', wallet: wallet?.adapter.icon || '', chainId: chainId || '' });
+      }
+    } else {
+      if (publicKey && publicKey?.toString() !== sourceWallet.address) {
+        setSourceWallet({ address: publicKey?.toString() || '', wallet: wallet?.adapter.icon || '', chainId: chainId || '' });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

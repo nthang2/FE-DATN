@@ -1,19 +1,19 @@
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useMutation } from '@tanstack/react-query';
 import { ctrAdsEVM } from 'src/constants/contractAddress/evm';
 import { universalWalletAbi } from 'src/contracts/evm/abi/universalWallet';
-import { config } from 'src/states/wallets/evm-blockchain/config';
-import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
-import { readContract, writeContract } from 'wagmi/actions';
-import { pad } from 'viem';
-import { useDestinationWalletState, useGenMessageState } from '../state/hooks';
-import { requestToLink, walletLinkingRequest } from 'src/services/HandleApi/requestToLink/requestToLink';
-import { sepolia } from 'viem/chains';
-import { padAddressSolana, sleep } from 'src/utils';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract/LendingContract';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { requestToLink, walletLinkingRequest } from 'src/services/HandleApi/requestToLink/requestToLink';
+import { config } from 'src/states/wallets/evm-blockchain/config';
+import { padAddressSolana, sleep } from 'src/utils';
+import { pad } from 'viem';
+import { sepolia } from 'viem/chains';
+import { readContract, writeContract } from 'wagmi/actions';
+import { useDestinationWalletState, useGenMessageState, useSourceWalletState } from '../state/hooks';
 
 const useRequestLink = () => {
-  const { address: sourceAddress, chainId: sourceChainId } = useSummaryConnect();
+  const [sourceWalletState] = useSourceWalletState();
+  const { address: sourceAddress, chainId: sourceChainId } = sourceWalletState;
   const walletSolana = useWallet();
   const [destinationWallet] = useDestinationWalletState();
   const [, setGenMessage] = useGenMessageState();

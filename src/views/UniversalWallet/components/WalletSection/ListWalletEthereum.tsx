@@ -3,14 +3,13 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
-import { config, configUniversalWallet } from 'src/states/wallets/evm-blockchain/config';
+import { walletIcon as walletIconEVM } from 'src/states/wallets/constants/walletIcon';
+import { config } from 'src/states/wallets/evm-blockchain/config';
+import { useDebounce } from 'use-debounce';
 import { Connector, useConnect } from 'wagmi';
 import { disconnect, getAccount } from 'wagmi/actions';
 import { mapNameWalletIcon } from '../../network';
-import { useDestinationWalletState } from '../../state/hooks';
-import { walletIcon as walletIconEVM } from 'src/states/wallets/constants/walletIcon';
-import { useDebounce } from 'use-debounce';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
+import { useDestinationWalletState, useSourceWalletState } from '../../state/hooks';
 
 type IProps = {
   onDisconnect: () => void;
@@ -22,11 +21,10 @@ const ListWalletEthereum = (props: IProps) => {
   const { connectAsync, connectors } = useConnect();
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
-  const evmConfig = isDestinationWallet ? configUniversalWallet : config;
-  const { address, chainId, connector: connectorEVM } = getAccount(evmConfig);
-  const { disconnect: disconnectSolana } = useSummarySolanaConnect();
+  const { address, chainId, connector: connectorEVM } = getAccount(config);
   const walletIcon = connectorEVM ? connectorEVM.icon || walletIconEVM[connectorEVM.name] : undefined;
   const [searchDebounce] = useDebounce(search, 200);
+  const [sourceWallet, setSourceWallet] = useSourceWalletState();
 
   const listConnecter = useMemo(() => {
     return connectors.filter((connector) => connector.name.toLowerCase().includes(searchDebounce.toLowerCase()));
@@ -34,8 +32,7 @@ const ListWalletEthereum = (props: IProps) => {
 
   async function handleConnect(connector: Connector) {
     try {
-      disconnectSolana();
-      disconnect(evmConfig);
+      disconnect(config);
       await connectAsync({ connector: connector });
     } catch (error) {
       console.error(error);
@@ -44,7 +41,7 @@ const ListWalletEthereum = (props: IProps) => {
   }
 
   const handleDisconnect = () => {
-    disconnect(evmConfig);
+    disconnect(config);
     onDisconnect();
   };
 
@@ -60,6 +57,15 @@ const ListWalletEthereum = (props: IProps) => {
     if (isDestinationWallet) {
       if (address && address?.toString() !== destinationWallet.address) {
         setDestinationWallet({
+          address: address?.toString(),
+          wallet: connectorEVM?.icon || '',
+          iconWalletName: walletIcon,
+          chainId: String(chainId) || '',
+        });
+      }
+    } else {
+      if (address && address?.toString() !== sourceWallet.address) {
+        setSourceWallet({
           address: address?.toString(),
           wallet: connectorEVM?.icon || '',
           iconWalletName: walletIcon,

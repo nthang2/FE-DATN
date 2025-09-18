@@ -1,15 +1,16 @@
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { listWalletTableHead } from '../../constant';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import NoData from 'src/components/StatusData/NoData';
 import { chainIconNetwork, chainNetwork } from 'src/states/wallets/constants/chainIcon';
-import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 import { formatAddress } from 'src/utils/format';
+import { listWalletTableHead } from '../../constant';
 import useGetListWallet from '../../hooks/useGetListWallet';
 import useRemoveWallet from '../../hooks/useRemoveWallet';
+import { useSourceWalletState } from '../../state/hooks';
 
 const ListWallet = () => {
-  const { address, chainId } = useSummaryConnect();
+  const [sourceWalletState] = useSourceWalletState();
+  const { address, chainId } = sourceWalletState;
   const { mutateAsync: removeWallet, isPending: loading } = useRemoveWallet();
   const { data: listWallet } = useGetListWallet(chainId, address);
 

@@ -13,11 +13,30 @@ import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 const ConnectWalletSection = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
-  const { address, status, walletIcon, disconnect } = useSummaryConnect();
+  const [firstWalletSummary, secondWalletSummary] = useSummaryConnect();
+  const { address, status, walletIcon, disconnect } = firstWalletSummary;
+  const {
+    address: secondWalletAddress,
+    status: secondWalletStatus,
+    walletIcon: secondWalletIcon,
+    disconnect: secondWalletDisconnect,
+  } = secondWalletSummary;
   const modalFunction = useModalFunction();
+
+  const walletStatus = status === 'Connected' || secondWalletStatus === 'Connected';
+  const walletAddress = address || secondWalletAddress;
 
   const handleCloseAnchor = () => {
     setAnchorEl(null);
+  };
+
+  const handleDisconnect = () => {
+    if (status === 'Connected') {
+      disconnect();
+    }
+    if (secondWalletStatus === 'Connected') {
+      secondWalletDisconnect();
+    }
   };
 
   const handleOpenAnchor = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -47,12 +66,15 @@ const ConnectWalletSection = () => {
           alignItems: 'center',
         })}
       >
-        {status === 'Connected' ? (
+        {walletStatus ? (
           <Stack gap={2} alignItems="center">
-            <WalletConnectIcon Icon={walletIcon} />
+            <Box display="flex" gap={1}>
+              <WalletConnectIcon Icon={walletIcon} />
+              <WalletConnectIcon Icon={secondWalletIcon} />
+            </Box>
             <Stack sx={{ background: '#282825', p: 1, gap: 1, borderRadius: '11px', cursor: 'pointer' }} onClick={handleOpenAnchor}>
               <WalletIcon />
-              <Typography sx={{ display: { xs: 'none', md: 'block' } }}>{formatAddress(address)}</Typography>
+              <Typography sx={{ display: { xs: 'none', md: 'block' } }}>{formatAddress(walletAddress)}</Typography>
               <ArrowDown />
             </Stack>
 
@@ -83,7 +105,7 @@ const ConnectWalletSection = () => {
                 <Typography onClick={handleSettingBtn} mb={2}>
                   Settings
                 </Typography>
-                <Typography onClick={disconnect}>Disconnect</Typography>
+                <Typography onClick={handleDisconnect}>Disconnect</Typography>
               </Box>
             </Popover>
           </Stack>

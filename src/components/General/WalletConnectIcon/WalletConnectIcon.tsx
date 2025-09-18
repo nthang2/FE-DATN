@@ -15,7 +15,7 @@ const WalletConnectIcon = ({ Icon, size = '30', style }: IProps) => {
     return <img src={Icon} alt="wallet_icon" width={size} height={size} style={style} />;
   }
 
-  return <Icon sx={{ fontSize: `${size}px`, ...style }} />;
+  return <Icon sx={{ fontSize: `${size}px`, borderRadius: '10px', ...style }} />;
 };
 
 export default WalletConnectIcon;

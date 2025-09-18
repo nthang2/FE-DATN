@@ -11,7 +11,7 @@ export const NoDataIcon: _SvgIconProps = (props) => (
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
     >
-      <rect y="0.5" width="86" height="99" fill="url(#pattern0_93966_8777)" fill-opacity="0.5" />
+      <rect y="0.5" width="86" height="99" fill="url(#pattern0_93966_8777)" fillOpacity="0.5" />
       <defs>
         <pattern id="pattern0_93966_8777" patternContentUnits="objectBoundingBox" width="1" height="1">
           <use xlinkHref="#image0_93966_8777" transform="matrix(0.000600962 0 0 0.000522047 0 -0.00403676)" />
