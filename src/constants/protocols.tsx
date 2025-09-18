@@ -7,6 +7,7 @@ import { FluidIcon } from '../assets/protocols/FluidIcon';
 import { BeefyIcon } from 'src/assets/protocols/BeefyIcon';
 import { MorphoIcon } from 'src/assets/protocols/MorphoIcon';
 import { TokenmakIcon } from 'src/assets/protocols/TokemakIcon';
+import { JupiterIcon } from 'src/assets/protocols/JupiterIcon';
 
 export const mapNameProtocolToIcon: Record<string, React.ReactNode> = {
   kamino: <KaminoIcon />,
@@ -17,4 +18,5 @@ export const mapNameProtocolToIcon: Record<string, React.ReactNode> = {
   beefy: <BeefyIcon />,
   tokenmak: <TokenmakIcon />,
   morpho: <MorphoIcon />,
+  jup: <JupiterIcon />,
 };
