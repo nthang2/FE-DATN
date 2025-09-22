@@ -1,32 +1,22 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
-import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
-import useRequestLink from '../../hooks/useRequestLink';
-import DestinationDialog from './DestinationDialog';
-import SourceWalletDialog from './SourceWalletDialog';
-import ProviderEVMUniversalWallet from 'src/components/Providers/ProviderEVM/ProviderEVMUniversalWallet';
-import ProviderSolana from 'src/components/Providers/ProviderSolana/ProviderSolana';
-import SignMessageBtn from './SignMessageBtn';
+import { useState } from 'react';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
-import { useDestinationWalletState, useGenMessageState } from '../../state/hooks';
+import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
+import useRequestLink from '../../hooks/useRequestLink';
+import { useDestinationWalletState, useGenMessageState, useSourceWalletState } from '../../state/hooks';
+import DestinationDialog from './DestinationDialog';
+import SignMessageBtn from './SignMessageBtn';
+import SourceWalletDialog from './SourceWalletDialog';
 
 const WalletSection = () => {
   const { mutate: requestLink, isPending: isRequestLinkPending } = useRequestLink();
-  const { address: sourceWallet, networkName } = useSummaryConnect();
   const [destinationWallet] = useDestinationWalletState();
-  const [selectedNetworkSource, setSelectedNetworkSource] = useState<string>(networkName.toLowerCase());
+  const [sourceWallet] = useSourceWalletState();
   const [isShowRequestLink, setIsShowRequestLink] = useState<boolean>(false);
   const [genMessage] = useGenMessageState();
 
-  const isDisableRequest = destinationWallet.address === '' || sourceWallet === '' || destinationWallet.address === sourceWallet;
-
-  useEffect(() => {
-    if (networkName && networkName.toLowerCase() !== selectedNetworkSource) {
-      setSelectedNetworkSource(networkName.toLowerCase());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sourceWallet, networkName]);
+  const isDisableRequest =
+    destinationWallet.address === '' || sourceWallet.address === '' || destinationWallet.address === sourceWallet.address;
 
   return (
     <BoxCustom sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -42,44 +32,40 @@ const WalletSection = () => {
         <SourceWalletDialog />
       </Box>
 
-      <ProviderSolana localStorageKey="destination.connectWallet">
-        <ProviderEVMUniversalWallet>
-          {isShowRequestLink && (
-            <Box>
-              <Typography variant="body2" fontWeight={600} color="text.secondary">
-                Destination Wallet
-              </Typography>
+      {isShowRequestLink && (
+        <Box>
+          <Typography variant="body2" fontWeight={600} color="text.secondary">
+            Destination Wallet
+          </Typography>
 
-              <DestinationDialog />
-            </Box>
-          )}
+          <DestinationDialog />
+        </Box>
+      )}
 
-          {isShowRequestLink && (!genMessage || genMessage === '') && (
-            <ButtonLoading
-              variant="contained"
-              disabled={isDisableRequest}
-              fullWidth
-              onClick={() => requestLink()}
-              loading={isRequestLinkPending}
-            >
-              Request to link wallet
-            </ButtonLoading>
-          )}
+      {isShowRequestLink && (!genMessage || genMessage === '') && (
+        <ButtonLoading
+          variant="contained"
+          disabled={isDisableRequest}
+          fullWidth
+          onClick={() => requestLink()}
+          loading={isRequestLinkPending}
+        >
+          Request to link wallet
+        </ButtonLoading>
+      )}
 
-          {!isShowRequestLink && (!genMessage || genMessage === '') && (
-            <Stack gap={2}>
-              <Button variant="outlined" fullWidth onClick={() => setIsShowRequestLink(true)}>
-                Add destination wallet
-              </Button>
-              <Button variant="contained" fullWidth>
-                Create universal wallet
-              </Button>
-            </Stack>
-          )}
+      {!isShowRequestLink && (!genMessage || genMessage === '') && (
+        <Stack gap={2}>
+          <Button variant="outlined" fullWidth onClick={() => setIsShowRequestLink(true)}>
+            Add destination wallet
+          </Button>
+          <Button variant="contained" fullWidth>
+            Create universal wallet
+          </Button>
+        </Stack>
+      )}
 
-          <SignMessageBtn />
-        </ProviderEVMUniversalWallet>
-      </ProviderSolana>
+      <SignMessageBtn />
     </BoxCustom>
   );
 };
