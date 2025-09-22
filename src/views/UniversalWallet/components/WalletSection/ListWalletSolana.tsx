@@ -52,11 +52,11 @@ const ListWalletSolana = (props: IProps) => {
   useEffect(() => {
     if (isDestinationWallet) {
       //Only can do it in here bc we can't access wallet.adapter of destination wallet outside
-      if (publicKey && publicKey?.toString() !== destinationWallet.address) {
+      if (publicKey?.toString() !== destinationWallet.address) {
         setDestinationWallet({ address: publicKey?.toString() || '', wallet: wallet?.adapter.icon || '', chainId: chainId || '' });
       }
     } else {
-      if (publicKey && publicKey?.toString() !== sourceWallet.address) {
+      if (publicKey?.toString() !== sourceWallet.address) {
         setSourceWallet({ address: publicKey?.toString() || '', wallet: wallet?.adapter.icon || '', chainId: chainId || '' });
       }
     }

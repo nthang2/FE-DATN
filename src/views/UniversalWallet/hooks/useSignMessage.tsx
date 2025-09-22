@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { disconnect as disconnectEVM } from '@wagmi/core';
 import { configUniversalWallet } from 'src/states/wallets/evm-blockchain/config';
 import { queryClient } from 'src/layout/Layout';
+import useSwitchToSelectedChain from 'src/hooks/useSwitchToSelectedChain';
 
 const useSignMessageDestination = () => {
   const [genMessage, setGenMessage] = useGenMessageState();
@@ -14,6 +15,7 @@ const useSignMessageDestination = () => {
   const { signMessageAsync: signMessageEVM } = useSignMessage();
   const { signMessage: signMessageSolana, disconnect: disconnectSolana } = useWallet();
   const [destinationWallet] = useDestinationWalletState();
+  const { switchToChainSelected } = useSwitchToSelectedChain();
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -31,6 +33,8 @@ const useSignMessageDestination = () => {
             signature: signatureHex,
           });
         } else {
+          await switchToChainSelected();
+
           const signatureEVM = await signMessageEVM({ message: genMessage });
           await handleSignMessageApi({
             walletAddress: destinationWallet.address,

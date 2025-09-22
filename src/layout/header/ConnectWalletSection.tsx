@@ -34,6 +34,7 @@ const ConnectWalletSection = () => {
     if (status === 'Connected') {
       disconnect();
     }
+
     if (secondWalletStatus === 'Connected') {
       secondWalletDisconnect();
     }

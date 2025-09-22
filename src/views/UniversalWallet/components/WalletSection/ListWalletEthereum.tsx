@@ -19,12 +19,12 @@ type IProps = {
 const ListWalletEthereum = (props: IProps) => {
   const { isDestinationWallet, onDisconnect } = props;
   const { connectAsync, connectors } = useConnect();
+  const { address, chainId, connector: connectorEVM } = getAccount(config);
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
-  const { address, chainId, connector: connectorEVM } = getAccount(config);
-  const walletIcon = connectorEVM ? connectorEVM.icon || walletIconEVM[connectorEVM.name] : undefined;
-  const [searchDebounce] = useDebounce(search, 200);
   const [sourceWallet, setSourceWallet] = useSourceWalletState();
+  const [searchDebounce] = useDebounce(search, 200);
+  const walletIcon = connectorEVM ? connectorEVM.icon || walletIconEVM[connectorEVM.name] : undefined;
 
   const listConnecter = useMemo(() => {
     return connectors.filter((connector) => connector.name.toLowerCase().includes(searchDebounce.toLowerCase()));
@@ -55,18 +55,18 @@ const ListWalletEthereum = (props: IProps) => {
 
   useEffect(() => {
     if (isDestinationWallet) {
-      if (address && address?.toString() !== destinationWallet.address) {
+      if (address?.toString() !== destinationWallet.address) {
         setDestinationWallet({
-          address: address?.toString(),
+          address: address?.toString() || '',
           wallet: connectorEVM?.icon || '',
           iconWalletName: walletIcon,
           chainId: String(chainId) || '',
         });
       }
     } else {
-      if (address && address?.toString() !== sourceWallet.address) {
+      if (address?.toString() !== sourceWallet.address) {
         setSourceWallet({
-          address: address?.toString(),
+          address: address?.toString() || '',
           wallet: connectorEVM?.icon || '',
           iconWalletName: walletIcon,
           chainId: String(chainId) || '',

@@ -1,5 +1,5 @@
 import { Box, Popover, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import WalletConnectIcon from 'src/components/General/WalletConnectIcon/WalletConnectIcon';
 import { mapNameNetwork } from 'src/constants/network';
@@ -16,6 +16,18 @@ const SourceWalletDialog = () => {
   const [destinationNetwork, setDestinationNetwork] = useDestinationNetworkState();
   const [, setDestinationWallet] = useDestinationWalletState();
   const open = Boolean(anchorEl);
+
+  const sourceWalletIcon = useMemo(() => {
+    if (sourceWallet.iconWalletName || sourceWallet.wallet) {
+      if (sourceWallet.iconWalletName) {
+        return <WalletConnectIcon Icon={sourceWallet.iconWalletName} size="20" style={{ marginRight: '8px', borderRadius: '50%' }} />;
+      }
+
+      return <img src={sourceWallet.wallet} style={{ width: '20px', height: '20px', borderRadius: '10px', marginRight: '8px' }} />;
+    }
+
+    return <></>;
+  }, [sourceWallet.iconWalletName, sourceWallet.wallet]);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -56,9 +68,7 @@ const SourceWalletDialog = () => {
           placeholder="Connect your wallet"
           InputProps={{
             endAdornment: <SelectedNetwork value={sourceNetwork} />,
-            startAdornment: (
-              <WalletConnectIcon Icon={sourceWallet.iconWalletName} size="20" style={{ marginRight: '8px', borderRadius: '50%' }} />
-            ),
+            startAdornment: sourceWalletIcon,
             sx: { px: 2, py: 1, fontSize: '14px', height: 'unset' },
           }}
           inputProps={{ style: { padding: 0, paddingTop: 1 } }}

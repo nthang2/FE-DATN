@@ -17,7 +17,6 @@ const WalletSection = () => {
 
   const isDisableRequest =
     destinationWallet.address === '' || sourceWallet.address === '' || destinationWallet.address === sourceWallet.address;
-  console.log('🚀 ~ WalletSection ~ isDisableRequest:', { destinationWallet, sourceWallet, isDisableRequest });
 
   return (
     <BoxCustom sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
