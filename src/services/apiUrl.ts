@@ -29,4 +29,24 @@ export const apiUrl = {
   getPoolApr: () => `${BACKEND_URL}/liquidator-pool/apr`,
   getHealthFactor: (userAddress: string) => `${BACKEND_URL}/lending/users/${userAddress}/health-factor`,
   getHealthFactorCrossMode: (userAddress: string) => `${BACKEND_URL}/lending/users/${userAddress}/cross-mode/health-factor`,
+
+  // Dashboard
+  getMetrics: () => `${BACKEND_URL}/lending/metrics`,
+  getMetricsCrossMode: () => `${BACKEND_URL}/lending/metrics/cross-mode`,
+  getEarningMetrics: (day: number) => `${BACKEND_URL}/staking/tvl-history?nDays=${day}`,
+  getTopDepositors: () => `${BACKEND_URL}/staking/users`,
+  getAudits: () => `${BACKEND_URL}/yield-aggregator/audit`,
+  getRebalanceActions: (page: number, pageSize: number) =>
+    `${BACKEND_URL}/yield-aggregator/collateral-allocation/rebalance-actions?pageIndex=${page}&pageSize=${pageSize}`,
+  getProtocolPositions: () => `${BACKEND_URL}/yield-aggregator/collateral-allocation/protocol-positions`,
+  getVaultsPositions: () => `${BACKEND_URL}/yield-aggregator/collateral-allocation/positions`,
+
+  // Universal Wallet
+  generateMessage: (chainId: string, walletAddress: string, sourceWalletAddress: string, sourceChainId: string) =>
+    `${BACKEND_URL}/universal/wallet-linking/generate-message?chainId=${chainId}&walletAddress=${walletAddress}&sourceWalletAddress=${sourceWalletAddress}&sourceChainId=${sourceChainId}`,
+  createUniversalWallet: (address: string) => `${BACKEND_URL}/liquidator-pool/users/${address}`,
+  walletLinkingRequest: () => `${BACKEND_URL}/universal/wallet-linking/request`,
+  signMessage: () => `${BACKEND_URL}/universal/wallet-linking/submit-signature`,
+  listWalletLinkingRequests: (chainId: string, walletAddress: string) =>
+    `${BACKEND_URL}/universal/wallet-linking/universal-wallet?chainId=${chainId}&walletAddress=${walletAddress}`,
 };

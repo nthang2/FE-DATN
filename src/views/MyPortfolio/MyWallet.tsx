@@ -100,12 +100,6 @@ export default function MyWallet() {
       },
       series: [
         {
-          // states: {
-          //   inactive: {
-          //     opacity: 0.2,
-          //     enabled: true,
-          //   },
-          // },
           type: 'pie',
           data: chartData,
         },

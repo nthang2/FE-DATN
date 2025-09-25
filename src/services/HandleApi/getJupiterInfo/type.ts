@@ -9,8 +9,9 @@ export type TJupiterQuoteParam = {
   outputMint: string;
   amount: string;
   slippageBps: number;
-  maxAccounts: number;
-  excludeDexes: string;
+  maxAccounts?: number;
+  excludeDexes?: string;
+  swapMode?: string;
 };
 
 export type TSwapResp = {

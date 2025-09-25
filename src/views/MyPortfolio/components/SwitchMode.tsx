@@ -25,7 +25,7 @@ const SwitchMode = () => {
           onClick={() => handleChangeCrossMode(false)}
           sx={{
             padding: '6px 24px',
-            bgcolor: crossMode ? '#1B1C14' : '#FCFFD8',
+            bgcolor: crossMode ? 'background.selection' : '#FCFFD8',
             borderRadius: '100px',
             color: crossMode ? '#fff' : '#2D3400',
             ':hover': {
@@ -40,7 +40,7 @@ const SwitchMode = () => {
           onClick={() => handleChangeCrossMode(true)}
           sx={{
             padding: '6px 24px',
-            bgcolor: !crossMode ? '#1B1C14' : '#FCFFD8',
+            bgcolor: !crossMode ? 'background.selection' : '#FCFFD8',
             borderRadius: '100px',
             color: !crossMode ? '#fff' : '#2D3400',
             ':hover': {

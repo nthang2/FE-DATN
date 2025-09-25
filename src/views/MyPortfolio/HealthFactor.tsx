@@ -30,12 +30,12 @@ export default function HealthFactor() {
   }, [selectedToken]);
   const liquidationPrice = useMemo(() => {
     if (healthFactor?.estimateLiquidationPrice) {
-      return Number(healthFactor?.estimateLiquidationPrice || '0').toFixed(2);
+      return Number(healthFactor?.estimateLiquidationPrice || '0');
     }
 
     const liquidationDetail = healthFactor?.liquidationDetails?.find((item) => item.token === selectedToken);
     if (liquidationDetail?.estimateLiquidationPrice) {
-      return Number(liquidationDetail?.estimateLiquidationPrice || '0').toFixed(2);
+      return Number(liquidationDetail?.estimateLiquidationPrice || '0');
     }
 
     return '--';

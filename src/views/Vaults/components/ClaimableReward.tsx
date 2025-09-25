@@ -36,7 +36,7 @@ const ClaimableReward = () => {
         display: 'flex',
         flexDirection: 'column',
         gap: 3.5,
-        bgcolor: '#2A2A2A',
+        bgcolor: 'background.content',
         borderRadius: '14px',
       }}
     >
@@ -63,11 +63,11 @@ const ClaimableReward = () => {
         variant="contained"
         sx={{
           color: 'primary.main',
-          bgcolor: '#1B1C14',
+          bgcolor: 'background.selection',
           boxShadow: 'none',
           my: 'auto',
           ':hover': {
-            bgcolor: '#1B1C14',
+            bgcolor: 'background.selection',
             boxShadow: 'none',
           },
           maxWidth: '150px',

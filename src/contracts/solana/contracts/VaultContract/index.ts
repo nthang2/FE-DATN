@@ -1,20 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BN } from '@coral-xyz/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { PublicKey, Transaction } from '@solana/web3.js';
+import { AddressLookupTableAccount, PublicKey, TransactionInstruction, TransactionMessage, VersionedTransaction } from '@solana/web3.js';
 import { NETWORK } from 'src/constants';
 import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { usdaiSolanaDevnet } from 'src/constants/tokens/solana-ecosystem/solana-devnet';
 import { usdaiSolanaMainnet } from 'src/constants/tokens/solana-ecosystem/solana-mainnet';
-import { getDecimalToken } from 'src/utils';
+import { getDecimalToken, BN as utilBN } from 'src/utils';
 import { IdlVault, idlVault } from '../../idl/vault/vault';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { STAKER_INFO_SEED, VAULT_CONFIG_SEED, VAULT_SEED } from './constant';
-import { BN as utilBN } from 'src/utils';
 
 const usdaiInfo = NETWORK === 'devnet' ? usdaiSolanaDevnet : usdaiSolanaMainnet;
 export const usdaiAddress = usdaiInfo.address;
-
 export class VaultContract extends SolanaContractAbstract<IdlVault> {
   constructor(wallet: WalletContextState) {
     super(wallet as any, ctrAdsSolana.vault, idlVault);
@@ -24,10 +22,24 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     return '';
   }
 
-  async deposit(amount: number | string, instruction: Transaction): Promise<string> {
+  async deposit(
+    amount: number | string,
+    tokenAddress: string,
+    instruction: TransactionInstruction[] | null,
+    addressLookupTable: AddressLookupTableAccount[] = []
+  ): Promise<string> {
     if (!this.wallet) throw new Error('Wallet not connected!');
-    const result = new Transaction();
-    result.add(instruction);
+    let listInstruction = instruction ? instruction : [];
+    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
+    const isHasUserUsdaiAccount = await this.checkUserCollateral(new PublicKey(usdaiInfo.address));
+
+    if (isHasUserCollateral1 !== null) {
+      listInstruction = [isHasUserCollateral1, ...listInstruction];
+    }
+
+    if (isHasUserUsdaiAccount !== null) {
+      listInstruction = [isHasUserUsdaiAccount, ...listInstruction];
+    }
 
     const transactionAmount = utilBN(amount)
       .multipliedBy(utilBN(10).pow(utilBN(usdaiInfo.decimals)))
@@ -39,15 +51,38 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
         signer: this.provider.wallet.publicKey,
         stakeCurrencyMint: new PublicKey(usdaiAddress),
       })
-      .transaction();
-    result.add(trans);
-    const hash = await this.sendTransaction(result);
+      .instruction();
+
+    const messageV0 = new TransactionMessage({
+      payerKey: this.provider.publicKey,
+      recentBlockhash: (await this.provider.connection.getLatestBlockhash()).blockhash,
+      instructions: [...listInstruction, trans],
+    }).compileToV0Message(addressLookupTable);
+
+    const transaction = new VersionedTransaction(messageV0);
+    const hash = await this.sendTransaction(transaction);
 
     return hash;
   }
 
-  async withdraw(amount: number, instruction: Transaction): Promise<string> {
-    const result = new Transaction();
+  async withdraw(
+    amount: number,
+    tokenAddress: string,
+    instruction: TransactionInstruction[] | null,
+    addressLookupTable: AddressLookupTableAccount[] = []
+  ): Promise<string> {
+    const listInstruction = instruction ? instruction : [];
+    const isHasUserCollateral1 = await this.checkUserCollateral(new PublicKey(tokenAddress));
+    const isHasUserUsdaiAccount = await this.checkUserCollateral(new PublicKey(usdaiInfo.address));
+    const checkUserCollateralInstruction = [];
+
+    if (isHasUserCollateral1 !== null) {
+      checkUserCollateralInstruction.push(isHasUserCollateral1);
+    }
+
+    if (isHasUserUsdaiAccount !== null) {
+      checkUserCollateralInstruction.push(isHasUserUsdaiAccount);
+    }
 
     const trans = await this.program.methods
       .unstake(new BN(amount * getDecimalToken(usdaiAddress)))
@@ -55,11 +90,17 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
         signer: this.provider.publicKey,
         stakeCurrencyMint: new PublicKey(usdaiAddress),
       })
-      .transaction();
-    result.add(trans);
-    result.add(instruction);
+      .instruction();
 
-    const hash = await this.sendTransaction(result);
+    const messageV0 = new TransactionMessage({
+      payerKey: this.provider.publicKey,
+      recentBlockhash: (await this.provider.connection.getLatestBlockhash()).blockhash,
+      instructions: [...checkUserCollateralInstruction, trans, ...listInstruction],
+    }).compileToV0Message(addressLookupTable);
+
+    const transaction = new VersionedTransaction(messageV0);
+    const hash = await this.sendTransaction(transaction);
+
     return hash;
   }
 

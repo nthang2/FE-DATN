@@ -37,4 +37,5 @@ export const findTokenNameSolanaMainnet: Record<string, TSolanaMainnetToken | un
   [solTokenSolana.address]: TokenName.SOL,
   [virtualSolanaMainnet.address]: TokenName.VIRTUAL,
   [scOraiSolanaMainnet.address]: TokenName.scORAI,
+  [usdtSolanaMainnet.address]: TokenName.USDT,
 };

@@ -9,7 +9,7 @@ pipeline {
 
     environment {
         // Docker registry url
-        REGISTRY = "registry.tovchain.vn"
+        REGISTRY = "registry.a-star.group"
 
         // Username for Docker registry
         USERNAME = "devopstovchain"

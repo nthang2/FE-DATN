@@ -1,7 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Box, Typography } from '@mui/material';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { FontOxanium } from 'src/constants';
+import { walletIcon } from 'src/states/wallets/constants/walletIcon';
 
 export const sizeWalletIcon = '32px';
 export type TWalletStatus =
@@ -54,6 +55,15 @@ export default function BoxOptionWallet({
   textError?: string;
   mb?: number;
 }) {
+  const walletIconDisplay = useMemo(() => {
+    if (typeof icon.replaceUrl === 'string' && icon.replaceUrl !== '') {
+      return <img src={icon.replaceUrl} style={{ width: sizeWalletIcon, height: sizeWalletIcon, borderRadius: '10px' }} />;
+    }
+
+    const ResultIcon = walletIcon[name];
+    return <ResultIcon sx={{ mr: 1, width: sizeWalletIcon, height: sizeWalletIcon, borderRadius: '10px' }} />;
+  }, [icon.replaceUrl, name]);
+
   return (
     <Box
       sx={({ palette }) => ({
@@ -71,7 +81,7 @@ export default function BoxOptionWallet({
       })}
       mb={mb}
     >
-      <img src={icon.replaceUrl} style={{ width: sizeWalletIcon, height: sizeWalletIcon, borderRadius: '10px' }}></img>
+      {walletIconDisplay}
       <Box sx={{ flexGrow: 1, minWidth: 0 }}>
         <Typography
           sx={{

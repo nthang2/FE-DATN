@@ -3,17 +3,17 @@ import { useState } from 'react';
 import { ArrowDown, WalletIcon } from 'src/assets/icons';
 import WalletConnectIcon from 'src/components/General/WalletConnectIcon/WalletConnectIcon';
 import ModalConnectWallet from 'src/components/Modals/ConnectSolanaNetwork/ModalConnectWallet';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { formatAddress } from 'src/utils/format';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { copyTextToClipboard } from 'src/utils';
 import { useModalFunction } from 'src/states/modal/hooks';
 import ModalSettingAccount from 'src/components/Modals/ModalSettingAccount/ModalSettingAccount';
+import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 
 const ConnectWalletSection = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
-  const { address, status, walletIcon, disconnect } = useSummarySolanaConnect();
+  const { address, status, walletIcon, disconnect } = useSummaryConnect();
   const modalFunction = useModalFunction();
 
   const handleCloseAnchor = () => {

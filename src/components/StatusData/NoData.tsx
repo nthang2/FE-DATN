@@ -1,10 +1,10 @@
 import { Box, Typography } from '@mui/material';
-import { MetroChartBarIcon } from 'src/assets/icons';
+import { NoDataIcon } from 'src/assets/NoDataIcon';
 
 export default function NoData({ color = '#B5B8B8', text = 'No Data' }: { color?: string; text?: string }) {
   return (
     <Box sx={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <MetroChartBarIcon sx={{ fontSize: '2.5rem', color: color, mb: 0.5, mt: 4 }} />
+      <NoDataIcon sx={{ fontSize: '4.5rem', color: color, mb: 1, mt: 2.5 }} />
       <Typography color={color}>{text}</Typography>
     </Box>
   );
