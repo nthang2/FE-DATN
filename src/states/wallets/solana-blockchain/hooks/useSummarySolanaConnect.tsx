@@ -10,7 +10,7 @@ export default function useSummarySolanaConnect(): SummaryConnectInfo {
   return {
     address: publicKey?.toString() || '',
     // chainId: TSolanaNetworkId.sol_devnet as string,
-    chainId: '2', // for now
+    chainId: '2',
     chainIcon: IconSOL,
     chainName: 'Solana',
     status: wallet ? (wallet.adapter.connecting ? 'Connecting' : wallet.adapter.connected ? 'Connected' : 'Disconnected') : 'Disconnected',

@@ -606,6 +606,25 @@ export const universalWalletAbi = [
   {
     inputs: [
       {
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
+      },
+    ],
+    name: 'requestId',
+    outputs: [
+      {
+        internalType: 'uint64',
+        name: '',
+        type: 'uint64',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'bytes32',
         name: '_destinationWallet',
         type: 'bytes32',
@@ -721,6 +740,11 @@ export const universalWalletAbi = [
     ],
     name: 'requests',
     outputs: [
+      {
+        internalType: 'uint64',
+        name: 'requestId',
+        type: 'uint64',
+      },
       {
         internalType: 'uint8',
         name: 'chainId',
