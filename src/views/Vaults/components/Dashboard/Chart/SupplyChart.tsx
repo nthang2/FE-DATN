@@ -104,6 +104,9 @@ const SupplyChart = () => {
           value={toggleValue}
           handleToggleChange={(_, newAlignment) => setToggleValue(newAlignment)}
           data={ToggleButtonGroups}
+          sx={{
+            height: '36px',
+          }}
         />
       </Stack>
 
