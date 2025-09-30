@@ -1,8 +1,7 @@
-import React from 'react';
-import { BoxCustom } from '../General/CustomBox/CustomBox';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Box, Container, Typography } from '@mui/material';
-import ConnectWalletSection from 'src/layout/header/ConnectWalletSection';
+import ConnectWalletSection from 'src/layout/header/ConnectWalletSection/ConnectWalletSection';
+import { BoxCustom } from '../General/CustomBox/CustomBox';
 
 const Lockout = () => {
   return (

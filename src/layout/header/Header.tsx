@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import ConnectWalletSection from './ConnectWalletSection';
+import ConnectWalletSection from './ConnectWalletSection/ConnectWalletSection';
 import HeaderNavbar from './HeaderNavbar';
 import logo from '/images/logo.png';
 
