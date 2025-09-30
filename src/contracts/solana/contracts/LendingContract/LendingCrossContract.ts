@@ -36,6 +36,8 @@ import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { usdaiAddress } from '../VaultContract';
 import {
   CONTROLLER_SEED,
+  CROSSCHAIN_CONFIG_SEED,
+  CROSSCHAIN_DEPOSITORY_TYPE1_SEED,
   collateral as defaultCollateral,
   defaultSlippageBps,
   DEPOSITORY_TYPE1_SEED,
@@ -49,6 +51,7 @@ import {
   swapUsdcALT,
   WALLET_LINKING_REQUEST_SEED,
 } from './constant';
+import { mapChainIdToName } from 'src/constants/chainId';
 
 export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
@@ -68,6 +71,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     const userCollateral1 = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), this.provider.publicKey);
     const redeemConfig = this.getPda(REDEEM_CONFIG);
     const swapConfig = this.getPda(SWAP_CONFIG_SEED);
+    const crosschainConfig = this.getPda(CROSSCHAIN_CONFIG_SEED);
 
     return {
       controller: controller,
@@ -85,6 +89,7 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
       userCollateral1: userCollateral1,
       redeemConfig: redeemConfig,
       swapConfig: swapConfig,
+      crosschainConfig: crosschainConfig,
     };
   }
 
@@ -97,20 +102,21 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     return { pdAddress, depositoryPda };
   }
 
-  private async _getOrCreateTokenAccountTx(mint: PublicKey, payer: PublicKey): Promise<Transaction> {
+  private async _getOrCreateTokenAccountTx(mint: PublicKey, payer: PublicKey): Promise<TransactionInstruction | undefined> {
     const tokenAccount = getAssociatedTokenAddressSync(mint, payer, true);
-    const transaction: Transaction = new Transaction();
+    const transaction: TransactionInstruction[] = [];
 
     try {
       await getAccount(this.provider.connection, tokenAccount, 'confirmed');
+      return undefined;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
-      transaction.add(
+      transaction.push(
         createAssociatedTokenAccountInstruction(payer, tokenAccount, payer, mint, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID)
       );
     }
 
-    return transaction;
+    return transaction[0];
   }
 
   async getAccountType0Depository(address: PublicKey) {
@@ -159,23 +165,55 @@ export class LendingCrossContract extends SolanaContractAbstract<IdlLending> {
     return result;
   }
 
-  async deposit(depositAmount: number, tokenAddress: string): Promise<string> {
+  async deposit(depositAmount: number, tokenAddress: string, universalWallet?: string): Promise<string> {
     const decimal = getDecimalToken(tokenAddress);
     const collateralAmount = new BN(depositAmount * decimal);
-    const { ...accountsPartial } = this.getAccountsPartial(tokenAddress);
+    const accountsPartial = this.getAccountsPartial(tokenAddress);
     const transaction = await this._getOrCreateTokenAccountTx(new PublicKey(tokenAddress), this.provider.publicKey);
+    const listInstruction = transaction ? [transaction] : [];
+    let transactionHash = '';
 
     if (tokenAddress === (solTokenSolana.address || solanaDevnet.address)) {
-      transaction.add(this.wrapSol(tokenAddress, collateralAmount));
+      listInstruction.concat(this.wrapSol(tokenAddress, collateralAmount).instructions);
     }
 
-    const depositTransaction = await this.program.methods
-      .type1DepositoryDeposit(collateralAmount)
-      .accountsPartial(accountsPartial)
-      .transaction();
-    transaction.add(depositTransaction);
+    if (!universalWallet) {
+      const depositTransaction = await this.program.methods
+        .type1DepositoryDeposit(collateralAmount)
+        .accountsPartial(accountsPartial)
+        .instruction();
+      listInstruction.push(depositTransaction);
+    } else {
+      const loanAccountUniversal = this.getUserLoanByToken(new PublicKey(universalWallet), new PublicKey(tokenAddress));
+      const crosschainDepository = this.getPda(CROSSCHAIN_DEPOSITORY_TYPE1_SEED, Number(mapChainIdToName['solana']));
+      console.log('🚀 ~ LendingCrossContract ~ deposit ~ crosschainDepository:', crosschainDepository.toString());
 
-    const transactionHash = await this.sendTransaction(transaction);
+      const depositTransaction = await this.program.methods
+        .userCrosschainType1Deposit(collateralAmount)
+        .accountsPartial({
+          universalWallet: new PublicKey(universalWallet),
+          loanAccount: loanAccountUniversal.pdAddress,
+          crosschainConfig: accountsPartial.crosschainConfig,
+          depository: accountsPartial.depository,
+          depositoryVault: accountsPartial.depositoryVault,
+          user: accountsPartial.user,
+          collateralToken: accountsPartial.collateralToken1,
+          userCollateralAta: accountsPartial.userCollateral1,
+          crosschainDepository: crosschainDepository,
+        })
+        .instruction();
+      listInstruction.push(depositTransaction);
+    }
+
+    const result = new VersionedTransaction(
+      new TransactionMessage({
+        payerKey: this.provider.publicKey,
+        recentBlockhash: (await this.provider.connection.getLatestBlockhash()).blockhash,
+        instructions: listInstruction,
+      }).compileToV0Message()
+    );
+    transactionHash = await this.sendTransaction(result);
+
     await queryClient.invalidateQueries({ queryKey: ['useMyPortfolio', this.provider.publicKey, appStore.get(crossModeAtom)] });
     await queryClient.invalidateQueries({ queryKey: ['solana', 'all-slp-token-balances', this.provider.publicKey.toString()] });
 

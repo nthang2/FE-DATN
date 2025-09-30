@@ -10,7 +10,8 @@ import { TBorrowItem } from '../../state/types';
 import BorrowTableRow from './BorrowTableRow';
 import DepositTableRow from './DepositTableRow';
 import useFetchAllSolTokenBalances from 'src/states/wallets/solana-blockchain/hooks/useFetchAllSolTokenBalances';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
+import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
+import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 
 const ActionSection = () => {
   const wallet = useWallet();
@@ -20,8 +21,10 @@ const ActionSection = () => {
   const { refetch: refetchDeposited } = useQueryDepositValue();
   const { maxBorrowPrice } = useInvestedValue();
   const { initLendingContract } = useLendingContract();
-  const { address } = useSummarySolanaConnect();
+  const [firstWallet] = useSummaryConnect();
+  const { address, chainId, networkName } = firstWallet;
   const { allSlpTokenBalances } = useFetchAllSolTokenBalances(address);
+  const { data: listWallet } = useGetListWallet(chainId, address);
 
   const initDepositItems = useMemo(() => {
     return [...depositItems].filter((item) => !!item.value && item.value !== '0');
@@ -54,14 +57,16 @@ const ActionSection = () => {
   };
 
   const handleDeposit = async (depositItem: TBorrowItem, index: number) => {
-    if (!wallet || !wallet.wallet?.adapter.publicKey) return;
-    const lendingContract = initLendingContract(wallet);
-    const transHash = await lendingContract.deposit(Number(depositItem.value), depositItem.address);
-    await refetchDeposited();
-    await allSlpTokenBalances.refetch();
-    handChangeActionStatus(index);
+    if (networkName === 'Solana') {
+      if (!wallet || !wallet.wallet?.adapter.publicKey) return;
+      const lendingContract = initLendingContract(wallet);
+      const transHash = await lendingContract.deposit(Number(depositItem.value), depositItem.address, listWallet?.universalWallet);
+      await refetchDeposited();
+      await allSlpTokenBalances.refetch();
+      handChangeActionStatus(index);
 
-    return transHash;
+      return transHash;
+    }
   };
 
   const handleBorrow = async () => {

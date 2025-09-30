@@ -8,7 +8,7 @@ const useGetListWallet = (chainId: string, walletAddress: string) => {
   const query = useQuery({
     queryKey: ['listWalletLinkingRequests', networkState, walletAddress],
     queryFn: async () => {
-      const chain = networkState === 'solana' ? '2' : '1';
+      const chain = chainId ? chainId : networkState === 'solana' ? '2' : '1';
       return await listWalletLinkingRequests(chain, walletAddress);
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
