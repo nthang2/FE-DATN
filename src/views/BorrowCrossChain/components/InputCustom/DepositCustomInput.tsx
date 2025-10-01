@@ -18,7 +18,7 @@ type Props = {
   maxValue?: string | ReactNode;
   endAdornment?: ReactNode;
   inputProps?: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
-  selectProps?: { handleChangeSelect: (address: string) => void; value: string; disabled?: boolean };
+  selectProps?: { handleChangeSelect?: (address: string) => void; value: string; disabled?: boolean };
   error?: string;
   selectOptions?: string[];
   hideDropdownIcon?: boolean;
@@ -40,18 +40,25 @@ export default function DepositCustomInput(props: Props) {
   const [depositItems] = useDepositCrossState();
 
   const inputValue = inputProps?.value ? roundNumber(Number(inputProps.value), 8) : undefined;
-  const options = {
-    solana: Object.values(listTokenAvailableSOL),
-    ethereum: Object.values(listTokenAvailableETH),
+  const options = () => {
+    if (hideDropdownIcon) {
+      return {
+        solana: [listTokenAvailableSOL.USDAI],
+        ethereum: [listTokenAvailableETH.USDAI],
+      };
+    }
+    return {
+      solana: Object.values(listTokenAvailableSOL),
+      ethereum: Object.values(listTokenAvailableETH),
+    };
   };
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [selectedNetwork, setSelectedNetwork] = useState<string>('solana');
-  const [selectToken, setSelectToken] = useState(options[selectedNetwork as 'ethereum' | 'solana'][0]);
-  console.log('🚀 ~ DepositCustomInput ~ selectToken:', selectToken);
+  const [selectToken, setSelectToken] = useState(options()[selectedNetwork as 'ethereum' | 'solana'][0]);
 
   const handleClick = () => {
-    const el = document.getElementById('popover_header');
+    const el = document.getElementById(`${hideDropdownIcon}_popover_header`);
     setAnchorEl(el);
   };
 
@@ -59,12 +66,12 @@ export default function DepositCustomInput(props: Props) {
     setAnchorEl(null);
   };
 
-  const id = Boolean(anchorEl) ? 'popover_header' : undefined;
+  const id = Boolean(anchorEl) ? `${hideDropdownIcon}_popover_header` : undefined;
 
   return (
     <Box mb={1}>
       <Box
-        id={'popover_header'}
+        id={`${hideDropdownIcon}_popover_header`}
         sx={{
           position: 'relative',
           display: 'flex',
@@ -95,9 +102,7 @@ export default function DepositCustomInput(props: Props) {
             }}
             aria-describedby={id}
             onClick={() => {
-              if (!(selectProps && selectProps.disabled)) {
-                handleClick();
-              }
+              handleClick();
             }}
           >
             {selectProps && selectProps.disabled ? (
@@ -111,11 +116,11 @@ export default function DepositCustomInput(props: Props) {
                 <Typography variant="body2" sx={{ fontWeight: 700 }}>
                   {selectToken?.symbol}
                 </Typography>
-                <Box sx={{ display: hideDropdownIcon ? 'none' : 'flex' }}>
-                  <ArrowDropDown />
-                </Box>
               </Box>
             )}
+            <Box>
+              <ArrowDropDown />
+            </Box>
           </Box>
         )}
         {
@@ -178,7 +183,7 @@ export default function DepositCustomInput(props: Props) {
               </Box>
               <Box sx={{ mt: 2 }}>
                 <Typography sx={{ color: '#FFFFFF', fontWeight: 700 }}>Select a token</Typography>
-                {options[selectedNetwork as 'ethereum' | 'solana'].map((o) => {
+                {options()[selectedNetwork as 'ethereum' | 'solana'].map((o) => {
                   const displayOption = !depositItems.find((deposit) => deposit.address === o.address);
                   return (
                     <Box
@@ -193,9 +198,11 @@ export default function DepositCustomInput(props: Props) {
                       }}
                       key={o.address}
                       onClick={() => {
-                        setSelectToken(o);
-                        selectProps?.handleChangeSelect(o.address);
-                        handleClose();
+                        if (selectProps?.handleChangeSelect) {
+                          setSelectToken(o);
+                          selectProps?.handleChangeSelect(o.address);
+                          handleClose();
+                        }
                       }}
                     >
                       <Stack>
