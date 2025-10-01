@@ -39,6 +39,6 @@ export const listTokenAvailable = isDevNet
       [TokenName.scORAI]: mapNameToInfoSolana[TokenName.scORAI],
     };
 
-export const listTokenAvailableMulNetwork = isDevNet
+export const listTokenAvailableUniversal = isDevNet
   ? { [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC] }
   : { [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC] };

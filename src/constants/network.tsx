@@ -18,4 +18,4 @@ export const mapNameNetwork: Record<string, TNetwork> = {
     name: 'Ethereum',
     icon: <IconETH />,
   },
-};
+} as const;

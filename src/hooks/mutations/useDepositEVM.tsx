@@ -10,8 +10,8 @@ import useSummaryEVMConnect from 'src/states/wallets/evm-blockchain/hooks/useSum
 import { BN } from 'src/utils';
 import { encodePacked, erc20Abi, keccak256, pad, parseEther, toBytes } from 'viem';
 import { readContract, signMessage, waitForTransactionReceipt, writeContract } from 'wagmi/actions';
-import { actionType, ethFeeAmount } from '../constant';
-import { toRSV } from '../utils';
+import { actionType, ethFeeAmount } from 'src/views/Borrow/constant';
+import { toRSV } from 'src/views/Borrow/utils';
 
 interface IProps {
   depositAmount: string;
@@ -92,14 +92,15 @@ const useDepositEVM = () => {
         });
         await waitForTransactionReceipt(config, { hash: tx });
 
-        const response = await requestEVMLending({
+        await requestEVMLending({
           chainId: Number(chainId),
           user: address as `0x${string}`,
           actionType: actionType.DEPOSIT,
           token: tokenInfo?.address as `0x${string}`,
           amount: amount,
         });
-        console.log('🚀 ~ useDepositEVM ~ response:', response);
+
+        return tx;
       } catch (error) {
         console.log(error);
         throw error;

@@ -53,7 +53,7 @@ import {
 } from './constant';
 import { mapChainIdToName } from 'src/constants/chainId';
 
-export class LendingContractCrossNetwork extends SolanaContractAbstract<IdlLending> {
+export class LendingContractUniversal extends SolanaContractAbstract<IdlLending> {
   constructor(wallet: WalletContextState) {
     super(wallet, ctrAdsSolana.lending, idlLending);
   }
