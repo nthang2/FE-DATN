@@ -48,8 +48,8 @@ export default function DepositCustomInput(props: Props) {
       };
     }
     return {
-      solana: Object.values(listTokenAvailableSOL),
-      ethereum: Object.values(listTokenAvailableETH),
+      solana: Object.values(listTokenAvailableSOL).filter((token) => token.address !== listTokenAvailableSOL.USDAI.address),
+      ethereum: Object.values(listTokenAvailableETH).filter((token) => token.address !== listTokenAvailableETH.USDAI.address),
     };
   };
 

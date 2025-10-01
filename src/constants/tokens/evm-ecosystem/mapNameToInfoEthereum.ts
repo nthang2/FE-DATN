@@ -12,7 +12,7 @@ import {
   mapNameToInfoEthereumMainnet,
 } from './list-tokens/ethereum/mapNameToInfoEthereum';
 
-export const mapNameToInfoEthereum: Record<string, EthereumChainTokenInfo | undefined> = isDevNet
+export const mapNameToInfoEthereum: Record<string, EthereumChainTokenInfo> = isDevNet
   ? mapNameToInfoEthereumDevnet
   : mapNameToInfoEthereumMainnet;
 
