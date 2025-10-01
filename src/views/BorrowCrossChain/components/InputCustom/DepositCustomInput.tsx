@@ -3,8 +3,8 @@ import { Box, FormHelperText, Popover, Skeleton, Stack, Typography } from '@mui/
 import clsx from 'clsx';
 import { ReactNode, useState } from 'react';
 import { mapNameNetwork } from 'src/constants/network';
-import { listTokenAvailable as listTokenAvailableETH } from 'src/constants/tokens/evm-ecosystem/list-tokens/ethereum/mapNameToInfoEthereum';
-import { listTokenAvailable as listTokenAvailableSOL } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { listTokenAvailable as listTokenAvailableETH } from 'src/constants/tokens/evm-ecosystem/mapNameToInfoEthereum';
+import { listTokenAvailableUniversal as listTokenAvailableSOL } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { TokenName } from 'src/libs/crypto-icons';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { formatAddress, formatNumber, roundNumber } from 'src/utils/format';
@@ -66,7 +66,7 @@ export default function DepositCustomInput(props: Props) {
     setAnchorEl(null);
   };
 
-  const id = Boolean(anchorEl) ? `${hideDropdownIcon}_popover_header` : undefined;
+  const id = anchorEl ? `${hideDropdownIcon}_popover_header` : undefined;
 
   return (
     <Box mb={1}>
@@ -184,6 +184,7 @@ export default function DepositCustomInput(props: Props) {
               <Box sx={{ mt: 2 }}>
                 <Typography sx={{ color: '#FFFFFF', fontWeight: 700 }}>Select a token</Typography>
                 {options()[selectedNetwork as 'ethereum' | 'solana'].map((o) => {
+                  if (!o) return null;
                   const displayOption = !depositItems.find((deposit) => deposit.address === o.address);
                   return (
                     <Box

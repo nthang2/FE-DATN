@@ -2,10 +2,13 @@ import { Table, TableBody, TableContainer, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
-import useLendingContract from 'src/hooks/useContract/useLendingContract';
+import { mapNameNetwork } from 'src/constants/network';
+import { LendingContractUniversal } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingContractUniversal';
+import useBorrowEVM from 'src/hooks/mutations/useBorrowEVM';
+import useDepositEVM from 'src/hooks/mutations/useDepositEVM';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
-import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
+import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import useFetchAllSolTokenBalances from 'src/states/wallets/solana-blockchain/hooks/useFetchAllSolTokenBalances';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
 import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState } from '../../state/hooks';
@@ -20,11 +23,11 @@ const ActionSection = () => {
   const [isSubmitted, setIsSubmitted] = useBorrowCrossSubmitState();
   const { refetch: refetchDeposited } = useQueryDepositValue();
   const { maxBorrowPrice } = useInvestedValue();
-  const { initLendingContract } = useLendingContract();
-  const [firstWallet] = useSummaryConnect();
-  const { address, chainId, networkName } = firstWallet;
+  const { address, chainId, networkName } = useSummaryFirstActiveConnect();
   const { allSlpTokenBalances } = useFetchAllSolTokenBalances(address);
   const { data: listWallet } = useGetListWallet(chainId, address);
+  const { mutateAsync: depositEVM } = useDepositEVM();
+  const { mutateAsync: borrowEVM } = useBorrowEVM();
 
   const initDepositItems = useMemo(() => {
     return [...depositItems].filter((item) => !!item.value && item.value !== '0');
@@ -57,26 +60,37 @@ const ActionSection = () => {
   };
 
   const handleDeposit = async (depositItem: TBorrowCrossItem, index: number) => {
-    if (networkName === 'Solana') {
-      if (!wallet || !wallet.wallet?.adapter.publicKey) return;
-      const lendingContract = initLendingContract(wallet);
-      const transHash = await lendingContract.deposit(Number(depositItem.value), depositItem.address, listWallet?.universalWallet);
-      await refetchDeposited();
-      await allSlpTokenBalances.refetch();
-      handChangeActionStatus(index);
+    if (!address) return;
+    let hash = '';
 
-      return transHash;
+    if (networkName === mapNameNetwork.solana.name) {
+      const lendingContract = new LendingContractUniversal(wallet);
+      hash = await lendingContract.deposit(Number(depositItem.value), depositItem.address, listWallet?.universalWallet);
+    } else {
+      hash = await depositEVM({ depositAmount: depositItem.value, selectedToken: depositItem.address });
     }
+
+    await refetchDeposited();
+    await allSlpTokenBalances.refetch();
+    handChangeActionStatus(index);
+
+    return hash;
   };
 
   const handleBorrow = async () => {
-    if (!wallet || !wallet.wallet?.adapter.publicKey) return;
-    const isBorrowMaxValue = Number(borrowState.price) === maxBorrowPrice;
-    const lendingContract = initLendingContract(wallet);
-    const transHash = await lendingContract.borrow(Number(borrowState.value), depositItems[0].address, isBorrowMaxValue);
+    if (!address) return;
+    let hash = '';
+
+    if (networkName === mapNameNetwork.solana.name) {
+      const lendingContract = new LendingContractUniversal(wallet);
+      const isBorrowMaxValue = Number(borrowState.price) === maxBorrowPrice;
+      hash = await lendingContract.borrow(Number(borrowState.value), borrowState.address, isBorrowMaxValue, listWallet?.universalWallet);
+    } else {
+      hash = await borrowEVM({ borrowAmount: borrowState.value, selectedToken: borrowState.address });
+    }
     handChangeActionStatus(actionStatus.length - 1);
 
-    return transHash;
+    return hash;
   };
 
   return (

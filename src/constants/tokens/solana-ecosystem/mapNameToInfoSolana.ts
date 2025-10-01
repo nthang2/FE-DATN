@@ -42,5 +42,5 @@ export const listTokenAvailable = isDevNet
     };
 
 export const listTokenAvailableUniversal = isDevNet
-  ? { [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC] }
-  : { [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC] };
+  ? { [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC], [TokenName.USDAI]: mapNameToInfoSolana[TokenName.USDAI] }
+  : { [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC], [TokenName.USDAI]: mapNameToInfoSolana[TokenName.USDAI] };
