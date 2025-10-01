@@ -48,6 +48,7 @@ export default function DepositCustomInput(props: Props) {
       };
     }
     return {
+      //remove USDAI from the list when is it deposit input
       solana: Object.values(listTokenAvailableSOL).filter((token) => token.address !== listTokenAvailableSOL.USDAI.address),
       ethereum: Object.values(listTokenAvailableETH).filter((token) => token.address !== listTokenAvailableETH.USDAI.address),
     };
