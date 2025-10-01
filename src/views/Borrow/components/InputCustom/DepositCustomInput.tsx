@@ -1,8 +1,8 @@
 import { Box, FormHelperText, MenuItem, Select, SelectProps, Skeleton, Stack, Typography } from '@mui/material';
-import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
-import { TokenName } from 'src/libs/crypto-icons';
 import { ReactNode } from 'react';
 import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { TokenName } from 'src/libs/crypto-icons';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { roundNumber } from 'src/utils/format';
 import { useDepositState } from '../../state/hooks';
 

@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useEffect, useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
@@ -6,20 +6,19 @@ import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import { TokenName } from 'src/libs/crypto-icons';
-import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { useCrossModeState } from 'src/states/hooks';
 import { regexConfigValue } from 'src/utils';
 import { decimalFlood } from 'src/utils/format';
-import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../state/hooks';
+import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState } from '../../state/hooks';
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
 import BorrowPreview from './BorrowPreview';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();
-  const [borrowState, setBorrowState] = useBorrowState();
-  const [isSubmitted] = useBorrowSubmitState();
-  const [depositItems] = useDepositState();
+  const [borrowState, setBorrowState] = useBorrowCrossState();
+  const [isSubmitted] = useBorrowCrossSubmitState();
+  const [depositItems] = useDepositCrossState();
   const [crossMode] = useCrossModeState();
   const { totalDepositValue, yourBorrowByAddress, maxLtv } = useInvestedValue();
   const { asset } = useMyPortfolio();
@@ -89,12 +88,6 @@ const BorrowSection = () => {
             selectProps={{
               value: borrowState.address,
               disabled: true,
-              renderValue: () => (
-                <Stack sx={{ alignItems: 'center' }}>
-                  <IconToken tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
-                  <Typography variant="body2">USDAI</Typography>
-                </Stack>
-              ),
             }}
             subValue={borrowState?.price}
             error={borrowState.error}
