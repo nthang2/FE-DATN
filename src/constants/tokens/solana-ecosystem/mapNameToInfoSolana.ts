@@ -38,3 +38,7 @@ export const listTokenAvailable = isDevNet
       [TokenName.VIRTUAL]: mapNameToInfoSolana[TokenName.VIRTUAL],
       [TokenName.scORAI]: mapNameToInfoSolana[TokenName.scORAI],
     };
+
+export const listTokenAvailableMulNetwork = isDevNet
+  ? { [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC] }
+  : { [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC] };
