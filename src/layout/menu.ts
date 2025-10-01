@@ -34,8 +34,8 @@ export const menu: TMenu[] = [
     title: 'Convert',
     url: '/convert',
   },
-  // {
-  //   title: 'Universal Wallet',
-  //   url: '/universal-wallet',
-  // },
+  {
+    title: 'Universal Wallet',
+    url: '/universal-wallet',
+  },
 ];
