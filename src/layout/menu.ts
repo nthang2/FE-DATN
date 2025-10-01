@@ -8,7 +8,11 @@ export type TMenu = {
 export const menu: TMenu[] = [
   {
     title: 'My Portfolio',
-    url: '/my-portfolio',
+    parent: ['/my-portfolio', '/my-portfolio-cross'],
+    child: [
+      { title: 'My Portfolio', url: '/' },
+      { title: 'My Portfolio Cross', url: '/my-portfolio-cross' },
+    ],
   },
   {
     title: 'Mint',
