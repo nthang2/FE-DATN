@@ -1,7 +1,7 @@
 import { NETWORK } from 'src/constants';
+import { TokenName } from 'src/libs/crypto-icons';
 import { findTokenNameSolanaDevnet, mapNameToInfoSolanaDevnet } from './solana-devnet/mapNameToInfoSolanaDevnet';
 import { findTokenNameSolanaMainnet, mapNameToInfoSolanaMainnet } from './solana-mainnet/mapNameToInfoSolanaMainnet';
-import { TokenName } from 'src/libs/crypto-icons';
 
 export const isDevNet = NETWORK === 'devnet';
 
@@ -29,6 +29,7 @@ export const listTokenAvailable = isDevNet
       [TokenName.AI16Z]: mapNameToInfoSolana[TokenName.AI16Z],
       [TokenName.SOL]: mapNameToInfoSolana[TokenName.SOL],
       [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC],
+      [TokenName.USDAI]: mapNameToInfoSolana[TokenName.USDAI],
     }
   : {
       [TokenName.ORAI]: mapNameToInfoSolana[TokenName.ORAI],
@@ -37,8 +38,9 @@ export const listTokenAvailable = isDevNet
       [TokenName.SOL]: mapNameToInfoSolana[TokenName.SOL],
       [TokenName.VIRTUAL]: mapNameToInfoSolana[TokenName.VIRTUAL],
       [TokenName.scORAI]: mapNameToInfoSolana[TokenName.scORAI],
+      [TokenName.USDAI]: mapNameToInfoSolana[TokenName.USDAI],
     };
 
-export const listTokenAvailableMulNetwork = isDevNet
-  ? { [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC] }
-  : { [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC] };
+export const listTokenAvailableUniversal = isDevNet
+  ? { [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC], [TokenName.USDAI]: mapNameToInfoSolana[TokenName.USDAI] }
+  : { [TokenName.USDC]: mapNameToInfoSolana[TokenName.USDC], [TokenName.USDAI]: mapNameToInfoSolana[TokenName.USDAI] };

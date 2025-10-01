@@ -5,6 +5,8 @@ import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
+import { TokenName } from 'src/libs/crypto-icons';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { useCrossModeState } from 'src/states/hooks';
 import { regexConfigValue } from 'src/utils';
 import { decimalFlood } from 'src/utils/format';
@@ -12,8 +14,6 @@ import { useBorrowState, useBorrowSubmitState, useDepositState } from '../../sta
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
 import BorrowPreview from './BorrowPreview';
-import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
-import { TokenName } from 'src/libs/crypto-icons';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPrice();

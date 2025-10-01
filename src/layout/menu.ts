@@ -1,16 +1,26 @@
 export type TMenu = {
   title: string;
-  url: string;
+  url?: string;
+  child?: Array<{ title: string; url: string }>;
+  parent?: Array<string>;
 };
 
 export const menu: TMenu[] = [
   {
     title: 'My Portfolio',
-    url: '/my-portfolio',
+    parent: ['/my-portfolio', '/my-portfolio-cross'],
+    child: [
+      { title: 'My Portfolio', url: '/' },
+      { title: 'My Portfolio Cross', url: '/my-portfolio-cross' },
+    ],
   },
   {
     title: 'Mint',
-    url: '/',
+    parent: ['/', '/mint-cross'],
+    child: [
+      { title: 'Mint', url: '/' },
+      { title: 'Mint Cross', url: '/mint-cross' },
+    ],
   },
   {
     title: 'Earn',
@@ -24,8 +34,8 @@ export const menu: TMenu[] = [
     title: 'Convert',
     url: '/convert',
   },
-  // {
-  //   title: 'Universal Wallet',
-  //   url: '/universal-wallet',
-  // },
+  {
+    title: 'Universal Wallet',
+    url: '/universal-wallet',
+  },
 ];

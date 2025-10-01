@@ -2,7 +2,7 @@ import { TokenName } from 'src/libs/crypto-icons';
 import { bnbEthereum, usdcEthereum, usdtEthereum, ethEthereum, scORAIEthereum, oraiEthereum, usdaiEthereum } from '.';
 import { EthereumChainTokenInfo } from './EthereumChainTokenInfo';
 
-export const mapNameToInfoEthereumMainnet: Record<string, EthereumChainTokenInfo | undefined> = {
+export const mapNameToInfoEthereumMainnet: Record<string, EthereumChainTokenInfo> = {
   [TokenName.BNB]: bnbEthereum,
   [TokenName.USDC]: usdcEthereum,
   [TokenName.USDT]: usdtEthereum,

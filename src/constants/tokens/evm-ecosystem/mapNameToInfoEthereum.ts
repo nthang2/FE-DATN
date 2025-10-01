@@ -12,7 +12,7 @@ import {
   mapNameToInfoEthereumMainnet,
 } from './list-tokens/ethereum/mapNameToInfoEthereum';
 
-export const mapNameToInfoEthereum: Record<string, EthereumChainTokenInfo | undefined> = isDevNet
+export const mapNameToInfoEthereum: Record<string, EthereumChainTokenInfo> = isDevNet
   ? mapNameToInfoEthereumDevnet
   : mapNameToInfoEthereumMainnet;
 
@@ -25,7 +25,9 @@ export const findTokenInfoByTokenEVM = isDevNet ? findTokenInfoByTokenEVMMainnet
 export const listTokenAvailable = isDevNet
   ? {
       [TokenName.USDC]: mapNameToInfoEthereum[TokenName.USDC],
+      [TokenName.USDAI]: mapNameToInfoEthereum[TokenName.USDAI],
     }
   : {
       [TokenName.USDC]: mapNameToInfoEthereum[TokenName.USDC],
+      [TokenName.USDAI]: mapNameToInfoEthereum[TokenName.USDAI],
     };
