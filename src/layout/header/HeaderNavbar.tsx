@@ -1,8 +1,8 @@
+import MenuIcon from '@mui/icons-material/Menu';
 import { IconButton, Popover, Stack } from '@mui/material';
+import React from 'react';
 import { menu } from '../menu';
 import HeaderItem from './HeaderItem';
-import MenuIcon from '@mui/icons-material/Menu';
-import React from 'react';
 
 const HeaderNavbar = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);

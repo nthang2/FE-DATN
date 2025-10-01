@@ -1,6 +1,8 @@
 export type TMenu = {
   title: string;
-  url: string;
+  url?: string;
+  child?: Array<{ title: string; url: string }>;
+  parent?: Array<string>;
 };
 
 export const menu: TMenu[] = [
@@ -10,7 +12,11 @@ export const menu: TMenu[] = [
   },
   {
     title: 'Mint',
-    url: '/',
+    parent: ['/', '/mint-cross'],
+    child: [
+      { title: 'Mint', url: '/' },
+      { title: 'Mint Cross', url: '/mint-cross' },
+    ],
   },
   {
     title: 'Earn',
