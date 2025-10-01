@@ -20,7 +20,6 @@ import DepositPreview from './DepositPreview';
 
 const DepositSection = () => {
   const [depositItems, setDepositState] = useDepositCrossState();
-  console.log('🚀 ~ DepositSection ~ depositItems:', depositItems);
   const [isSubmitted] = useBorrowCrossSubmitState();
   const [searchParams, setSearchParams] = useSearchParams();
   const [crossMode] = useCrossModeState();

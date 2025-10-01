@@ -67,6 +67,18 @@ const BorrowSection = () => {
     });
   };
 
+  const handleChangeSelectInput = (value: string) => {
+    // const newBalance = balance.find((item) => item.address === value)?.balance.toFixed(4);
+    const cloneArr = {
+      value: '0',
+      address: value,
+      price: 0,
+      error: undefined,
+    };
+
+    setBorrowState(cloneArr);
+  };
+
   useEffect(() => {
     handleChangeInput(borrowState.value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -88,6 +100,9 @@ const BorrowSection = () => {
             selectProps={{
               value: borrowState.address,
               disabled: true,
+              handleChangeSelect: (a: string) => {
+                handleChangeSelectInput(a);
+              },
             }}
             subValue={borrowState?.price}
             error={borrowState.error}
