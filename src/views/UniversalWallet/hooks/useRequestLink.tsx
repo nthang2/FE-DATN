@@ -10,6 +10,7 @@ import { pad } from 'viem';
 import { sepolia } from 'viem/chains';
 import { readContract, writeContract } from 'wagmi/actions';
 import { useDestinationWalletState, useGenMessageState, useSourceWalletState } from '../state/hooks';
+import useSwitchToSelectedChain from 'src/hooks/useSwitchToSelectedChain';
 
 const useRequestLink = () => {
   const [sourceWalletState] = useSourceWalletState();
@@ -17,6 +18,7 @@ const useRequestLink = () => {
   const walletSolana = useWallet();
   const [destinationWallet] = useDestinationWalletState();
   const [, setGenMessage] = useGenMessageState();
+  const { switchToChainSelected } = useSwitchToSelectedChain();
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -55,6 +57,8 @@ const useRequestLink = () => {
 
           return transactionHash as string;
         } else {
+          await switchToChainSelected();
+
           await writeContract(config, {
             address: ctrAdsEVM.universalWallet as `0x${string}`,
             abi: universalWalletAbi,
@@ -69,7 +73,6 @@ const useRequestLink = () => {
             address: ctrAdsEVM.universalWallet as `0x${string}`,
             abi: universalWalletAbi,
             functionName: 'walletLinkingRequests',
-            chainId: sepolia.id,
             args: [sourceAddress as `0x${string}`],
           });
 
@@ -82,7 +85,13 @@ const useRequestLink = () => {
             deadline: Number(walletRequest[5]),
             action: walletRequest[6],
           });
-          const response = await requestToLink(destinationWallet.chainId, destinationWallet.address, sourceAddress, sourceChainId);
+
+          const response = await requestToLink(
+            destinationWallet.chainId,
+            destinationWallet.address,
+            sourceAddress,
+            walletRequest[3].toString()
+          );
           setGenMessage(response.message);
 
           return response.message;

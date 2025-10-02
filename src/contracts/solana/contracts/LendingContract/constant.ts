@@ -21,7 +21,9 @@ export const jupiterProgram = new PublicKey('JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5
 
 //env for swap
 export const SWAP_CONFIG_SEED = 'SWAP_USDAI';
+export const CROSSCHAIN_CONFIG_SEED = 'CROSSCHAIN_CONFIG';
 export const listTokenSwapWithJup = [mapNameToInfoSolana[TokenName.USDT].address];
 export const token = [mapNameToInfoSolana[TokenName.USDT].address];
 export const swapUsdcALT = 'DLTRdmsaLSwQPRsAEAxiUErmQRRBbNSDfDfM1DnCNp7a';
 export const WALLET_LINKING_REQUEST_SEED = 'WALLET_LINKING_REQUEST';
+export const CROSSCHAIN_DEPOSITORY_TYPE1_SEED = 'CROSSCHAIN_DEPOSITORY_TYPE_1';

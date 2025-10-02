@@ -94,8 +94,8 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
     return tx;
   }
 
-  getPda(seed: string, ...tokens: PublicKey[]) {
-    const addressParam = tokens.map((token) => token.toBuffer());
+  getPda(seed: string, ...tokens: (PublicKey | number)[]) {
+    const addressParam = tokens.map((token) => (token instanceof PublicKey ? token.toBuffer() : Buffer.from([token])));
     const [pda] = PublicKey.findProgramAddressSync([Buffer.from(seed), ...addressParam], this.program.programId);
 
     return pda;

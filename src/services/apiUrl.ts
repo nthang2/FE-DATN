@@ -49,4 +49,10 @@ export const apiUrl = {
   signMessage: () => `${BACKEND_URL}/universal/wallet-linking/submit-signature`,
   listWalletLinkingRequests: (chainId: string, walletAddress: string) =>
     `${BACKEND_URL}/universal/wallet-linking/universal-wallet?chainId=${chainId}&walletAddress=${walletAddress}`,
+
+  //Universal Lending
+  universalLendingDepositEVM: () => `${BACKEND_URL}/universal/lending/request`,
+  getMyPortfolioUniversal: (userAddress: string, chainId: string) =>
+    `${BACKEND_URL}/universal/lending/position?chainId=${chainId}&walletAddress=${userAddress}`,
+  getUniversalHealthFactor: () => `${BACKEND_URL}/universal/lending/health-factor`,
 };

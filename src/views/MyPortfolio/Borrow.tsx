@@ -20,18 +20,13 @@ const tableHead = ['Asset', 'Available', 'USDAI Minted', ''];
 const listRepayableWithCollateral = [TokenName.USDC, TokenName.MAX, TokenName.SOL];
 
 export default function Borrow() {
-  // const [eMode, setEMode] = useState<boolean>(false);
   const { data: depositValue } = useQueryDepositValue();
   const { data: tokensPrice } = useQueryAllTokensPrice();
   const { asset } = useMyPortfolio();
   const modalFunction = useModalFunction();
   const navigate = useNavigate();
   const [crossMode] = useCrossModeState();
-
   const listRow = crossMode ? { [TokenName.USDAI]: mapNameToInfoSolana[TokenName.USDAI] } : listTokenAvailable;
-  // const handleChangeMode = () => {
-  //   setEMode(!eMode);
-  // };
 
   const handleRepay = (token: SolanaEcosystemTokenInfo) => {
     const isRepayableWithCollateral = listRepayableWithCollateral.indexOf(token.symbol) >= 0;
@@ -81,17 +76,7 @@ export default function Borrow() {
           <Typography variant="h5" sx={{ fontWeight: 700, mr: 4 }}>
             Mint
           </Typography>
-          {/* <Box sx={{ bgcolor: '#30302e', px: 1, py: 0.5, height: '24px', borderRadius: '6px' }}>
-            <Typography variant="body2" sx={{ fontWeight: 500, color: 'info.main' }}>
-              E-Mode {eMode ? 'On' : 'Off'}
-            </Typography>
-          </Box> */}
         </Box>
-        {/* <Button onClick={handleChangeMode} variant="outlined" size="small">
-          <Typography variant="body2" sx={{ fontWeight: '500' }}>
-            Change E-Mode
-          </Typography>
-        </Button> */}
       </Box>
       <TableContainer>
         <Table>

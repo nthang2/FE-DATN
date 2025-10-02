@@ -39,3 +39,12 @@ export const liquidationThreshold = {
   [TokenName.VIRTUAL]: 0.35,
   [TokenName.scORAI]: 0.45,
 };
+
+export const actionType = {
+  DEPOSIT: 0,
+  WITHDRAW: 1,
+  MINT: 2,
+  REPAY: 3,
+};
+
+export const ethFeeAmount = '0.000001';

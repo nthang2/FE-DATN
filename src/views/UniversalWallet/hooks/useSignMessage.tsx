@@ -1,18 +1,16 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useDestinationNetworkState, useDestinationWalletState, useGenMessageState } from '../state/hooks';
 import { useMutation } from '@tanstack/react-query';
-import { useSignMessage } from 'wagmi';
 import { handleSignMessageApi } from 'src/services/HandleApi/requestToLink/requestToLink';
 import { toast } from 'react-toastify';
-import { disconnect as disconnectEVM } from '@wagmi/core';
-import { configUniversalWallet } from 'src/states/wallets/evm-blockchain/config';
+import { disconnect as disconnectEVM, signMessage } from '@wagmi/core';
+import { config, configUniversalWallet } from 'src/states/wallets/evm-blockchain/config';
 import { queryClient } from 'src/layout/Layout';
 import useSwitchToSelectedChain from 'src/hooks/useSwitchToSelectedChain';
 
 const useSignMessageDestination = () => {
   const [genMessage, setGenMessage] = useGenMessageState();
   const [destinationNetwork] = useDestinationNetworkState();
-  const { signMessageAsync: signMessageEVM } = useSignMessage();
   const { signMessage: signMessageSolana, disconnect: disconnectSolana } = useWallet();
   const [destinationWallet] = useDestinationWalletState();
   const { switchToChainSelected } = useSwitchToSelectedChain();
@@ -35,7 +33,7 @@ const useSignMessageDestination = () => {
         } else {
           await switchToChainSelected();
 
-          const signatureEVM = await signMessageEVM({ message: genMessage });
+          const signatureEVM = await signMessage(config, { message: genMessage });
           await handleSignMessageApi({
             walletAddress: destinationWallet.address,
             chainId: Number(destinationWallet.chainId),
