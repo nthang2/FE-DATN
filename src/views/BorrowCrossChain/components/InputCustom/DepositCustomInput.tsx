@@ -5,15 +5,15 @@ import { ReactNode, useCallback, useMemo, useState } from 'react';
 import { mapNameNetwork } from 'src/constants/network';
 import { listTokenAvailable as listTokenAvailableETH } from 'src/constants/tokens/evm-ecosystem/mapNameToInfoEthereum';
 import { listTokenAvailableUniversal as listTokenAvailableSOL } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import useQueryAllPriceByName from 'src/hooks/useQueryAllPriceByName';
 import { TokenName } from 'src/libs/crypto-icons';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
-import { formatAddress, formatNumber, roundNumber } from 'src/utils/format';
-import { useDepositCrossState, useSelectedNetworkState } from '../../state/hooks';
 import useGetAllBalanceEVM from 'src/states/wallets/evm-blockchain/hooks/useGetAllBalanceEVM';
 import useFetchAllSolTokenBalances from 'src/states/wallets/solana-blockchain/hooks/useFetchAllSolTokenBalances';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
-import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import { BN } from 'src/utils';
+import { formatAddress, formatNumber, roundNumber } from 'src/utils/format';
+import { useDepositCrossState, useSelectedNetworkState } from '../../state/hooks';
 
 type TNetwork = 'ethereum' | 'solana';
 
@@ -45,10 +45,11 @@ export default function DepositCustomInput(props: Props) {
     hideDropdownIcon,
   } = props;
   const [depositItems] = useDepositCrossState();
+  const [selectedNetwork, setSelectedNetwork] = useSelectedNetworkState();
   const { address: solanaAddress } = useSummarySolanaConnect();
   const { data: listBalanceEVM } = useGetAllBalanceEVM();
   const { allSlpTokenBalances: listBalanceSOL } = useFetchAllSolTokenBalances(solanaAddress);
-  const { data: listPrice } = useQueryAllTokensPrice();
+  const { data: listPrice } = useQueryAllPriceByName();
 
   const inputValue = inputProps?.value ? roundNumber(Number(inputProps.value), 8) : undefined;
   const options = useCallback(() => {
@@ -66,7 +67,6 @@ export default function DepositCustomInput(props: Props) {
   }, [hideDropdownIcon]);
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [selectedNetwork, setSelectedNetwork] = useSelectedNetworkState();
   const [selectToken, setSelectToken] = useState(options()[selectedNetwork as TNetwork][0]);
   const id = anchorEl ? `${hideDropdownIcon}_popover_header` : undefined;
 
@@ -211,7 +211,7 @@ export default function DepositCustomInput(props: Props) {
                   if (!o) return null;
                   const displayOption = optionByNetwork.length <= 1 ? true : !depositItems.find((deposit) => deposit.address === o.address);
                   const balance = selectedNetwork === 'ethereum' ? listBalanceEVM?.[o.symbol] : listBalanceSOL.data?.[o.symbol];
-                  const price = listPrice?.[o.address]?.price || 0;
+                  const price = listPrice?.[o.symbol]?.price || 0;
                   const valueInUsd = BN(balance || 0)
                     .times(BN(price))
                     .toString();

@@ -4,12 +4,11 @@ import { useSearchParams } from 'react-router-dom';
 import { PlusIcon } from 'src/assets/icons';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
-import { findTokenInfoByToken, listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPriceUniversal from 'src/hooks/useQueryAllTokensPriceUniversal';
+import useGetBalanceTokenUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useGetBalanceTokenUniversal';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import { useCrossModeState } from 'src/states/hooks';
-import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { regexConfigValue } from 'src/utils';
 import { defaultBorrowCrossValue } from '../../constant';
 import { useBorrowCrossSubmitState, useDepositCrossState } from '../../state/hooks';
@@ -24,8 +23,7 @@ const DepositSection = () => {
   const [crossMode] = useCrossModeState();
   const { data: listPrice } = useQueryAllTokensPriceUniversal();
   const { asset } = useMyPortfolio();
-  const { address } = useSummarySolanaConnect();
-  const balance = useSolanaBalanceTokens(address, Object.keys(listTokenAvailable) as Array<TSolanaToken>);
+  const { getBalance } = useGetBalanceTokenUniversal();
 
   const depositedValueUsd = useMemo(() => {
     if (!asset || !listPrice) return 0;
@@ -43,9 +41,10 @@ const DepositSection = () => {
 
   const depositItemBalance = useCallback(
     (index: number) => {
-      return balance.find((item) => item.address === depositItems[index].address)?.balance.toNumber();
+      const balance = getBalance(depositItems[index].address);
+      return balance?.toNumber() || 0;
     },
-    [balance, depositItems]
+    [getBalance, depositItems]
   );
 
   const handleRemoveItem = (index: number) => {
