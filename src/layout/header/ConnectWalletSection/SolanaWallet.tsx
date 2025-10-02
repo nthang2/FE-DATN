@@ -41,7 +41,7 @@ const SolanaWallet = (props: IProps) => {
 
   const handleClickBtn = (adapter: Adapter) => {
     if (adapter.connected) {
-      handleDisconnect();
+      return;
     } else {
       handleConnect(adapter);
     }
@@ -88,7 +88,7 @@ const SolanaWallet = (props: IProps) => {
                 sx={{ height: '32px', bgcolor: '#46492F', border: '0px' }}
               >
                 <Typography variant="caption2" sx={{ color: '#E2E5C2' }}>
-                  {walletItem.adapter.connected ? 'Disconnect' : 'Connect'}
+                  {walletItem.adapter.connected ? 'Connected' : 'Connect'}
                 </Typography>
               </Button>
             </Stack>

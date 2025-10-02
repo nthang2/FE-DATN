@@ -1,10 +1,12 @@
 import { ArrowDropDown } from '@mui/icons-material';
 import { Box, Button, IconButton, Popover, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
-import { CopyIcon, DisconnectIcon, OutIcon } from 'src/assets/icons';
+import { CopyIcon, DisconnectIcon, OutIcon, SettingIcon } from 'src/assets/icons';
 import WalletConnectIcon from 'src/components/General/WalletConnectIcon/WalletConnectIcon';
+import ModalSettingAccount from 'src/components/Modals/ModalSettingAccount/ModalSettingAccount';
 import { mapNameChainId } from 'src/constants/chainId';
 import { mapNameNetwork } from 'src/constants/network';
+import { useModalFunction } from 'src/states/modal/hooks';
 import { chainIconNetwork } from 'src/states/wallets/constants/chainIcon';
 import useSummaryEVMConnect from 'src/states/wallets/evm-blockchain/hooks/useSummaryEVMConnect';
 import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
@@ -17,6 +19,7 @@ export default function HeadOfConnectWallet() {
   const [firstWalletSummary, secondWalletSummary] = useSummaryConnect();
   const { disconnect: disconnectSolana } = useSummarySolanaConnect();
   const { disconnect: disconnectEVM } = useSummaryEVMConnect();
+  const modalFunction = useModalFunction();
   const {
     address: secondWalletAddress,
     status: secondWalletStatus,
@@ -42,6 +45,14 @@ export default function HeadOfConnectWallet() {
     secondWalletDisconnect();
   };
 
+  const handleSettingBtn = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    modalFunction({
+      type: 'openModal',
+      data: { content: <ModalSettingAccount />, title: `Settings`, modalProps: { maxWidth: 'xs' } },
+    });
+  };
+
   return (
     <Box sx={{ p: 2 }}>
       {walletStatus ? (
@@ -54,8 +65,7 @@ export default function HeadOfConnectWallet() {
                 return (
                   <>
                     <Box sx={{ position: 'relative' }}>
-                      {index == 0 && <WalletConnectIcon Icon={walletIcon} />}
-                      {index == 1 && <WalletConnectIcon Icon={secondWalletIcon} />}
+                      {index == 0 && walletIcon ? <WalletConnectIcon Icon={walletIcon} /> : <WalletConnectIcon Icon={secondWalletIcon} />}
                       <Box sx={{ position: 'absolute', right: '-30%', bottom: '-10%', zIndex: 1 }}>{networkInfo}</Box>
                     </Box>
                   </>
@@ -63,6 +73,9 @@ export default function HeadOfConnectWallet() {
               })}
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <IconButton onClick={handleSettingBtn}>
+              <SettingIcon />
+            </IconButton>
             <Button
               sx={{
                 display: 'flex',
@@ -110,8 +123,11 @@ export default function HeadOfConnectWallet() {
                       >
                         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                           <Box sx={{ position: 'relative', mr: 2 }}>
-                            {index == 0 && <WalletConnectIcon Icon={walletIcon} />}
-                            {index == 1 && <WalletConnectIcon Icon={secondWalletIcon} />}
+                            {index == 0 && walletIcon ? (
+                              <WalletConnectIcon Icon={walletIcon} />
+                            ) : (
+                              <WalletConnectIcon Icon={secondWalletIcon} />
+                            )}
                             <IconNetwork sx={{ position: 'absolute', bottom: 0, right: '-30%' }} />
                           </Box>
                           <Typography sx={{ color: '#FFFFFF' }}>{formatAddress(wallet.address)}</Typography>
