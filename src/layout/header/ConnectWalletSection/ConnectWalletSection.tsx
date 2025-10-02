@@ -1,10 +1,10 @@
-import { Box, Button, Drawer, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, Drawer, IconButton, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
 import { SettingIcon, WalletIcon } from 'src/assets/icons';
 import WalletConnectIcon from 'src/components/General/WalletConnectIcon/WalletConnectIcon';
 import ModalConnectWallet from 'src/components/Modals/ConnectSolanaNetwork/ModalConnectWallet';
 import ModalSettingAccount from 'src/components/Modals/ModalSettingAccount/ModalSettingAccount';
-import { IconBNB, IconBSC, IconETH, IconSOL } from 'src/libs/crypto-icons';
+import { IconETH, IconSOL } from 'src/libs/crypto-icons';
 import { useModalFunction } from 'src/states/modal/hooks';
 import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 import { formatAddress } from 'src/utils/format';
@@ -13,30 +13,24 @@ import EVMWallet from './EVMWallet';
 import HeadOfConnectWallet from './HeadOfConnectWallet';
 import SolanaWallet from './SolanaWallet';
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
 const netWorkConfig = {
-  all: {
-    id: 'all',
-    name: 'All',
-    icon: (
-      <Box>
-        <Box sx={{ display: 'flex' }}>
-          <IconSOL sx={{ width: '14px', height: '14px' }} />
-          <IconETH sx={{ width: '14px', height: '14px' }} />
-        </Box>
-        <Box sx={{ display: 'flex' }}>
-          <IconBSC sx={{ width: '14px', height: '14px' }} />
-          <IconBNB sx={{ width: '14px', height: '14px' }} />
-        </Box>
-      </Box>
-    ),
-    value: 0,
-  },
+  // all: {
+  //   id: 'all',
+  //   name: 'All',
+  //   icon: (
+  //     <Box>
+  //       <Box sx={{ display: 'flex' }}>
+  //         <IconSOL sx={{ width: '14px', height: '14px' }} />
+  //         <IconETH sx={{ width: '14px', height: '14px' }} />
+  //       </Box>
+  //       <Box sx={{ display: 'flex' }}>
+  //         <IconBSC sx={{ width: '14px', height: '14px' }} />
+  //         <IconBNB sx={{ width: '14px', height: '14px' }} />
+  //       </Box>
+  //     </Box>
+  //   ),
+  //   value: 0,
+  // },
   solana: {
     id: 'solana',
     name: 'SOL',
@@ -105,7 +99,8 @@ const ConnectWalletSection = () => {
     setOpenDialog(false);
   };
 
-  const handleSettingBtn = () => {
+  const handleSettingBtn = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     modalFunction({
       type: 'openModal',
       data: { content: <ModalSettingAccount />, title: `Settings`, modalProps: { maxWidth: 'xs' } },
@@ -131,8 +126,20 @@ const ConnectWalletSection = () => {
         })}
       >
         {walletStatus ? (
-          <Stack alignItems="center">
-            <Box display="flex" gap={1}>
+          <Stack alignItems="center" sx={{ gap: 1 }}>
+            <Box
+              display="flex"
+              gap={1}
+              sx={{
+                background: '#282825',
+                p: 1,
+                gap: '10px',
+                borderRadius: '11px',
+                cursor: 'pointer',
+                alignItems: 'center',
+                height: '100%',
+              }}
+            >
               <WalletConnectIcon Icon={walletIcon} />
               <WalletConnectIcon Icon={secondWalletIcon} />
             </Box>
@@ -142,39 +149,10 @@ const ConnectWalletSection = () => {
             >
               <WalletIcon />
               <Typography sx={{ display: { xs: 'none', md: 'block' } }}>{formatAddress(walletAddress)}</Typography>
-              <SettingIcon />
+              <IconButton onClick={handleSettingBtn}>
+                <SettingIcon />
+              </IconButton>
             </Stack>
-
-            {/* <Popover
-              open={!openDialog && Boolean(anchorEl)}
-              anchorEl={anchorEl}
-              onClose={handleCloseAnchor}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              sx={{ textAlign: 'center' }}
-            >
-              <Box
-                sx={{
-                  p: 2,
-                  cursor: 'pointer',
-                  width: { xs: '180px', md: anchorEl?.offsetWidth },
-                }}
-              >
-                <Typography onClick={() => copyTextToClipboard(address)} mb={2}>
-                  {formatAddress(address)} <ContentCopyIcon sx={{ ml: 1, fontSize: '15px' }} />
-                </Typography>
-                <Typography onClick={handleSettingBtn} mb={2}>
-                  Settings
-                </Typography>
-                <Typography onClick={handleDisconnect}>Disconnect</Typography>
-              </Box>
-            </Popover> */}
           </Stack>
         ) : (
           <Button
@@ -225,7 +203,7 @@ const ConnectWalletSection = () => {
                   }}
                   key={k}
                   label={
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 16px ', gap: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
                       {v.icon}
                       <Typography sx={{ fontWeight: 600, color: '#FFFFFF' }}>{v.name}</Typography>
                     </Box>
@@ -237,8 +215,8 @@ const ConnectWalletSection = () => {
           </Tabs>
           <Box sx={{ width: '100%', py: 2, px: 3, overflowY: 'auto' }}>
             <HeadOfConnectWallet />
-            {tab == 1 && <SolanaWallet />}
-            {tab == 2 && <EVMWallet onDisconnect={handleDisconnect} isDestinationWallet={true} />}
+            {tab == 0 && <SolanaWallet onDisconnect={handleDisconnect} isDestinationWallet={true} />}
+            {tab == 1 && <EVMWallet onDisconnect={handleDisconnect} isDestinationWallet={true} />}
           </Box>
         </Box>
       </Drawer>

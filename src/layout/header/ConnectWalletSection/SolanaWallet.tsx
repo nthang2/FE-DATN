@@ -63,12 +63,6 @@ const SolanaWallet = (props: IProps) => {
 
   return (
     <Stack gap={1} direction="column">
-      <Stack justifyContent="space-between" alignItems="center">
-        <Typography variant="body1" fontWeight={600}>
-          Select a wallet
-        </Typography>
-      </Stack>
-
       <Stack direction="column">
         {listConnecter.map((walletItem, index) => {
           return (
@@ -87,7 +81,6 @@ const SolanaWallet = (props: IProps) => {
                   {walletItem.adapter.name}
                 </Typography>
               </Box>
-
               <Button
                 variant="outlined"
                 color={walletItem.adapter.connected ? 'error' : 'primary'}

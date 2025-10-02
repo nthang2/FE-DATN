@@ -1,22 +1,22 @@
 import { ArrowDropDown } from '@mui/icons-material';
 import { Box, Button, IconButton, Popover, Stack, Typography } from '@mui/material';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { useState } from 'react';
 import { CopyIcon, DisconnectIcon, OutIcon } from 'src/assets/icons';
+import WalletConnectIcon from 'src/components/General/WalletConnectIcon/WalletConnectIcon';
 import { mapNameChainId } from 'src/constants/chainId';
 import { mapNameNetwork } from 'src/constants/network';
 import { chainIconNetwork } from 'src/states/wallets/constants/chainIcon';
+import useSummaryEVMConnect from 'src/states/wallets/evm-blockchain/hooks/useSummaryEVMConnect';
 import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
+import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { copyTextToClipboard } from 'src/utils';
 import { formatAddress } from 'src/utils/format';
-import { mapNameWalletIcon } from 'src/views/UniversalWallet/network';
-import { useDisconnect } from 'wagmi';
 
 export default function HeadOfConnectWallet() {
   const wallets = useSummaryConnect();
-  const { disconnect: disconnectSOL } = useWallet();
-  const { disconnect: disconectEVM } = useDisconnect();
   const [firstWalletSummary, secondWalletSummary] = useSummaryConnect();
+  const { disconnect: disconnectSolana } = useSummarySolanaConnect();
+  const { disconnect: disconnectEVM } = useSummaryEVMConnect();
   const {
     address: secondWalletAddress,
     status: secondWalletStatus,
@@ -38,19 +38,28 @@ export default function HeadOfConnectWallet() {
   };
 
   const handleDisconnect = async () => {
-    await Promise.all([disconnectSOL(), disconectEVM()]);
+    disconnect();
+    secondWalletDisconnect();
   };
 
   return (
-    <Box>
+    <Box sx={{ p: 2 }}>
       {walletStatus ? (
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-          <Box sx={{ display: 'flex' }}>
+          <Box sx={{ display: 'flex', gap: 1 }}>
             {wallets
               .filter((item) => item.status == 'Connected')
               .map((wallet, index) => {
                 const networkInfo = mapNameNetwork[mapNameChainId[wallet.chainId]].icon;
-                return <Box>{networkInfo}</Box>;
+                return (
+                  <>
+                    <Box sx={{ position: 'relative' }}>
+                      {index == 0 && <WalletConnectIcon Icon={walletIcon} />}
+                      {index == 1 && <WalletConnectIcon Icon={secondWalletIcon} />}
+                      <Box sx={{ position: 'absolute', right: '-30%', bottom: '-10%', zIndex: 1 }}>{networkInfo}</Box>
+                    </Box>
+                  </>
+                );
               })}
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -100,11 +109,11 @@ export default function HeadOfConnectWallet() {
                         }}
                       >
                         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                          <IconNetwork sx={{ position: 'relative', mr: 1 }}>
-                            <Box sx={{ borderRadius: '50%', position: 'absolute', right: 0, bottom: 0, zIndex: 1 }}>
-                              {mapNameWalletIcon[wallet.walletName]}
-                            </Box>
-                          </IconNetwork>
+                          <Box sx={{ position: 'relative', mr: 2 }}>
+                            {index == 0 && <WalletConnectIcon Icon={walletIcon} />}
+                            {index == 1 && <WalletConnectIcon Icon={secondWalletIcon} />}
+                            <IconNetwork sx={{ position: 'absolute', bottom: 0, right: '-30%' }} />
+                          </Box>
                           <Typography sx={{ color: '#FFFFFF' }}>{formatAddress(wallet.address)}</Typography>
                           <IconButton onClick={() => copyTextToClipboard(wallet.address)}>
                             <CopyIcon sx={{ px: 0.5 }} fontSize="medium" />
@@ -112,7 +121,15 @@ export default function HeadOfConnectWallet() {
                         </Box>
                         <Stack sx={{ gap: 1, alignItems: 'center' }} direction="row">
                           <Typography sx={{ color: 'text.secondary' }}>{wallet.chainName == 'Solana' ? 'Solana' : 'EVM'}</Typography>
-                          <IconButton>
+                          <IconButton
+                            onClick={() => {
+                              if (wallet.chainName == 'Solana') {
+                                disconnectSolana();
+                              } else {
+                                disconnectEVM();
+                              }
+                            }}
+                          >
                             <OutIcon />
                           </IconButton>
                         </Stack>

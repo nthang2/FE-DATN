@@ -72,6 +72,7 @@ const EVMWallet = (props: IProps) => {
       <Stack direction="column">
         {sourceWallet &&
           connectors.map((connector, index) => {
+            const isConnected = connector.id === connectorEVM?.id;
             return (
               <Stack
                 key={connector.id + index}
@@ -97,7 +98,7 @@ const EVMWallet = (props: IProps) => {
                   sx={{ height: '32px', bgcolor: '#46492F', border: '0px' }}
                 >
                   <Typography variant="caption2" sx={{ color: '#E2E5C2' }}>
-                    Connect
+                    {isConnected ? 'Disconnect' : 'Connect'}
                   </Typography>
                 </Button>
               </Stack>
