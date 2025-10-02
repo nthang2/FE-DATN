@@ -2,7 +2,6 @@ import { Box, Button, Collapse, Stack, Typography } from '@mui/material';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { PlusIcon } from 'src/assets/icons';
-import CrossModeSwitch from 'src/components/CrossModeSwitch/CrossModeSwitch';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import { findTokenInfoByToken, listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
@@ -143,8 +142,6 @@ const DepositSection = () => {
             Deposit
             <TooltipInfo title="Deposit collateral to mint USDAI" />
           </Typography>
-
-          <CrossModeSwitch />
         </Stack>
 
         <Box>
