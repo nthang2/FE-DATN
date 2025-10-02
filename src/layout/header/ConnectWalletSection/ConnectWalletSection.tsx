@@ -121,7 +121,7 @@ const ConnectWalletSection = () => {
             >
               <WalletIcon />
               <Typography sx={{ display: { xs: 'none', md: 'block' }, fontWeight: 600 }} variant="body2">
-                {secondWalletAddress ? 'My Wallets' : formatAddress(walletAddress)}
+                {secondWalletAddress && address ? 'My Wallets' : formatAddress(walletAddress)}
               </Typography>
             </Stack>
           </Stack>
