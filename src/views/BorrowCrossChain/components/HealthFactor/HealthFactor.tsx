@@ -3,16 +3,16 @@ import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useQueryAllTokensPriceUniversal from 'src/hooks/useQueryAllTokensPriceUniversal';
 import { useCrossModeState } from 'src/states/hooks';
 import { decimalFlood } from 'src/utils/format';
 import { useBorrowCrossState, useDepositCrossState } from '../../state/hooks';
 import { displayDecimalByToken } from './constant';
 import HealthFactorSection from './HealthFactorSection';
-import useHealthFactorUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useHealthFactorUniversal';
+import useHealthFactorUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useHealthFactorUniversal';
 
 export default function HealthFactor() {
-  const { data: listPrice } = useQueryAllTokensPrice();
+  const { data: listPrice } = useQueryAllTokensPriceUniversal();
   const [depositItems] = useDepositCrossState();
   const [borrowItems] = useBorrowCrossState();
   const [crossMode] = useCrossModeState();

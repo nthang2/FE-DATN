@@ -4,9 +4,9 @@ import { useMemo } from 'react';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import { LendingContractUniversal } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingContractUniversal';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
-import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState } from '../../state/hooks';
+import useInvestedValueUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useInvestedValueUniversal';
 
 const BorrowButton = () => {
   const wallet = useWallet();
@@ -15,7 +15,7 @@ const BorrowButton = () => {
   const [isSubmitted, setIsSubmitted] = useBorrowCrossSubmitState();
   const { address } = useSummarySolanaConnect();
   const { asyncExecute, loading } = useAsyncExecute();
-  const { maxBorrowPrice } = useInvestedValue();
+  const { maxBorrowPrice } = useInvestedValueUniversal();
 
   const isOnlyMint = useMemo(() => {
     const depositValue = depositItems.some((item) => Number(item.value) > 0);

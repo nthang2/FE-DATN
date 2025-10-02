@@ -6,7 +6,6 @@ import { mapNameNetwork } from 'src/constants/network';
 import { LendingContractUniversal } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingContractUniversal';
 import useBorrowEVM from 'src/hooks/mutations/useBorrowEVM';
 import useDepositEVM from 'src/hooks/mutations/useDepositEVM';
-import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import useFetchAllSolTokenBalances from 'src/states/wallets/solana-blockchain/hooks/useFetchAllSolTokenBalances';
@@ -15,6 +14,7 @@ import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState } 
 import { TBorrowCrossItem } from '../../state/types';
 import BorrowTableRow from './BorrowTableRow';
 import DepositTableRow from './DepositTableRow';
+import useInvestedValueUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useInvestedValueUniversal';
 
 const ActionSection = () => {
   const wallet = useWallet();
@@ -22,7 +22,7 @@ const ActionSection = () => {
   const [depositItems] = useDepositCrossState();
   const [isSubmitted, setIsSubmitted] = useBorrowCrossSubmitState();
   const { refetch: refetchDeposited } = useQueryDepositValue();
-  const { maxBorrowPrice } = useInvestedValue();
+  const { maxBorrowPrice } = useInvestedValueUniversal();
   const { address, chainId, networkName } = useSummaryFirstActiveConnect();
   const { allSlpTokenBalances } = useFetchAllSolTokenBalances(address);
   const { data: listWallet } = useGetListWallet(chainId, address);

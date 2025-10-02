@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from '@mui/material';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import useLendingMetrics from 'src/hooks/useQueryHook/queryBorrow/useLendingMetrics';
 import { compactNumber } from 'src/utils/format';
+import useLendingMetricsUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useLendingMetricsUniversal';
 
 const MintBanner = () => {
-  const { data: lendingMetrics, status } = useLendingMetrics();
+  const { data: lendingMetrics, status } = useLendingMetricsUniversal();
 
   return (
     <Stack

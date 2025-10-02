@@ -3,7 +3,7 @@ import { SolanaDevnetTokenInfo } from './SolanaDevnetTokenInfo';
 
 export const usdcDevSolanaDevnet = new SolanaDevnetTokenInfo({
   address: '2rMFB6q3J9rjdCBQ5b6nSodSnvsvcy2VChN9P3EkYMfo',
-  decimals: 6,
+  decimals: 9,
   symbol: TokenName.USDC,
   prettyName: 'USDC Dev',
   isNative: false,

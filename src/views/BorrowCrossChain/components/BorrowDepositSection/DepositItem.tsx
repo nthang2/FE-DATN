@@ -3,11 +3,12 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, Stack, Typography } from '@mui/material';
 import { useMemo } from 'react';
-import { findTokenInfoByToken, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByTokenEVM } from 'src/constants/tokens/evm-ecosystem/mapNameToInfoEthereum';
+import { findTokenInfoByToken as findTokenInfoByTokenSOL } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import useGetBalanceTokenUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useGetBalanceTokenUniversal';
 import { useCrossModeState } from 'src/states/hooks';
-import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
-import { useBorrowCrossSubmitState, useDepositCrossState } from '../../state/hooks';
+import { formatNumber } from 'src/utils/format';
+import { useBorrowCrossSubmitState, useDepositCrossState, useSelectedNetworkState } from '../../state/hooks';
 import { TBorrowCrossItem } from '../../state/types';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
 
@@ -25,9 +26,8 @@ const DepositItem = (props: IProps) => {
   const [crossMode] = useCrossModeState();
   const [depositedItems] = useDepositCrossState();
   const [isSubmitted] = useBorrowCrossSubmitState();
-  const tokenInfo = findTokenInfoByToken(item.address);
-  const { address } = useSummarySolanaConnect();
-  const { balance } = useSolanaBalanceToken(address, tokenInfo?.symbol as TSolanaToken);
+  const [selectedNetwork] = useSelectedNetworkState();
+  const { balance } = useGetBalanceTokenUniversal(item.address);
 
   const displayCloseIcon = useMemo(() => {
     if (!crossMode) {
@@ -36,6 +36,13 @@ const DepositItem = (props: IProps) => {
 
     return depositedItems.length === 1 ? 'none' : 'flex';
   }, [crossMode, depositedItems.length]);
+
+  const tokenInfo = useMemo(() => {
+    if (selectedNetwork === 'ethereum') {
+      return findTokenInfoByTokenEVM(item.address);
+    }
+    return findTokenInfoByTokenSOL(item.address);
+  }, [item.address, selectedNetwork]);
 
   return (
     <DepositCustomInput
@@ -64,7 +71,7 @@ const DepositItem = (props: IProps) => {
 
             <Stack gap={0.25} mt={0.5}>
               <Typography color="secondary" variant="caption2">
-                {balance.toFixed(2)}
+                {formatNumber(balance, { fallback: '0', padZero: false })}
               </Typography>
               <Typography color="secondary" variant="caption2">
                 {tokenInfo?.symbol}
