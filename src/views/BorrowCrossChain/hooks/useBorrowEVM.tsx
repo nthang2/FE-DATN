@@ -1,18 +1,17 @@
 import { useMutation } from '@tanstack/react-query';
 import { ctrAdsEVM } from 'src/constants/contractAddress/evm';
-import { mapNameToInfoEthereum } from 'src/constants/tokens/evm-ecosystem/list-tokens/ethereum/mapNameToInfoEthereum';
 import { universalWalletAbi } from 'src/contracts/evm/abi/universalWallet';
 import useSwitchToSelectedChain from 'src/hooks/useSwitchToSelectedChain';
 import { TokenName } from 'src/libs/crypto-icons';
 import { requestEVMLending } from 'src/services/HandleApi/universalLending/requestEVMLending';
 import { BN } from 'src/utils';
 import { encodePacked, keccak256, pad, parseEther, toBytes } from 'viem';
-// import { readContract, writeContract, waitForTransactionReceipt } from 'viem/actions';
 import { config } from 'src/states/wallets/evm-blockchain/config';
 import useSummaryEVMConnect from 'src/states/wallets/evm-blockchain/hooks/useSummaryEVMConnect';
 import { readContract, signMessage, waitForTransactionReceipt, writeContract } from 'wagmi/actions';
 import { actionType, ethFeeAmount } from '../constant';
 import { toRSV } from '../utils';
+import { mapNameToInfoEthereum } from 'src/constants/tokens/evm-ecosystem/mapNameToInfoEthereum';
 
 interface IProps {
   borrowAmount: string;

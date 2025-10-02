@@ -1,7 +1,7 @@
 import { Collapse, Stack, Typography } from '@mui/material';
 import React, { useMemo } from 'react';
 import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import { TBorrowItem } from '../../state/types';
+import { TBorrowItem } from 'src/views/Borrow/state/types';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import { useCrossModeState } from 'src/states/hooks';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';

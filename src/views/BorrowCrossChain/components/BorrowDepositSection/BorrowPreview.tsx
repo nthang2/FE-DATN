@@ -2,8 +2,8 @@ import { Collapse, Stack, Typography } from '@mui/material';
 import { TokenName } from 'src/libs/crypto-icons';
 import { useMemo } from 'react';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import { TBorrowItem } from '../../state/types';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import { TBorrowItem } from 'src/views/Borrow/state/types';
 
 interface IProps {
   isShowYourBorrow: boolean;

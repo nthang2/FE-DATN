@@ -4,12 +4,12 @@ import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import useHealthFactor from 'src/hooks/useQueryHook/queryBorrow/useHealthFactor';
 import { useCrossModeState } from 'src/states/hooks';
 import { decimalFlood } from 'src/utils/format';
 import { useBorrowCrossState, useDepositCrossState } from '../../state/hooks';
 import { displayDecimalByToken } from './constant';
 import HealthFactorSection from './HealthFactorSection';
+import useHealthFactorUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useHealthFactorUniversal';
 
 export default function HealthFactor() {
   const { data: listPrice } = useQueryAllTokensPrice();
@@ -17,7 +17,7 @@ export default function HealthFactor() {
   const [borrowItems] = useBorrowCrossState();
   const [crossMode] = useCrossModeState();
 
-  const { data: healthFactorData, status: healthFactorStatus } = useHealthFactor({
+  const { data: healthFactorData, status: healthFactorStatus } = useHealthFactorUniversal({
     depositItems: depositItems,
     mintAmount: Number(borrowItems.value),
   });
