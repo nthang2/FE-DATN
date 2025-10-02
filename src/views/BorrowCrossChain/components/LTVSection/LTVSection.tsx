@@ -4,8 +4,7 @@ import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import FormatSmallNumber from 'src/components/General/FormatSmallNumber/FormatSmallNumber';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
+import useQueryAllTokensPriceUniversal from 'src/hooks/useQueryAllTokensPriceUniversal';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import { TokenName } from 'src/libs/crypto-icons';
 import { decimalFlood } from 'src/utils/format';
@@ -15,6 +14,7 @@ import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../ut
 import CustomMark from '../BorrowSlide/CustomMark';
 import CustomThumb from '../BorrowSlide/CustomThumb';
 import CustomTrack from '../BorrowSlide/CustomTrack';
+import useInvestedValueUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useInvestedValueUniversal';
 
 const minZoom = 0;
 const maxZoom = 100;
@@ -23,10 +23,10 @@ const usdaiInfo = mapNameToInfoSolana[TokenName.USDAI];
 const LTVSection = () => {
   const [borrowState, setBorrowState] = useBorrowCrossState();
   const [depositItems] = useDepositCrossState();
-  const { data: listPrice, status: priceStatus } = useQueryAllTokensPrice();
+  const { data: listPrice, status: priceStatus } = useQueryAllTokensPriceUniversal();
   const [borrowSubmitted] = useBorrowCrossSubmitState();
   const [isSubmitted] = useBorrowCrossSubmitState();
-  const { totalDepositValue, yourBorrowByAddress, maxLtv, depositedByAddress, maxLiquidationThreshold } = useInvestedValue();
+  const { totalDepositValue, yourBorrowByAddress, maxLtv, depositedByAddress, maxLiquidationThreshold } = useInvestedValueUniversal();
   const { status: portfolioStatus } = useMyPortfolio();
 
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);

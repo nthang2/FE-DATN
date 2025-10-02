@@ -5,4 +5,5 @@ import { TBorrowCrossItem } from './types';
 
 export const depositCrossAtom = atom<TBorrowCrossItem[]>([defaultBorrowCrossValue]);
 export const borrowCrossAtom = atom<TBorrowCrossItem>({ ...defaultBorrowCrossValue, address: mapNameToInfoSolana.USDAI.address });
+export const selectedNetworkAtom = atom<string>('solana');
 export const borrowCrossSubmitAtom = atom<boolean>(false);

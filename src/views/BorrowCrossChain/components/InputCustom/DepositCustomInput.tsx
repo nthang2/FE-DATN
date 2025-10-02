@@ -1,14 +1,21 @@
 import { ArrowDropDown } from '@mui/icons-material';
 import { Box, FormHelperText, Popover, Skeleton, Stack, Typography } from '@mui/material';
 import clsx from 'clsx';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
 import { mapNameNetwork } from 'src/constants/network';
 import { listTokenAvailable as listTokenAvailableETH } from 'src/constants/tokens/evm-ecosystem/mapNameToInfoEthereum';
 import { listTokenAvailableUniversal as listTokenAvailableSOL } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { TokenName } from 'src/libs/crypto-icons';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { formatAddress, formatNumber, roundNumber } from 'src/utils/format';
-import { useDepositCrossState } from '../../state/hooks';
+import { useDepositCrossState, useSelectedNetworkState } from '../../state/hooks';
+import useGetAllBalanceEVM from 'src/states/wallets/evm-blockchain/hooks/useGetAllBalanceEVM';
+import useFetchAllSolTokenBalances from 'src/states/wallets/solana-blockchain/hooks/useFetchAllSolTokenBalances';
+import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
+import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import { BN } from 'src/utils';
+
+type TNetwork = 'ethereum' | 'solana';
 
 type Props = {
   subValue?: string | ReactNode;
@@ -38,9 +45,13 @@ export default function DepositCustomInput(props: Props) {
     hideDropdownIcon,
   } = props;
   const [depositItems] = useDepositCrossState();
+  const { address: solanaAddress } = useSummarySolanaConnect();
+  const { data: listBalanceEVM } = useGetAllBalanceEVM();
+  const { allSlpTokenBalances: listBalanceSOL } = useFetchAllSolTokenBalances(solanaAddress);
+  const { data: listPrice } = useQueryAllTokensPrice();
 
   const inputValue = inputProps?.value ? roundNumber(Number(inputProps.value), 8) : undefined;
-  const options = () => {
+  const options = useCallback(() => {
     if (hideDropdownIcon) {
       return {
         solana: [listTokenAvailableSOL.USDAI],
@@ -52,11 +63,16 @@ export default function DepositCustomInput(props: Props) {
       solana: Object.values(listTokenAvailableSOL).filter((token) => token.address !== listTokenAvailableSOL.USDAI.address),
       ethereum: Object.values(listTokenAvailableETH).filter((token) => token.address !== listTokenAvailableETH.USDAI.address),
     };
-  };
+  }, [hideDropdownIcon]);
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [selectedNetwork, setSelectedNetwork] = useState<string>('solana');
-  const [selectToken, setSelectToken] = useState(options()[selectedNetwork as 'ethereum' | 'solana'][0]);
+  const [selectedNetwork, setSelectedNetwork] = useSelectedNetworkState();
+  const [selectToken, setSelectToken] = useState(options()[selectedNetwork as TNetwork][0]);
+  const id = anchorEl ? `${hideDropdownIcon}_popover_header` : undefined;
+
+  const optionByNetwork = useMemo(() => {
+    return options()[selectedNetwork as TNetwork];
+  }, [selectedNetwork, options]);
 
   const handleClick = () => {
     const el = document.getElementById(`${hideDropdownIcon}_popover_header`);
@@ -67,7 +83,15 @@ export default function DepositCustomInput(props: Props) {
     setAnchorEl(null);
   };
 
-  const id = anchorEl ? `${hideDropdownIcon}_popover_header` : undefined;
+  const handleChangeNetwork = (network: string) => {
+    setSelectedNetwork(network);
+    const newOptions = options()[network as TNetwork];
+    const token = newOptions[0];
+    setSelectToken(token);
+    if (selectProps?.handleChangeSelect) {
+      selectProps?.handleChangeSelect(token.address);
+    }
+  };
 
   return (
     <Box mb={1}>
@@ -138,11 +162,10 @@ export default function DepositCustomInput(props: Props) {
               horizontal: 'center',
             }}
             sx={{
-              border: '1px solid rgba(102, 102, 98, 1)',
               mr: 2,
             }}
           >
-            <Box sx={{ p: '16px 20px', bgcolor: '#303030', width: '420px', maxHeight: '420px', height: '100%' }}>
+            <Box sx={{ p: '16px 20px', bgcolor: '#303030', width: '400px', maxHeight: '420px', height: '100%' }}>
               <Typography sx={{ fontWeight: 700, color: '#FFFFFF', overflowY: 'hidden' }}>Select a network</Typography>
               <Box
                 sx={{
@@ -171,7 +194,7 @@ export default function DepositCustomInput(props: Props) {
                       }}
                       className={clsx({ selectedNetwork: selectedNetwork === item.id })}
                       onClick={() => {
-                        setSelectedNetwork(item.id);
+                        handleChangeNetwork(item.id);
                       }}
                     >
                       {item.icon}
@@ -184,9 +207,15 @@ export default function DepositCustomInput(props: Props) {
               </Box>
               <Box sx={{ mt: 2 }}>
                 <Typography sx={{ color: '#FFFFFF', fontWeight: 700 }}>Select a token</Typography>
-                {options()[selectedNetwork as 'ethereum' | 'solana'].map((o) => {
+                {optionByNetwork.map((o) => {
                   if (!o) return null;
-                  const displayOption = !depositItems.find((deposit) => deposit.address === o.address);
+                  const displayOption = optionByNetwork.length <= 1 ? true : !depositItems.find((deposit) => deposit.address === o.address);
+                  const balance = selectedNetwork === 'ethereum' ? listBalanceEVM?.[o.symbol] : listBalanceSOL.data?.[o.symbol];
+                  const price = listPrice?.[o.address]?.price || 0;
+                  const valueInUsd = BN(balance || 0)
+                    .times(BN(price))
+                    .toString();
+
                   return (
                     <Box
                       sx={{
@@ -222,9 +251,9 @@ export default function DepositCustomInput(props: Props) {
                         </Box>
                       </Stack>
                       <Box>
-                        <Typography sx={{ fontWeight: 600, color: '#FFFFFF' }}>0</Typography>
+                        <Typography sx={{ fontWeight: 600, color: '#FFFFFF' }}>{balance?.toString() || 0}</Typography>
                         <Typography variant="caption2" sx={{ fontWeight: 600, color: '#FFFFFF' }}>
-                          {formatNumber(o, { prefix: '$' })}
+                          {formatNumber(valueInUsd, { prefix: '$' })}
                         </Typography>
                       </Box>
                     </Box>

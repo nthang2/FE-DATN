@@ -5,7 +5,7 @@ import { PlusIcon } from 'src/assets/icons';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import { findTokenInfoByToken, listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useQueryAllTokensPriceUniversal from 'src/hooks/useQueryAllTokensPriceUniversal';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import { useCrossModeState } from 'src/states/hooks';
 import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
@@ -22,7 +22,7 @@ const DepositSection = () => {
   const [isSubmitted] = useBorrowCrossSubmitState();
   const [searchParams, setSearchParams] = useSearchParams();
   const [crossMode] = useCrossModeState();
-  const { data: listPrice } = useQueryAllTokensPrice();
+  const { data: listPrice } = useQueryAllTokensPriceUniversal();
   const { asset } = useMyPortfolio();
   const { address } = useSummarySolanaConnect();
   const balance = useSolanaBalanceTokens(address, Object.keys(listTokenAvailable) as Array<TSolanaToken>);

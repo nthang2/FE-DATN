@@ -2,8 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { useEffect, useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import useInvestedValue from 'src/hooks/useQueryHook/queryBorrow/useInvestedValue';
+import useQueryAllTokensPriceUniversal from 'src/hooks/useQueryAllTokensPriceUniversal';
 import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import { TokenName } from 'src/libs/crypto-icons';
 import { useCrossModeState } from 'src/states/hooks';
@@ -13,14 +12,15 @@ import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState } 
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
 import BorrowPreview from './BorrowPreview';
+import useInvestedValueUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useInvestedValueUniversal';
 
 const BorrowSection = () => {
-  const { data: listPrice } = useQueryAllTokensPrice();
+  const { data: listPrice } = useQueryAllTokensPriceUniversal();
   const [borrowState, setBorrowState] = useBorrowCrossState();
   const [isSubmitted] = useBorrowCrossSubmitState();
   const [depositItems] = useDepositCrossState();
   const [crossMode] = useCrossModeState();
-  const { totalDepositValue, yourBorrowByAddress, maxLtv } = useInvestedValue();
+  const { totalDepositValue, yourBorrowByAddress, maxLtv } = useInvestedValueUniversal();
   const { asset } = useMyPortfolio();
 
   const mintedValueUsd = useMemo(() => {
