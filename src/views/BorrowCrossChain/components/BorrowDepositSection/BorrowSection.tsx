@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPriceUniversal from 'src/hooks/useQueryAllTokensPriceUniversal';
-import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
+import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import { TokenName } from 'src/libs/crypto-icons';
 import { useCrossModeState } from 'src/states/hooks';
 import { regexConfigValue } from 'src/utils';
@@ -21,7 +21,7 @@ const BorrowSection = () => {
   const [depositItems] = useDepositCrossState();
   const [crossMode] = useCrossModeState();
   const { totalDepositValue, yourBorrowByAddress, maxLtv } = useInvestedValueUniversal();
-  const { asset } = useMyPortfolio();
+  const { asset } = useMyPortfolioUniversal();
 
   const mintedValueUsd = useMemo(() => {
     if (!asset) return 0;

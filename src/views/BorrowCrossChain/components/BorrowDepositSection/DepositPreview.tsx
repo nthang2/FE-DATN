@@ -2,10 +2,10 @@ import { Collapse, Stack, Typography } from '@mui/material';
 import React, { useMemo } from 'react';
 import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { TBorrowItem } from 'src/views/Borrow/state/types';
-import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 import { useCrossModeState } from 'src/states/hooks';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { TokenName } from 'src/libs/crypto-icons';
+import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 interface IProps {
   isHasDeposited: boolean;
   depositedValueUsd: number;
@@ -14,7 +14,7 @@ interface IProps {
 
 const DepositPreview = (props: IProps) => {
   const { isHasDeposited, depositItems, depositedValueUsd } = props;
-  const { asset } = useMyPortfolio();
+  const { asset } = useMyPortfolioUniversal();
   const [crossMode] = useCrossModeState();
 
   const totalNewDeposit = depositItems.reduce((total, curr) => total + Number(curr.price), 0);

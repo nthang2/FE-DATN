@@ -5,7 +5,7 @@ import FormatSmallNumber from 'src/components/General/FormatSmallNumber/FormatSm
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPriceUniversal from 'src/hooks/useQueryAllTokensPriceUniversal';
-import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
+import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import { TokenName } from 'src/libs/crypto-icons';
 import { decimalFlood } from 'src/utils/format';
 import { marks } from '../../constant';
@@ -27,7 +27,7 @@ const LTVSection = () => {
   const [borrowSubmitted] = useBorrowCrossSubmitState();
   const [isSubmitted] = useBorrowCrossSubmitState();
   const { totalDepositValue, yourBorrowByAddress, maxLtv, depositedByAddress, maxLiquidationThreshold } = useInvestedValueUniversal();
-  const { status: portfolioStatus } = useMyPortfolio();
+  const { status: portfolioStatus } = useMyPortfolioUniversal();
 
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
 

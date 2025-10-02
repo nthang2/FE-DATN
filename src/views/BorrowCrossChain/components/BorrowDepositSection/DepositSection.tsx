@@ -7,7 +7,7 @@ import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPriceUniversal from 'src/hooks/useQueryAllTokensPriceUniversal';
 import useGetBalanceTokenUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useGetBalanceTokenUniversal';
-import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
+import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import { useCrossModeState } from 'src/states/hooks';
 import { regexConfigValue } from 'src/utils';
 import { defaultBorrowCrossValue } from '../../constant';
@@ -22,7 +22,7 @@ const DepositSection = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [crossMode] = useCrossModeState();
   const { data: listPrice } = useQueryAllTokensPriceUniversal();
-  const { asset } = useMyPortfolio();
+  const { asset } = useMyPortfolioUniversal();
   const { getBalance } = useGetBalanceTokenUniversal();
 
   const depositedValueUsd = useMemo(() => {
