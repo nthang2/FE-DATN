@@ -91,7 +91,7 @@ const ActionSection = () => {
     if (!address) return;
     let hash = '';
 
-    if (borrowNetwork === mapNameNetwork.solana.name) {
+    if (borrowNetwork.toLowerCase() === mapNameNetwork.solana.name.toLowerCase()) {
       const lendingContract = new LendingContractUniversal(wallet);
       const isBorrowMaxValue = Number(borrowState.price) === maxBorrowPrice;
       hash = await lendingContract.borrow(Number(borrowState.value), borrowState.address, isBorrowMaxValue, listWallet?.universalWallet);
