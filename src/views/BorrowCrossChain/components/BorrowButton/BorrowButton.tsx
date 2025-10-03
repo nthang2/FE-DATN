@@ -8,7 +8,9 @@ import useInvestedValueUniversal from 'src/hooks/useQueryHook/queryBorrowUnivers
 import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
-import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState } from '../../state/hooks';
+import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState, useSelectedNetworkBorrowState } from '../../state/hooks';
+import useBorrowEVM from 'src/hooks/mutations/useBorrowEVM';
+import { mapNameNetwork } from 'src/constants/network';
 
 const BorrowButton = () => {
   const wallet = useWallet();
@@ -20,6 +22,8 @@ const BorrowButton = () => {
   const { maxBorrowPrice } = useInvestedValueUniversal();
   const listConnectWallet = useSummaryConnect();
   const { data: listWallet } = useGetListWallet(chainId, address);
+  const { mutateAsync: borrowEVM } = useBorrowEVM();
+  const [borrowNetwork] = useSelectedNetworkBorrowState();
 
   const isOnlyMint = useMemo(() => {
     const depositValue = depositItems.some((item) => Number(item.value) > 0);
@@ -55,11 +59,24 @@ const BorrowButton = () => {
 
     await asyncExecute({
       fn: async () => {
-        const isBorrowMaxValue = Number(borrowState.price) === maxBorrowPrice;
-        const lendingContract = new LendingContractUniversal(wallet);
-        const transHash = await lendingContract.borrow(Number(borrowState.value), depositItems[0].address, isBorrowMaxValue);
+        if (!address) return;
+        let hash = '';
+        console.log('borrowNetwork', borrowNetwork);
 
-        return transHash;
+        if (borrowNetwork.toLowerCase() === mapNameNetwork.solana.name.toLowerCase()) {
+          const lendingContract = new LendingContractUniversal(wallet);
+          const isBorrowMaxValue = Number(borrowState.price) === maxBorrowPrice;
+          hash = await lendingContract.borrow(
+            Number(borrowState.value),
+            borrowState.address,
+            isBorrowMaxValue,
+            listWallet?.universalWallet
+          );
+        } else {
+          hash = await borrowEVM({ borrowAmount: borrowState.value, selectedToken: borrowState.address });
+        }
+
+        return hash;
       },
       onError: () => setBorrowState({ ...borrowState, value: '0', price: 0 }),
       onSuccess: () => setBorrowState({ ...borrowState, value: '0', price: 0 }),

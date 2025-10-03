@@ -37,8 +37,6 @@ const ActionSection = () => {
   const [borrowNetwork] = useSelectedNetworkBorrowState();
   const [depositNetwork] = useSelectedNetworkDepositState();
 
-  console.log('🚀 ~ ActionSection ~ listWallet:', borrowState);
-
   const initDepositItems = useMemo(() => {
     return [...depositItems].filter((item) => !!item.value && item.value !== '0');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,6 +88,7 @@ const ActionSection = () => {
   const handleBorrow = async () => {
     if (!address) return;
     let hash = '';
+    console.log('borrowNetwork', borrowNetwork);
 
     if (borrowNetwork.toLowerCase() === mapNameNetwork.solana.name.toLowerCase()) {
       const lendingContract = new LendingContractUniversal(wallet);
