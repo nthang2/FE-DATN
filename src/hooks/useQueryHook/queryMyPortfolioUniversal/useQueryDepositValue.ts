@@ -2,12 +2,13 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useQuery } from '@tanstack/react-query';
 import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { LendingContractUniversal } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingContractUniversal';
 import useLendingContract from 'src/hooks/useContract/useLendingContract';
 import { BN } from 'src/utils';
 
 export default function useQueryDepositValue() {
   const wallet = useWallet();
-  const { initLendingContract, crossMode } = useLendingContract();
+  const { crossMode } = useLendingContract();
   const arrAddress = Object.keys(listTokenAvailable).map((item) => {
     const key = item as keyof typeof listTokenAvailable;
     return listTokenAvailable[key]?.address;
@@ -15,7 +16,7 @@ export default function useQueryDepositValue() {
   return useQuery({
     queryKey: ['depositValue', wallet.publicKey, arrAddress, crossMode],
     queryFn: async () => {
-      const lendingContract = initLendingContract(wallet);
+      const lendingContract = new LendingContractUniversal(wallet);
       const depositValue = {} as { [key: string]: string };
       await Promise.allSettled(
         arrAddress.map(async (add) => {

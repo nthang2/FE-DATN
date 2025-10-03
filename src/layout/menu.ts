@@ -10,7 +10,7 @@ export const menu: TMenu[] = [
     title: 'My Portfolio',
     parent: ['/my-portfolio', '/my-portfolio-cross'],
     child: [
-      { title: 'My Portfolio', url: '/' },
+      { title: 'My Portfolio', url: '/my-portfolio' },
       { title: 'My Portfolio Cross', url: '/my-portfolio-cross' },
     ],
   },
