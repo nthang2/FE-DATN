@@ -1,14 +1,10 @@
-import { Box, Button, Drawer, IconButton, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, Drawer, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
-import { SettingIcon, WalletIcon } from 'src/assets/icons';
+import { WalletIcon } from 'src/assets/icons';
 import WalletConnectIcon from 'src/components/General/WalletConnectIcon/WalletConnectIcon';
-import ModalConnectWallet from 'src/components/Modals/ConnectSolanaNetwork/ModalConnectWallet';
-import ModalSettingAccount from 'src/components/Modals/ModalSettingAccount/ModalSettingAccount';
 import { IconETH, IconSOL } from 'src/libs/crypto-icons';
-import { useModalFunction } from 'src/states/modal/hooks';
 import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 import { formatAddress } from 'src/utils/format';
-import { useDestinationNetworkState, useDestinationWalletState } from 'src/views/UniversalWallet/state/hooks';
 import EVMWallet from './EVMWallet';
 import HeadOfConnectWallet from './HeadOfConnectWallet';
 import SolanaWallet from './SolanaWallet';
@@ -53,19 +49,10 @@ function a11yProps(index: number) {
 }
 
 const ConnectWalletSection = () => {
-  const [openDialog, setOpenDialog] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
   const [firstWalletSummary, secondWalletSummary] = useSummaryConnect();
-  const [destinationNetwork, setDestinationNetwork] = useDestinationNetworkState();
-  const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
 
-  // const handleDisconnect = () => {
-  //   setDestinationWallet({ address: '', wallet: '', chainId: '' });
-  //   setDestinationNetwork('');
-  // };
-
-  const { address, status, walletIcon, disconnect } = firstWalletSummary;
-  const [openDrawer, setOpenDrawer] = useState<boolean>(true);
+  const { address, status, walletIcon } = firstWalletSummary;
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [tab, setTab] = useState<number>(0);
 
   const {
@@ -74,37 +61,14 @@ const ConnectWalletSection = () => {
     walletIcon: secondWalletIcon,
     disconnect: secondWalletDisconnect,
   } = secondWalletSummary;
-  const modalFunction = useModalFunction();
 
   const walletStatus = status === 'Connected' || secondWalletStatus === 'Connected';
   const walletAddress = address || secondWalletAddress;
-
-  const handleCloseAnchor = () => {
-    setAnchorEl(null);
-  };
 
   const handleDisconnect = () => {
     if (secondWalletStatus === 'Connected') {
       secondWalletDisconnect();
     }
-  };
-
-  const handleOpenAnchor = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (openDialog) return;
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseDialog = () => {
-    setAnchorEl(null);
-    setOpenDialog(false);
-  };
-
-  const handleSettingBtn = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    modalFunction({
-      type: 'openModal',
-      data: { content: <ModalSettingAccount />, title: `Settings`, modalProps: { maxWidth: 'xs' } },
-    });
   };
 
   const toggleDrawer = (newOpen: boolean) => () => {
@@ -144,14 +108,21 @@ const ConnectWalletSection = () => {
               <WalletConnectIcon Icon={secondWalletIcon} />
             </Box>
             <Stack
-              sx={{ background: '#282825', p: 1, gap: '10px', borderRadius: '11px', cursor: 'pointer', alignItems: 'center' }}
+              sx={{
+                background: '#282825',
+                p: 1,
+                gap: '10px',
+                borderRadius: '11px',
+                cursor: 'pointer',
+                alignItems: 'center',
+                height: '100%',
+              }}
               onClick={toggleDrawer(true)}
             >
               <WalletIcon />
-              <Typography sx={{ display: { xs: 'none', md: 'block' } }}>{formatAddress(walletAddress)}</Typography>
-              <IconButton onClick={handleSettingBtn}>
-                <SettingIcon />
-              </IconButton>
+              <Typography sx={{ display: { xs: 'none', md: 'block' }, fontWeight: 600 }} variant="body2">
+                {secondWalletAddress && address ? 'My Wallets' : formatAddress(walletAddress)}
+              </Typography>
             </Stack>
           </Stack>
         ) : (
@@ -220,7 +191,6 @@ const ConnectWalletSection = () => {
           </Box>
         </Box>
       </Drawer>
-      <ModalConnectWallet open={openDialog} onClose={handleCloseDialog} />
     </>
   );
 };

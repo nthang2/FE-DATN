@@ -38,7 +38,7 @@ const EVMWallet = (props: IProps) => {
 
   const handleClickBtn = (connector: Connector) => {
     if (connector.id === connectorEVM?.id) {
-      handleDisconnect();
+      return;
     } else {
       handleConnect(connector);
     }
@@ -98,7 +98,7 @@ const EVMWallet = (props: IProps) => {
                   sx={{ height: '32px', bgcolor: '#46492F', border: '0px' }}
                 >
                   <Typography variant="caption2" sx={{ color: '#E2E5C2' }}>
-                    {isConnected ? 'Disconnect' : 'Connect'}
+                    {isConnected ? 'Connected' : 'Connect'}
                   </Typography>
                 </Button>
               </Stack>
