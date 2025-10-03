@@ -8,6 +8,7 @@ export const usdcDevSolanaDevnet = new SolanaDevnetTokenInfo({
   prettyName: 'USDC Dev',
   isNative: false,
   isToken2022: false,
+  ratio: '0.95',
 });
 
 export const scOraiSolanaMainnet = new SolanaDevnetTokenInfo({

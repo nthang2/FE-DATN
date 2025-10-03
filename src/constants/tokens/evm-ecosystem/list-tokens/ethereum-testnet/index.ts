@@ -17,6 +17,7 @@ export const usdcEthereumTestnet = new EthereumChainTokenInfo({
   prettyName: 'USD Coin',
   isNative: false,
   coingeckoId: 'usd-coin',
+  ratio: '0.95',
 });
 
 export const usdtEthereumTestnet = new EthereumChainTokenInfo({
