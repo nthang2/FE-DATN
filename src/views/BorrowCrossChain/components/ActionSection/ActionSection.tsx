@@ -29,6 +29,8 @@ const ActionSection = () => {
   const { mutateAsync: depositEVM } = useDepositEVM();
   const { mutateAsync: borrowEVM } = useBorrowEVM();
 
+  console.log('🚀 ~ ActionSection ~ listWallet:', { listWallet, address });
+
   const initDepositItems = useMemo(() => {
     return [...depositItems].filter((item) => !!item.value && item.value !== '0');
     // eslint-disable-next-line react-hooks/exhaustive-deps
