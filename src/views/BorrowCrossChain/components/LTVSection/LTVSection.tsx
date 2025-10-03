@@ -9,7 +9,7 @@ import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniv
 import { TokenName } from 'src/libs/crypto-icons';
 import { decimalFlood } from 'src/utils/format';
 import { marks } from '../../constant';
-import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState } from '../../state/hooks';
+import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState, useSelectedNetworkBorrowState } from '../../state/hooks';
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import CustomMark from '../BorrowSlide/CustomMark';
 import CustomThumb from '../BorrowSlide/CustomThumb';
@@ -28,6 +28,7 @@ const LTVSection = () => {
   const [isSubmitted] = useBorrowCrossSubmitState();
   const { totalDepositValue, yourBorrowByAddress, maxLtv, depositedByAddress, maxLiquidationThreshold } = useInvestedValueUniversal();
   const { status: portfolioStatus } = useMyPortfolioUniversal();
+  const [borrowNetwork] = useSelectedNetworkBorrowState();
 
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
 
@@ -53,7 +54,7 @@ const LTVSection = () => {
 
     const borrowValue = (Number(sliderCommitValue) / 100) * totalDepositValue - yourBorrowByAddress;
     const minValue = borrowValue < 0 ? 0 : Number(decimalFlood(borrowValue, usdaiInfo.decimals));
-    const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), listPrice);
+    const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), borrowNetwork, listPrice);
     const error = validateBorrowItem(Number(borrowAmount), borrowPercent, maxLtv);
 
     setBorrowState({

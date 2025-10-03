@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { ctrAdsEVM } from 'src/constants/contractAddress/evm';
-import { mapNameToInfoEthereum } from 'src/constants/tokens/evm-ecosystem/mapNameToInfoEthereum';
+import { findTokenInfoByTokenEVMMainnet } from 'src/constants/tokens/evm-ecosystem/list-tokens/ethereum/mapNameToInfoEthereum';
 import { universalWalletAbi } from 'src/contracts/evm/abi/universalWallet';
 import useSwitchToSelectedChain from 'src/hooks/useSwitchToSelectedChain';
 import { TokenName } from 'src/libs/crypto-icons';
@@ -27,7 +27,7 @@ const useWithdrawEVM = () => {
     mutationFn: async (props: IProps) => {
       try {
         const { withdrawAmount, selectedToken } = props;
-        const tokenInfo = mapNameToInfoEthereum[selectedToken as TokenName];
+        const tokenInfo = findTokenInfoByTokenEVMMainnet(selectedToken as TokenName);
         const deadline = Math.floor(new Date().getTime() / 1000) + 8 * 24 * 60 * 60;
         const amount = BN(withdrawAmount)
           .multipliedBy(BN(10).pow(BN(tokenInfo?.decimals ?? 6)))

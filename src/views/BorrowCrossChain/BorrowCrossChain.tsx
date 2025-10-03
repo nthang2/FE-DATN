@@ -11,9 +11,14 @@ import LTVSection from './components/LTVSection/LTVSection';
 import MintBanner from './components/MintBanner/MintBanner';
 import { useBorrowCrossSubmitState } from './state/hooks';
 import AlertUniversalWallet from './components/AlertUniversalWallet/AlertUniversalWallet';
+import useGetListWallet from '../UniversalWallet/hooks/useGetListWallet';
+import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 
 const BorrowCrossChain = () => {
   const [isSubmitted] = useBorrowCrossSubmitState();
+  const { chainId, address } = useSummaryFirstActiveConnect();
+  const { data: listWallet } = useGetListWallet(chainId, address);
+  console.log('🚀 ~ BorrowCrossChain ~ listWallet:', listWallet);
 
   return (
     <Box width="100%" mt={4}>

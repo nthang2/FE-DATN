@@ -10,7 +10,13 @@ import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQue
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import useFetchAllSolTokenBalances from 'src/states/wallets/solana-blockchain/hooks/useFetchAllSolTokenBalances';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
-import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState } from '../../state/hooks';
+import {
+  useBorrowCrossState,
+  useBorrowCrossSubmitState,
+  useDepositCrossState,
+  useSelectedNetworkBorrowState,
+  useSelectedNetworkDepositState,
+} from '../../state/hooks';
 import { TBorrowCrossItem } from '../../state/types';
 import BorrowTableRow from './BorrowTableRow';
 import DepositTableRow from './DepositTableRow';
@@ -23,13 +29,15 @@ const ActionSection = () => {
   const [isSubmitted, setIsSubmitted] = useBorrowCrossSubmitState();
   const { refetch: refetchDeposited } = useQueryDepositValue();
   const { maxBorrowPrice } = useInvestedValueUniversal();
-  const { address, chainId, networkName } = useSummaryFirstActiveConnect();
+  const { address, chainId } = useSummaryFirstActiveConnect();
   const { allSlpTokenBalances } = useFetchAllSolTokenBalances(address);
   const { data: listWallet } = useGetListWallet(chainId, address);
   const { mutateAsync: depositEVM } = useDepositEVM();
   const { mutateAsync: borrowEVM } = useBorrowEVM();
+  const [borrowNetwork] = useSelectedNetworkBorrowState();
+  const [depositNetwork] = useSelectedNetworkDepositState();
 
-  console.log('🚀 ~ ActionSection ~ listWallet:', { listWallet, address });
+  console.log('🚀 ~ ActionSection ~ listWallet:', borrowState);
 
   const initDepositItems = useMemo(() => {
     return [...depositItems].filter((item) => !!item.value && item.value !== '0');
@@ -65,7 +73,7 @@ const ActionSection = () => {
     if (!address) return;
     let hash = '';
 
-    if (networkName === mapNameNetwork.solana.name) {
+    if (depositNetwork === mapNameNetwork.solana.name) {
       const lendingContract = new LendingContractUniversal(wallet);
       hash = await lendingContract.deposit(Number(depositItem.value), depositItem.address, listWallet?.universalWallet);
     } else {
@@ -83,7 +91,7 @@ const ActionSection = () => {
     if (!address) return;
     let hash = '';
 
-    if (networkName === mapNameNetwork.solana.name) {
+    if (borrowNetwork === mapNameNetwork.solana.name) {
       const lendingContract = new LendingContractUniversal(wallet);
       const isBorrowMaxValue = Number(borrowState.price) === maxBorrowPrice;
       hash = await lendingContract.borrow(Number(borrowState.value), borrowState.address, isBorrowMaxValue, listWallet?.universalWallet);

@@ -8,7 +8,7 @@ const useMyPortfolioUniversal = () => {
   const [crossMode] = useCrossModeState();
 
   const query = useQuery({
-    queryKey: ['useMyPortfolio', address, crossMode],
+    queryKey: ['useMyPortfolio', address, crossMode, chainId],
     queryFn: async () => {
       if (!address) return undefined;
       const resp = await getMyPortfolioUniversal(address?.toString(), chainId);
