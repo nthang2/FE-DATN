@@ -1,13 +1,14 @@
 import { Box, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
+import { EthereumChainTokenInfo } from 'src/constants/tokens/evm-ecosystem/list-tokens/ethereum/EthereumChainTokenInfo';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useHealthFactorUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useHealthFactorUniversal';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 
 interface IProps {
-  token: SolanaEcosystemTokenInfo;
+  token: SolanaEcosystemTokenInfo | EthereumChainTokenInfo;
   mintAmount: string;
   depositAmount: string;
 }

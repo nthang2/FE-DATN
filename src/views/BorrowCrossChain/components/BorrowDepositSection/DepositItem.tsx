@@ -8,7 +8,7 @@ import { findTokenInfoByToken as findTokenInfoByTokenSOL } from 'src/constants/t
 import useGetBalanceTokenUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useGetBalanceTokenUniversal';
 import { useCrossModeState } from 'src/states/hooks';
 import { formatNumber } from 'src/utils/format';
-import { useBorrowCrossSubmitState, useDepositCrossState, useSelectedNetworkState } from '../../state/hooks';
+import { useBorrowCrossSubmitState, useDepositCrossState, useSelectedNetworkDepositState } from '../../state/hooks';
 import { TBorrowCrossItem } from '../../state/types';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
 
@@ -26,8 +26,8 @@ const DepositItem = (props: IProps) => {
   const [crossMode] = useCrossModeState();
   const [depositedItems] = useDepositCrossState();
   const [isSubmitted] = useBorrowCrossSubmitState();
-  const [selectedNetwork] = useSelectedNetworkState();
-  const { balance } = useGetBalanceTokenUniversal(item.address);
+  const [selectedNetwork, setSelectedNetwork] = useSelectedNetworkDepositState();
+  const { balance } = useGetBalanceTokenUniversal(selectedNetwork, item.address);
 
   const displayCloseIcon = useMemo(() => {
     if (!crossMode) {
@@ -53,6 +53,7 @@ const DepositItem = (props: IProps) => {
         },
         value: item.value,
       }}
+      handleChangeNetwork={(network) => setSelectedNetwork(network)}
       selectProps={{
         handleChangeSelect: (a: string) => handleChangeSelectInput(index, a),
         value: item.address,

@@ -4,11 +4,9 @@ import { findTokenInfoByTokenEVM } from 'src/constants/tokens/evm-ecosystem/mapN
 import useGetAllBalanceEVM from 'src/states/wallets/evm-blockchain/hooks/useGetAllBalanceEVM';
 import useFetchAllSolTokenBalances from 'src/states/wallets/solana-blockchain/hooks/useFetchAllSolTokenBalances';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
-import { useSelectedNetworkState } from 'src/views/BorrowCrossChain/state/hooks';
 import { BN } from 'src/utils';
 
-const useGetBalanceTokenUniversal = (tokenAddress?: string) => {
-  const [selectedNetwork] = useSelectedNetworkState();
+const useGetBalanceTokenUniversal = (selectedNetwork: string, tokenAddress?: string) => {
   const { address: solanaAddress } = useSummarySolanaConnect();
   const { data: listBalanceEVM } = useGetAllBalanceEVM();
   const { allSlpTokenBalances: listBalanceSOL } = useFetchAllSolTokenBalances(solanaAddress);

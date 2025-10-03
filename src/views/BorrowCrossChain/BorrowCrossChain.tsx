@@ -10,6 +10,7 @@ import HealthFactor from './components/HealthFactor/HealthFactor';
 import LTVSection from './components/LTVSection/LTVSection';
 import MintBanner from './components/MintBanner/MintBanner';
 import { useBorrowCrossSubmitState } from './state/hooks';
+import AlertUniversalWallet from './components/AlertUniversalWallet/AlertUniversalWallet';
 
 const BorrowCrossChain = () => {
   const [isSubmitted] = useBorrowCrossSubmitState();
@@ -47,6 +48,8 @@ const BorrowCrossChain = () => {
           </Box>
         </Grid2>
       </Grid2>
+
+      <AlertUniversalWallet />
     </Box>
   );
 };

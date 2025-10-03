@@ -2,37 +2,47 @@ import { ContentCopy } from '@mui/icons-material';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
-import { listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import {
+  listTokenAvailableUniversal as listTokenAvailableSol,
+  TSolanaToken,
+} from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { useModalFunction } from 'src/states/modal/hooks';
 import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN, copyTextToClipboard } from 'src/utils';
 import { compactNumber, formatNumber } from '../../utils/format';
 import DepositModal from './components/DepositModal';
 import WithdrawModal from './components/WithdrawModal';
+import { TokenName } from 'src/libs/crypto-icons';
+import { listTokenAvailable as listTokenAvailableEvm } from 'src/constants/tokens/evm-ecosystem/mapNameToInfoEthereum';
+import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
+import { mapNameNetwork } from 'src/constants/network';
+import { EthereumChainTokenInfo } from 'src/constants/tokens/evm-ecosystem/list-tokens/ethereum/EthereumChainTokenInfo';
+
+const listSol = Object.values(listTokenAvailableSol).filter((item) => item.symbol !== TokenName.USDAI);
+const listEvm = Object.values(listTokenAvailableEvm).filter((item) => item.symbol !== TokenName.USDAI);
 
 export default function Deposit() {
   const { loading } = useAsyncExecute();
-  const { address } = useSummarySolanaConnect();
+  const { address, networkName } = useSummaryFirstActiveConnect();
   const modalFunction = useModalFunction();
-  const balance = useSolanaBalanceTokens(address, Object.keys(listTokenAvailable) as Array<TSolanaToken>);
   const { asset } = useMyPortfolioUniversal();
+  const tokens = networkName === mapNameNetwork.solana.name ? listSol : listEvm;
+  const balance = useSolanaBalanceTokens(address, Object.keys(tokens) as Array<TSolanaToken>);
 
   const tableHead = ['Asset', 'In Wallet', 'Deposited', ''];
-  const tokens = Object.values(listTokenAvailable);
 
-  const handleDeposit = (token: SolanaEcosystemTokenInfo) => {
+  const handleDeposit = (token: SolanaEcosystemTokenInfo | EthereumChainTokenInfo) => {
     modalFunction({
       type: 'openModal',
       data: { content: <DepositModal token={token} />, title: `Deposit ${token.symbol}`, modalProps: { maxWidth: 'xs' } },
     });
   };
 
-  const handleWithdraw = (token: SolanaEcosystemTokenInfo) => {
+  const handleWithdraw = (token: SolanaEcosystemTokenInfo | EthereumChainTokenInfo) => {
     modalFunction({
       type: 'openModal',
       data: {
@@ -63,6 +73,8 @@ export default function Deposit() {
           </TableHead>
           <TableBody>
             {tokens.map((row, index) => {
+              if (!balance[index] || !row) return null;
+
               const balanceInWalletByUsd = BN(balance[index].balance)
                 .multipliedBy(asset?.[row.address]?.priceUSD || 0)
                 .toFixed(2);

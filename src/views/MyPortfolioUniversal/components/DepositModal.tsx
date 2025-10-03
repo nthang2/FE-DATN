@@ -23,8 +23,9 @@ import { formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
 import CheckHealthFactor from './CheckHealthFactor';
 import useDepositEVM from 'src/hooks/mutations/useDepositEVM';
+import { EthereumChainTokenInfo } from 'src/constants/tokens/evm-ecosystem/list-tokens/ethereum/EthereumChainTokenInfo';
 
-export default function DepositModal({ token }: { token: SolanaEcosystemTokenInfo }) {
+export default function DepositModal({ token }: { token: SolanaEcosystemTokenInfo | EthereumChainTokenInfo }) {
   const wallet = useWallet();
   const { address, networkName, chainId } = useSummaryFirstActiveConnect();
   const { data: listWallet } = useGetListWallet(chainId, address);

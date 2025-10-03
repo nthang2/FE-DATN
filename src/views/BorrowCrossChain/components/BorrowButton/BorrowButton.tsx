@@ -4,18 +4,22 @@ import { useMemo } from 'react';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import { LendingContractUniversal } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingContractUniversal';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
-import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState } from '../../state/hooks';
 import useInvestedValueUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useInvestedValueUniversal';
+import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
+import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
+import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
+import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState } from '../../state/hooks';
 
 const BorrowButton = () => {
   const wallet = useWallet();
   const [borrowState, setBorrowState] = useBorrowCrossState();
   const [depositItems] = useDepositCrossState();
   const [isSubmitted, setIsSubmitted] = useBorrowCrossSubmitState();
-  const { address } = useSummarySolanaConnect();
+  const { address, chainId } = useSummaryFirstActiveConnect();
   const { asyncExecute, loading } = useAsyncExecute();
   const { maxBorrowPrice } = useInvestedValueUniversal();
+  const listConnectWallet = useSummaryConnect();
+  const { data: listWallet } = useGetListWallet(chainId, address);
 
   const isOnlyMint = useMemo(() => {
     const depositValue = depositItems.some((item) => Number(item.value) > 0);
@@ -26,13 +30,25 @@ const BorrowButton = () => {
     return false;
   }, [borrowState.value, depositItems]);
 
+  const isConnectAllUniversalWallet = useMemo(() => {
+    if (!listWallet || !listWallet?.universalWallet) {
+      return false;
+    }
+
+    return listWallet.wallets.every((wallet) => listConnectWallet.map((wallet) => wallet.address).indexOf(wallet.walletAddress) > -1);
+  }, [listConnectWallet, listWallet]);
+
   const isValidBorrow = useMemo(() => {
+    if (!isConnectAllUniversalWallet) {
+      return false;
+    }
+
     const borrowError = !borrowState.error;
     const depositError = depositItems.some((item) => Boolean(item.error));
     const formValue = Number(borrowState.value) > 0 || depositItems.some((item) => Number(item.value) > 0);
 
     return borrowError && formValue && !depositError;
-  }, [borrowState, depositItems]);
+  }, [borrowState, depositItems, isConnectAllUniversalWallet]);
 
   const handleBorrow = async () => {
     if (!wallet || !wallet.wallet?.adapter.publicKey) return;

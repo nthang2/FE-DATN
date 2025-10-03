@@ -13,7 +13,7 @@ import useFetchAllSolTokenBalances from 'src/states/wallets/solana-blockchain/ho
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { BN } from 'src/utils';
 import { formatAddress, formatNumber, roundNumber } from 'src/utils/format';
-import { useDepositCrossState, useSelectedNetworkState } from '../../state/hooks';
+import { useDepositCrossState } from '../../state/hooks';
 
 type TNetwork = 'ethereum' | 'solana';
 
@@ -29,6 +29,7 @@ type Props = {
   error?: string;
   selectOptions?: string[];
   hideDropdownIcon?: boolean;
+  handleChangeNetwork?: (network: string) => void;
 };
 
 export default function DepositCustomInput(props: Props) {
@@ -43,9 +44,10 @@ export default function DepositCustomInput(props: Props) {
     selectProps,
     error,
     hideDropdownIcon,
+    handleChangeNetwork,
   } = props;
   const [depositItems] = useDepositCrossState();
-  const [selectedNetwork, setSelectedNetwork] = useSelectedNetworkState();
+  const [selectedNetwork, setSelectedNetwork] = useState('solana');
   const { address: solanaAddress } = useSummarySolanaConnect();
   const { data: listBalanceEVM } = useGetAllBalanceEVM();
   const { allSlpTokenBalances: listBalanceSOL } = useFetchAllSolTokenBalances(solanaAddress);
@@ -83,8 +85,11 @@ export default function DepositCustomInput(props: Props) {
     setAnchorEl(null);
   };
 
-  const handleChangeNetwork = (network: string) => {
+  const handleChangeNetworkInput = (network: string) => {
     setSelectedNetwork(network);
+    if (handleChangeNetwork) {
+      handleChangeNetwork(network);
+    }
     const newOptions = options()[network as TNetwork];
     const token = newOptions[0];
     setSelectToken(token);
@@ -194,7 +199,7 @@ export default function DepositCustomInput(props: Props) {
                       }}
                       className={clsx({ selectedNetwork: selectedNetwork === item.id })}
                       onClick={() => {
-                        handleChangeNetwork(item.id);
+                        handleChangeNetworkInput(item.id);
                       }}
                     >
                       {item.icon}

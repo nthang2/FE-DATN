@@ -8,10 +8,10 @@ import { requestEVMLending } from 'src/services/HandleApi/universalLending/reque
 import { config } from 'src/states/wallets/evm-blockchain/config';
 import useSummaryEVMConnect from 'src/states/wallets/evm-blockchain/hooks/useSummaryEVMConnect';
 import { BN } from 'src/utils';
-import { encodePacked, keccak256, pad, parseEther, toBytes } from 'viem';
-import { readContract, signMessage, waitForTransactionReceipt, writeContract } from 'wagmi/actions';
 import { actionType, ethFeeAmount } from 'src/views/Borrow/constant';
 import { toRSV } from 'src/views/Borrow/utils';
+import { encodePacked, keccak256, pad, parseEther, toBytes } from 'viem';
+import { readContract, signMessage, waitForTransactionReceipt, writeContract } from 'wagmi/actions';
 
 interface IProps {
   withdrawAmount: string;

@@ -11,7 +11,7 @@ import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniv
 import { useCrossModeState } from 'src/states/hooks';
 import { regexConfigValue } from 'src/utils';
 import { defaultBorrowCrossValue } from '../../constant';
-import { useBorrowCrossSubmitState, useDepositCrossState } from '../../state/hooks';
+import { useBorrowCrossSubmitState, useDepositCrossState, useSelectedNetworkDepositState } from '../../state/hooks';
 import { convertToUsd, validateDepositItem } from '../../utils';
 import DepositItem from './DepositItem';
 import DepositPreview from './DepositPreview';
@@ -23,7 +23,8 @@ const DepositSection = () => {
   const [crossMode] = useCrossModeState();
   const { data: listPrice } = useQueryAllTokensPriceUniversal();
   const { asset } = useMyPortfolioUniversal();
-  const { getBalance } = useGetBalanceTokenUniversal();
+  const [selectedNetwork] = useSelectedNetworkDepositState();
+  const { getBalance } = useGetBalanceTokenUniversal(selectedNetwork);
 
   const depositedValueUsd = useMemo(() => {
     if (!asset || !listPrice) return 0;

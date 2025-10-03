@@ -8,7 +8,7 @@ import { TokenName } from 'src/libs/crypto-icons';
 import { useCrossModeState } from 'src/states/hooks';
 import { regexConfigValue } from 'src/utils';
 import { decimalFlood } from 'src/utils/format';
-import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState } from '../../state/hooks';
+import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState, useSelectedNetworkBorrowState } from '../../state/hooks';
 import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
 import BorrowPreview from './BorrowPreview';
@@ -20,6 +20,7 @@ const BorrowSection = () => {
   const [isSubmitted] = useBorrowCrossSubmitState();
   const [depositItems] = useDepositCrossState();
   const [crossMode] = useCrossModeState();
+  const [, setSelectedNetwork] = useSelectedNetworkBorrowState();
   const { totalDepositValue, yourBorrowByAddress, maxLtv } = useInvestedValueUniversal();
   const { asset } = useMyPortfolioUniversal();
 
@@ -93,6 +94,7 @@ const BorrowSection = () => {
         <Box>
           <DepositCustomInput
             readonly={isSubmitted}
+            handleChangeNetwork={(network) => setSelectedNetwork(network)}
             inputProps={{
               onChange: (e) => handleChangeInput(e.target.value),
               value: borrowState.value,

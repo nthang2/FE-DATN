@@ -20,7 +20,6 @@ export default function MyWallet() {
   const { data: tokensPrice, status: queryAllTokensPriceStatus } = useQueryAllTokensPrice();
   const { data: depositValue, status: queryDepositValueStatus } = useQueryDepositValue();
   const { asset } = useMyPortfolioUniversal();
-  console.log('🚀 ~ MyWallet ~ asset:', asset);
 
   const [includeDeposits, setIncludeDeposits] = useState<boolean>(false);
 

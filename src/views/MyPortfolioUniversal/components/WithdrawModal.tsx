@@ -2,7 +2,7 @@ import { SettingsOutlined } from '@mui/icons-material';
 import { Box, Divider, FormHelperText, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
@@ -23,8 +23,11 @@ import { decimalFlood, formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
 import CheckHealthFactor from './CheckHealthFactor';
 import useWithdrawEVM from 'src/hooks/mutations/useWithdrawEVM';
+import useGetTotalDepositedUniversal from 'src/hooks/useContract/useGetLiquidityWithdrawCap';
+import { mapNameChainId } from 'src/constants/chainId';
+import { EthereumChainTokenInfo } from 'src/constants/tokens/evm-ecosystem/list-tokens/ethereum/EthereumChainTokenInfo';
 
-export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo }) {
+export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo | EthereumChainTokenInfo }) {
   const wallet = useWallet();
   const { address, networkName, chainId } = useSummaryFirstActiveConnect();
   const { mutateAsync: withdrawEVM } = useWithdrawEVM();
@@ -34,6 +37,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const { refetch: refetchBalance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
   const { asset, status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo } = useMyPortfolioUniversalInfo();
   const { refetch: refetchDepositedValue } = useQueryDepositValue();
+  const { data: totalDeposited } = useGetTotalDepositedUniversal({ chainId: Number(chainId), tokenName: token.symbol });
 
   const [valueWithdraw, setValueWithdraw] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
@@ -65,7 +69,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   };
 
   const handleWithdraw = async () => {
-    if (!wallet || !wallet.wallet?.adapter.publicKey) return;
+    if (!address) return;
     let hash = '';
     if (networkName === mapNameNetwork.solana.name) {
       const lendingContract = new LendingContractUniversal(wallet);
@@ -89,6 +93,14 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
 
     return hash;
   };
+
+  useEffect(() => {
+    if (totalDeposited && chainId) {
+      if (BN(totalDeposited.deposited.toString()).isLessThan(BN(valueWithdraw))) {
+        setValueWithdrawHelperText(`Not enough liquidity to withdraw on chain ${mapNameChainId[chainId]}`);
+      }
+    }
+  }, [chainId, totalDeposited, valueWithdraw]);
 
   return (
     <Box
