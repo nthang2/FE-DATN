@@ -20,7 +20,7 @@ const BorrowSection = () => {
   const [isSubmitted] = useBorrowCrossSubmitState();
   const [depositItems] = useDepositCrossState();
   const [crossMode] = useCrossModeState();
-  const [, setSelectedNetwork] = useSelectedNetworkBorrowState();
+  const [borrowNetwork, setSelectedNetwork] = useSelectedNetworkBorrowState();
   const { totalDepositValue, yourBorrowByAddress, maxLtv } = useInvestedValueUniversal();
   const { asset } = useMyPortfolioUniversal();
 
@@ -57,7 +57,7 @@ const BorrowSection = () => {
     const borrowPrice = (Number(maxLtv) / 100) * totalDepositValue - yourBorrowByAddress;
     const selectedToken = findTokenInfoByToken(borrowState.address);
     const minValue = borrowPrice < 0 ? 0 : borrowPrice;
-    const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), listPrice);
+    const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), borrowNetwork, listPrice);
     const decimals = selectedToken?.decimals || 6;
 
     setBorrowState({
