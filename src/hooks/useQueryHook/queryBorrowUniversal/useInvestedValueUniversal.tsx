@@ -47,15 +47,12 @@ const useInvestedValueUniversal = () => {
 
   //Total deposit include already deposit amount and input amount
   const totalDepositValue = useMemo(() => {
-    if (crossMode && depositItems.length > 1) {
-      const totalPrice = depositItems.reduce((total, curr) => {
-        return total + Number(curr.price);
-      }, 0);
+    const totalPrice = depositItems.reduce((total, curr) => {
+      return total + Number(curr.price);
+    }, 0);
 
-      return totalPrice + depositedByAddress;
-    }
-    return depositItems[0].price + depositedByAddress;
-  }, [crossMode, depositItems, depositedByAddress]);
+    return totalPrice + depositedByAddress;
+  }, [depositItems, depositedByAddress]);
 
   const maxLtv = useMemo(() => {
     if (crossMode && asset) {

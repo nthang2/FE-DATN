@@ -1,10 +1,9 @@
-import { findTokenInfoByToken as findTokenInfoByTokenSOL } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { findTokenInfoByToken as findTokenInfoByToken } from 'src/constants/tokens/mapNameToInfo';
 import { TPriceList } from 'src/services/HandleApi/getPriceToken/getPriceToken';
 import { parseSignature, parseCompactSignature, compactSignatureToSignature } from 'viem';
 
-export const convertToUsd = (address: string, value: string, listPrice?: TPriceList) => {
-  const tokenInfo = findTokenInfoByTokenSOL(address);
+export const convertToUsd = (address: string, value: string, network: string, listPrice?: TPriceList) => {
+  const tokenInfo = findTokenInfoByToken(address, network);
   if (!tokenInfo || !listPrice) return 0;
   const tokenPrice = listPrice?.[address]?.price || 1;
 

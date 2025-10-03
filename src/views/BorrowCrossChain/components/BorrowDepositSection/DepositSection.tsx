@@ -95,7 +95,7 @@ const DepositSection = () => {
         return {
           ...item,
           value: inputValue,
-          price: convertToUsd(item.address, value, listPrice),
+          price: convertToUsd(item.address, value, selectedNetwork, listPrice),
           error: validateDepositItem(Number(value), Number(depositItemBalance(index))),
         };
       }
@@ -115,7 +115,7 @@ const DepositSection = () => {
         return {
           ...item,
           value: depositItemBalance(index)?.toFixed(decimals) || '0',
-          price: convertToUsd(item.address, depositItemBalance(index)?.toString() || '0', listPrice),
+          price: convertToUsd(item.address, depositItemBalance(index)?.toString() || '0', selectedNetwork, listPrice),
           error: undefined,
         };
       }

@@ -39,7 +39,7 @@ const BorrowSection = () => {
   const isShowYourBorrow = !!mintedValueUsd && Number(mintedValueUsd) > 0;
 
   const handleChangeInput = (value: string) => {
-    const price = convertToUsd(borrowState.address, decimalFlood(value, 6), listPrice);
+    const price = convertToUsd(borrowState.address, decimalFlood(value, 6), borrowNetwork, listPrice);
     const borrowPercent = ((price + yourBorrowByAddress) / totalDepositValue) * 100;
     const error = validateBorrowItem(Number(value), borrowPercent, maxLtv);
     const inputValue = regexConfigValue(decimalFlood(value, 6));
