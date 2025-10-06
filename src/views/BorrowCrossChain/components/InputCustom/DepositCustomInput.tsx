@@ -48,7 +48,6 @@ export default function DepositCustomInput(props: Props) {
   } = props;
   const [depositItems] = useDepositCrossState();
   const [selectedNetwork, setSelectedNetwork] = useState('solana');
-  console.log('🚀 ~ DepositCustomInput ~ selectedNetwork:', selectedNetwork);
   const { address: solanaAddress } = useSummarySolanaConnect();
   const { data: listBalanceEVM } = useGetAllBalanceEVM();
   const { allSlpTokenBalances: listBalanceSOL } = useFetchAllSolTokenBalances(solanaAddress);
