@@ -1,19 +1,19 @@
 import { ContentCopy } from '@mui/icons-material';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
-import { TokenName } from 'src/libs/crypto-icons';
 import { useNavigate } from 'react-router-dom';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import { listTokenAvailable, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
+import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
+import { TokenName } from 'src/libs/crypto-icons';
+import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import { useCrossModeState } from 'src/states/hooks';
 import { useModalFunction } from 'src/states/modal/hooks';
 import { copyTextToClipboard } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import RepayModal from './components/RepayModal';
-import { useCrossModeState } from 'src/states/hooks';
 import CrossModeRepayModal from './components/RepayModals/CrossModeRepayModal';
 
 const tableHead = ['Asset', 'Available', 'USDAI Minted', ''];
@@ -134,7 +134,7 @@ export default function Borrow() {
                       onClick={() => {
                         handleRepay(row);
                       }}
-                      disabled={borrowedValue == 0 || !borrowedValue}
+                      // disabled={borrowedValue == 0 || !borrowedValue}
                     >
                       Redeem
                     </Button>

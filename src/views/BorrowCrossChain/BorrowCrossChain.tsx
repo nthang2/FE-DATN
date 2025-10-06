@@ -5,20 +5,19 @@ import BorrowSection from './components/BorrowDepositSection/BorrowSection';
 import DepositSection from './components/BorrowDepositSection/DepositSection';
 // import BorrowRate from './components/BorrowRate/BorrowRate';
 // import HealthFactor from './components/HealthFactor/HealthFactor';
+import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
+import useGetListWallet from '../UniversalWallet/hooks/useGetListWallet';
+import AlertUniversalWallet from './components/AlertUniversalWallet/AlertUniversalWallet';
 import BorrowRate from './components/BorrowRate/BorrowRate';
 import HealthFactor from './components/HealthFactor/HealthFactor';
 import LTVSection from './components/LTVSection/LTVSection';
 import MintBanner from './components/MintBanner/MintBanner';
 import { useBorrowCrossSubmitState } from './state/hooks';
-import AlertUniversalWallet from './components/AlertUniversalWallet/AlertUniversalWallet';
-import useGetListWallet from '../UniversalWallet/hooks/useGetListWallet';
-import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 
 const BorrowCrossChain = () => {
   const [isSubmitted] = useBorrowCrossSubmitState();
   const { chainId, address } = useSummaryFirstActiveConnect();
   const { data: listWallet } = useGetListWallet(chainId, address);
-  console.log('🚀 ~ BorrowCrossChain ~ listWallet:', listWallet);
 
   return (
     <Box width="100%" mt={4}>
