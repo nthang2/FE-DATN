@@ -48,6 +48,7 @@ export default function DepositCustomInput(props: Props) {
   } = props;
   const [depositItems] = useDepositCrossState();
   const [selectedNetwork, setSelectedNetwork] = useState('solana');
+  console.log('🚀 ~ DepositCustomInput ~ selectedNetwork:', selectedNetwork);
   const { address: solanaAddress } = useSummarySolanaConnect();
   const { data: listBalanceEVM } = useGetAllBalanceEVM();
   const { allSlpTokenBalances: listBalanceSOL } = useFetchAllSolTokenBalances(solanaAddress);
@@ -126,7 +127,7 @@ export default function DepositCustomInput(props: Props) {
               p: '4px 10px',
               border: '1px solid #666662',
               borderRadius: '8px',
-              gap: '16px',
+              gap: '8px',
               height: '47px',
               bgcolor: '#444443',
             }}
@@ -136,21 +137,31 @@ export default function DepositCustomInput(props: Props) {
             }}
           >
             {selectProps && selectProps.disabled ? (
-              <Stack sx={{ alignItems: 'center' }}>
-                <IconToken tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
+              <Stack sx={{ alignItems: 'center', gap: 1 }}>
+                <Box sx={{ position: 'relative', top: '50%', transform: 'translateY(10%)' }}>
+                  <IconToken tokenName={TokenName.USDAI} sx={{ width: '36px', height: '36px' }} />
+                  <IconToken
+                    tokenName={selectedNetwork == 'solana' ? TokenName.SOL : TokenName.ETH}
+                    sx={{ position: 'absolute', right: '-6px', bottom: 6, width: '12px', height: '12px' }}
+                  />
+                </Box>
                 <Typography variant="body2">USDAI</Typography>
               </Stack>
             ) : (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <IconToken tokenName={selectToken?.symbol as TokenName} />
+                <Box sx={{ position: 'relative', top: '50%', transform: 'translateY(10%)' }}>
+                  <IconToken tokenName={selectToken?.symbol as TokenName} sx={{ width: '36px', height: '36px' }} />
+                  <IconToken
+                    tokenName={selectedNetwork == 'solana' ? TokenName.SOL : TokenName.ETH}
+                    sx={{ position: 'absolute', right: '-6px', bottom: 6, width: '12px', height: '12px' }}
+                  />
+                </Box>
                 <Typography variant="body2" sx={{ fontWeight: 700 }}>
                   {selectToken?.symbol}
                 </Typography>
               </Box>
             )}
-            <Box>
-              <ArrowDropDown />
-            </Box>
+            <ArrowDropDown />
           </Box>
         )}
         {
