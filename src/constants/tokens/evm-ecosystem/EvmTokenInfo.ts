@@ -10,8 +10,19 @@ export class EvmTokenInfo extends BaseTokenInfo {
     network: { id: string | number; name: string };
     isNative: boolean;
     coingeckoId?: string;
+    oracle?: string;
     ratio?: string;
   }) {
-    super(input.prettyName, input.symbol, input.decimals, input.address, input.network, input.isNative, input.coingeckoId, input.ratio);
+    super(
+      input.prettyName,
+      input.symbol,
+      input.decimals,
+      input.address,
+      input.network,
+      input.isNative,
+      input.coingeckoId,
+      input.oracle,
+      input.ratio
+    );
   }
 }

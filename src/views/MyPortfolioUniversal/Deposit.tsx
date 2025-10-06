@@ -2,16 +2,12 @@ import { ContentCopy } from '@mui/icons-material';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
-import {
-  listTokenAvailableUniversal as listTokenAvailableSol,
-  TSolanaToken,
-} from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { listTokenAvailableUniversal as listTokenAvailableSol } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { useModalFunction } from 'src/states/modal/hooks';
-import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import { BN, copyTextToClipboard } from 'src/utils';
 import { compactNumber, formatNumber } from '../../utils/format';
 import DepositModal from './components/DepositModal';
@@ -21,6 +17,7 @@ import { listTokenAvailable as listTokenAvailableEvm } from 'src/constants/token
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import { mapNameNetwork } from 'src/constants/network';
 import { EthereumChainTokenInfo } from 'src/constants/tokens/evm-ecosystem/list-tokens/ethereum/EthereumChainTokenInfo';
+import useGetBalanceUniversal from 'src/states/wallets/hooks/useGetBalanceUniversal';
 
 const listSol = Object.values(listTokenAvailableSol).filter((item) => item.symbol !== TokenName.USDAI);
 const listEvm = Object.values(listTokenAvailableEvm).filter((item) => item.symbol !== TokenName.USDAI);
@@ -29,9 +26,9 @@ export default function Deposit() {
   const { loading } = useAsyncExecute();
   const { address, networkName } = useSummaryFirstActiveConnect();
   const modalFunction = useModalFunction();
-  const { asset } = useMyPortfolioUniversal();
+  const { asset, assetByTokenName } = useMyPortfolioUniversal();
   const tokens = networkName === mapNameNetwork.solana.name ? listSol : listEvm;
-  const balance = useSolanaBalanceTokens(address, Object.keys(tokens) as Array<TSolanaToken>);
+  const { balance } = useGetBalanceUniversal({ address, network: networkName });
 
   const tableHead = ['Asset', 'In Wallet', 'Deposited', ''];
 
@@ -72,14 +69,17 @@ export default function Deposit() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tokens.map((row, index) => {
-              if (!balance[index] || !row) return null;
+            {tokens.map((row) => {
+              if (!balance || !balance[row.symbol] || !row) return null;
+              const balanceValue = balance[row.symbol];
 
-              const balanceInWalletByUsd = BN(balance[index].balance)
-                .multipliedBy(asset?.[row.address]?.priceUSD || 0)
+              const balanceInWalletByUsd = BN(balanceValue)
+                .multipliedBy(assetByTokenName?.[row.symbol].priceUSD || 0)
                 .toFixed(2);
-              const withdrawAbleValue = asset?.[row.address]?.maxWithdrawable;
-              const withdrawAblePrice = BN(asset?.[row.address]?.maxWithdrawable || 0).multipliedBy(asset?.[row.address]?.priceUSD || 0);
+              const withdrawAbleValue = assetByTokenName?.[row.symbol]?.maxWithdrawable;
+              const withdrawAblePrice = BN(assetByTokenName?.[row.symbol]?.maxWithdrawable || 0).multipliedBy(
+                assetByTokenName?.[row.symbol]?.priceUSD || 0
+              );
 
               return (
                 <TableRow key={row.address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -94,23 +94,23 @@ export default function Deposit() {
                   </TableCell>
                   <TableCell align="right">
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {compactNumber(balance[index].balance.toString(), 3)}
+                      {compactNumber(balanceValue.toString(), 3)}
                     </Typography>
                     <Typography variant="body3" sx={{ color: 'text.tertiary', fontSize: '10px' }}>
-                      {asset?.[row.address] ? '$' + balanceInWalletByUsd : '--'}
+                      {assetByTokenName?.[row.symbol] ? '$' + balanceInWalletByUsd : '--'}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {asset?.[row.address] ? formatNumber(asset?.[row.address].depositedAmount) : '--'}
+                      {assetByTokenName?.[row.symbol] ? formatNumber(assetByTokenName?.[row.symbol]?.depositedAmount) : '--'}
                     </Typography>
                     <Typography variant="body3" sx={{ color: 'text.tertiary', fontSize: '10px' }}>
-                      {asset?.[row.address] ? '$' + formatNumber(asset?.[row.address].depositedUSD) : '--'}
+                      {assetByTokenName?.[row.symbol] ? '$' + formatNumber(assetByTokenName?.[row.symbol]?.depositedUSD) : '--'}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
                     <Button
-                      disabled={BN(balance[index].balance).isLessThanOrEqualTo(0)}
+                      disabled={BN(balanceValue).isLessThanOrEqualTo(0)}
                       variant="contained"
                       size="small"
                       onClick={() => handleDeposit(row)}

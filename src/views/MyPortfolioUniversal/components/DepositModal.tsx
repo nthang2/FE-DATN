@@ -8,7 +8,6 @@ import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { mapNameNetwork } from 'src/constants/network';
-import { TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import { LendingContractUniversal } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingContractUniversal';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
@@ -17,49 +16,52 @@ import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQue
 import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
-import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
 import CheckHealthFactor from './CheckHealthFactor';
 import useDepositEVM from 'src/hooks/mutations/useDepositEVM';
 import { EthereumChainTokenInfo } from 'src/constants/tokens/evm-ecosystem/list-tokens/ethereum/EthereumChainTokenInfo';
+import useGetBalanceUniversalByToken from 'src/states/wallets/hooks/useGetBalanceUniversalByToken';
+import { TokenName } from 'src/libs/crypto-icons';
 
 export default function DepositModal({ token }: { token: SolanaEcosystemTokenInfo | EthereumChainTokenInfo }) {
   const wallet = useWallet();
   const { address, networkName, chainId } = useSummaryFirstActiveConnect();
   const { data: listWallet } = useGetListWallet(chainId, address);
   const { mutateAsync: depositEVM } = useDepositEVM();
-  const { data: tokensPrice } = useQueryAllTokensPrice();
+  const { priceByTokenName } = useQueryAllTokensPrice();
   const {
     balance,
     refetch: refetchBalance,
     isLoading: isLoadingBalance,
     error: errorBalance,
-  } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
+  } = useGetBalanceUniversalByToken({ address, network: networkName, token: token.symbol as TokenName });
   const { refetch: refetchDepositValue } = useQueryDepositValue();
   const { asyncExecute, loading } = useAsyncExecute();
-  const { asset } = useMyPortfolioUniversal();
+  const { assetByTokenName } = useMyPortfolioUniversal();
 
   const [valueDeposit, setValueDeposit] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
   const [valueDepositHelperText, setValueDepositHelperText] = useState<string | undefined>(undefined);
 
   const collateral = useMemo(() => {
-    return asset?.[token.address] ? formatNumber(BN(asset?.[token.address].depositedAmount).plus(Number(valueDeposit))) : '--';
-  }, [asset, token.address, valueDeposit]);
+    return assetByTokenName?.[token.symbol]
+      ? formatNumber(BN(assetByTokenName?.[token.symbol].depositedAmount).plus(Number(valueDeposit)))
+      : '--';
+  }, [assetByTokenName, token.symbol, valueDeposit]);
 
   const handleChangeValueDeposit = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValueDeposit(e.target.value);
-    if (!tokensPrice) return;
-    const _valueInUSD = BN(e.target.value).times(BN(tokensPrice[token.address].price)).toString();
+    if (!priceByTokenName) return;
+    const _valueInUSD = BN(e.target.value).times(BN(priceByTokenName[token.symbol].price)).toString();
     setValueInUSD(_valueInUSD);
   };
 
   const handleMax = () => {
     setValueDeposit(balance.toFixed(token.decimals));
-    if (!tokensPrice) return;
-    const _valueInUSD = BN(balance).times(BN(tokensPrice[token.address].price)).toString();
+    if (!priceByTokenName) return;
+    const _valueInUSD = BN(balance).times(BN(priceByTokenName[token.symbol].price)).toString();
     setValueInUSD(_valueInUSD);
   };
 
@@ -212,7 +214,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
             <Box sx={{ ml: 2 }}>
               <Typography sx={{ fontWeight: 600 }}>{collateral}</Typography>
               <Typography variant="body3" sx={{ fontWeight: 600, color: 'info.main' }}>
-                {formatNumber(BN(collateral).times(BN(tokensPrice?.[token.address]?.price || 0)), { fractionDigits: 4, prefix: '$' })}
+                {formatNumber(BN(collateral).times(BN(priceByTokenName?.[token.symbol]?.price || 0)), { fractionDigits: 4, prefix: '$' })}
               </Typography>
             </Box>
           </Box>

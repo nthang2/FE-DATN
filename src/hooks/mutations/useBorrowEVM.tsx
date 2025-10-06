@@ -16,6 +16,7 @@ import { readContract, signMessage, waitForTransactionReceipt, writeContract } f
 interface IProps {
   borrowAmount: string;
   selectedToken: string;
+  isMax?: boolean;
 }
 
 const useBorrowEVM = () => {
@@ -26,12 +27,15 @@ const useBorrowEVM = () => {
     mutationKey: ['useBorrowEVM'],
     mutationFn: async (props: IProps) => {
       try {
-        const { borrowAmount, selectedToken } = props;
+        const { borrowAmount, selectedToken, isMax } = props;
         const tokenInfo = findTokenInfoByTokenEVMMainnet(selectedToken as TokenName);
         const deadline = Math.floor(new Date().getTime() / 1000) + 8 * 24 * 60 * 60;
-        const amount = BN(borrowAmount)
-          .multipliedBy(BN(10).pow(BN(tokenInfo?.decimals ?? 6)))
-          .toNumber();
+        const maxAmount = BN(2).pow(64).minus(1);
+        const amount = isMax
+          ? BN(maxAmount).toNumber()
+          : BN(borrowAmount)
+              .multipliedBy(BN(10).pow(BN(tokenInfo?.decimals ?? 6)))
+              .toNumber();
 
         await switchToChainSelected();
         const nonce = await readContract(config, {

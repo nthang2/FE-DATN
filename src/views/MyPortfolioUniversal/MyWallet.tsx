@@ -5,77 +5,76 @@ import { useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import { listTokenAvailable, TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useDonutChartConfig from 'src/hooks/useHighcharts/useDonutChartConfig';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
-import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
-import { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { compactNumber, formatNumber } from 'src/utils/format';
+import { listTokenAvailableUniversal } from 'src/constants/tokens/mapNameToInfo';
+import useGetBalanceUniversal from 'src/states/wallets/hooks/useGetBalanceUniversal';
+import { TokenName } from 'src/libs/crypto-icons';
+import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 
 export default function MyWallet() {
-  const { address } = useSummarySolanaConnect();
-  const balance = useSolanaBalanceTokens(address, Object.keys(listTokenAvailable) as Array<TSolanaToken>);
-  const { data: tokensPrice, status: queryAllTokensPriceStatus } = useQueryAllTokensPrice();
-  const { data: depositValue, status: queryDepositValueStatus } = useQueryDepositValue();
-  const { asset } = useMyPortfolioUniversal();
+  const { address, networkName } = useSummaryFirstActiveConnect();
+  const listTokenAvailable = listTokenAvailableUniversal(networkName);
+  const { balance, status: statusBalance } = useGetBalanceUniversal({ address, network: networkName });
+  const { priceByTokenName, status: queryAllTokensPriceStatus } = useQueryAllTokensPrice();
+  const { assetByTokenName } = useMyPortfolioUniversal();
 
   const [includeDeposits, setIncludeDeposits] = useState<boolean>(false);
 
   const totalPrice = useMemo(() => {
-    if (tokensPrice != undefined && !includeDeposits)
-      return Object.values(balance).reduce((a, b) => {
-        if (tokensPrice[b.address] && tokensPrice[b.address].price != null) {
-          const price = tokensPrice[b.address] != undefined ? Number(tokensPrice[b.address]?.price) : 1;
-          return a + Number(b.balance.toString()) * price;
+    if (!listTokenAvailable || !balance) return 0;
+    if (priceByTokenName != undefined && !includeDeposits)
+      return Object.values(listTokenAvailable).reduce((a, b) => {
+        if (!b) return a;
+        if (priceByTokenName[b.symbol] && priceByTokenName[b.symbol].price != null) {
+          const price = priceByTokenName[b.symbol] != undefined ? Number(priceByTokenName[b.symbol]?.price) : 1;
+          return a + Number(balance[b.symbol]?.toString()) * price;
         }
         return a;
       }, 0);
-    else if (tokensPrice != undefined && includeDeposits && depositValue && asset) {
-      return Object.values(balance).reduce((a, b) => {
-        if (tokensPrice[b.address] && tokensPrice[b.address].price != null) {
-          const price = tokensPrice[b.address] != undefined ? Number(tokensPrice[b.address]?.price) : 1;
-          return a + (Number(b.balance.toString()) + Number(asset[b.address]?.depositedAmount ?? 0)) * price;
+    else if (priceByTokenName != undefined && includeDeposits && assetByTokenName) {
+      return Object.values(listTokenAvailable).reduce((a, b) => {
+        if (!b) return a;
+        if (priceByTokenName[b.symbol] && priceByTokenName[b.symbol].price != null) {
+          const price = priceByTokenName[b.symbol] != undefined ? Number(priceByTokenName[b.symbol]?.price) : 1;
+          return a + (Number(balance[b.symbol].toString()) + Number(assetByTokenName[b.symbol]?.depositedAmount ?? 0)) * price;
         }
         return a;
       }, 0);
     } else return 0;
-  }, [tokensPrice, includeDeposits, balance, depositValue, asset]);
-
-  const balanceStatus = useMemo(() => {
-    const statusTokens = balance.map((item) => {
-      return item.isLoading ? 'error' : 'success';
-    });
-    return statusTokens;
-  }, [balance]);
+  }, [listTokenAvailable, balance, priceByTokenName, includeDeposits, assetByTokenName]);
 
   const chartData = useMemo(() => {
-    // eslint-disable-next-line prefer-const
-    let result = [] as Array<{ id: string; name: string; y: number }>;
-    if (balance && tokensPrice) {
-      if (includeDeposits && depositValue && asset) {
-        balance.forEach((item, index) => {
+    const result = [] as Array<{ id: string; name: string; y: number }>;
+    if (balance && priceByTokenName) {
+      if (includeDeposits && assetByTokenName) {
+        Object.entries(balance).forEach(([key, value], index) => {
+          const tokenInfo = listTokenAvailable?.[key as TokenName];
+          if (!tokenInfo) return;
           result.push({
             id: index.toString(),
-            name: Object.keys(listTokenAvailable)[index],
+            name: key,
             y:
-              (Number(item.balance.toString()) + Number(asset[item.address]?.depositedAmount ?? 0)) *
-              Number(tokensPrice[item.address]?.price ?? 1),
+              (Number(value.toString()) + Number(assetByTokenName[key]?.depositedAmount ?? 0)) *
+              Number(priceByTokenName[tokenInfo?.symbol]?.price ?? 1),
           });
         });
       } else {
-        balance.forEach((item, index) => {
+        Object.entries(balance).forEach(([key, value], index) => {
+          const tokenInfo = listTokenAvailable?.[key as TokenName];
+          if (!tokenInfo) return;
           result.push({
             id: index.toString(),
-            name: Object.keys(listTokenAvailable)[index],
-            y: Number(item.balance.toString()) * Number(tokensPrice[item.address]?.price ?? 1),
+            name: key,
+            y: Number(value.toString()) * Number(priceByTokenName[tokenInfo?.symbol]?.price ?? 1),
           });
         });
       }
       return result;
     }
-  }, [balance, depositValue, includeDeposits, asset]);
+  }, [balance, priceByTokenName, includeDeposits, assetByTokenName, listTokenAvailable]);
 
   const options = useDonutChartConfig(
     {
@@ -132,7 +131,11 @@ export default function MyWallet() {
           </Typography>
           <Box className="flex-center">
             <ValueWithStatus
-              status={[...[queryAllTokensPriceStatus, includeDeposits ? queryDepositValueStatus : 'success'], ...balanceStatus]}
+              status={[
+                queryAllTokensPriceStatus as 'error' | 'success' | 'pending',
+                includeDeposits ? 'success' : 'success',
+                statusBalance as 'error' | 'success' | 'pending',
+              ]}
               value={
                 <Typography variant="h5" sx={{ fontWeight: 700, textAlign: 'center' }}>
                   ${totalPrice != undefined && compactNumber(totalPrice || 0)}

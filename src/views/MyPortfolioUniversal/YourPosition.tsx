@@ -1,41 +1,39 @@
 import { Box, Typography } from '@mui/material';
-import { TokenName } from 'src/libs/crypto-icons';
 import { useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import {
-  findTokenInfoByToken,
-  listTokenAvailable,
-  mapNameToInfoSolana,
-  TSolanaToken,
-} from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { listTokenAvailableUniversal } from 'src/constants/tokens/mapNameToInfo';
+import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
+import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
+import { TokenName } from 'src/libs/crypto-icons';
 import { useCrossModeState } from 'src/states/hooks';
-import useSolanaBalanceToken, { useSolanaBalanceTokens } from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
-import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
+import useGetBalanceUniversal from 'src/states/wallets/hooks/useGetBalanceUniversal';
+import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import SliderCustom from './components/SliderCustom';
 
 export default function YourPosition() {
-  const { address } = useSummarySolanaConnect();
-  const { data: depositValueData, status: statusQueryDepositValue } = useQueryDepositValue();
-  const { asset, status: statusMyPortfolio } = useMyPortfolioUniversal();
+  const { address, networkName } = useSummaryFirstActiveConnect();
+  const { data: depositValueData } = useQueryDepositValue();
+  const { assetByTokenName, status: statusMyPortfolio } = useMyPortfolioUniversal();
   const { data: tokensPrice, status: statusQueryAllTokensPrice } = useQueryAllTokensPrice();
   const { data: dataStakedInfo, status: statusStakedInfo } = useStakedInfo();
-  const { balance: balanceUSDAI } = useSolanaBalanceToken(address, TokenName.USDAI);
   const [crossMode] = useCrossModeState();
-  const balance = useSolanaBalanceTokens(address, Object.keys(listTokenAvailable) as Array<TSolanaToken>);
+  const { balance } = useGetBalanceUniversal({ address, network: networkName });
+  const balanceUSDAI = balance?.[TokenName.USDAI];
+  const listTokenAvailable = listTokenAvailableUniversal(networkName);
 
   const collateralDepositedInfo = useMemo(() => {
-    if (asset) {
-      const totalDepositedUsd = BN(Object.values(asset).reduce((total, item) => total + item.depositedUSD, 0));
+    if (assetByTokenName && listTokenAvailable) {
+      const totalDepositedUsd = BN(Object.values(assetByTokenName).reduce((total, item) => total + item.depositedUSD, 0));
       const totalBalanceTokens = BN(
-        Object.values(balance).reduce((total, item) => {
-          const balanceInWalletByUsd = BN(item.balance).multipliedBy(asset?.[item.address]?.priceUSD || 0);
+        Object.values(listTokenAvailable).reduce((total, item) => {
+          if (!balance || !item || !balance[item.symbol]) return total;
+          const balanceInWalletByUsd = BN(balance[item.symbol]?.toString()).multipliedBy(assetByTokenName?.[item.symbol]?.priceUSD || 0);
           return total + balanceInWalletByUsd.toNumber();
         }, 0)
       );
@@ -44,7 +42,7 @@ export default function YourPosition() {
     }
 
     return { totalDepositedUsd: BN(0), totalBalanceTokens: BN(0) };
-  }, [asset, balance]);
+  }, [assetByTokenName, balance, listTokenAvailable]);
   const collateralDepositedMaxValue = collateralDepositedInfo.totalBalanceTokens.plus(collateralDepositedInfo.totalDepositedUsd);
 
   const totalDepositValueRatio = useMemo(() => {
@@ -58,13 +56,13 @@ export default function YourPosition() {
   }, [depositValueData, tokensPrice]);
 
   const totalYourBorrowValue = useMemo(() => {
-    if (crossMode && asset) {
-      const { usdaiToRedeem } = asset[mapNameToInfoSolana[TokenName.USDAI].address];
+    if (crossMode && assetByTokenName && assetByTokenName[TokenName.USDAI]) {
+      const { usdaiToRedeem } = assetByTokenName[TokenName.USDAI];
       return usdaiToRedeem;
     }
 
-    if (asset && Object.keys(asset).length > 0 && Object.values(asset).find((a) => a.usdaiToRedeem)) {
-      return Object.values(asset).reduce((a, b) => {
+    if (assetByTokenName && Object.keys(assetByTokenName).length > 0 && Object.values(assetByTokenName).find((a) => a.usdaiToRedeem)) {
+      return Object.values(assetByTokenName).reduce((a, b) => {
         if (!crossMode && b.contractAddress === mapNameToInfoSolana[TokenName.USDAI].address) {
           return a;
         }
@@ -72,11 +70,11 @@ export default function YourPosition() {
         return a + Number(b.usdaiToRedeem);
       }, 0);
     }
-  }, [asset, crossMode]);
+  }, [assetByTokenName, crossMode]);
 
   const maxBorrowAbleValue = useMemo(() => {
-    if (crossMode && asset) {
-      const { maxAvailableToMint, usdaiToRedeem } = asset[mapNameToInfoSolana[TokenName.USDAI].address];
+    if (crossMode && assetByTokenName && assetByTokenName[TokenName.USDAI]) {
+      const { maxAvailableToMint, usdaiToRedeem } = assetByTokenName[TokenName.USDAI];
       return Number(maxAvailableToMint || 0) + usdaiToRedeem;
     }
 
@@ -85,8 +83,9 @@ export default function YourPosition() {
         ? Number(totalYourBorrowValue) // Nếu borrow vượt quá mức có thể vay, giới hạn theo borrow
         : Number(totalDepositValueRatio);
     }
+
     return Number(totalDepositValueRatio) || 0;
-  }, [asset, crossMode, totalDepositValueRatio, totalYourBorrowValue]);
+  }, [assetByTokenName, crossMode, totalDepositValueRatio, totalYourBorrowValue]);
 
   return (
     <BoxCustom sx={{ bgcolor: 'background.default' }}>
@@ -98,7 +97,7 @@ export default function YourPosition() {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="subtitle2">Collateral Deposited</Typography>
           <ValueWithStatus
-            status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
+            status={[statusMyPortfolio, statusQueryAllTokensPrice]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
                 {formatNumber(collateralDepositedInfo.totalDepositedUsd, { fractionDigits: 2, prefix: '$' })}
@@ -107,7 +106,7 @@ export default function YourPosition() {
           />
         </Box>
         <SliderCustom
-          status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
+          status={[statusMyPortfolio, statusQueryAllTokensPrice]}
           maxValue={collateralDepositedMaxValue.toNumber()}
           value={collateralDepositedInfo.totalDepositedUsd.toNumber()}
           textFill="Amount of your deposited assets used as collateral."
@@ -117,7 +116,7 @@ export default function YourPosition() {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="subtitle2">Minted</Typography>
           <ValueWithStatus
-            status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
+            status={[statusMyPortfolio, statusQueryAllTokensPrice]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
                 {formatNumber(totalYourBorrowValue, { fractionDigits: 2, prefix: '$', fallback: '$0' })}
@@ -126,7 +125,7 @@ export default function YourPosition() {
           />
         </Box>
         <SliderCustom
-          status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
+          status={[statusMyPortfolio, statusQueryAllTokensPrice]}
           value={totalYourBorrowValue}
           maxValue={maxBorrowAbleValue}
           textFill="Minted amount of USDAI against your maximum mintable amount."
@@ -136,7 +135,7 @@ export default function YourPosition() {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="subtitle2">Staked</Typography>
           <ValueWithStatus
-            status={[statusQueryDepositValue, statusMyPortfolio, statusQueryAllTokensPrice]}
+            status={[statusMyPortfolio, statusQueryAllTokensPrice]}
             value={
               <Typography variant="body2" sx={{ fontWeight: 700 }}>
                 {formatNumber(Number(dataStakedInfo?.amount), {
@@ -151,8 +150,8 @@ export default function YourPosition() {
           value={Number(dataStakedInfo?.amount)}
           maxValue={
             // eslint-disable-next-line no-extra-boolean-cast
-            Boolean(Number(balanceUSDAI.toString()) + Number(dataStakedInfo?.amount))
-              ? Number(balanceUSDAI.toString()) + Number(dataStakedInfo?.amount)
+            Boolean(Number(balanceUSDAI?.toString()) + Number(dataStakedInfo?.amount))
+              ? Number(balanceUSDAI?.toString()) + Number(dataStakedInfo?.amount)
               : undefined
           }
           textFill="Staked amount of USDAI."

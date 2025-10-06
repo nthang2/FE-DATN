@@ -20,7 +20,7 @@ export type TEthereumToken = keyof typeof mapNameToInfoEthereum;
 
 export const findTokenNameEthereum = isDevNet ? findTokenNameEthereumMainnet : findTokenNameEthereumDevnet;
 
-export const findTokenInfoByTokenEVM = isDevNet ? findTokenInfoByTokenEVMMainnet : findTokenInfoByTokenEVMDevnet;
+export const findTokenInfoByTokenEVM = isDevNet ? findTokenInfoByTokenEVMDevnet : findTokenInfoByTokenEVMMainnet;
 
 export const listTokenAvailable = isDevNet
   ? {

@@ -9,18 +9,18 @@ import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithSta
 import { mapNameNetwork } from 'src/constants/network';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import { LendingContractUniversal } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingContractUniversal';
+import useBurnEVM from 'src/hooks/mutations/useBurnEVM';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useMyPortfolioUniversalInfo from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import { TokenName } from 'src/libs/crypto-icons';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import useGetBalanceUniversal from 'src/states/wallets/hooks/useGetBalanceUniversal';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
-import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import { BN } from 'src/utils';
 import { decimalFlood, formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
 import CheckHealthFactor from './CheckHealthFactor';
-import useBurnEVM from 'src/hooks/mutations/useBurnEVM';
 
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
@@ -29,31 +29,32 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
   const { asyncExecute, loading } = useAsyncExecute();
   const { mutateAsync: asyncExecuteEVM } = useBurnEVM();
   const { refetch: refetchDepositValue } = useQueryDepositValue();
-  const { asset, status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo } = useMyPortfolioUniversalInfo();
-  const { balance } = useSolanaBalanceToken(address, TokenName.USDAI);
+  const { status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo, assetByTokenName } = useMyPortfolioUniversalInfo();
+  const { balance } = useGetBalanceUniversal({ address, network: networkName });
 
   const [valueRepay, setValueRepay] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
   const [valueRepayHelperText, setValueRepayHelperText] = useState<string | undefined>(undefined);
 
   const assetTokenInfo = useMemo(() => {
-    return asset?.[token.address];
-  }, [asset, token.address]);
+    return assetByTokenName?.[token.symbol];
+  }, [assetByTokenName, token.symbol]);
 
   const maxValue = useMemo(() => {
-    if (!assetTokenInfo) return '';
-    if (balance.lt(assetTokenInfo.usdaiToRedeem)) {
-      return balance.toString();
+    if (!assetTokenInfo || !balance) return '';
+    const usdaiBalance = balance?.[TokenName.USDAI];
+    if (usdaiBalance.lt(assetTokenInfo.usdaiToRedeem)) {
+      return usdaiBalance.toString();
     }
 
     return assetTokenInfo.usdaiToRedeem.toString();
   }, [assetTokenInfo, balance]);
 
   const handleMax = () => {
-    if (asset?.[token.address] != undefined) {
+    if (assetByTokenName?.[token.symbol] != undefined) {
       // setValueRepay(Number(maxValue).toFixed(token.decimals));
       setValueRepay(decimalFlood(maxValue, token.decimals));
-      const _valueInUSD = BN(assetTokenInfo?.usdaiToRedeem).toString();
+      const _valueInUSD = BN(assetByTokenName?.[token.symbol]?.priceUSD).multipliedBy(maxValue).toString();
       setValueInUSD(_valueInUSD);
     }
   };
@@ -65,7 +66,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
   };
 
   const handleRepay = async () => {
-    if (!wallet || !wallet.wallet?.adapter.publicKey) return;
+    if (!address) return;
     let hash = '';
     if (networkName === mapNameNetwork.solana.name) {
       const lendingContract = new LendingContractUniversal(wallet);

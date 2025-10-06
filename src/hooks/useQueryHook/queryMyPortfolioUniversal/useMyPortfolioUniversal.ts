@@ -1,4 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { TMyPortfolioAsset } from 'src/services/HandleApi/getMyPortfolioInfo/type';
 import { getMyPortfolioUniversal } from 'src/services/HandleApi/getMyPortfolioUniversal/getMyPortfolioUniversal';
 import { useCrossModeState } from 'src/states/hooks';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
@@ -19,7 +21,14 @@ const useMyPortfolioUniversal = () => {
     enabled: Boolean(address),
   });
 
-  return { ...query, ...query.data };
+  const assetByTokenName = useMemo(() => {
+    return Object.values(query.data?.asset || {}).reduce((acc, curr) => {
+      acc[curr.name] = curr;
+      return acc;
+    }, {} as { [key: string]: TMyPortfolioAsset });
+  }, [query.data?.asset]);
+
+  return { ...query, ...query.data, assetByTokenName };
 };
 
 export default useMyPortfolioUniversal;

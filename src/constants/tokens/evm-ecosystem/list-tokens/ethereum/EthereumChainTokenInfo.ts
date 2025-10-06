@@ -10,6 +10,7 @@ export class EthereumChainTokenInfo extends EvmTokenInfo {
     address: Address;
     isNative: boolean;
     coingeckoId?: string;
+    oracle?: string;
     ratio?: string;
   }) {
     super({
@@ -20,6 +21,7 @@ export class EthereumChainTokenInfo extends EvmTokenInfo {
       network: { id: 1, name: 'Ethereum' },
       isNative: input.isNative,
       coingeckoId: input.coingeckoId,
+      oracle: input.oracle,
       ratio: input.ratio,
     });
   }

@@ -19,6 +19,7 @@ export const ai16zTokenSolana = new SolanaMainnetTokenInfo({
   isToken2022: true,
   isNative: false,
   oracle: '95Af7sxjVyunTTikaJQymK3rVwDtEVBtbnStXGMSR9wE',
+  ratio: '0.95',
 });
 
 export const trumpTokenSolana = new SolanaMainnetTokenInfo({

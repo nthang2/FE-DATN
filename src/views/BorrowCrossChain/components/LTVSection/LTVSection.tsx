@@ -27,7 +27,7 @@ const LTVSection = () => {
   const [borrowSubmitted] = useBorrowCrossSubmitState();
   const [isSubmitted] = useBorrowCrossSubmitState();
   const { totalDepositValue, yourBorrowByAddress, maxLtv, depositedByAddress, maxLiquidationThreshold } = useInvestedValueUniversal();
-  const { status: portfolioStatus } = useMyPortfolioUniversal();
+  const { status: portfolioStatus, asset } = useMyPortfolioUniversal();
   const [borrowNetwork] = useSelectedNetworkBorrowState();
 
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
@@ -53,14 +53,19 @@ const LTVSection = () => {
     }
 
     const borrowValue = (Number(sliderCommitValue) / 100) * totalDepositValue - yourBorrowByAddress;
-    const minValue = borrowValue < 0 ? 0 : Number(decimalFlood(borrowValue, usdaiInfo.decimals));
+    const maxAssetValue =
+      convertToUsd(borrowState.address, asset?.[borrowState.address]?.maxAvailableToMint?.toString() || '0', borrowNetwork, listPrice) ||
+      borrowValue;
+
+    console.log('🚀 ~ handleChangeSlider ~ maxAssetValue:', { maxAssetValue, borrowValue });
+    const minValue = maxAssetValue < 0 ? 0 : decimalFlood(Math.min(maxAssetValue, borrowValue), usdaiInfo.decimals);
     const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), borrowNetwork, listPrice);
     const error = validateBorrowItem(Number(borrowAmount), borrowPercent, maxLtv);
 
     setBorrowState({
       ...borrowState,
       value: borrowAmount ? decimalFlood(borrowAmount, usdaiInfo.decimals) : '0',
-      price: minValue,
+      price: Number(minValue),
       error: error,
     });
   };

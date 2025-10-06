@@ -3,16 +3,16 @@ import { useEffect, useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPriceUniversal from 'src/hooks/useQueryAllTokensPriceUniversal';
+import useInvestedValueUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useInvestedValueUniversal';
 import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import { TokenName } from 'src/libs/crypto-icons';
 import { useCrossModeState } from 'src/states/hooks';
 import { regexConfigValue } from 'src/utils';
 import { decimalFlood } from 'src/utils/format';
 import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState, useSelectedNetworkBorrowState } from '../../state/hooks';
-import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
+import { convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
 import BorrowPreview from './BorrowPreview';
-import useInvestedValueUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useInvestedValueUniversal';
 
 const BorrowSection = () => {
   const { data: listPrice } = useQueryAllTokensPriceUniversal();
@@ -54,11 +54,16 @@ const BorrowSection = () => {
 
   const handleMax = () => {
     if (isSubmitted) return;
-    const borrowPrice = (Number(maxLtv) / 100) * totalDepositValue - yourBorrowByAddress;
+    const maxValue = asset?.[borrowState.address]?.maxAvailableToMint || 0;
+    console.log('🚀 ~ handleMax ~ maxValue:', maxValue);
+
+    // const borrowPrice = (Number(maxLtv) / 100) * totalDepositValue - yourBorrowByAddress;
+    // const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), borrowNetwork, listPrice);
     const selectedToken = findTokenInfoByToken(borrowState.address);
+    const borrowPrice = convertToUsd(borrowState.address, maxValue.toString(), borrowNetwork, listPrice);
     const minValue = borrowPrice < 0 ? 0 : borrowPrice;
-    const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), borrowNetwork, listPrice);
     const decimals = selectedToken?.decimals || 6;
+    const borrowAmount = maxValue;
 
     setBorrowState({
       ...borrowState,

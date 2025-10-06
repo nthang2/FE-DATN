@@ -8,7 +8,6 @@ import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { mapNameNetwork } from 'src/constants/network';
-import { TSolanaToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import { LendingContractUniversal } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingContractUniversal';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
@@ -17,7 +16,6 @@ import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQue
 import useMyPortfolioUniversalInfo from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
-import useSolanaBalanceToken from 'src/states/wallets/solana-blockchain/hooks/useSolanaBalanceToken';
 import { BN } from 'src/utils';
 import { decimalFlood, formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
@@ -26,6 +24,8 @@ import useWithdrawEVM from 'src/hooks/mutations/useWithdrawEVM';
 import useGetTotalDepositedUniversal from 'src/hooks/useContract/useGetLiquidityWithdrawCap';
 import { mapNameChainId } from 'src/constants/chainId';
 import { EthereumChainTokenInfo } from 'src/constants/tokens/evm-ecosystem/list-tokens/ethereum/EthereumChainTokenInfo';
+import useGetBalanceUniversalByToken from 'src/states/wallets/hooks/useGetBalanceUniversalByToken';
+import { TokenName } from 'src/libs/crypto-icons';
 
 export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo | EthereumChainTokenInfo }) {
   const wallet = useWallet();
@@ -34,8 +34,8 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const { data: listWallet } = useGetListWallet(chainId, address);
   const { data: tokensPrice, status: statusQueryAllTokensPrice } = useQueryAllTokensPrice();
   const { asyncExecute, loading } = useAsyncExecute();
-  const { refetch: refetchBalance } = useSolanaBalanceToken(address, token.symbol as TSolanaToken);
-  const { asset, status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo } = useMyPortfolioUniversalInfo();
+  const { refetch: refetchBalance } = useGetBalanceUniversalByToken({ address, network: networkName, token: token.symbol as TokenName });
+  const { asset, status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo, assetByTokenName } = useMyPortfolioUniversalInfo();
   const { refetch: refetchDepositedValue } = useQueryDepositValue();
   const { data: totalDeposited } = useGetTotalDepositedUniversal({ chainId: Number(chainId), tokenName: token.symbol });
 
@@ -44,8 +44,10 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const [valueWithdrawHelperText, setValueWithdrawHelperText] = useState<string | undefined>(undefined);
 
   const collateral = useMemo(() => {
-    return asset?.[token.address] ? formatNumber(BN(asset?.[token.address].depositedAmount).minus(Number(valueWithdraw))) : '--';
-  }, [asset, token.address, valueWithdraw]);
+    return assetByTokenName?.[token.symbol]
+      ? formatNumber(BN(assetByTokenName?.[token.symbol].depositedAmount).minus(Number(valueWithdraw)))
+      : '--';
+  }, [assetByTokenName, token.symbol, valueWithdraw]);
 
   const handleChangeValueWithdraw = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValueWithdraw(e.target.value);
@@ -55,9 +57,9 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   };
 
   const maxValue = useMemo(() => {
-    if (!asset) return '';
-    return asset[token.address]?.maxWithdrawable.toString();
-  }, [asset, token.address]);
+    if (!assetByTokenName?.[token.symbol]) return '';
+    return assetByTokenName?.[token.symbol]?.maxWithdrawable.toString();
+  }, [assetByTokenName, token.symbol]);
 
   const handleMax = () => {
     if (asset) {
