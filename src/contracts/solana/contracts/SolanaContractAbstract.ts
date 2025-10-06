@@ -19,12 +19,12 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
   public provider: AnchorProvider;
   public program: Program<IDL>;
   public wallet: Wallet | null;
-  public contextWallet: WalletContextState;
+  public contextWallet: WalletContextState | null;
 
-  constructor(wallet: WalletContextState, programId: PublicKey, idl: IDL) {
+  constructor(wallet: WalletContextState | null, programId: PublicKey, idl: IDL) {
     this.provider = new AnchorProvider(publicClientSol(), wallet as any, { preflightCommitment: 'confirmed' });
     this.program = new Program(idl, { ...this.provider, publicKey: programId });
-    this.wallet = wallet.wallet;
+    this.wallet = wallet?.wallet || null;
     this.contextWallet = wallet;
   }
 
@@ -46,7 +46,7 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
         transaction.recentBlockhash = blockhash;
       }
       if (!transaction.feePayer) {
-        if (this.contextWallet.publicKey) {
+        if (this.contextWallet?.publicKey) {
           transaction.feePayer = this.contextWallet.publicKey;
         } else {
           throw new Error('Wallet not connected: fee payer is required');
@@ -153,7 +153,7 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
         throw new Error('Simulate error:' + simulate.value.logs?.join('\n'));
       }
     }
-    if (this.contextWallet.wallet?.adapter.name === 'Phantom') {
+    if (this.contextWallet?.wallet?.adapter.name === 'Phantom') {
       console.log('Phantom wallet detected');
       const provider = window?.phantom?.solana;
       if (transaction instanceof Transaction) {
@@ -169,12 +169,12 @@ export abstract class SolanaContractAbstract<IDL extends Idl> {
       return signature;
     }
 
-    const signature = await this.contextWallet.sendTransaction(transaction, connection, {
+    const signature = await this.contextWallet?.sendTransaction(transaction, connection, {
       maxRetries: 1000 * 60,
       preflightCommitment: 'finalized',
       ...options,
     });
-    await this.awaitConfirmTransaction(signature);
+    await this.awaitConfirmTransaction(signature || '');
 
     return signature;
   }

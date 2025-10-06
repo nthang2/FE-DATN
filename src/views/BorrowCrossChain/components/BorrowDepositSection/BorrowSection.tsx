@@ -10,7 +10,7 @@ import { useCrossModeState } from 'src/states/hooks';
 import { regexConfigValue } from 'src/utils';
 import { decimalFlood } from 'src/utils/format';
 import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState, useSelectedNetworkBorrowState } from '../../state/hooks';
-import { convertToUsd, validateBorrowItem } from '../../utils';
+import { convertToAmountToken, convertToUsd, validateBorrowItem } from '../../utils';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
 import BorrowPreview from './BorrowPreview';
 
@@ -54,16 +54,15 @@ const BorrowSection = () => {
 
   const handleMax = () => {
     if (isSubmitted) return;
-    const maxValue = asset?.[borrowState.address]?.maxAvailableToMint || 0;
-    console.log('🚀 ~ handleMax ~ maxValue:', maxValue);
+    // const maxValue = asset?.[borrowState.address]?.maxAvailableToMint || 0;
 
-    // const borrowPrice = (Number(maxLtv) / 100) * totalDepositValue - yourBorrowByAddress;
-    // const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), borrowNetwork, listPrice);
+    const borrowPrice = (Number(maxLtv) / 100) * totalDepositValue - yourBorrowByAddress;
     const selectedToken = findTokenInfoByToken(borrowState.address);
-    const borrowPrice = convertToUsd(borrowState.address, maxValue.toString(), borrowNetwork, listPrice);
     const minValue = borrowPrice < 0 ? 0 : borrowPrice;
     const decimals = selectedToken?.decimals || 6;
-    const borrowAmount = maxValue;
+    const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), borrowNetwork, listPrice);
+    // const borrowPrice = convertToUsd(borrowState.address, maxValue.toString(), borrowNetwork, listPrice);
+    // const borrowAmount = maxValue;
 
     setBorrowState({
       ...borrowState,

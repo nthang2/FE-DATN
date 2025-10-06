@@ -15,6 +15,7 @@ import CustomMark from '../BorrowSlide/CustomMark';
 import CustomThumb from '../BorrowSlide/CustomThumb';
 import CustomTrack from '../BorrowSlide/CustomTrack';
 import useInvestedValueUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useInvestedValueUniversal';
+import useGetCrossDepository from 'src/hooks/useQueryHook/queryBorrowUniversal/useGetCrossDepository';
 
 const minZoom = 0;
 const maxZoom = 100;
@@ -26,8 +27,9 @@ const LTVSection = () => {
   const { data: listPrice, status: priceStatus } = useQueryAllTokensPriceUniversal();
   const [borrowSubmitted] = useBorrowCrossSubmitState();
   const [isSubmitted] = useBorrowCrossSubmitState();
-  const { totalDepositValue, yourBorrowByAddress, maxLtv, depositedByAddress, maxLiquidationThreshold } = useInvestedValueUniversal();
-  const { status: portfolioStatus, asset } = useMyPortfolioUniversal();
+  const { totalDepositValue, yourBorrowByAddress, maxLtv, depositedByAddress, maxLiquidationThreshold, rate } = useInvestedValueUniversal();
+  const { status: portfolioStatus } = useMyPortfolioUniversal();
+  const { data: depository } = useGetCrossDepository();
   const [borrowNetwork] = useSelectedNetworkBorrowState();
 
   const [sliderValue, setSliderValue] = useState<number | number[]>(0);
@@ -37,8 +39,8 @@ const LTVSection = () => {
   }, [maxLiquidationThreshold, maxLtv]);
   //Total borrow include already mint amount and input amount
   const borrowPercent = useMemo(() => {
-    return ((borrowState.price + yourBorrowByAddress) / totalDepositValue) * 100;
-  }, [borrowState.price, totalDepositValue, yourBorrowByAddress]);
+    return ((borrowState.price + yourBorrowByAddress * rate) / totalDepositValue) * 100;
+  }, [borrowState.price, rate, totalDepositValue, yourBorrowByAddress]);
 
   //Min ltv for mint field not smaller than 0
   const minLTV = useMemo(() => {
@@ -46,19 +48,15 @@ const LTVSection = () => {
   }, [depositedByAddress, yourBorrowByAddress]);
 
   const handleChangeSlider = (value: number | number[]) => {
-    if (isSubmitted) return;
+    if (isSubmitted || !depository) return;
     let sliderCommitValue = value;
     if (!maxLtv || Number(value) > maxLtv) {
       sliderCommitValue = maxLtv;
     }
 
-    const borrowValue = (Number(sliderCommitValue) / 100) * totalDepositValue - yourBorrowByAddress;
-    const maxAssetValue =
-      convertToUsd(borrowState.address, asset?.[borrowState.address]?.maxAvailableToMint?.toString() || '0', borrowNetwork, listPrice) ||
-      borrowValue;
-
-    console.log('🚀 ~ handleChangeSlider ~ maxAssetValue:', { maxAssetValue, borrowValue });
-    const minValue = maxAssetValue < 0 ? 0 : decimalFlood(Math.min(maxAssetValue, borrowValue), usdaiInfo.decimals);
+    const borrowValue = (Number(sliderCommitValue) / 100) * totalDepositValue - yourBorrowByAddress * rate;
+    // const minValue = borrowValue < 0 ? 0 : decimalFlood(Math.min(maxAssetValue, borrowValue), usdaiInfo.decimals);
+    const minValue = borrowValue < 0 ? 0 : decimalFlood(borrowValue, usdaiInfo.decimals);
     const borrowAmount = convertToAmountToken(borrowState.address, minValue.toString(), borrowNetwork, listPrice);
     const error = validateBorrowItem(Number(borrowAmount), borrowPercent, maxLtv);
 
@@ -142,26 +140,6 @@ const LTVSection = () => {
             />
           }
         />
-
-        {/* Label */}
-        {/* <Stack width="100%" sx={{ alignItems: 'center', textAlign: 'center', display: { xs: 'none', md: 'none' } }}>
-          {markList.map((mark, index) => {
-            let width = mark.value;
-            if (index !== 0) {
-              if (index !== markList.length - 1) {
-                width = markList[index].value - markList[index - 1].value;
-              } else {
-                width = 100 - markList[index - 1].value;
-              }
-            }
-
-            return (
-              <Typography key={mark.value} width={`${width}%`}>
-                {labelMark[index]?.label}
-              </Typography>
-            );
-          })}
-        </Stack> */}
       </Box>
     </BoxCustom>
   );

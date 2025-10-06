@@ -1,23 +1,28 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { findTokenInfoByToken } from 'src/constants/tokens/mapNameToInfo';
 import {
-  mapNameToInfoSolana,
   findTokenInfoByToken as findTokenInfoByTokenSOL,
+  mapNameToInfoSolana,
 } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import { convertToUsd } from 'src/views/Borrow/utils';
-import useQueryDepositValueUniversal from '../queryMyPortfolioUniversal/useQueryDepositValue';
+import useQueryAllTokensPriceUniversal from 'src/hooks/useQueryAllTokensPriceUniversal';
 import { TokenName } from 'src/libs/crypto-icons';
 import { liquidationThreshold } from 'src/views/Borrow/constant';
-import useMyPortfolioUniversal from '../queryMyPortfolioUniversal/useMyPortfolioUniversal';
-import useQueryAllTokensPriceUniversal from 'src/hooks/useQueryAllTokensPriceUniversal';
+import { convertToUsd } from 'src/views/Borrow/utils';
 import { useDepositCrossState, useSelectedNetworkDepositState } from 'src/views/BorrowCrossChain/state/hooks';
-import { findTokenInfoByToken } from 'src/constants/tokens/mapNameToInfo';
+import useMyPortfolioUniversal from '../queryMyPortfolioUniversal/useMyPortfolioUniversal';
+import useQueryDepositValueUniversal from '../queryMyPortfolioUniversal/useQueryDepositValue';
+import useGetCrossDepository from './useGetCrossDepository';
+import { simulateRate } from 'src/contracts/solana/contracts/LendingContractUniversal/utils';
+import { BN } from 'src/utils';
 
 const useInvestedValueUniversal = () => {
   const { data: listPrice } = useQueryAllTokensPriceUniversal();
   const { asset } = useMyPortfolioUniversal();
+  const { data: depository } = useGetCrossDepository();
   const [depositItems] = useDepositCrossState();
   const { data: depositedValue } = useQueryDepositValueUniversal();
   const [depositNetwork] = useSelectedNetworkDepositState();
+  const [rate, setRate] = useState(1);
   const crossMode = true;
 
   //Already minted by deposit address
@@ -113,6 +118,26 @@ const useInvestedValueUniversal = () => {
     return borrowPrice;
   }, [maxLtv, totalDepositValue, yourBorrowByAddress]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (depository) {
+        const rate = simulateRate(
+          BN(depository.rate.toNumber()),
+          BN(depository.rho.toNumber()),
+          BN(depository.duty.toNumber()),
+          BN(depository.base.toNumber()),
+          BN(depository.debtTotal.toNumber()),
+          BN(Date.now() / 1000 + 60)
+        );
+        setRate(BN(rate.newRate).div(BN(1e12)).toNumber());
+      }
+    }, 10000); //10s update rate
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [depository]);
+
   return {
     yourBorrowByAddress,
     depositedByAddress,
@@ -120,6 +145,7 @@ const useInvestedValueUniversal = () => {
     maxLtv,
     maxLiquidationThreshold,
     maxBorrowPrice,
+    rate,
   };
 };
 

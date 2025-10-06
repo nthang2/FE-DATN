@@ -36,6 +36,7 @@ const ActionSection = () => {
   const { mutateAsync: borrowEVM } = useBorrowEVM();
   const [borrowNetwork] = useSelectedNetworkBorrowState();
   const [depositNetwork] = useSelectedNetworkDepositState();
+  console.log('🚀 ~ ActionSection ~ depositNetwork:', depositNetwork);
 
   const initDepositItems = useMemo(() => {
     return [...depositItems].filter((item) => !!item.value && item.value !== '0');
@@ -71,7 +72,7 @@ const ActionSection = () => {
     if (!address) return;
     let hash = '';
 
-    if (depositNetwork === mapNameNetwork.solana.name) {
+    if (depositNetwork.toLowerCase() === mapNameNetwork.solana.name.toLowerCase()) {
       const lendingContract = new LendingContractUniversal(wallet);
       hash = await lendingContract.deposit(Number(depositItem.value), depositItem.address, listWallet?.universalWallet);
     } else {
