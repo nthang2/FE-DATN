@@ -74,7 +74,7 @@ export default function Deposit() {
               const balanceValue = balance[row.symbol];
 
               const balanceInWalletByUsd = BN(balanceValue)
-                .multipliedBy(assetByTokenName?.[row.symbol].priceUSD || 0)
+                .multipliedBy(assetByTokenName?.[row.symbol]?.priceUSD || 0)
                 .toFixed(2);
               const withdrawAbleValue = assetByTokenName?.[row.symbol]?.maxWithdrawable;
               const withdrawAblePrice = BN(assetByTokenName?.[row.symbol]?.maxWithdrawable || 0).multipliedBy(

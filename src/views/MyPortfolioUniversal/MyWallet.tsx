@@ -48,7 +48,7 @@ export default function MyWallet() {
 
   const chartData = useMemo(() => {
     const result = [] as Array<{ id: string; name: string; y: number }>;
-    if (balance && priceByTokenName) {
+    if (address && balance && priceByTokenName) {
       if (includeDeposits && assetByTokenName) {
         Object.entries(balance).forEach(([key, value], index) => {
           const tokenInfo = listTokenAvailable?.[key as TokenName];
@@ -74,7 +74,7 @@ export default function MyWallet() {
       }
       return result;
     }
-  }, [balance, priceByTokenName, includeDeposits, assetByTokenName, listTokenAvailable]);
+  }, [balance, priceByTokenName, includeDeposits, assetByTokenName, listTokenAvailable, address]);
 
   const options = useDonutChartConfig(
     {
