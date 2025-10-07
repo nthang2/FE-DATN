@@ -123,9 +123,6 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
     );
     const { amount, index, pendingReward: userPendingReward } = await this.program.account.stakerInfo.fetch(user1Pda);
 
-    const slot = await this.provider.connection.getSlot();
-    const timestamp = await this.provider.connection.getBlockTime(slot);
-
     const [vaultConfigPda] = PublicKey.findProgramAddressSync(
       [Buffer.from(VAULT_CONFIG_SEED), new PublicKey(usdaiAddress).toBytes()],
       this.program.programId
@@ -136,6 +133,8 @@ export class VaultContract extends SolanaContractAbstract<IdlVault> {
       this.program.programId
     );
 
+    const slot = await this.provider.connection.getSlot();
+    const timestamp = await this.provider.connection.getBlockTime(slot);
     const { totalStaked, lastUpdated, globalIndex: vaultGlobalIndex } = await this.program.account.vault.fetch(vaultPda);
     const passTime = new BN(new BN(timestamp) - lastUpdated);
     const { rps, minAprBps } = await this.program.account.vaultConfig.fetch(vaultConfigPda);

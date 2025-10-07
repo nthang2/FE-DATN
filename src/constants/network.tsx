@@ -19,3 +19,8 @@ export const mapNameNetwork: Record<string, TNetwork> = {
     icon: <IconETH />,
   },
 } as const;
+
+export const listScanLink: Record<string, string> = {
+  solana: 'https://solscan.io/tx',
+  ethereum: 'https://etherscan.io/tx',
+};
