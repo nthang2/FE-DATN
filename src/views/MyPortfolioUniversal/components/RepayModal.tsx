@@ -7,13 +7,10 @@ import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { mapNameNetwork } from 'src/constants/network';
-import { listTokenAvailable as listTokenAvailableETH } from 'src/constants/tokens/evm-ecosystem/mapNameToInfoEthereum';
-import { listTokenAvailableSOLUniversal as listTokenAvailableSOL } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import { LendingContractUniversal } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingContractUniversal';
 import useBurnEVM from 'src/hooks/mutations/useBurnEVM';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
-import useQueryAllPriceByName from 'src/hooks/useQueryAllPriceByName';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useMyPortfolioUniversalInfo from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import { TokenName } from 'src/libs/crypto-icons';
@@ -22,9 +19,8 @@ import useGetBalanceUniversal from 'src/states/wallets/hooks/useGetBalanceUniver
 // import useGetAllBalanceEVM from 'src/states/wallets/evm-blockchain/hooks/useGetAllBalanceEVM';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import { BN } from 'src/utils';
-import { decimalFlood, formatAddress, formatNumber } from 'src/utils/format';
+import { decimalFlood, formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
-import { TNetwork } from '../type';
 import CheckHealthFactor from './CheckHealthFactor';
 
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
@@ -44,19 +40,8 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
   const [selectedNetwork, setSelectedNetwork] = useState('solana');
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   // const { data: listBalanceEVM } = useGetAllBalanceEVM();
-  const { data: listPrice } = useQueryAllPriceByName();
 
   const id = anchorEl ? `popover_redeem` : undefined;
-  const options = useMemo(() => {
-    return {
-      solana: [listTokenAvailableSOL.USDAI],
-      ethereum: [listTokenAvailableETH.USDAI],
-    };
-  }, []);
-
-  const optionByNetwork = useMemo(() => {
-    return options[selectedNetwork as TNetwork];
-  }, [selectedNetwork, options]);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const el = event.currentTarget;
@@ -237,57 +222,6 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
                     <Typography variant="body2" sx={{ fontWeight: 700, mt: 1 }}>
                       {item.name}
                     </Typography>
-                  </Box>
-                );
-              })}
-            </Box>
-            <Box sx={{ mt: 2 }}>
-              <Typography sx={{ color: '#FFFFFF', fontWeight: 700 }}>Select a token</Typography>
-              {optionByNetwork.map((o) => {
-                if (!o) return null;
-                // const displayOption = optionByNetwork.length <= 1 ? true : !depositItems.find((deposit) => deposit.address === o.address);
-                // const balance = selectedNetwork === 'ethereum' ? listBalanceEVM?.[o.symbol] : listBalanceSOL.data?.[o.symbol];
-                const price = listPrice?.[o.symbol]?.price || 0;
-                const valueInUsd = BN(balance || 0)
-                  .times(BN(price))
-                  .toString();
-
-                return (
-                  <Box
-                    sx={{
-                      borderBottom: '1px solid #565652',
-                      '&:last-child': { border: 'none' },
-                      padding: '4px 16px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      cursor: 'pointer',
-                    }}
-                    key={o.address}
-                    onClick={() => {
-                      handleClose();
-                    }}
-                  >
-                    <Stack>
-                      {mapNameNetwork[selectedNetwork]?.icon}
-                      <Box sx={{ ml: 1 }}>
-                        <Typography sx={{ color: '#FFFFFF', fontWeight: 600 }}>{mapNameNetwork[selectedNetwork].name}</Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Typography variant="caption2" sx={{ color: 'text.secondary' }}>
-                            {o.symbol}
-                          </Typography>
-                          <Typography variant="caption2" sx={{ color: 'text.secondary' }}>
-                            {formatAddress(o.address)}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Stack>
-                    <Box>
-                      <Typography sx={{ fontWeight: 600, color: '#FFFFFF' }}>{balance?.toString() || 0}</Typography>
-                      <Typography variant="caption2" sx={{ fontWeight: 600, color: '#FFFFFF' }}>
-                        {formatNumber(valueInUsd, { prefix: '$' })}
-                      </Typography>
-                    </Box>
                   </Box>
                 );
               })}
