@@ -1,4 +1,5 @@
-import { Box, Typography } from '@mui/material';
+import { RotateLeft } from '@mui/icons-material';
+import { Box, Stack, Typography, useMediaQuery } from '@mui/material';
 import { useMemo } from 'react';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
@@ -10,11 +11,13 @@ import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniv
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
 import { TokenName } from 'src/libs/crypto-icons';
 import { useCrossModeState } from 'src/states/hooks';
+import { useModalFunction } from 'src/states/modal/hooks';
 import useGetBalanceUniversal from 'src/states/wallets/hooks/useGetBalanceUniversal';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import SliderCustom from './components/SliderCustom';
+import TransactionHistoryModal from './components/TransactionHistoryModal';
 
 export default function YourPosition() {
   const { address, networkName } = useSummaryFirstActiveConnect();
@@ -26,6 +29,19 @@ export default function YourPosition() {
   const { balance } = useGetBalanceUniversal({ address, network: networkName });
   const balanceUSDAI = balance?.[TokenName.USDAI];
   const listTokenAvailable = listTokenAvailableUniversal(networkName);
+  const modalFunction = useModalFunction();
+  const isMobile = useMediaQuery('(max-width: 600px)');
+
+  const handleOpenTransactionHistory = () => {
+    modalFunction({
+      type: 'openModal',
+      data: {
+        content: <TransactionHistoryModal />,
+        title: 'Transaction History',
+        modalProps: { maxWidth: isMobile ? 'xs' : 'md' },
+      },
+    });
+  };
 
   const collateralDepositedInfo = useMemo(() => {
     if (assetByTokenName && listTokenAvailable) {
@@ -89,9 +105,15 @@ export default function YourPosition() {
 
   return (
     <BoxCustom sx={{ bgcolor: 'background.default' }}>
-      <Box display={'flex'} justifyContent="space-between">
+      <Box sx={{ display: 'flex', gap: 2 }} justifyContent="space-between">
         <Typography variant="h5">Your Position</Typography>
         {/* <CrossModeSwitch /> */}
+        <Stack sx={{ alignItems: 'center', cursor: 'pointer', justifyContent: 'end' }} onClick={handleOpenTransactionHistory}>
+          <RotateLeft sx={{ width: '24px', height: '24px' }} />
+          <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' } }}>
+            Transactions History
+          </Typography>
+        </Stack>
       </Box>
       <Box sx={{ mt: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

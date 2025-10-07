@@ -1,5 +1,5 @@
-import { SettingsOutlined } from '@mui/icons-material';
-import { Box, Divider, FormHelperText, Stack, Typography } from '@mui/material';
+import { ArrowDropDown, SettingsOutlined } from '@mui/icons-material';
+import { Box, Divider, FormHelperText, Popover, Stack, Typography } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
@@ -7,34 +7,43 @@ import { toast } from 'react-toastify';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
+import { mapNameChainId } from 'src/constants/chainId';
 import { mapNameNetwork } from 'src/constants/network';
+import { EthereumChainTokenInfo } from 'src/constants/tokens/evm-ecosystem/list-tokens/ethereum/EthereumChainTokenInfo';
+import { listTokenAvailable as listTokenAvailableETH } from 'src/constants/tokens/evm-ecosystem/mapNameToInfoEthereum';
+import { listTokenAvailableSOLUniversal as listTokenAvailableSOL } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import { LendingContractUniversal } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingContractUniversal';
+import useWithdrawEVM from 'src/hooks/mutations/useWithdrawEVM';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
+import useGetTotalDepositedUniversal from 'src/hooks/useContract/useGetLiquidityWithdrawCap';
+import useQueryAllPriceByName from 'src/hooks/useQueryAllPriceByName';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useMyPortfolioUniversalInfo from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
+import { TokenName } from 'src/libs/crypto-icons';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
+import useGetBalanceUniversalByToken from 'src/states/wallets/hooks/useGetBalanceUniversalByToken';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import { BN } from 'src/utils';
-import { decimalFlood, formatNumber } from 'src/utils/format';
+import { decimalFlood, formatAddress, formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
+import { TNetwork } from '../type';
 import CheckHealthFactor from './CheckHealthFactor';
-import useWithdrawEVM from 'src/hooks/mutations/useWithdrawEVM';
-import useGetTotalDepositedUniversal from 'src/hooks/useContract/useGetLiquidityWithdrawCap';
-import { mapNameChainId } from 'src/constants/chainId';
-import { EthereumChainTokenInfo } from 'src/constants/tokens/evm-ecosystem/list-tokens/ethereum/EthereumChainTokenInfo';
-import useGetBalanceUniversalByToken from 'src/states/wallets/hooks/useGetBalanceUniversalByToken';
-import { TokenName } from 'src/libs/crypto-icons';
 
 export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo | EthereumChainTokenInfo }) {
   const wallet = useWallet();
+  const { data: listPrice } = useQueryAllPriceByName();
   const { address, networkName, chainId } = useSummaryFirstActiveConnect();
   const { mutateAsync: withdrawEVM } = useWithdrawEVM();
   const { data: listWallet } = useGetListWallet(chainId, address);
   const { data: tokensPrice, status: statusQueryAllTokensPrice } = useQueryAllTokensPrice();
   const { asyncExecute, loading } = useAsyncExecute();
-  const { refetch: refetchBalance } = useGetBalanceUniversalByToken({ address, network: networkName, token: token.symbol as TokenName });
+  const { balance, refetch: refetchBalance } = useGetBalanceUniversalByToken({
+    address,
+    network: networkName,
+    token: token.symbol as TokenName,
+  });
   const { asset, status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo, assetByTokenName } = useMyPortfolioUniversalInfo();
   const { refetch: refetchDepositedValue } = useQueryDepositValue();
   const { data: totalDeposited } = useGetTotalDepositedUniversal({ chainId: Number(chainId), tokenName: token.symbol });
@@ -42,6 +51,8 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const [valueWithdraw, setValueWithdraw] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
   const [valueWithdrawHelperText, setValueWithdrawHelperText] = useState<string | undefined>(undefined);
+  const [selectedNetwork, setSelectedNetwork] = useState<TNetwork>('solana');
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const collateral = useMemo(() => {
     return assetByTokenName?.[token.symbol]
@@ -60,6 +71,31 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
     if (!assetByTokenName?.[token.symbol]) return '';
     return assetByTokenName?.[token.symbol]?.maxWithdrawable.toString();
   }, [assetByTokenName, token.symbol]);
+
+  const id = anchorEl ? `popover_withdraw` : undefined;
+  const options = useMemo(() => {
+    return {
+      solana: [listTokenAvailableSOL.USDAI],
+      ethereum: [listTokenAvailableETH.USDAI],
+    };
+  }, []);
+
+  const optionByNetwork = useMemo(() => {
+    return options[selectedNetwork as TNetwork];
+  }, [selectedNetwork, options]);
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const el = event.currentTarget;
+    setAnchorEl(el);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleChangeNetworkInput = (network: TNetwork) => {
+    setSelectedNetwork(network);
+  };
 
   const handleMax = () => {
     if (asset) {
@@ -140,20 +176,145 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
           bgcolor: 'background.secondary',
         }}
       >
-        <Stack
+        <Box
           sx={{
+            display: 'flex',
             alignItems: 'center',
-            px: 2,
-            py: 2,
+            cursor: 'pointer',
             mr: 2,
-            border: '1px solid rgba(102, 102, 98, 1)',
+            p: '4px 10px',
+            border: '1px solid #666662',
             borderRadius: '8px',
-            bgcolor: 'secondary.dark',
+            gap: '8px',
+            height: '47px',
+            bgcolor: '#444443',
+          }}
+          aria-describedby={id}
+          onClick={(e) => {
+            handleClick(e);
           }}
         >
-          <IconToken tokenName={token.symbol} sx={{ mr: 1 }} />
-          <Typography variant="body2">{token.symbol}</Typography>
-        </Stack>
+          <Stack sx={{ alignItems: 'center', gap: 1 }}>
+            <Box sx={{ position: 'relative', top: '50%', transform: 'translateY(10%)' }}>
+              <IconToken tokenName={token.symbol} sx={{ width: '36px', height: '36px' }} />
+              <IconToken
+                tokenName={selectedNetwork == 'solana' ? TokenName.SOL : TokenName.ETH}
+                sx={{ position: 'absolute', right: '-6px', bottom: 6, width: '12px', height: '12px' }}
+              />
+            </Box>
+            <Typography variant="body2">{token.symbol}</Typography>
+          </Stack>
+          <ArrowDropDown />
+        </Box>
+        <Popover
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+          sx={{
+            mr: 2,
+          }}
+        >
+          <Box sx={{ p: '16px 20px', bgcolor: '#303030', width: '400px', maxHeight: '420px', height: '100%' }}>
+            <Typography sx={{ fontWeight: 700, color: '#FFFFFF', overflowY: 'hidden' }}>Select a network</Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 1,
+                mt: 1,
+                '& .selectedNetwork': {
+                  border: '1px solid',
+                  borderimage: 'linear-gradient(to right, #F2F9A5, #FEFFF3) 1',
+                  color: '#FFFFFF',
+                  bgcolor: '#444443',
+                },
+              }}
+            >
+              {Object.values(mapNameNetwork).map((item) => {
+                return (
+                  <Box
+                    key={item.name}
+                    sx={{
+                      p: 2.5,
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                    }}
+                    className={clsx({ selectedNetwork: selectedNetwork === item.id })}
+                    onClick={() => {
+                      handleChangeNetworkInput(item.id as TNetwork);
+                    }}
+                  >
+                    {item.icon}
+                    <Typography variant="body2" sx={{ fontWeight: 700, mt: 1 }}>
+                      {item.name}
+                    </Typography>
+                  </Box>
+                );
+              })}
+            </Box>
+            <Box sx={{ mt: 2 }}>
+              <Typography sx={{ color: '#FFFFFF', fontWeight: 700 }}>Select a token</Typography>
+              {optionByNetwork.map((o) => {
+                if (!o) return null;
+                // const displayOption = optionByNetwork.length <= 1 ? true : !depositItems.find((deposit) => deposit.address === o.address);
+                // const balance = selectedNetwork === 'ethereum' ? listBalanceEVM?.[o.symbol] : listBalanceSOL.data?.[o.symbol];
+                const price = listPrice?.[o.symbol]?.price || 0;
+                const valueInUsd = BN(balance || 0)
+                  .times(BN(price))
+                  .toString();
+
+                return (
+                  <Box
+                    sx={{
+                      borderBottom: '1px solid #565652',
+                      '&:last-child': { border: 'none' },
+                      padding: '4px 16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      cursor: 'pointer',
+                    }}
+                    key={o.address}
+                    onClick={() => {
+                      handleClose();
+                    }}
+                  >
+                    <Stack>
+                      {mapNameNetwork[selectedNetwork]?.icon}
+                      <Box sx={{ ml: 1 }}>
+                        <Typography sx={{ color: '#FFFFFF', fontWeight: 600 }}>{mapNameNetwork[selectedNetwork].name}</Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Typography variant="caption2" sx={{ color: 'text.secondary' }}>
+                            {o.symbol}
+                          </Typography>
+                          <Typography variant="caption2" sx={{ color: 'text.secondary' }}>
+                            {formatAddress(o.address)}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Stack>
+                    <Box>
+                      <Typography sx={{ fontWeight: 600, color: '#FFFFFF' }}>{balance?.toString() || 0}</Typography>
+                      <Typography variant="caption2" sx={{ fontWeight: 600, color: '#FFFFFF' }}>
+                        {formatNumber(valueInUsd, { prefix: '$' })}
+                      </Typography>
+                    </Box>
+                  </Box>
+                );
+              })}
+            </Box>
+          </Box>
+        </Popover>
         <Box
           sx={{
             //  width: '-webkit-fill-available',

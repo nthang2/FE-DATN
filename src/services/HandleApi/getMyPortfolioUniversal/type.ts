@@ -37,3 +37,28 @@ export type THealthFactoruniversalBody = {
   tokens: { token: string; amount: number }[];
   mintAmount: number;
 };
+
+export type TTransactionHistoryBody = { chainId: string; walletAddress: string };
+
+export type TTransactonHistoryItem = {
+  universalWallet: string | null;
+  actions: Array<{
+    actionType: number;
+    amount: string;
+    chainId: number;
+    deadline: number;
+    execution: Array<{
+      step: string;
+      tx: null | string;
+      success: boolean;
+      message: string;
+      timestamp: number;
+    }>;
+
+    nonce: number;
+    requestId: number;
+    state: string;
+    token: string;
+    user: string;
+  }>;
+};
