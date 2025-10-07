@@ -1,4 +1,4 @@
-import { listTokenAvailableUniversal } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { listTokenAvailableSOLUniversal } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { TokenName } from 'src/libs/crypto-icons';
 
 export const marks = [
@@ -26,7 +26,7 @@ export const labelMark = [
 ];
 
 export const defaultBorrowCrossValue = {
-  address: Object.values(listTokenAvailableUniversal)[0]?.address as string,
+  address: Object.values(listTokenAvailableSOLUniversal)[0]?.address as string,
   value: '0',
   price: 0,
 };

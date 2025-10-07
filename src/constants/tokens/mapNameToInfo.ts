@@ -1,7 +1,7 @@
 import { mapNameNetwork } from '../network';
 import { findTokenInfoByTokenEVM } from './evm-ecosystem/mapNameToInfoEthereum';
 import { findTokenInfoByToken as findTokenInfoByTokenSOL } from './solana-ecosystem/mapNameToInfoSolana';
-import { listTokenAvailableUniversal as listTokenAvailableSOL } from './solana-ecosystem/mapNameToInfoSolana';
+import { listTokenAvailableSOLUniversal as listTokenAvailableSOL } from './solana-ecosystem/mapNameToInfoSolana';
 import { listTokenAvailable as listTokenAvailableEVM } from './evm-ecosystem/mapNameToInfoEthereum';
 import { TokenName } from 'src/libs/crypto-icons';
 import { SolanaDevnetTokenInfo } from './solana-ecosystem/solana-devnet/SolanaDevnetTokenInfo';

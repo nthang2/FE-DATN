@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { ReactNode, useCallback, useMemo, useState } from 'react';
 import { mapNameNetwork } from 'src/constants/network';
 import { listTokenAvailable as listTokenAvailableETH } from 'src/constants/tokens/evm-ecosystem/mapNameToInfoEthereum';
-import { listTokenAvailableUniversal as listTokenAvailableSOL } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { listTokenAvailableSOLUniversal as listTokenAvailableSOL } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllPriceByName from 'src/hooks/useQueryAllPriceByName';
 import { TokenName } from 'src/libs/crypto-icons';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
