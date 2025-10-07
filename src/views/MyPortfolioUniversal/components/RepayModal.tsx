@@ -24,9 +24,8 @@ import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFir
 import { BN } from 'src/utils';
 import { decimalFlood, formatAddress, formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
+import { TNetwork } from '../type';
 import CheckHealthFactor from './CheckHealthFactor';
-
-type TNetwork = 'ethereum' | 'solana';
 
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
