@@ -39,6 +39,7 @@ const useGetAllBalanceEVM = () => {
         return result;
       }
     },
+    enabled: !!address,
   });
 
   return query;
