@@ -1,6 +1,7 @@
 import { MenuItem, SelectProps, Stack, Typography } from '@mui/material';
 import { CustomSelect } from 'src/components/General/CustomSelect/CustomSelect';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { mapNameNetwork } from 'src/constants/network';
+import { findTokenInfoByToken } from 'src/constants/tokens/mapNameToInfo';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { TokenName } from 'src/libs/crypto-icons/types';
 
@@ -8,9 +9,10 @@ type IProps = SelectProps & {
   options: string[];
   readonly?: boolean;
   hideDropdownIcon?: boolean;
+  network?: string;
 };
 
-const CustomSelectToken = ({ options, readonly, hideDropdownIcon, ...selectProps }: IProps) => {
+const CustomSelectToken = ({ options, readonly, hideDropdownIcon, network, ...selectProps }: IProps) => {
   return (
     <CustomSelect
       disabled={readonly}
@@ -30,7 +32,7 @@ const CustomSelectToken = ({ options, readonly, hideDropdownIcon, ...selectProps
       {...selectProps}
     >
       {options.map((item) => {
-        const tokenInfo = findTokenInfoByToken(item);
+        const tokenInfo = findTokenInfoByToken(item, network || mapNameNetwork.solana.id);
 
         return (
           <MenuItem

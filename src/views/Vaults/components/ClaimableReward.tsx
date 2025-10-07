@@ -7,26 +7,53 @@ import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
 import { queryClient } from 'src/layout/Layout';
 import { roundNumber } from 'src/utils/format';
+import { useVaultSelectedNetwork } from '../state/hooks';
+import useClamRewardVault from 'src/hooks/mutations/vault/useClamRewardVault';
+import { mapNameNetwork } from 'src/constants/network';
+import { useMemo } from 'react';
+import useVaultInfoEVM from 'src/hooks/useQueryHook/queryVault/useVaultInfoEVM';
 
 const ClaimableReward = () => {
   const wallet = useWallet();
   const { stakeInfo, status } = useStakedInfo();
   const { asyncExecute, loading } = useAsyncExecute();
+  const [selectedNetwork] = useVaultSelectedNetwork();
+  const { data: vaultInfoEVM, status: statusEVM } = useVaultInfoEVM();
+  const { mutateAsync: claimRewardEVM } = useClamRewardVault();
 
   const isConnectedWallet = Boolean(wallet.publicKey);
 
+  const rewardAmount = useMemo(() => {
+    if (selectedNetwork === mapNameNetwork.solana.id) {
+      return stakeInfo?.pendingReward || 0;
+    } else {
+      return vaultInfoEVM?.pendingReward || 0;
+    }
+  }, [selectedNetwork, stakeInfo?.pendingReward, vaultInfoEVM?.pendingReward]);
+
   const handleClaimReward = async () => {
-    if (!wallet) return;
+    if (selectedNetwork === mapNameNetwork.solana.id) {
+      if (!wallet) return;
 
-    asyncExecute({
-      fn: async () => {
-        const vaultContract = new VaultContract(wallet);
-        const hash = await vaultContract.claimReward();
-        await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
+      asyncExecute({
+        fn: async () => {
+          const vaultContract = new VaultContract(wallet);
+          const hash = await vaultContract.claimReward();
+          await queryClient.invalidateQueries({ queryKey: ['useStakedInfo'] });
 
-        return hash;
-      },
-    });
+          return hash;
+        },
+      });
+    } else {
+      asyncExecute({
+        fn: async () => {
+          const hash = await claimRewardEVM();
+          await queryClient.invalidateQueries({ queryKey: ['useVaultInfoEVM'] });
+
+          return hash;
+        },
+      });
+    }
   };
 
   return (
@@ -45,17 +72,17 @@ const ClaimableReward = () => {
           Claimable Rewards
         </Typography>
         <ValueWithStatus
-          status={[status]}
+          status={[status, statusEVM]}
           value={
             <Typography variant="h2" fontWeight={700} fontSize="42px" flex={1} sx={{ color: 'primary.main' }}>
-              ${roundNumber(stakeInfo?.pendingReward || 0, 4)}
+              ${roundNumber(rewardAmount || 0, 4)}
             </Typography>
           }
           skeletonStyle={{ bgcolor: '#c9c7c7', height: '60px', width: '50%' }}
         />
 
         <Typography variant="body2" color="text.secondary">
-          {roundNumber(stakeInfo?.pendingReward || 0, 6)} USDAI
+          {roundNumber(rewardAmount || 0, 6)} USDAI
         </Typography>
       </Box>
 
