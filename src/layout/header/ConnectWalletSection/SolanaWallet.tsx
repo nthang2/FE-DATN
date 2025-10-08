@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { Adapter } from '@solana/wallet-adapter-base';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { useDestinationWalletState, useSourceWalletState } from 'src/views/UniversalWallet/state/hooks';
@@ -12,11 +12,11 @@ interface IProps {
   isDestinationWallet?: boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const SolanaWallet = (props: IProps) => {
-  const { isDestinationWallet, onDisconnect } = props;
-  const { select, wallets, publicKey, wallet } = useWallet();
-  const { chainId, disconnect } = useSummarySolanaConnect();
-  const [search, setSearch] = useState<string>('');
+  const { select, wallets, publicKey } = useWallet();
+  const { chainId } = useSummarySolanaConnect();
+  const [search] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
   const [sourceWallet, setSourceWallet] = useSourceWalletState();
   const [searchDebounce] = useDebounce(search, 200);
@@ -28,16 +28,16 @@ const SolanaWallet = (props: IProps) => {
   async function handleConnect(adapter: Adapter) {
     try {
       select(adapter.name);
+      if (publicKey?.toString() !== sourceWallet.address) {
+        setSourceWallet({ address: publicKey?.toString() || '', wallet: adapter.icon || '', chainId: chainId || '' });
+      } else if (publicKey?.toString() !== destinationWallet.address) {
+        setDestinationWallet({ address: publicKey?.toString() || '', wallet: adapter.icon || '', chainId: chainId || '' });
+      }
     } catch (error) {
       console.error(error);
       toast.error((error as Error).message);
     }
   }
-
-  const handleDisconnect = () => {
-    disconnect();
-    onDisconnect();
-  };
 
   const handleClickBtn = (adapter: Adapter) => {
     if (adapter.connected) {
@@ -46,20 +46,6 @@ const SolanaWallet = (props: IProps) => {
       handleConnect(adapter);
     }
   };
-
-  useEffect(() => {
-    if (isDestinationWallet) {
-      //Only can do it in here bc we can't access wallet.adapter of destination wallet outside
-      if (publicKey?.toString() !== destinationWallet.address) {
-        setDestinationWallet({ address: publicKey?.toString() || '', wallet: wallet?.adapter.icon || '', chainId: chainId || '' });
-      }
-    } else {
-      if (publicKey?.toString() !== sourceWallet.address) {
-        setSourceWallet({ address: publicKey?.toString() || '', wallet: wallet?.adapter.icon || '', chainId: chainId || '' });
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [publicKey]);
 
   return (
     <Stack gap={1} direction="column">

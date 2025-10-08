@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Stack, Typography } from '@mui/material';
-import { useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { mapNameNetwork } from 'src/constants/network';
 import { walletIcon as walletIconEVM } from 'src/states/wallets/constants/walletIcon';
 import { config } from 'src/states/wallets/evm-blockchain/config';
 import { mapNameWalletIcon } from 'src/views/UniversalWallet/network';
@@ -13,10 +13,10 @@ type IProps = {
   isDestinationWallet?: boolean;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const EVMWallet = (props: IProps) => {
-  const { isDestinationWallet, onDisconnect } = props;
   const { connectAsync, connectors } = useConnect();
-  const { address, chainId, connector: connectorEVM } = getAccount(config);
+  const { address, connector: connectorEVM } = getAccount(config);
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
   const [sourceWallet, setSourceWallet] = useSourceWalletState();
   const walletIcon = connectorEVM ? connectorEVM.icon || walletIconEVM[connectorEVM.name] : undefined;
@@ -25,16 +25,26 @@ const EVMWallet = (props: IProps) => {
     try {
       disconnect(config);
       await connectAsync({ connector: connector });
+      if (address?.toString() !== sourceWallet.address) {
+        setSourceWallet({
+          address: address?.toString() || '',
+          wallet: connectorEVM?.icon || '',
+          iconWalletName: walletIcon,
+          chainId: mapNameNetwork.ethereum.chainId.toString(),
+        });
+      } else if (address?.toString() !== destinationWallet.address) {
+        setDestinationWallet({
+          address: address?.toString() || '',
+          wallet: connectorEVM?.icon || '',
+          iconWalletName: walletIcon,
+          chainId: mapNameNetwork.ethereum.chainId.toString(),
+        });
+      }
     } catch (error) {
       console.error(error);
       toast.error((error as Error).message);
     }
   }
-
-  const handleDisconnect = () => {
-    disconnect(config);
-    onDisconnect();
-  };
 
   const handleClickBtn = (connector: Connector) => {
     if (connector.id === connectorEVM?.id) {
@@ -43,29 +53,6 @@ const EVMWallet = (props: IProps) => {
       handleConnect(connector);
     }
   };
-
-  useEffect(() => {
-    if (isDestinationWallet) {
-      if (address?.toString() !== destinationWallet.address) {
-        setDestinationWallet({
-          address: address?.toString() || '',
-          wallet: connectorEVM?.icon || '',
-          iconWalletName: walletIcon,
-          chainId: String(chainId) || '',
-        });
-      }
-    } else {
-      if (address?.toString() !== sourceWallet.address) {
-        setSourceWallet({
-          address: address?.toString() || '',
-          wallet: connectorEVM?.icon || '',
-          iconWalletName: walletIcon,
-          chainId: String(chainId) || '',
-        });
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address]);
 
   return (
     <Stack gap={1} direction="column">

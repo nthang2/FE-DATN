@@ -317,9 +317,11 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
           <Box className="flex-center" sx={{ ml: 4 }}>
             <IconToken tokenName={TokenName.USDAI} sx={{ mr: 1 }} />
             <Box>
-              <Typography sx={{ fontWeight: 600, ml: 1 }}>{formatNumber(BN(maxValue).minus(Number(valueRepay) || 0))}</Typography>
+              <Typography sx={{ fontWeight: 600, ml: 1 }}>
+                {formatNumber(BN(assetTokenInfo.usdaiToRedeem).minus(Number(valueRepay) || 0))}
+              </Typography>
               <Typography variant="body3" sx={{ fontWeight: 600, ml: 1, color: 'info.main' }}>
-                {formatNumber(BN(maxValue).minus(Number(valueRepay) || 0), { fractionDigits: 0, prefix: '$' })}
+                {formatNumber(BN(assetTokenInfo.usdaiToRedeem).minus(Number(valueRepay) || 0), { fractionDigits: 0, prefix: '$' })}
               </Typography>
             </Box>
           </Box>

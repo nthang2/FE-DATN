@@ -10,6 +10,7 @@ import { Connector, useConnect } from 'wagmi';
 import { disconnect, getAccount } from 'wagmi/actions';
 import { mapNameWalletIcon } from '../../network';
 import { useDestinationWalletState, useSourceWalletState } from '../../state/hooks';
+import useSummaryEVMConnect from 'src/states/wallets/evm-blockchain/hooks/useSummaryEVMConnect';
 
 type IProps = {
   onDisconnect: () => void;
@@ -19,11 +20,12 @@ type IProps = {
 const ListWalletEthereum = (props: IProps) => {
   const { isDestinationWallet, onDisconnect } = props;
   const { connectAsync, connectors } = useConnect();
-  const { address, chainId, connector: connectorEVM } = getAccount(config);
+  const { address, connector: connectorEVM } = getAccount(config);
   const [search, setSearch] = useState<string>('');
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
   const [sourceWallet, setSourceWallet] = useSourceWalletState();
   const [searchDebounce] = useDebounce(search, 200);
+  const { chainId } = useSummaryEVMConnect();
   const walletIcon = connectorEVM ? connectorEVM.icon || walletIconEVM[connectorEVM.name] : undefined;
 
   const listConnecter = useMemo(() => {
