@@ -78,32 +78,34 @@ const HeaderItem = (props: TMenu) => {
             horizontal: 'center',
           }}
         >
-          {child &&
-            child.map((c) => {
-              return (
-                <Box key={c.title}>
-                  <NavLink to={c.url} style={{ textDecoration: 'none' }} onClick={handleClose}>
-                    <Button
-                      sx={(theme) => ({
-                        p: '6px 16px',
-                        background: pathname == c.url ? theme.palette.background.button : '#282825',
-                        color: pathname == c.url ? theme.palette.common.black : theme.palette.common.white,
-                        ':hover': {
-                          background: theme.palette.background.button,
-                          color: theme.palette.common.black,
-                        },
-                        borderRadius: '11px',
-                        width: '100%',
-                      })}
-                    >
-                      <Typography variant="body1" fontWeight={700}>
-                        {c.title}
-                      </Typography>
-                    </Button>
-                  </NavLink>
-                </Box>
-              );
-            })}
+          <Box sx={{ px: 1, py: 0.5 }}>
+            {child &&
+              child.map((c) => {
+                return (
+                  <Box key={c.title} sx={{ my: 0.5 }}>
+                    <NavLink to={c.url} style={{ textDecoration: 'none' }} onClick={handleClose}>
+                      <Button
+                        sx={(theme) => ({
+                          p: '6px 16px',
+                          background: pathname == c.url ? theme.palette.background.button : '#282825',
+                          color: pathname == c.url ? theme.palette.common.black : theme.palette.common.white,
+                          ':hover': {
+                            background: '#a0a09f',
+                            color: theme.palette.common.black,
+                          },
+                          borderRadius: '11px',
+                          width: '100%',
+                        })}
+                      >
+                        <Typography variant="body1" fontWeight={700}>
+                          {c.title}
+                        </Typography>
+                      </Button>
+                    </NavLink>
+                  </Box>
+                );
+              })}
+          </Box>
         </Popover>
       </Box>
     );

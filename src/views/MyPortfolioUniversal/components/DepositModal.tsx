@@ -24,7 +24,7 @@ import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import useGetBalanceUniversalByToken from 'src/states/wallets/hooks/useGetBalanceUniversalByToken';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import { BN } from 'src/utils';
-import { formatAddress, formatNumber } from 'src/utils/format';
+import { formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
 import { TAvailableToken, TNetwork } from '../type';
 import CheckHealthFactor from './CheckHealthFactor';
@@ -235,57 +235,6 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
                     <Typography variant="body2" sx={{ fontWeight: 700, mt: 1 }}>
                       {item.name}
                     </Typography>
-                  </Box>
-                );
-              })}
-            </Box>
-            <Box sx={{ mt: 2 }}>
-              <Typography sx={{ color: '#FFFFFF', fontWeight: 700 }}>Select a token</Typography>
-              {optionByNetwork.map((o) => {
-                if (!o) return null;
-                // const displayOption = optionByNetwork.length <= 1 ? true : !depositItems.find((deposit) => deposit.address === o.address);
-                // const balance = selectedNetwork === 'ethereum' ? listBalanceEVM?.[o.symbol] : listBalanceSOL.data?.[o.symbol];
-                const price = listPrice?.[o.symbol]?.price || 0;
-                const valueInUsd = BN(balance || 0)
-                  .times(BN(price))
-                  .toString();
-
-                return (
-                  <Box
-                    sx={{
-                      borderBottom: '1px solid #565652',
-                      '&:last-child': { border: 'none' },
-                      padding: '4px 16px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      cursor: 'pointer',
-                    }}
-                    key={o.address}
-                    onClick={() => {
-                      handleClose();
-                    }}
-                  >
-                    <Stack>
-                      {mapNameNetwork[selectedNetwork]?.icon}
-                      <Box sx={{ ml: 1 }}>
-                        <Typography sx={{ color: '#FFFFFF', fontWeight: 600 }}>{mapNameNetwork[selectedNetwork].name}</Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Typography variant="caption2" sx={{ color: 'text.secondary' }}>
-                            {o.symbol}
-                          </Typography>
-                          <Typography variant="caption2" sx={{ color: 'text.secondary' }}>
-                            {formatAddress(o.address)}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Stack>
-                    <Box>
-                      <Typography sx={{ fontWeight: 600, color: '#FFFFFF' }}>{balance?.toString() || 0}</Typography>
-                      <Typography variant="caption2" sx={{ fontWeight: 600, color: '#FFFFFF' }}>
-                        {formatNumber(valueInUsd, { prefix: '$' })}
-                      </Typography>
-                    </Box>
                   </Box>
                 );
               })}
