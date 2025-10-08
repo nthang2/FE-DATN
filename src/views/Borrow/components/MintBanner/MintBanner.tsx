@@ -6,6 +6,9 @@ import { compactNumber } from 'src/utils/format';
 const MintBanner = () => {
   const { data: lendingMetrics, status } = useLendingMetrics();
 
+  const totalConvertedAmount = lendingMetrics?.convertedAmount.reduce((acc, item) => acc + item.swappedAmount, 0);
+  const totalDeposited = Number(lendingMetrics?.marketSize || 0) + Number(totalConvertedAmount || 0);
+
   return (
     <Stack
       sx={{
@@ -36,7 +39,7 @@ const MintBanner = () => {
             status={[status]}
             value={
               <Typography variant="h2" fontWeight={700} fontSize="42px">
-                ${compactNumber(lendingMetrics?.marketSize || 0, 4)}
+                ${compactNumber(totalDeposited || 0, 4)}
               </Typography>
             }
             skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '50%' }}
