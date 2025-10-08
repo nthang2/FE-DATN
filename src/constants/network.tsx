@@ -5,6 +5,7 @@ export type TNetwork = {
   name: string;
   id: string;
   icon: React.ReactNode;
+  chainId: number;
 };
 
 export const mapNameNetwork: Record<string, TNetwork> = {
@@ -12,11 +13,13 @@ export const mapNameNetwork: Record<string, TNetwork> = {
     id: 'solana',
     name: 'Solana',
     icon: <IconSOL />,
+    chainId: 2,
   },
   ethereum: {
     id: 'ethereum',
     name: 'Ethereum',
     icon: <IconETH />,
+    chainId: 1,
   },
 } as const;
 

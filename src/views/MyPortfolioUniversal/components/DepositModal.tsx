@@ -31,16 +31,10 @@ import CheckHealthFactor from './CheckHealthFactor';
 
 export default function DepositModal({ token }: { token: SolanaEcosystemTokenInfo | EthereumChainTokenInfo }) {
   const wallet = useWallet();
-  const { address, networkName, chainId } = useSummaryFirstActiveConnect();
+  const { address, chainId } = useSummaryFirstActiveConnect();
   const { data: listWallet } = useGetListWallet(chainId, address);
   const { mutateAsync: depositEVM } = useDepositEVM();
   const { priceByTokenName } = useQueryAllTokensPrice();
-  const {
-    balance,
-    refetch: refetchBalance,
-    isLoading: isLoadingBalance,
-    error: errorBalance,
-  } = useGetBalanceUniversalByToken({ address, network: networkName, token: token.symbol as TokenName });
   const { refetch: refetchDepositValue } = useQueryDepositValue();
   const { asyncExecute, loading } = useAsyncExecute();
   const { assetByTokenName } = useMyPortfolioUniversal();
@@ -51,6 +45,13 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
   const [valueDepositHelperText, setValueDepositHelperText] = useState<string | undefined>(undefined);
   const [selectedNetwork, setSelectedNetwork] = useState<TNetwork>('solana');
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const {
+    balance,
+    refetch: refetchBalance,
+    isLoading: isLoadingBalance,
+    error: errorBalance,
+  } = useGetBalanceUniversalByToken({ address, network: selectedNetwork, token: token.symbol as TokenName });
 
   const id = anchorEl ? `popover_deposit` : undefined;
   const options = useMemo(() => {
@@ -96,7 +97,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
   const handleDeposit = async () => {
     if (!address) return;
     let hash = '';
-    if (networkName === mapNameNetwork.solana.name) {
+    if (selectedNetwork.toLowerCase() === mapNameNetwork.solana.name.toLowerCase()) {
       const lendingContract = new LendingContractUniversal(wallet);
       hash = await lendingContract.deposit(Number(valueDeposit), token.address, listWallet?.universalWallet);
     } else {

@@ -35,7 +35,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const { data: listWallet } = useGetListWallet(chainId, address);
   const { data: tokensPrice, status: statusQueryAllTokensPrice } = useQueryAllTokensPrice();
   const { asyncExecute, loading } = useAsyncExecute();
-  const { balance, refetch: refetchBalance } = useGetBalanceUniversalByToken({
+  const { refetch: refetchBalance } = useGetBalanceUniversalByToken({
     address,
     network: networkName,
     token: token.symbol as TokenName,

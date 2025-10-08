@@ -25,21 +25,21 @@ import CheckHealthFactor from './CheckHealthFactor';
 
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
-  const { address, networkName, chainId } = useSummaryFirstActiveConnect();
+  const { address, chainId } = useSummaryFirstActiveConnect();
 
   const { data: listWallet } = useGetListWallet(chainId, address);
   const { asyncExecute, loading } = useAsyncExecute();
   const { mutateAsync: asyncExecuteEVM } = useBurnEVM();
   const { refetch: refetchDepositValue } = useQueryDepositValue();
   const { status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo, assetByTokenName } = useMyPortfolioUniversalInfo();
-  const { balance } = useGetBalanceUniversal({ address, network: networkName });
 
   const [valueRepay, setValueRepay] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
   const [valueRepayHelperText, setValueRepayHelperText] = useState<string | undefined>(undefined);
   const [selectedNetwork, setSelectedNetwork] = useState('solana');
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  // const { data: listBalanceEVM } = useGetAllBalanceEVM();
+
+  const { balance } = useGetBalanceUniversal({ address, network: selectedNetwork });
 
   const id = anchorEl ? `popover_redeem` : undefined;
 
@@ -88,7 +88,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
   const handleRepay = async () => {
     if (!address) return;
     let hash = '';
-    if (networkName === mapNameNetwork.solana.name) {
+    if (selectedNetwork.toLowerCase() === mapNameNetwork.solana.name.toLowerCase()) {
       const lendingContract = new LendingContractUniversal(wallet);
       const maxRepay = maxValue;
       const isMaxValue = Number(maxRepay) === Number(valueRepay);

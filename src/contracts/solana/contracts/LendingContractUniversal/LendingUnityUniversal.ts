@@ -3,7 +3,7 @@ import { idlLending, IdlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { CONTROLLER_SEED, DEPOSITORY_TYPE1_SEED } from './constant';
 
-export class LendingUnityUniversal extends SolanaContractAbstract<IdlLending> {
+export class LendingUniversalUtils extends SolanaContractAbstract<IdlLending> {
   constructor() {
     super(null, ctrAdsSolana.lending, idlLending);
   }

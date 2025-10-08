@@ -4,16 +4,19 @@ import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import { mapNameNetwork } from 'src/constants/network';
 import WalletConnectIcon from '../../../../components/General/WalletConnectIcon/WalletConnectIcon';
 import { listNetwork } from '../../constant';
-import { useDestinationNetworkState, useDestinationWalletState, useSourceNetworkState } from '../../state/hooks';
+import { useDestinationNetworkState, useDestinationWalletState, useSourceNetworkState, useSourceWalletState } from '../../state/hooks';
 import ListWalletEthereum from './ListWalletEthereum';
 import ListWalletSolana from './ListWalletSolana';
 import SelectedNetwork from './SelectedNetwork';
+import useGetListWallet from '../../hooks/useGetListWallet';
 
 const DestinationDialog = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [destinationNetwork, setDestinationNetwork] = useDestinationNetworkState();
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
+  const [sourceWallet] = useSourceWalletState();
   const [sourceNetwork] = useSourceNetworkState();
+  const { data: listWallet } = useGetListWallet(sourceWallet.chainId, sourceWallet.address);
   const open = Boolean(anchorEl);
 
   const destinationWalletIcon = useMemo(() => {
@@ -28,6 +31,10 @@ const DestinationDialog = () => {
     return <></>;
   }, [destinationWallet.iconWalletName, destinationWallet.wallet]);
 
+  const checkDisableNetwork = (chainId: number) => {
+    return listWallet?.wallets?.some((wallet) => wallet.chainId === chainId) || false;
+  };
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -37,7 +44,7 @@ const DestinationDialog = () => {
   };
 
   const handleChangeNetwork = (network: string) => {
-    if (sourceNetwork !== network) {
+    if (sourceNetwork !== network && !checkDisableNetwork(mapNameNetwork[network].chainId)) {
       setDestinationNetwork(network);
       setDestinationWallet({ address: '', wallet: '', chainId: '' });
     }
@@ -93,6 +100,8 @@ const DestinationDialog = () => {
             <Stack gap={1}>
               {listNetwork.map((network) => {
                 const networkInfo = mapNameNetwork[network];
+                const isDisable = checkDisableNetwork(networkInfo.chainId) || sourceNetwork === networkInfo.id;
+                const isActive = destinationNetwork === networkInfo.id && !isDisable;
 
                 return (
                   <Box
@@ -107,10 +116,11 @@ const DestinationDialog = () => {
                       height: '70px',
                       cursor: 'pointer',
                       border: '1px solid transparent',
-                      ':hover': sourceNetwork !== networkInfo.id ? { bgcolor: 'secondary.dark', borderColor: 'primary.main' } : {},
-                      bgcolor: destinationNetwork === networkInfo.id ? 'secondary.dark' : 'transparent',
-                      borderColor: destinationNetwork === networkInfo.id ? 'primary.main' : 'transparent',
-                      opacity: sourceNetwork === networkInfo.id ? '0.5' : '1',
+                      ':hover':
+                        sourceNetwork !== networkInfo.id && !isDisable ? { bgcolor: 'secondary.dark', borderColor: 'primary.main' } : {},
+                      bgcolor: isActive ? 'secondary.dark' : 'transparent',
+                      borderColor: isActive ? 'primary.main' : 'transparent',
+                      opacity: isDisable ? '0.5' : '1',
                     }}
                     onClick={() => handleChangeNetwork(networkInfo.id)}
                   >

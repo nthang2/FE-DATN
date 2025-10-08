@@ -32,29 +32,23 @@ const WalletSection = () => {
         <SourceWalletDialog />
       </Box>
 
-      {isShowRequestLink && (
-        <Box>
-          <Typography variant="body2" fontWeight={600} color="text.secondary">
-            Destination Wallet
-          </Typography>
+      {/* {isShowRequestLink && (
+      )} */}
+      <Box>
+        <Typography variant="body2" fontWeight={600} color="text.secondary">
+          Destination Wallet
+        </Typography>
 
-          <DestinationDialog />
-        </Box>
-      )}
+        <DestinationDialog />
+      </Box>
 
-      {isShowRequestLink && (!genMessage || genMessage === '') && (
-        <ButtonLoading
-          variant="contained"
-          disabled={isDisableRequest}
-          fullWidth
-          onClick={() => requestLink()}
-          loading={isRequestLinkPending}
-        >
-          Request to link wallet
-        </ButtonLoading>
-      )}
+      {/* {isShowRequestLink && (!genMessage || genMessage === '') && (
+      )} */}
+      <ButtonLoading variant="contained" disabled={isDisableRequest} fullWidth onClick={() => requestLink()} loading={isRequestLinkPending}>
+        Request to link wallet
+      </ButtonLoading>
 
-      {!isShowRequestLink && (!genMessage || genMessage === '') && (
+      {/* {!isShowRequestLink && (!genMessage || genMessage === '') && (
         <Stack gap={2}>
           <Button variant="outlined" fullWidth onClick={() => setIsShowRequestLink(true)}>
             Add destination wallet
@@ -63,7 +57,7 @@ const WalletSection = () => {
             Create universal wallet
           </Button>
         </Stack>
-      )}
+      )} */}
 
       <SignMessageBtn />
     </BoxCustom>

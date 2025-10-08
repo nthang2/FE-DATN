@@ -1,4 +1,9 @@
-import { useDestinationWalletState, useSourceWalletState } from 'src/views/UniversalWallet/state/hooks';
+import {
+  useDestinationNetworkState,
+  useDestinationWalletState,
+  useSourceNetworkState,
+  useSourceWalletState,
+} from 'src/views/UniversalWallet/state/hooks';
 import { defaultSelectWallet } from 'src/views/UniversalWallet/state/state';
 import { chainIcon } from '../constants/chainIcon';
 import useSummaryEVMConnect from '../evm-blockchain/hooks/useSummaryEVMConnect';
@@ -23,10 +28,18 @@ const useSummaryConnect = () => {
   const solana = useSummarySolanaConnect();
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
   const [sourceWallet, setSourceWallet] = useSourceWalletState();
+  const [, setDestinationNetwork] = useDestinationNetworkState();
+  const [, setSourceNetwork] = useSourceNetworkState();
 
   const handleDisconnect = (item: SummaryConnectInfo) => {
-    if (item.address === sourceWallet.address) setSourceWallet(defaultSelectWallet); // reset source wallet
-    if (item.address === destinationWallet.address) setDestinationWallet(defaultSelectWallet); // reset destination wallet
+    if (item.address === sourceWallet.address) {
+      setSourceWallet(defaultSelectWallet);
+      setSourceNetwork('');
+    } // reset source wallet
+    if (item.address === destinationWallet.address) {
+      setDestinationWallet(defaultSelectWallet);
+      setDestinationNetwork('');
+    } // reset destination wallet
     item.disconnect?.();
   };
 
