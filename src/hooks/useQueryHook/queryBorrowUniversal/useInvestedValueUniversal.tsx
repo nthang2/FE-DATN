@@ -1,19 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { findTokenInfoByToken } from 'src/constants/tokens/mapNameToInfo';
-import {
-  findTokenInfoByToken as findTokenInfoByTokenSOL,
-  mapNameToInfoSolana,
-} from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { simulateRate } from 'src/contracts/solana/contracts/LendingContractUniversal/utils';
 import useQueryAllTokensPriceUniversal from 'src/hooks/useQueryAllTokensPriceUniversal';
 import { TokenName } from 'src/libs/crypto-icons';
+import { BN } from 'src/utils';
 import { liquidationThreshold } from 'src/views/Borrow/constant';
 import { convertToUsd } from 'src/views/Borrow/utils';
-import { useDepositCrossState, useSelectedNetworkDepositState } from 'src/views/BorrowCrossChain/state/hooks';
+import { useDepositCrossState } from 'src/views/BorrowCrossChain/state/hooks';
 import useMyPortfolioUniversal from '../queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import useQueryDepositValueUniversal from '../queryMyPortfolioUniversal/useQueryDepositValue';
 import useGetCrossDepository from './useGetCrossDepository';
-import { simulateRate } from 'src/contracts/solana/contracts/LendingContractUniversal/utils';
-import { BN } from 'src/utils';
 
 const useInvestedValueUniversal = () => {
   const { data: listPrice } = useQueryAllTokensPriceUniversal();
@@ -21,7 +18,6 @@ const useInvestedValueUniversal = () => {
   const { data: depository } = useGetCrossDepository();
   const [depositItems] = useDepositCrossState();
   const { data: depositedValue } = useQueryDepositValueUniversal();
-  const [depositNetwork] = useSelectedNetworkDepositState();
   const [rate, setRate] = useState(1);
   const crossMode = true;
 
@@ -65,14 +61,14 @@ const useInvestedValueUniversal = () => {
   }, [depositItems, depositedByAddress]);
 
   const maxLtv = useMemo(() => {
-    const tokenInfo = findTokenInfoByToken(depositItems[0].address, depositNetwork);
+    const tokenInfo = findTokenInfoByToken(depositItems[0].address, depositItems[0].network);
     return Number(tokenInfo?.ratio) * 100;
-  }, [depositItems, depositNetwork]);
+  }, [depositItems]);
 
   const maxLiquidationThreshold = useMemo(() => {
     if (crossMode && asset) {
       const totalCollateralValue = depositItems.reduce((total, curr) => {
-        const tokenInfo = findTokenInfoByTokenSOL(curr.address);
+        const tokenInfo = findTokenInfoByToken(curr.address, curr.network);
         const liquidationThresholdValue = liquidationThreshold[tokenInfo?.symbol as keyof typeof liquidationThreshold] || 0.3;
         return total + Number(curr.price) * Number(liquidationThresholdValue);
       }, 0);
@@ -99,13 +95,17 @@ const useInvestedValueUniversal = () => {
 
       const ltv = ((totalCollateralValue + collaboratedValueRatio) / (totalPrice + collaboratedTotalPrice)) * 100;
       const fallbackLiquidationThreshold =
-        Number(liquidationThreshold[findTokenInfoByTokenSOL(depositItems[0].address)?.symbol as keyof typeof liquidationThreshold]) * 100;
+        Number(
+          liquidationThreshold[
+            findTokenInfoByToken(depositItems[0].address, depositItems[0].network)?.symbol as keyof typeof liquidationThreshold
+          ]
+        ) * 100;
 
       return ltv || fallbackLiquidationThreshold || 30;
     }
 
     if (depositItems[0]) {
-      const tokenInfo = findTokenInfoByTokenSOL(depositItems[0].address);
+      const tokenInfo = findTokenInfoByToken(depositItems[0].address, depositItems[0].network);
       const liquidationThresholdValue = liquidationThreshold[tokenInfo?.symbol as keyof typeof liquidationThreshold] || 0.3;
       return Number(liquidationThresholdValue) * 100;
     }

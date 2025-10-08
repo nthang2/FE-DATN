@@ -87,14 +87,15 @@ export default function DepositCustomInput(props: Props) {
 
   const handleChangeNetworkInput = (network: string) => {
     setSelectedNetwork(network);
-    if (handleChangeNetwork) {
-      handleChangeNetwork(network);
-    }
+
     const newOptions = options()[network as TNetwork];
     const token = newOptions[0];
     setSelectToken(token);
     if (selectProps?.handleChangeSelect) {
       selectProps?.handleChangeSelect(token.address);
+    }
+    if (handleChangeNetwork) {
+      handleChangeNetwork(network);
     }
   };
 

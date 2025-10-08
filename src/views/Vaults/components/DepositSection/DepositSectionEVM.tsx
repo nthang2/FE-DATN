@@ -76,7 +76,7 @@ const DepositSectionEVM = () => {
           <ValueWithStatus
             status={[statusBalance]}
             value={<Typography flex={1}>{roundNumber(balance?.toNumber() || 0, 4)}</Typography>}
-            skeletonStyle={{ bgcolor: '#c9c7c7', height: '60px', width: '50%' }}
+            skeletonStyle={{ bgcolor: '#c9c7c7', height: '26px', width: '40px' }}
           />
         </Typography>
       </Stack>

@@ -3,18 +3,16 @@ import { useMemo } from 'react';
 import { getUniversalHealthFactor } from 'src/services/HandleApi/getMyPortfolioUniversal/getUniversalHealthFactor';
 import { useDebounce } from 'use-debounce';
 import useConnectSelectNetwork from './useConnectSelectNetwork';
+import { TBorrowCrossItem } from 'src/views/BorrowCrossChain/state/types';
 
 interface IProps {
-  depositItems: {
-    address: string;
-    value: string;
-  }[];
+  depositItems: TBorrowCrossItem[];
   mintAmount: number;
   otherKeys?: string[];
 }
 
 const useHealthFactorUniversal = ({ depositItems, mintAmount, otherKeys }: IProps) => {
-  const { address, chainId } = useConnectSelectNetwork();
+  const { address, chainId } = useConnectSelectNetwork(depositItems[0].network);
 
   const totalDepositAmount = useMemo(() => {
     return depositItems.reduce((total, item) => Number(item.value) + total, 0);

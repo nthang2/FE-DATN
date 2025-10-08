@@ -29,6 +29,7 @@ export const defaultBorrowCrossValue = {
   address: Object.values(listTokenAvailableSOLUniversal)[0]?.address as string,
   value: '0',
   price: 0,
+  network: 'solana',
 };
 
 export const liquidationThreshold = {

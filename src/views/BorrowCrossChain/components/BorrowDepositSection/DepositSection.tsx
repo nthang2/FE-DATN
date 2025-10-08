@@ -4,27 +4,28 @@ import { useSearchParams } from 'react-router-dom';
 import { PlusIcon } from 'src/assets/icons';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
-import { findTokenInfoByToken, listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken } from 'src/constants/tokens/mapNameToInfo';
+import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useQueryAllTokensPriceUniversal from 'src/hooks/useQueryAllTokensPriceUniversal';
 import useGetBalanceTokenUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useGetBalanceTokenUniversal';
 import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
 import { useCrossModeState } from 'src/states/hooks';
 import { regexConfigValue } from 'src/utils';
 import { defaultBorrowCrossValue } from '../../constant';
-import { useBorrowCrossSubmitState, useDepositCrossState, useSelectedNetworkDepositState } from '../../state/hooks';
+import { useBorrowCrossSubmitState, useDepositCrossState } from '../../state/hooks';
 import { convertToUsd, validateDepositItem } from '../../utils';
 import DepositItem from './DepositItem';
 import DepositPreview from './DepositPreview';
 
 const DepositSection = () => {
   const [depositItems, setDepositState] = useDepositCrossState();
+  console.log('🚀 ~ DepositSection ~ depositItems:', depositItems);
   const [isSubmitted] = useBorrowCrossSubmitState();
   const [searchParams, setSearchParams] = useSearchParams();
   const [crossMode] = useCrossModeState();
   const { data: listPrice } = useQueryAllTokensPriceUniversal();
   const { asset } = useMyPortfolioUniversal();
-  const [selectedNetwork] = useSelectedNetworkDepositState();
-  const { getBalance } = useGetBalanceTokenUniversal(selectedNetwork);
+  const { getBalance } = useGetBalanceTokenUniversal(depositItems[0].network);
 
   const depositedValueUsd = useMemo(() => {
     if (!asset || !listPrice) return 0;
@@ -42,7 +43,7 @@ const DepositSection = () => {
 
   const depositItemBalance = useCallback(
     (index: number) => {
-      const balance = getBalance(depositItems[index].address);
+      const balance = getBalance(depositItems[index].address, depositItems[index].network);
       return balance?.toNumber() || 0;
     },
     [getBalance, depositItems]
@@ -95,8 +96,23 @@ const DepositSection = () => {
         return {
           ...item,
           value: inputValue,
-          price: convertToUsd(item.address, value, selectedNetwork, listPrice),
+          price: convertToUsd(item.address, value, item.network, listPrice),
           error: validateDepositItem(Number(value), Number(depositItemBalance(index))),
+        };
+      }
+
+      return item;
+    });
+
+    setDepositState(cloneArr);
+  };
+
+  const handleChangeNetworkDepositItem = (index: number, value: string) => {
+    const cloneArr = depositItems.map((item, arrIndex) => {
+      if (arrIndex === index) {
+        return {
+          ...item,
+          network: value,
         };
       }
 
@@ -109,13 +125,13 @@ const DepositSection = () => {
   const handleMax = (index: number) => {
     const cloneArr = depositItems.map((item, arrIndex) => {
       if (arrIndex === index) {
-        const selectedToken = findTokenInfoByToken(item.address);
+        const selectedToken = findTokenInfoByToken(item.address, item.network);
         const decimals = selectedToken?.decimals || 6;
 
         return {
           ...item,
           value: depositItemBalance(index)?.toFixed(decimals) || '0',
-          price: convertToUsd(item.address, depositItemBalance(index)?.toString() || '0', selectedNetwork, listPrice),
+          price: convertToUsd(item.address, depositItemBalance(index)?.toString() || '0', item.network, listPrice),
           error: undefined,
         };
       }
@@ -155,6 +171,7 @@ const DepositSection = () => {
                 handleChangeSelectInput={handleChangeSelectInput}
                 handleRemoveItem={handleRemoveItem}
                 handleMax={handleMax}
+                handleChangeNetworkDepositItem={handleChangeNetworkDepositItem}
               />
             );
           })}

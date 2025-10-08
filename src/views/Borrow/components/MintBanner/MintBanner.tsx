@@ -6,7 +6,7 @@ import { compactNumber } from 'src/utils/format';
 const MintBanner = () => {
   const { data: lendingMetrics, status } = useLendingMetrics();
 
-  const totalConvertedAmount = lendingMetrics?.convertedAmount.reduce((acc, item) => acc + item.swappedAmount, 0);
+  const totalConvertedAmount = lendingMetrics?.convertedAmount?.reduce((acc, item) => acc + item.swappedAmount, 0);
   const totalDeposited = Number(lendingMetrics?.marketSize || 0) + Number(totalConvertedAmount || 0);
 
   return (

@@ -3,12 +3,11 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, Stack, Typography } from '@mui/material';
 import { useMemo } from 'react';
-import { findTokenInfoByTokenEVM } from 'src/constants/tokens/evm-ecosystem/mapNameToInfoEthereum';
-import { findTokenInfoByToken as findTokenInfoByTokenSOL } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken } from 'src/constants/tokens/mapNameToInfo';
 import useGetBalanceTokenUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useGetBalanceTokenUniversal';
 import { useCrossModeState } from 'src/states/hooks';
 import { formatNumber } from 'src/utils/format';
-import { useBorrowCrossSubmitState, useDepositCrossState, useSelectedNetworkDepositState } from '../../state/hooks';
+import { useBorrowCrossSubmitState, useDepositCrossState } from '../../state/hooks';
 import { TBorrowCrossItem } from '../../state/types';
 import DepositCustomInput from '../InputCustom/DepositCustomInput';
 
@@ -19,15 +18,15 @@ interface IProps {
   handleChangeSelectInput: (index: number, value: string) => void;
   handleRemoveItem: (index: number) => void;
   handleMax: (index: number) => void;
+  handleChangeNetworkDepositItem: (index: number, value: string) => void;
 }
 
 const DepositItem = (props: IProps) => {
-  const { item, handleChangeInput, handleChangeSelectInput, index, handleMax, handleRemoveItem } = props;
+  const { item, handleChangeInput, handleChangeSelectInput, index, handleMax, handleRemoveItem, handleChangeNetworkDepositItem } = props;
   const [crossMode] = useCrossModeState();
   const [depositedItems] = useDepositCrossState();
   const [isSubmitted] = useBorrowCrossSubmitState();
-  const [selectedNetwork, setSelectedNetwork] = useSelectedNetworkDepositState();
-  const { balance } = useGetBalanceTokenUniversal(selectedNetwork, item.address);
+  const { balance } = useGetBalanceTokenUniversal(item.network, item.address);
 
   const displayCloseIcon = useMemo(() => {
     if (!crossMode) {
@@ -38,11 +37,8 @@ const DepositItem = (props: IProps) => {
   }, [crossMode, depositedItems.length]);
 
   const tokenInfo = useMemo(() => {
-    if (selectedNetwork === 'ethereum') {
-      return findTokenInfoByTokenEVM(item.address);
-    }
-    return findTokenInfoByTokenSOL(item.address);
-  }, [item.address, selectedNetwork]);
+    return findTokenInfoByToken(item.address, item.network);
+  }, [item.address, item.network]);
 
   return (
     <DepositCustomInput
@@ -53,7 +49,7 @@ const DepositItem = (props: IProps) => {
         },
         value: item.value,
       }}
-      handleChangeNetwork={(network) => setSelectedNetwork(network)}
+      handleChangeNetwork={(network) => handleChangeNetworkDepositItem(index, network)}
       selectProps={{
         handleChangeSelect: (a: string) => handleChangeSelectInput(index, a),
         value: item.address,

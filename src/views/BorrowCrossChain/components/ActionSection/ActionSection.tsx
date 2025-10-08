@@ -10,13 +10,7 @@ import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQue
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import useFetchAllSolTokenBalances from 'src/states/wallets/solana-blockchain/hooks/useFetchAllSolTokenBalances';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
-import {
-  useBorrowCrossState,
-  useBorrowCrossSubmitState,
-  useDepositCrossState,
-  useSelectedNetworkBorrowState,
-  useSelectedNetworkDepositState,
-} from '../../state/hooks';
+import { useBorrowCrossState, useBorrowCrossSubmitState, useDepositCrossState, useSelectedNetworkBorrowState } from '../../state/hooks';
 import { TBorrowCrossItem } from '../../state/types';
 import BorrowTableRow from './BorrowTableRow';
 import DepositTableRow from './DepositTableRow';
@@ -35,8 +29,6 @@ const ActionSection = () => {
   const { mutateAsync: depositEVM } = useDepositEVM();
   const { mutateAsync: borrowEVM } = useBorrowEVM();
   const [borrowNetwork] = useSelectedNetworkBorrowState();
-  const [depositNetwork] = useSelectedNetworkDepositState();
-  console.log('🚀 ~ ActionSection ~ depositNetwork:', depositNetwork);
 
   const initDepositItems = useMemo(() => {
     return [...depositItems].filter((item) => !!item.value && item.value !== '0');
@@ -72,7 +64,7 @@ const ActionSection = () => {
     if (!address) return;
     let hash = '';
 
-    if (depositNetwork.toLowerCase() === mapNameNetwork.solana.name.toLowerCase()) {
+    if (depositItem.network.toLowerCase() === mapNameNetwork.solana.name.toLowerCase()) {
       const lendingContract = new LendingContractUniversal(wallet);
       hash = await lendingContract.deposit(Number(depositItem.value), depositItem.address, listWallet?.universalWallet);
     } else {

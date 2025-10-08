@@ -22,12 +22,12 @@ const useGetBalanceTokenUniversal = (selectedNetwork: string, tokenAddress?: str
   }, [selectedNetwork, listBalanceEVM, listBalanceSOL.data, tokenAddress]);
 
   const getBalance = useCallback(
-    (selectedAddress: string) => {
+    (selectedAddress: string, network?: string) => {
       if (!selectedAddress) return BN(0);
-      const tokenInfo =
-        selectedNetwork === 'ethereum' ? findTokenInfoByTokenEVM(selectedAddress) : findTokenInfoByTokenSOL(selectedAddress);
+      const currNetwork = network || selectedNetwork;
+      const tokenInfo = currNetwork === 'ethereum' ? findTokenInfoByTokenEVM(selectedAddress) : findTokenInfoByTokenSOL(selectedAddress);
       if (!tokenInfo) return BN(0);
-      if (selectedNetwork === 'ethereum') {
+      if (currNetwork === 'ethereum') {
         return listBalanceEVM?.[tokenInfo.symbol];
       }
       return listBalanceSOL.data?.[tokenInfo.symbol];

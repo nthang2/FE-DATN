@@ -3,6 +3,7 @@ export type TBorrowCrossItem = {
   value: string;
   price: number;
   error?: string;
+  network: string;
 };
 
 export type TBorrowCrossFunctionName = 'setBorrowCrossState';
