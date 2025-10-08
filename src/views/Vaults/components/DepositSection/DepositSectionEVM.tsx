@@ -8,11 +8,12 @@ import { queryClient } from 'src/layout/Layout';
 import { TokenName } from 'src/libs/crypto-icons';
 import useSummaryEVMConnect from 'src/states/wallets/evm-blockchain/hooks/useSummaryEVMConnect';
 import useGetBalanceUniversalByToken from 'src/states/wallets/hooks/useGetBalanceUniversalByToken';
-import { decimalFlood } from 'src/utils/format';
+import { decimalFlood, roundNumber } from 'src/utils/format';
 import CustomSelectToken from 'src/views/MyPortfolio/components/InputCustom/CustomSelectToken';
 import { listTokenAvailableVaultEVM } from '../../constant';
 import CustomSlider from '../CustomSlider/Slider';
 import useDepositVault from 'src/hooks/mutations/vault/useDepositVault';
+import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 
 const DepositSectionEVM = () => {
   const { address, status, networkName } = useSummaryEVMConnect();
@@ -22,7 +23,7 @@ const DepositSectionEVM = () => {
   const [inputValue, setInputValue] = useState<string>();
   const [sliderValue, setSliderValue] = useState(0);
   const [selectedToken, setSelectedToken] = useState<string>(listTokenAvailableVaultEVM[TokenName.USDAI].address);
-  const { balance } = useGetBalanceUniversalByToken({
+  const { balance, status: statusBalance } = useGetBalanceUniversalByToken({
     address,
     network: networkName,
     token: findTokenInfoByToken(selectedToken, networkName)?.symbol || TokenName.USDAI,
@@ -70,7 +71,14 @@ const DepositSectionEVM = () => {
     <Box>
       <Stack justifyContent="space-between" mb={0.5}>
         <Typography>Amount</Typography>
-        <Typography>Max: {balance?.toFixed(4)}</Typography>
+        <Typography display="flex" alignItems="center" gap={0.5}>
+          Max:
+          <ValueWithStatus
+            status={[statusBalance]}
+            value={<Typography flex={1}>{roundNumber(balance?.toNumber() || 0, 4)}</Typography>}
+            skeletonStyle={{ bgcolor: '#c9c7c7', height: '60px', width: '50%' }}
+          />
+        </Typography>
       </Stack>
 
       <CustomTextField
