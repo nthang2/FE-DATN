@@ -221,61 +221,64 @@ export default function DepositCustomInput(props: Props) {
                   );
                 })}
               </Box>
-              <Box sx={{ mt: 2 }}>
-                <Typography sx={{ color: '#FFFFFF', fontWeight: 700 }}>Select a token</Typography>
-                {optionByNetwork.map((o) => {
-                  if (!o) return null;
-                  const displayOption = optionByNetwork.length <= 1 ? true : !depositItems.find((deposit) => deposit.address === o.address);
-                  const balance = selectedNetwork === 'ethereum' ? listBalanceEVM?.[o.symbol] : listBalanceSOL.data?.[o.symbol];
-                  const price = listPrice?.[o.symbol]?.price || 0;
-                  const valueInUsd = BN(balance || 0)
-                    .times(BN(price))
-                    .toString();
+              {!(selectProps && selectProps.disabled) && (
+                <Box sx={{ mt: 2 }}>
+                  <Typography sx={{ color: '#FFFFFF', fontWeight: 700 }}>Select a token</Typography>
+                  {optionByNetwork.map((o) => {
+                    if (!o) return null;
+                    const displayOption =
+                      optionByNetwork.length <= 1 ? true : !depositItems.find((deposit) => deposit.address === o.address);
+                    const balance = selectedNetwork === 'ethereum' ? listBalanceEVM?.[o.symbol] : listBalanceSOL.data?.[o.symbol];
+                    const price = listPrice?.[o.symbol]?.price || 0;
+                    const valueInUsd = BN(balance || 0)
+                      .times(BN(price))
+                      .toString();
 
-                  return (
-                    <Box
-                      sx={{
-                        borderBottom: '1px solid #565652',
-                        '&:last-child': { border: 'none' },
-                        padding: '4px 16px',
-                        display: displayOption ? 'flex' : 'none',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        cursor: 'pointer',
-                      }}
-                      key={o.address}
-                      onClick={() => {
-                        if (selectProps?.handleChangeSelect) {
-                          setSelectToken(o);
-                          selectProps?.handleChangeSelect(o.address);
-                          handleClose();
-                        }
-                      }}
-                    >
-                      <Stack>
-                        {mapNameNetwork[selectedNetwork]?.icon}
-                        <Box sx={{ ml: 1 }}>
-                          <Typography sx={{ color: '#FFFFFF', fontWeight: 600 }}>{mapNameNetwork[selectedNetwork].name}</Typography>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Typography variant="caption2" sx={{ color: 'text.secondary' }}>
-                              {o.symbol}
-                            </Typography>
-                            <Typography variant="caption2" sx={{ color: 'text.secondary' }}>
-                              {formatAddress(o.address)}
-                            </Typography>
+                    return (
+                      <Box
+                        sx={{
+                          borderBottom: '1px solid #565652',
+                          '&:last-child': { border: 'none' },
+                          padding: '4px 16px',
+                          display: displayOption ? 'flex' : 'none',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          cursor: 'pointer',
+                        }}
+                        key={o.address}
+                        onClick={() => {
+                          if (selectProps?.handleChangeSelect) {
+                            setSelectToken(o);
+                            selectProps?.handleChangeSelect(o.address);
+                            handleClose();
+                          }
+                        }}
+                      >
+                        <Stack>
+                          {mapNameNetwork[selectedNetwork]?.icon}
+                          <Box sx={{ ml: 1 }}>
+                            <Typography sx={{ color: '#FFFFFF', fontWeight: 600 }}>{mapNameNetwork[selectedNetwork].name}</Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <Typography variant="caption2" sx={{ color: 'text.secondary' }}>
+                                {o.symbol}
+                              </Typography>
+                              <Typography variant="caption2" sx={{ color: 'text.secondary' }}>
+                                {formatAddress(o.address)}
+                              </Typography>
+                            </Box>
                           </Box>
+                        </Stack>
+                        <Box>
+                          <Typography sx={{ fontWeight: 600, color: '#FFFFFF' }}>{balance?.toString() || 0}</Typography>
+                          <Typography variant="caption2" sx={{ fontWeight: 600, color: '#FFFFFF' }}>
+                            {formatNumber(valueInUsd, { prefix: '$' })}
+                          </Typography>
                         </Box>
-                      </Stack>
-                      <Box>
-                        <Typography sx={{ fontWeight: 600, color: '#FFFFFF' }}>{balance?.toString() || 0}</Typography>
-                        <Typography variant="caption2" sx={{ fontWeight: 600, color: '#FFFFFF' }}>
-                          {formatNumber(valueInUsd, { prefix: '$' })}
-                        </Typography>
                       </Box>
-                    </Box>
-                  );
-                })}
-              </Box>
+                    );
+                  })}
+                </Box>
+              )}
             </Box>
           </Popover>
         }
