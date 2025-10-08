@@ -1,4 +1,18 @@
-import { Box, Pagination, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { CheckCircleOutline, ContentCopy, ErrorOutline } from '@mui/icons-material';
+import {
+  Box,
+  Pagination,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import { format as fd } from 'date-fns';
 import { useMemo, useState } from 'react';
 import Failed from 'src/components/StatusData/Failed';
 import JPowLoading from 'src/components/StatusData/Loading';
@@ -7,9 +21,11 @@ import { mapNameChainId } from 'src/constants/chainId';
 import { mapNameNetwork } from 'src/constants/network';
 import useQueryTrasactionsHistory from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useQueryTransactionsHistory';
 import { chainIconNetwork } from 'src/states/wallets/constants/chainIcon';
+import { copyTextToClipboard } from 'src/utils';
+import { formatAddress } from 'src/utils/format';
 import { actionType } from 'src/views/Borrow/constant';
 
-const tableHead = ['Network', 'Status', 'Action', 'Initiated At', 'Wallet Address'];
+const tableHead = ['Network', 'Action', 'Time', 'Transaction Hash', 'Status'];
 export default function TransactionHistoryModal() {
   const { data: transactionsHistoryData, status: statusQueryTrasactionsHistory } = useQueryTrasactionsHistory();
 
@@ -53,16 +69,11 @@ export default function TransactionHistoryModal() {
             dataRender.length > 0 ? (
               dataRender.map((row, index) => {
                 const IconNetwork = chainIconNetwork[row.chainId];
+                const eIndex = row.execution?.[0].message?.indexOf('Error Message')
+                  ? row.execution?.[0].message?.indexOf('Error Message') + 14
+                  : 0;
                 return (
                   <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                    <TableCell component="th" scope="row">
-                      <Stack sx={{ alignItems: 'center', gap: 1.5 }}>
-                        <IconNetwork />
-                        <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disabled' }}>
-                          {mapNameNetwork[mapNameChainId[row.chainId]].name}
-                        </Typography>
-                      </Stack>
-                    </TableCell>
                     <TableCell component="th" scope="row">
                       <Stack sx={{ alignItems: 'center', gap: 1.5 }}>
                         <IconNetwork />
@@ -81,18 +92,31 @@ export default function TransactionHistoryModal() {
                       </Stack>
                     </TableCell>
                     <TableCell component="th" scope="row">
-                      <Stack sx={{ alignItems: 'center', gap: 1.5 }}>
-                        <IconNetwork />
-                        <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disabled' }}>
-                          {mapNameNetwork[mapNameChainId[row.chainId]].name}
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
+                        {fd(row.timestamp * 1000, 'h:mm a')}
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
+                        {fd(row.timestamp * 1000, 'MMMM dd, yyy')}
+                      </Typography>
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      <Stack sx={{ gap: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
+                          {formatAddress(row.transactionHash)}
                         </Typography>
+                        <ContentCopy sx={{ fontSize: '14px' }} onClick={() => copyTextToClipboard(row.transactionHash)} />
                       </Stack>
                     </TableCell>
                     <TableCell component="th" scope="row">
-                      <Stack sx={{ alignItems: 'center', gap: 1.5 }}>
-                        <IconNetwork />
-                        <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disabled' }}>
-                          {mapNameNetwork[mapNameChainId[row.chainId]].name}
+                      <Stack sx={{ alignItems: 'center', gap: 0.5 }}>
+                        {row.state == 'Reverted' && (
+                          <Tooltip title={row.execution[0].message?.slice(eIndex)}>
+                            <ErrorOutline sx={{ color: '#FFB41E' }} />
+                          </Tooltip>
+                        )}
+                        {row.state == 'Completed' && <CheckCircleOutline sx={{ color: 'success.main' }} />}
+                        <Typography variant="body2" sx={{ fontWeight: 500, color: row.state == 'Completed' ? '#08DBA4' : '#FFB41E' }}>
+                          {row.state}
                         </Typography>
                       </Stack>
                     </TableCell>
@@ -120,7 +144,7 @@ export default function TransactionHistoryModal() {
           className="flex-center"
           sx={{ mt: 2 }}
           page={page}
-          count={Math.floor(transactionsHistoryData.actions.length / rowsPerPage) + 1}
+          count={Math.floor(transactionsHistoryData.actions.length / rowsPerPage)}
           onChange={handleChangePage}
         />
       )}
