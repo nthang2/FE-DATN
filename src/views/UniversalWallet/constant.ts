@@ -9,7 +9,7 @@ export const transactionHistoryTableHead: Array<{ label: string; width?: string 
   { label: 'Status' },
   { label: 'Action' },
   { label: 'Date' },
-  { label: 'Wallet Address' },
+  { label: 'Transaction Hash' },
 ];
 
 export const listNetwork = ['solana', 'ethereum'];
