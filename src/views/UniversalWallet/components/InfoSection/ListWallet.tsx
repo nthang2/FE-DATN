@@ -1,27 +1,32 @@
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
+import { useState } from 'react';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import NoData from 'src/components/StatusData/NoData';
+import { mapNameNetwork } from 'src/constants/network';
 import { chainIconNetwork, chainNetwork } from 'src/states/wallets/constants/chainIcon';
+import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 import { formatAddress } from 'src/utils/format';
 import { listWalletTableHead } from '../../constant';
 import useGetListWallet from '../../hooks/useGetListWallet';
 import useRemoveWallet from '../../hooks/useRemoveWallet';
 import { useSourceNetworkState, useSourceWalletState } from '../../state/hooks';
-import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 
 const ListWallet = () => {
   const [sourceWalletState] = useSourceWalletState();
   const [sourceNetworkState] = useSourceNetworkState();
   const listConnected = useSummaryConnect();
   const { address } = sourceWalletState;
-  const chainId = sourceNetworkState === 'solana' ? '2' : '1';
+  const chainId = sourceNetworkState === mapNameNetwork.solana.id ? '2' : '1';
   const { mutateAsync: removeWallet, isPending: loading } = useRemoveWallet();
   const { data: listWallet } = useGetListWallet(chainId, address);
+  const [loadingAddress, setLoadingAddress] = useState<string>('');
 
   const asyncRemoveWallet = async (wallet: string, network: string) => {
-    if (wallet === address) {
-      await removeWallet({ wallet, network });
-    }
+    setLoadingAddress(wallet);
+    await removeWallet({ wallet, network });
+
+    setLoadingAddress('');
   };
 
   return (
@@ -64,16 +69,27 @@ const ListWallet = () => {
                   </TableCell>
                   <TableCell>{formatAddress(item.walletAddress)}</TableCell>
                   <TableCell>
-                    <ButtonLoading
-                      variant="contained"
-                      disabled={!isConnected || isCanRemoveFirstWallet}
-                      sx={{ height: '32px' }}
-                      color="secondary"
-                      loading={item.walletAddress === address && loading}
-                      onClick={() => asyncRemoveWallet(item.walletAddress, item.chainId.toString())}
-                    >
-                      Remove
-                    </ButtonLoading>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <ButtonLoading
+                        variant="contained"
+                        disabled={!isConnected || isCanRemoveFirstWallet}
+                        sx={{ height: '32px' }}
+                        color="secondary"
+                        loading={item.walletAddress === loadingAddress && loading}
+                        onClick={() => asyncRemoveWallet(item.walletAddress, item.chainId.toString())}
+                      >
+                        Remove
+                      </ButtonLoading>
+
+                      <Tooltip
+                        title={'Cannot remove the first wallet or the wallet was not connected.'}
+                        sx={{ display: !isConnected || isCanRemoveFirstWallet ? 'flex' : 'none' }}
+                        placement="top-start"
+                        arrow={false}
+                      >
+                        <InfoOutlinedIcon />
+                      </Tooltip>
+                    </Box>
                   </TableCell>
                 </TableRow>
               );

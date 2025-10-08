@@ -26,7 +26,7 @@ export default function Deposit() {
   const { loading } = useAsyncExecute();
   const { address, networkName } = useSummaryFirstActiveConnect();
   const modalFunction = useModalFunction();
-  const { asset, assetByTokenName } = useMyPortfolioUniversal();
+  const { assetByTokenName } = useMyPortfolioUniversal();
   const tokens = networkName === mapNameNetwork.solana.name ? listSol : listEvm;
   const { balance } = useGetBalanceUniversal({ address, network: networkName });
 
@@ -77,6 +77,7 @@ export default function Deposit() {
                 .multipliedBy(assetByTokenName?.[row.symbol]?.priceUSD || 0)
                 .toFixed(2);
               const withdrawAbleValue = assetByTokenName?.[row.symbol]?.maxWithdrawable;
+              console.log('🚀 ~ withdrawAbleValue:', withdrawAbleValue);
               const withdrawAblePrice = BN(assetByTokenName?.[row.symbol]?.maxWithdrawable || 0).multipliedBy(
                 assetByTokenName?.[row.symbol]?.priceUSD || 0
               );
@@ -127,7 +128,9 @@ export default function Deposit() {
                       onClick={() => {
                         handleWithdraw(row);
                       }}
-                      disabled={withdrawAbleValue == 0 || BN(withdrawAblePrice).isLessThan(1e-3) || asset?.[row.address] == undefined}
+                      disabled={
+                        withdrawAbleValue == 0 || BN(withdrawAblePrice).isLessThan(1e-3) || assetByTokenName?.[row.symbol] == undefined
+                      }
                     >
                       Withdraw
                     </ButtonLoading>

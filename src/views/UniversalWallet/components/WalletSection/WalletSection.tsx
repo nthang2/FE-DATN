@@ -8,18 +8,22 @@ import { useDestinationWalletState, useGenMessageState, useSourceWalletState } f
 import DestinationDialog from './DestinationDialog';
 import SignMessageBtn from './SignMessageBtn';
 import SourceWalletDialog from './SourceWalletDialog';
+import useGetListWallet from '../../hooks/useGetListWallet';
 
 const WalletSection = () => {
   const { mutate: requestLink, isPending: isRequestLinkPending } = useRequestLink();
   const [destinationWallet] = useDestinationWalletState();
   const [sourceWallet] = useSourceWalletState();
-  // const [isShowRequestLink, setIsShowRequestLink] = useState<boolean>(false);
   const { data: genMessageFromApi } = useGetGenMessage();
   const [genMessage, setGenMessage] = useGenMessageState();
-  console.log('🚀 ~ WalletSection ~ genMessageFromApi:', genMessageFromApi);
+  const { data: listWalletDestination } = useGetListWallet(destinationWallet.chainId, destinationWallet.address);
 
+  const isDestinationWalletExist = Boolean(listWalletDestination?.universalWallet?.length);
   const isDisableRequest =
-    destinationWallet.address === '' || sourceWallet.address === '' || destinationWallet.address === sourceWallet.address;
+    destinationWallet.address === '' ||
+    sourceWallet.address === '' ||
+    destinationWallet.address === sourceWallet.address ||
+    isDestinationWalletExist;
 
   useEffect(() => {
     if (genMessageFromApi && (genMessage?.length === 0 || genMessage === undefined)) {
@@ -48,7 +52,24 @@ const WalletSection = () => {
           Destination Wallet
         </Typography>
 
-        <DestinationDialog />
+        <DestinationDialog error={isDestinationWalletExist} />
+      </Box>
+
+      <Box
+        sx={{
+          display: isDestinationWalletExist ? 'flex' : 'none',
+          flexDirection: 'column',
+          gap: 1,
+          p: 1.5,
+          borderRadius: '8px',
+          border: '1px solid',
+          borderColor: 'error.main',
+          bgcolor: '#5037336b',
+        }}
+      >
+        <Typography variant="body2" fontWeight={600} color="error">
+          Destination wallet invalid !
+        </Typography>
       </Box>
 
       {(!genMessage || genMessage === '') && (

@@ -15,7 +15,7 @@ const useGetGenMessage = () => {
       return response;
     },
     enabled: !!destinationWallet.address && !!sourceAddress && !!sourceWallet.chainId,
-    staleTime: 0,
+    staleTime: 60 * 1000, // 1 minute
     refetchOnWindowFocus: true,
   });
 

@@ -4,10 +4,10 @@ import { findTokenInfoByTokenEVMMainnet } from 'src/constants/tokens/evm-ecosyst
 import { universalWalletAbi } from 'src/contracts/evm/abi/universalWallet';
 import useSwitchToSelectedChain from 'src/hooks/useSwitchToSelectedChain';
 import { TokenName } from 'src/libs/crypto-icons';
-import { requestEVMLending } from 'src/services/HandleApi/universalLending/requestEVMLending';
 import { config } from 'src/states/wallets/evm-blockchain/config';
 import useSummaryEVMConnect from 'src/states/wallets/evm-blockchain/hooks/useSummaryEVMConnect';
 import { BN } from 'src/utils';
+import { handleNotifyEVM } from 'src/utils/notify';
 import { actionType, ethFeeAmount } from 'src/views/Borrow/constant';
 import { toRSV } from 'src/views/Borrow/utils';
 import { encodePacked, keccak256, pad, parseEther, toBytes } from 'viem';
@@ -75,7 +75,7 @@ const useBorrowEVM = () => {
 
         await waitForTransactionReceipt(config, { hash: tx });
 
-        await requestEVMLending({
+        await handleNotifyEVM({
           chainId: Number(chainId),
           user: address as `0x${string}`,
           actionType: actionType.MINT,
@@ -83,7 +83,7 @@ const useBorrowEVM = () => {
           amount: amount,
         });
 
-        return tx;
+        return '';
       } catch (error) {
         console.log(error);
         throw error;

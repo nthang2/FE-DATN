@@ -13,6 +13,8 @@ import { sepolia } from 'viem/chains';
 import { readContract, writeContract } from 'wagmi/actions';
 import { useDestinationWalletState, useGenMessageState, useSourceWalletState } from '../state/hooks';
 import { handleWalletLinkingRequest } from '../utils';
+import useEVMContractFee from './useEVMContractFee';
+import { queryClient } from 'src/layout/Layout';
 
 const useRequestLink = () => {
   const [sourceWalletState] = useSourceWalletState();
@@ -21,6 +23,7 @@ const useRequestLink = () => {
   const [destinationWallet] = useDestinationWalletState();
   const [, setGenMessage] = useGenMessageState();
   const { switchToChainSelected } = useSwitchToSelectedChain();
+  const { data: ethFee } = useEVMContractFee(); // get eth fee from contract
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -62,6 +65,7 @@ const useRequestLink = () => {
             functionName: 'requestLinkWallet',
             args: [padAddress, Number(destinationWallet.chainId), true],
             chainId: isDevNet ? sepolia.id : (Number(sourceWalletState.chainId) as 1 | 11155111),
+            value: ethFee,
           });
 
           await sleep(1000 * 20); // wait 20 seconds
@@ -97,6 +101,10 @@ const useRequestLink = () => {
         console.log(error);
         throw error;
       }
+    },
+    onSuccess: async () => {
+      await sleep(1000 * 10); // wait 10 seconds
+      queryClient.refetchQueries({ queryKey: ['listWalletLinkingRequests', sourceWalletState.address, sourceWalletState.chainId] });
     },
   });
 

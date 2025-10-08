@@ -9,7 +9,13 @@ type TRequestEVMLendingBody = {
   amount: number;
 };
 
+export type TRequestEVMLendingResponse = {
+  chainId: number;
+  requestId: number;
+  wallet: string;
+};
+
 export const requestEVMLending = async (data: TRequestEVMLendingBody) => {
-  const response = await axios.post(apiUrl.universalLendingDepositEVM(), data);
+  const response = await axios.post<TRequestEVMLendingResponse>(apiUrl.universalLendingRequestEVM(), data);
   return response.data;
 };

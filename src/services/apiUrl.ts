@@ -51,7 +51,7 @@ export const apiUrl = {
     `${BACKEND_URL}/universal/wallet-linking/universal-wallet?chainId=${chainId}&walletAddress=${walletAddress}`,
 
   //Universal Lending
-  universalLendingDepositEVM: () => `${BACKEND_URL}/universal/lending/request`,
+  universalLendingRequestEVM: () => `${BACKEND_URL}/universal/lending/request`,
   getMyPortfolioUniversal: (userAddress: string, chainId: string) =>
     `${BACKEND_URL}/universal/lending/position?chainId=${chainId}&walletAddress=${userAddress}`,
   getUniversalHealthFactor: () => `${BACKEND_URL}/universal/lending/health-factor`,

@@ -6,13 +6,13 @@ import { universalWalletAbi } from 'src/contracts/evm/abi/universalWallet';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract/LendingContract';
 import { queryClient } from 'src/layout/Layout';
 import { requestToLink } from 'src/services/HandleApi/requestToLink/requestToLink';
-import { chainNetwork } from 'src/states/wallets/constants/chainIcon';
 import { config } from 'src/states/wallets/evm-blockchain/config';
 import { sleep } from 'src/utils';
 import { pad } from 'viem';
 import { sepolia } from 'viem/chains';
 import { readContract, writeContract } from 'wagmi/actions';
 import { handleWalletLinkingRequest } from '../utils';
+import { mapNameNetwork } from 'src/constants/network';
 
 const useRemoveWallet = () => {
   const walletSolana = useWallet();
@@ -21,7 +21,7 @@ const useRemoveWallet = () => {
     mutationKey: ['useRemoveWallet'],
     mutationFn: async ({ wallet, network }: { wallet: string; network: string | number }) => {
       try {
-        if (network !== chainNetwork['ethereum']) {
+        if (network.toString().toLowerCase() !== mapNameNetwork.ethereum.id.toLowerCase()) {
           const contractSolana = new LendingContract(walletSolana);
           const transactionHash = await contractSolana.removeUniversalWallet(wallet, Number(network));
           const linkWalletInfo = await contractSolana.getLinkWalletInfo(wallet);
@@ -45,7 +45,6 @@ const useRemoveWallet = () => {
             abi: universalWalletAbi,
             functionName: 'requestLinkWallet',
             args: [padAddress, Number(network), false],
-            // chainId: sepolia.id,
           });
 
           await sleep(1000 * 20); // wait 20 seconds
@@ -77,9 +76,9 @@ const useRemoveWallet = () => {
         throw error;
       }
     },
-    onSuccess: () => {
-      toast.success('Remove wallet successfully !');
-      queryClient.invalidateQueries({ queryKey: ['listWalletLinkingRequests'] });
+    onSuccess: async () => {
+      await sleep(1000 * 10); // wait 10 seconds
+      queryClient.refetchQueries({ queryKey: ['listWalletLinkingRequests'] });
     },
   });
 

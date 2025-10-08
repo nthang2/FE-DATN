@@ -10,7 +10,12 @@ import ListWalletSolana from './ListWalletSolana';
 import SelectedNetwork from './SelectedNetwork';
 import useGetListWallet from '../../hooks/useGetListWallet';
 
-const DestinationDialog = () => {
+type TProps = {
+  error?: boolean;
+};
+
+const DestinationDialog = (props: TProps) => {
+  const { error } = props;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [destinationNetwork, setDestinationNetwork] = useDestinationNetworkState();
   const [destinationWallet, setDestinationWallet] = useDestinationWalletState();
@@ -62,6 +67,7 @@ const DestinationDialog = () => {
           fullWidth
           variant="outlined"
           disabled
+          error={error}
           placeholder="Select network, wallet and connect wallet..."
           InputProps={{
             startAdornment: destinationWalletIcon,
