@@ -1,5 +1,17 @@
-import { ContentCopy } from '@mui/icons-material';
-import { Box, Pagination, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { CheckCircleOutline, ContentCopy, ErrorOutline } from '@mui/icons-material';
+import {
+  Box,
+  Pagination,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { format as fd } from 'date-fns';
 import { useMemo, useState } from 'react';
 import Failed from 'src/components/StatusData/Failed';
@@ -57,6 +69,9 @@ export default function TransactionHistoryModal() {
             dataRender.length > 0 ? (
               dataRender.map((row, index) => {
                 const IconNetwork = chainIconNetwork[row.chainId];
+                const eIndex = row.execution?.[0].message?.indexOf('Error Message')
+                  ? row.execution?.[0].message?.indexOf('Error Message') + 14
+                  : 0;
                 return (
                   <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                     <TableCell component="th" scope="row">
@@ -81,7 +96,7 @@ export default function TransactionHistoryModal() {
                         {fd(row.timestamp * 1000, 'h:mm a')}
                       </Typography>
                       <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
-                        {fd(row.timestamp * 1000, 'MMMM dd, YYY')}
+                        {fd(row.timestamp * 1000, 'MMMM dd, yyy')}
                       </Typography>
                     </TableCell>
                     <TableCell component="th" scope="row">
@@ -93,9 +108,17 @@ export default function TransactionHistoryModal() {
                       </Stack>
                     </TableCell>
                     <TableCell component="th" scope="row">
-                      <Typography variant="body2" sx={{ fontWeight: 500, color: row.state == 'Completed' ? '#08DBA4' : '#FFB41E' }}>
-                        {row.state}
-                      </Typography>
+                      <Stack sx={{ alignItems: 'center', gap: 0.5 }}>
+                        {row.state == 'Reverted' && (
+                          <Tooltip title={row.execution[0].message?.slice(eIndex)}>
+                            <ErrorOutline sx={{ color: '#FFB41E' }} />
+                          </Tooltip>
+                        )}
+                        {row.state == 'Completed' && <CheckCircleOutline sx={{ color: 'success.main' }} />}
+                        <Typography variant="body2" sx={{ fontWeight: 500, color: row.state == 'Completed' ? '#08DBA4' : '#FFB41E' }}>
+                          {row.state}
+                        </Typography>
+                      </Stack>
                     </TableCell>
                   </TableRow>
                 );

@@ -60,7 +60,7 @@ const TransactionHistory = () => {
                       {fd(row.timestamp * 1000, 'h:mm a')}
                     </Typography>
                     <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
-                      {fd(row.timestamp * 1000, 'MMMM dd, YYY')}
+                      {fd(row.timestamp * 1000, 'MMMM dd, yyy')}
                     </Typography>
                   </TableCell>
                   <TableCell>
