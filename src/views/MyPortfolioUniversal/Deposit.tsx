@@ -70,8 +70,8 @@ export default function Deposit() {
           </TableHead>
           <TableBody>
             {tokens.map((row) => {
-              if (!balance || !balance[row.symbol] || !row) return null;
-              const balanceValue = balance[row.symbol];
+              if (!row) return null;
+              const balanceValue = balance?.[row.symbol] || 0;
 
               const balanceInWalletByUsd = BN(balanceValue)
                 .multipliedBy(assetByTokenName?.[row.symbol]?.priceUSD || 0)

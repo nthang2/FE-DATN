@@ -72,8 +72,9 @@ export default function MyWallet() {
           });
         });
       }
-      return result;
     }
+
+    return result;
   }, [balance, priceByTokenName, includeDeposits, assetByTokenName, listTokenAvailable, address]);
 
   const options = useDonutChartConfig(
