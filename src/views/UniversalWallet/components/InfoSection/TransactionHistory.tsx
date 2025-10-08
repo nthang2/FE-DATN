@@ -51,7 +51,7 @@ const TransactionHistory = () => {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
+                    <Typography variant="body2" sx={{ fontWeight: 500, color: row.state == 'Completed' ? '#08DBA4' : '#FFB41E' }}>
                       {row.action ? 'Add' : 'Remove'}
                     </Typography>
                   </TableCell>

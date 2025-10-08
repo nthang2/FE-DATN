@@ -1,4 +1,6 @@
+import { ContentCopy } from '@mui/icons-material';
 import { Box, Pagination, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { format as fd } from 'date-fns';
 import { useMemo, useState } from 'react';
 import Failed from 'src/components/StatusData/Failed';
 import JPowLoading from 'src/components/StatusData/Loading';
@@ -7,9 +9,11 @@ import { mapNameChainId } from 'src/constants/chainId';
 import { mapNameNetwork } from 'src/constants/network';
 import useQueryTrasactionsHistory from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useQueryTransactionsHistory';
 import { chainIconNetwork } from 'src/states/wallets/constants/chainIcon';
+import { copyTextToClipboard } from 'src/utils';
+import { formatAddress } from 'src/utils/format';
 import { actionType } from 'src/views/Borrow/constant';
 
-const tableHead = ['Network', 'Status', 'Action', 'Initiated At', 'Wallet Address'];
+const tableHead = ['Network', 'Action', 'Time', 'Transaction Hash', 'Status'];
 export default function TransactionHistoryModal() {
   const { data: transactionsHistoryData, status: statusQueryTrasactionsHistory } = useQueryTrasactionsHistory();
 
@@ -65,14 +69,6 @@ export default function TransactionHistoryModal() {
                     </TableCell>
                     <TableCell component="th" scope="row">
                       <Stack sx={{ alignItems: 'center', gap: 1.5 }}>
-                        <IconNetwork />
-                        <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disabled' }}>
-                          {mapNameNetwork[mapNameChainId[row.chainId]].name}
-                        </Typography>
-                      </Stack>
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      <Stack sx={{ alignItems: 'center', gap: 1.5 }}>
                         <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disabled' }}>
                           {Object.entries(actionType).map(([k, v]) => {
                             if (v === row.actionType) return k;
@@ -81,20 +77,25 @@ export default function TransactionHistoryModal() {
                       </Stack>
                     </TableCell>
                     <TableCell component="th" scope="row">
-                      <Stack sx={{ alignItems: 'center', gap: 1.5 }}>
-                        <IconNetwork />
-                        <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disabled' }}>
-                          {mapNameNetwork[mapNameChainId[row.chainId]].name}
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
+                        {fd(row.timestamp * 1000, 'h:mm a')}
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
+                        {fd(row.timestamp * 1000, 'MMMM dd, YYY')}
+                      </Typography>
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      <Stack sx={{ gap: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
+                          {formatAddress(row.transactionHash)}
                         </Typography>
+                        <ContentCopy sx={{ fontSize: '14px' }} onClick={() => copyTextToClipboard(row.transactionHash)} />
                       </Stack>
                     </TableCell>
                     <TableCell component="th" scope="row">
-                      <Stack sx={{ alignItems: 'center', gap: 1.5 }}>
-                        <IconNetwork />
-                        <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disabled' }}>
-                          {mapNameNetwork[mapNameChainId[row.chainId]].name}
-                        </Typography>
-                      </Stack>
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: row.state == 'Completed' ? '#08DBA4' : '#FFB41E' }}>
+                        {row.state}
+                      </Typography>
                     </TableCell>
                   </TableRow>
                 );
@@ -120,7 +121,7 @@ export default function TransactionHistoryModal() {
           className="flex-center"
           sx={{ mt: 2 }}
           page={page}
-          count={Math.floor(transactionsHistoryData.actions.length / rowsPerPage) + 1}
+          count={Math.floor(transactionsHistoryData.actions.length / rowsPerPage)}
           onChange={handleChangePage}
         />
       )}

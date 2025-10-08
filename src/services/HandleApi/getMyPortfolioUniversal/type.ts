@@ -47,18 +47,21 @@ export type TTransactonHistoryItem = {
     amount: string;
     chainId: number;
     deadline: number;
-    execution: Array<{
-      step: string;
-      tx: null | string;
-      success: boolean;
-      message: string;
-      timestamp: number;
-    }>;
-
+    execution: [
+      {
+        message: null | string;
+        step: string;
+        success: boolean;
+        timestamp: number;
+        tx: string;
+      }
+    ];
     nonce: number;
     requestId: number;
     state: string;
+    timestamp: number;
     token: string;
+    transactionHash: string;
     user: string;
   }>;
 };

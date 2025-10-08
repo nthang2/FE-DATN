@@ -8,7 +8,7 @@ export default function useQueryTrasactionsHistory() {
   return useQuery({
     queryKey: ['transactionHistory', address, chainId],
     queryFn: async () => {
-      const data = await getTransactionsHistory({ walletAddress: address, chainId: chainId });
+      const data = await getTransactionsHistory({ walletAddress: 'FBiUi4fEEe2yNXkFLsjL8zvDniTjpfvcyJCSadqxyijf', chainId: '2' });
       return data;
     },
     staleTime: 1000 * 60 * 10,
