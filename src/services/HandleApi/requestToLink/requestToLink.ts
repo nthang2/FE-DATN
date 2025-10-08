@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { apiUrl } from 'src/services/apiUrl';
 
-type TWalletLinkingRequestBody = {
+export type TWalletLinkingRequestBody = {
   requestId: number;
   sourceWallet: string;
   sourceChainId: number;
@@ -11,13 +11,24 @@ type TWalletLinkingRequestBody = {
   action: boolean;
 };
 
-type TSignMessageBody = {
+export type TGetWalletLinkingRequestResponse = {
+  requestId: number;
+  sourceWallet: string;
+  destinationWallet: string;
+  sourceChainId: number;
+  destinationChainId: number;
+  deadline: number;
+  action: boolean;
+  state: string;
+};
+
+export type TSignMessageBody = {
   walletAddress: string;
   chainId: number;
   signature: string;
 };
 
-type TListWalletLinkingRequests = {
+export type TListWalletLinkingRequests = {
   universalWallet: string;
   firstChainId: number;
   firstWallet: string;
@@ -28,6 +39,12 @@ type TListWalletLinkingRequests = {
   }[];
 };
 
+export type TGetWalletLinkingRequestBody = {
+  requestId: number;
+  walletAddress: string;
+  chainId: number;
+};
+
 export const requestToLink = async (chainId: string, walletAddress: string, sourceWalletAddress: string, sourceChainId: string) => {
   const response = await axios.get<{ message: string }>(apiUrl.generateMessage(chainId, walletAddress, sourceWalletAddress, sourceChainId));
   return response.data;
@@ -35,6 +52,13 @@ export const requestToLink = async (chainId: string, walletAddress: string, sour
 
 export const walletLinkingRequest = async (body: TWalletLinkingRequestBody) => {
   const response = await axios.post(apiUrl.walletLinkingRequest(), body);
+  return response.data;
+};
+
+export const getWalletLinkingRequest = async (body: TGetWalletLinkingRequestBody) => {
+  const response = await axios.get<TGetWalletLinkingRequestResponse>(apiUrl.walletLinkingRequest(), {
+    params: body,
+  });
   return response.data;
 };
 

@@ -5,13 +5,14 @@ import { ctrAdsEVM } from 'src/constants/contractAddress/evm';
 import { universalWalletAbi } from 'src/contracts/evm/abi/universalWallet';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract/LendingContract';
 import { queryClient } from 'src/layout/Layout';
-import { requestToLink, walletLinkingRequest } from 'src/services/HandleApi/requestToLink/requestToLink';
+import { requestToLink } from 'src/services/HandleApi/requestToLink/requestToLink';
 import { chainNetwork } from 'src/states/wallets/constants/chainIcon';
 import { config } from 'src/states/wallets/evm-blockchain/config';
 import { sleep } from 'src/utils';
 import { pad } from 'viem';
 import { sepolia } from 'viem/chains';
 import { readContract, writeContract } from 'wagmi/actions';
+import { handleWalletLinkingRequest } from '../utils';
 
 const useRemoveWallet = () => {
   const walletSolana = useWallet();
@@ -25,7 +26,7 @@ const useRemoveWallet = () => {
           const transactionHash = await contractSolana.removeUniversalWallet(wallet, Number(network));
           const linkWalletInfo = await contractSolana.getLinkWalletInfo(wallet);
 
-          await walletLinkingRequest({
+          await handleWalletLinkingRequest({
             requestId: linkWalletInfo.requestId.toNumber(),
             sourceWallet: wallet,
             sourceChainId: linkWalletInfo.sourceChainId,
@@ -57,7 +58,7 @@ const useRemoveWallet = () => {
             args: [wallet as `0x${string}`],
           });
 
-          await walletLinkingRequest({
+          await handleWalletLinkingRequest({
             requestId: Number(walletRequest[0]),
             sourceWallet: wallet,
             sourceChainId: walletRequest[3],
@@ -66,6 +67,7 @@ const useRemoveWallet = () => {
             deadline: Number(walletRequest[5]),
             action: walletRequest[6],
           });
+
           const response = await requestToLink(network.toString(), wallet, wallet, network.toString());
           console.log(response);
         }

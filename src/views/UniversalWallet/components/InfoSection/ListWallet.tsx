@@ -6,11 +6,15 @@ import { formatAddress } from 'src/utils/format';
 import { listWalletTableHead } from '../../constant';
 import useGetListWallet from '../../hooks/useGetListWallet';
 import useRemoveWallet from '../../hooks/useRemoveWallet';
-import { useSourceWalletState } from '../../state/hooks';
+import { useSourceNetworkState, useSourceWalletState } from '../../state/hooks';
+import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 
 const ListWallet = () => {
   const [sourceWalletState] = useSourceWalletState();
-  const { address, chainId } = sourceWalletState;
+  const [sourceNetworkState] = useSourceNetworkState();
+  const listConnected = useSummaryConnect();
+  const { address } = sourceWalletState;
+  const chainId = sourceNetworkState === 'solana' ? '2' : '1';
   const { mutateAsync: removeWallet, isPending: loading } = useRemoveWallet();
   const { data: listWallet } = useGetListWallet(chainId, address);
 
@@ -42,6 +46,11 @@ const ListWallet = () => {
             listWallet?.wallets.map((item) => {
               const IconNetwork = chainIconNetwork[item.chainId];
               const network = Object.keys(chainNetwork).find((key) => chainNetwork[key] === item.chainId.toString());
+              const isFirstWallet = item.walletAddress === listWallet?.firstWallet;
+              const isRemoveAllWallet = listWallet.wallets.length === 1;
+              const isCanRemoveFirstWallet = isFirstWallet ? !isRemoveAllWallet : false;
+              const isConnected =
+                listConnected.findIndex((wallet) => wallet.address.toLowerCase() === item.walletAddress.toLowerCase()) > -1;
 
               return (
                 <TableRow key={item.key} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -57,7 +66,7 @@ const ListWallet = () => {
                   <TableCell>
                     <ButtonLoading
                       variant="contained"
-                      disabled={item.walletAddress !== address}
+                      disabled={!isConnected || isCanRemoveFirstWallet}
                       sx={{ height: '32px' }}
                       color="secondary"
                       loading={item.walletAddress === address && loading}

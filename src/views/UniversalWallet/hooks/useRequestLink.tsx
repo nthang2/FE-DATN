@@ -1,16 +1,18 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useMutation } from '@tanstack/react-query';
 import { ctrAdsEVM } from 'src/constants/contractAddress/evm';
+import { isDevNet } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { universalWalletAbi } from 'src/contracts/evm/abi/universalWallet';
 import { LendingContract } from 'src/contracts/solana/contracts/LendingContract/LendingContract';
-import { requestToLink, walletLinkingRequest } from 'src/services/HandleApi/requestToLink/requestToLink';
+import useSwitchToSelectedChain from 'src/hooks/useSwitchToSelectedChain';
+import { requestToLink } from 'src/services/HandleApi/requestToLink/requestToLink';
 import { config } from 'src/states/wallets/evm-blockchain/config';
 import { padAddressSolana, sleep } from 'src/utils';
 import { pad } from 'viem';
 import { sepolia } from 'viem/chains';
 import { readContract, writeContract } from 'wagmi/actions';
 import { useDestinationWalletState, useGenMessageState, useSourceWalletState } from '../state/hooks';
-import useSwitchToSelectedChain from 'src/hooks/useSwitchToSelectedChain';
+import { handleWalletLinkingRequest } from '../utils';
 
 const useRequestLink = () => {
   const [sourceWalletState] = useSourceWalletState();
@@ -32,17 +34,12 @@ const useRequestLink = () => {
       try {
         if (sourceChainId === '2') {
           const contractSolana = new LendingContract(walletSolana);
-          const transactionHash = await contractSolana.linkWallet(
-            destinationWallet.address,
-            destinationWallet.chainId,
-            true,
-            sourceAddress
-          );
+          await contractSolana.linkWallet(destinationWallet.address, destinationWallet.chainId, true, sourceAddress);
 
           await sleep(1000 * 5); // wait 5 seconds
 
           const linkWalletInfo = await contractSolana.getLinkWalletInfo(sourceAddress);
-          await walletLinkingRequest({
+          await handleWalletLinkingRequest({
             requestId: linkWalletInfo.requestId.toNumber(),
             sourceWallet: sourceAddress,
             sourceChainId: linkWalletInfo.sourceChainId,
@@ -55,7 +52,7 @@ const useRequestLink = () => {
           const response = await requestToLink(destinationWallet.chainId, destinationWallet.address, sourceAddress, sourceChainId);
           setGenMessage(response.message);
 
-          return transactionHash as string;
+          return '';
         } else {
           await switchToChainSelected();
 
@@ -64,7 +61,7 @@ const useRequestLink = () => {
             abi: universalWalletAbi,
             functionName: 'requestLinkWallet',
             args: [padAddress, Number(destinationWallet.chainId), true],
-            chainId: sepolia.id,
+            chainId: isDevNet ? sepolia.id : (Number(sourceWalletState.chainId) as 1 | 11155111),
           });
 
           await sleep(1000 * 20); // wait 20 seconds
@@ -76,7 +73,7 @@ const useRequestLink = () => {
             args: [sourceAddress as `0x${string}`],
           });
 
-          await walletLinkingRequest({
+          await handleWalletLinkingRequest({
             requestId: Number(walletRequest[0]),
             sourceWallet: sourceAddress,
             sourceChainId: walletRequest[3],
@@ -94,7 +91,7 @@ const useRequestLink = () => {
           );
           setGenMessage(response.message);
 
-          return response.message;
+          return '';
         }
       } catch (error) {
         console.log(error);

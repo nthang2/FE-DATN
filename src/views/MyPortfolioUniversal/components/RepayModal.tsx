@@ -22,6 +22,7 @@ import { BN } from 'src/utils';
 import { decimalFlood, formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
 import CheckHealthFactor from './CheckHealthFactor';
+import { listTokenAvailableUniversal } from 'src/constants/tokens/mapNameToInfo';
 
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
@@ -31,7 +32,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
   const { asyncExecute, loading } = useAsyncExecute();
   const { mutateAsync: asyncExecuteEVM } = useBurnEVM();
   const { refetch: refetchDepositValue } = useQueryDepositValue();
-  const { status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo, assetByTokenName } = useMyPortfolioUniversalInfo();
+  const { assetByTokenName, status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo } = useMyPortfolioUniversalInfo();
 
   const [valueRepay, setValueRepay] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
@@ -40,6 +41,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const { balance } = useGetBalanceUniversal({ address, network: selectedNetwork });
+  const listTokenAvailable = listTokenAvailableUniversal(selectedNetwork);
 
   const id = anchorEl ? `popover_redeem` : undefined;
 
@@ -69,7 +71,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
   const handleMax = () => {
     if (assetByTokenName?.[token.symbol] != undefined) {
       // setValueRepay(Number(maxValue).toFixed(token.decimals));
-      setValueRepay(decimalFlood(maxValue, token.decimals));
+      setValueRepay(maxValue);
       const _valueInUSD = BN(assetByTokenName?.[token.symbol]?.priceUSD).multipliedBy(maxValue).toString();
       setValueInUSD(_valueInUSD);
     }
@@ -88,14 +90,17 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
   const handleRepay = async () => {
     if (!address) return;
     let hash = '';
+    const selectedTokenByNetwork = listTokenAvailable?.[token.symbol];
+    if (!selectedTokenByNetwork) return;
+
     if (selectedNetwork.toLowerCase() === mapNameNetwork.solana.name.toLowerCase()) {
       const lendingContract = new LendingContractUniversal(wallet);
       const maxRepay = maxValue;
       const isMaxValue = Number(maxRepay) === Number(valueRepay);
 
-      hash = await lendingContract.repay(Number(valueRepay), token.address, isMaxValue, listWallet?.universalWallet);
+      hash = await lendingContract.repay(Number(valueRepay), selectedTokenByNetwork.address, isMaxValue, listWallet?.universalWallet);
     } else {
-      hash = await asyncExecuteEVM({ burnAmount: valueRepay, selectedToken: token.address });
+      hash = await asyncExecuteEVM({ burnAmount: valueRepay, selectedToken: selectedTokenByNetwork.address });
     }
     setValueRepay('');
     setValueInUSD('0');

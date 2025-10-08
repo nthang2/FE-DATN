@@ -6,7 +6,7 @@ const useGetListWallet = (chainId: string, walletAddress: string) => {
   const [networkState] = useSourceNetworkState();
 
   const query = useQuery({
-    queryKey: ['listWalletLinkingRequests', networkState, walletAddress],
+    queryKey: ['listWalletLinkingRequests', networkState, walletAddress, chainId],
     queryFn: async () => {
       const chain = chainId ? chainId : networkState === 'solana' ? '2' : '1';
       return await listWalletLinkingRequests(chain, walletAddress);

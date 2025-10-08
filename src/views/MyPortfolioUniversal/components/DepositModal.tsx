@@ -59,7 +59,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
       solana: [listTokenAvailableSOL[token.symbol as TAvailableToken]],
       ethereum: [listTokenAvailableETH[token.symbol as TAvailableToken]],
     };
-  }, []);
+  }, [token.symbol]);
 
   const optionByNetwork = useMemo(() => {
     return options[selectedNetwork as TNetwork];
@@ -97,11 +97,14 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
   const handleDeposit = async () => {
     if (!address) return;
     let hash = '';
+    const selectedTokenByNetwork = optionByNetwork.find((o) => o.symbol === token.symbol);
+    if (!selectedTokenByNetwork) return;
+
     if (selectedNetwork.toLowerCase() === mapNameNetwork.solana.name.toLowerCase()) {
       const lendingContract = new LendingContractUniversal(wallet);
-      hash = await lendingContract.deposit(Number(valueDeposit), token.address, listWallet?.universalWallet);
+      hash = await lendingContract.deposit(Number(valueDeposit), selectedTokenByNetwork.address, listWallet?.universalWallet);
     } else {
-      hash = await depositEVM({ depositAmount: valueDeposit, selectedToken: token.address });
+      hash = await depositEVM({ depositAmount: valueDeposit, selectedToken: selectedTokenByNetwork.address });
     }
     setValueDeposit('');
     setValueInUSD('0');
