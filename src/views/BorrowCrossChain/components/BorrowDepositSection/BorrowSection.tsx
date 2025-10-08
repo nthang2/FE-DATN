@@ -79,6 +79,7 @@ const BorrowSection = () => {
       address: value,
       price: 0,
       error: undefined,
+      network: borrowNetwork,
     };
 
     setBorrowState(cloneArr);

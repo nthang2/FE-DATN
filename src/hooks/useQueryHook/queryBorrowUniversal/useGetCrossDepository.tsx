@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { LendingUniversalUtils } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingUniversalUtils';
+import { LendingUniversalUtils } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingUnityUniversal';
 
 const useGetCrossDepository = () => {
   const query = useQuery({
