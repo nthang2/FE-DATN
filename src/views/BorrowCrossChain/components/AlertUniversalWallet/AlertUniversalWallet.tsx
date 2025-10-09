@@ -4,6 +4,7 @@ import React, { useMemo } from 'react';
 import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
+import WarningIcon from '@mui/icons-material/Warning';
 
 const AlertUniversalWallet = () => {
   const { chainId, address } = useSummaryFirstActiveConnect();
@@ -35,15 +36,16 @@ const AlertUniversalWallet = () => {
         zIndex: 1000,
         display: isConnectAllUniversalWallet ? 'none' : 'flex',
         alignItems: 'center',
-        gap: 3,
-        background: 'linear-gradient(90deg, #e55e00 0%, #e12731 100%)',
+        gap: 1,
+        background: 'linear-gradient(36deg,rgb(73, 5, 5)   0%, #AC0000 100%)',
       }}
     >
-      <Typography flexWrap="nowrap" variant="body1">
+      <WarningIcon sx={{ fontSize: 24, color: '#D52020' }} />
+      <Typography flexWrap="nowrap" variant="body2">
         Your connected wallet not linked to a Universal Wallet or not created yet
       </Typography>
 
-      <Button variant="contained" size="small" onClick={handleGoToUniversalWallet}>
+      <Button variant="contained" size="small" sx={{ ml: 2 }} onClick={handleGoToUniversalWallet}>
         Go to universal wallet
       </Button>
     </Box>

@@ -6,16 +6,16 @@ import JPowLoading from 'src/components/StatusData/Loading';
 import NoData from 'src/components/StatusData/NoData';
 import { mapNameChainId } from 'src/constants/chainId';
 import { mapNameNetwork } from 'src/constants/network';
-import useQueryTrasactionHistory from 'src/hooks/useQueryHook/queryUniversalWallet/useQueryTransactionHistory';
+import useQueryTransactionHistory from 'src/hooks/useQueryHook/queryUniversalWallet/useQueryTransactionHistory';
 import { chainIconNetwork } from 'src/states/wallets/constants/chainIcon';
 import { copyTextToClipboard } from 'src/utils';
 import { formatAddress } from 'src/utils/format';
 import { transactionHistoryTableHead } from '../../constant';
 
 const TransactionHistory = () => {
-  const { data: trasactionHistoryData, status: statusQueryTrasactionHistory } = useQueryTrasactionHistory();
+  const { data: transactionHistoryData, status: statusQueryTransactionHistory } = useQueryTransactionHistory();
   return (
-    <TableContainer sx={{ mt: 2, borderRadius: '14px' }}>
+    <TableContainer sx={{ mt: 2, borderRadius: '14px', maxHeight: '500px', overflowY: 'auto' }}>
       <Table>
         <TableHead>
           <TableRow>
@@ -32,8 +32,8 @@ const TransactionHistory = () => {
         </TableHead>
 
         <TableBody>
-          {statusQueryTrasactionHistory == 'success' && trasactionHistoryData && trasactionHistoryData.actions.length > 0 ? (
-            trasactionHistoryData.actions.map((row, index) => {
+          {statusQueryTransactionHistory == 'success' && transactionHistoryData && transactionHistoryData.actions.length > 0 ? (
+            transactionHistoryData.actions.map((row, index) => {
               const IconNetwork = chainIconNetwork[row.sourceChainId];
               return (
                 <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -78,9 +78,9 @@ const TransactionHistory = () => {
             <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
               <TableCell colSpan={transactionHistoryTableHead.length}>
                 <Box className="flex-center">
-                  {statusQueryTrasactionHistory == 'pending' && <JPowLoading />}
-                  {statusQueryTrasactionHistory == 'error' && <Failed />}
-                  {statusQueryTrasactionHistory == 'success' && trasactionHistoryData && trasactionHistoryData.actions.length == 0 && (
+                  {statusQueryTransactionHistory == 'pending' && <JPowLoading />}
+                  {statusQueryTransactionHistory == 'error' && <Failed />}
+                  {statusQueryTransactionHistory == 'success' && transactionHistoryData && transactionHistoryData.actions.length == 0 && (
                     <NoData />
                   )}
                 </Box>

@@ -4,12 +4,14 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { clsx } from 'clsx';
 
 import { useMemo, useState } from 'react';
+import ButtonApproveEVM from 'src/components/ButtonApproveEVM/ButtonApproveEVM';
 import CustomTextField from 'src/components/CustomForms/CustomTextField';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
 import { mapNameNetwork } from 'src/constants/network';
 import { EthereumChainTokenInfo } from 'src/constants/tokens/evm-ecosystem/list-tokens/ethereum/EthereumChainTokenInfo';
 import { listTokenAvailable as listTokenAvailableETH } from 'src/constants/tokens/evm-ecosystem/mapNameToInfoEthereum';
+import { listTokenAvailableUniversal } from 'src/constants/tokens/mapNameToInfo';
 import { listTokenAvailableSOLUniversal as listTokenAvailableSOL } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
 import { LendingContractUniversal } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingContractUniversal';
@@ -22,18 +24,18 @@ import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniv
 import { TokenName } from 'src/libs/crypto-icons';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import useGetBalanceUniversalByToken from 'src/states/wallets/hooks/useGetBalanceUniversalByToken';
-import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
+import useSummaryConnectByNetwork from 'src/states/wallets/hooks/useSummaryConnectByNetwork';
 import { BN } from 'src/utils';
 import { formatAddress, formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
 import { TAvailableToken, TNetwork } from '../type';
 import CheckHealthFactor from './CheckHealthFactor';
-import ButtonApproveEVM from 'src/components/ButtonApproveEVM/ButtonApproveEVM';
-import { listTokenAvailableUniversal } from 'src/constants/tokens/mapNameToInfo';
 
 export default function DepositModal({ token }: { token: SolanaEcosystemTokenInfo | EthereumChainTokenInfo }) {
+  const [selectedNetwork, setSelectedNetwork] = useState<TNetwork>('solana');
+
   const wallet = useWallet();
-  const { address, chainId } = useSummaryFirstActiveConnect();
+  const { address, chainId } = useSummaryConnectByNetwork({ network: selectedNetwork });
   const { data: listWallet } = useGetListWallet(chainId, address);
   const { mutateAsync: depositEVM } = useDepositEVM();
   const { priceByTokenName } = useQueryAllTokensPrice();
@@ -45,7 +47,6 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
   const [valueDeposit, setValueDeposit] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
   const [valueDepositHelperText, setValueDepositHelperText] = useState<string | undefined>(undefined);
-  const [selectedNetwork, setSelectedNetwork] = useState<TNetwork>('solana');
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const {
@@ -416,9 +417,10 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
             amount={valueDeposit}
             variant="contained"
             size="small"
+            disabled={address.length === 0}
             actionButton={
               <ButtonLoading
-                disabled={valueDepositHelperText != undefined || !Number(valueDeposit)}
+                disabled={address.length === 0 || valueDepositHelperText != undefined || !Number(valueDeposit)}
                 size="small"
                 loading={loading}
                 variant="contained"

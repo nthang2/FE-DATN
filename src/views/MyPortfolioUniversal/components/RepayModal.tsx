@@ -17,18 +17,19 @@ import { TokenName } from 'src/libs/crypto-icons';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import useGetBalanceUniversal from 'src/states/wallets/hooks/useGetBalanceUniversal';
 // import useGetAllBalanceEVM from 'src/states/wallets/evm-blockchain/hooks/useGetAllBalanceEVM';
-import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
+import ButtonApproveEVM from 'src/components/ButtonApproveEVM/ButtonApproveEVM';
+import { listTokenAvailableUniversal } from 'src/constants/tokens/mapNameToInfo';
+import useSummaryConnectByNetwork from 'src/states/wallets/hooks/useSummaryConnectByNetwork';
 import { BN } from 'src/utils';
 import { decimalFlood, formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
 import CheckHealthFactor from './CheckHealthFactor';
-import { listTokenAvailableUniversal } from 'src/constants/tokens/mapNameToInfo';
-import ButtonApproveEVM from 'src/components/ButtonApproveEVM/ButtonApproveEVM';
 
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
-  const wallet = useWallet();
-  const { address, chainId } = useSummaryFirstActiveConnect();
+  const [selectedNetwork, setSelectedNetwork] = useState('solana');
 
+  const wallet = useWallet();
+  const { address, chainId } = useSummaryConnectByNetwork({ network: selectedNetwork });
   const { data: listWallet } = useGetListWallet(chainId, address);
   const { asyncExecute, loading } = useAsyncExecute();
   const { mutateAsync: asyncExecuteEVM } = useBurnEVM();
@@ -38,7 +39,6 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
   const [valueRepay, setValueRepay] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
   const [valueRepayHelperText, setValueRepayHelperText] = useState<string | undefined>(undefined);
-  const [selectedNetwork, setSelectedNetwork] = useState('solana');
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const { balance } = useGetBalanceUniversal({ address, network: selectedNetwork });
@@ -358,9 +358,10 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
           amount={valueRepay}
           variant="contained"
           size="small"
+          disabled={address.length === 0}
           actionButton={
             <ButtonLoading
-              disabled={valueRepayHelperText != undefined || !Number(valueRepay)}
+              disabled={address.length === 0 || valueRepayHelperText != undefined || !Number(valueRepay)}
               size="small"
               loading={loading}
               variant="contained"
