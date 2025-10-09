@@ -10,23 +10,6 @@ import HeadOfConnectWallet from './HeadOfConnectWallet';
 import SolanaWallet from './SolanaWallet';
 
 const netWorkConfig = {
-  // all: {
-  //   id: 'all',
-  //   name: 'All',
-  //   icon: (
-  //     <Box>
-  //       <Box sx={{ display: 'flex' }}>
-  //         <IconSOL sx={{ width: '14px', height: '14px' }} />
-  //         <IconETH sx={{ width: '14px', height: '14px' }} />
-  //       </Box>
-  //       <Box sx={{ display: 'flex' }}>
-  //         <IconBSC sx={{ width: '14px', height: '14px' }} />
-  //         <IconBNB sx={{ width: '14px', height: '14px' }} />
-  //       </Box>
-  //     </Box>
-  //   ),
-  //   value: 0,
-  // },
   solana: {
     id: 'solana',
     name: 'SOL',
@@ -81,77 +64,68 @@ const ConnectWalletSection = () => {
 
   return (
     <>
-      <Stack
-        sx={(theme) => ({
-          background: theme.palette.background.accordion,
-          p: '10px',
-          borderRadius: 2,
-          alignItems: 'center',
-        })}
-      >
-        {walletStatus ? (
-          <Stack alignItems="center" sx={{ gap: 1 }}>
-            <Box
-              display="flex"
-              gap={1}
-              sx={{
-                background: '#282825',
-                p: 1,
-                gap: '10px',
-                borderRadius: '11px',
-                cursor: 'pointer',
-                alignItems: 'center',
-                height: '100%',
-              }}
-            >
-              <WalletConnectIcon Icon={walletIcon} />
-              <WalletConnectIcon Icon={secondWalletIcon} />
-            </Box>
-            <Stack
-              sx={{
-                background: '#282825',
-                p: 1,
-                gap: '10px',
-                borderRadius: '11px',
-                cursor: 'pointer',
-                alignItems: 'center',
-                height: '100%',
-              }}
-              onClick={toggleDrawer(true)}
-            >
-              <WalletIcon />
-              <Typography sx={{ display: { xs: 'none', md: 'block' }, fontWeight: 600 }} variant="body2">
-                {secondWalletAddress && address ? 'My Wallets' : formatAddress(walletAddress)}
-              </Typography>
-            </Stack>
-          </Stack>
-        ) : (
-          <Button
-            sx={(theme) => ({
-              p: '6px 16px',
-              background: theme.palette.background.default,
-              color: theme.palette.common.white,
-              ':hover': {
-                background: theme.palette.background.button,
-                color: theme.palette.common.black,
-              },
+      {walletStatus ? (
+        <Stack alignItems="center" sx={{ gap: 1 }}>
+          <Box
+            display="flex"
+            gap={1}
+            sx={{
+              background: '#282825',
+              p: 1,
+              gap: '10px',
               borderRadius: '11px',
-            })}
+              cursor: 'pointer',
+              alignItems: 'center',
+              height: '100%',
+            }}
+          >
+            <WalletConnectIcon Icon={walletIcon} />
+            <WalletConnectIcon Icon={secondWalletIcon} />
+          </Box>
+          <Stack
+            sx={{
+              background: '#282825',
+              p: 1,
+              gap: '10px',
+              borderRadius: '11px',
+              cursor: 'pointer',
+              alignItems: 'center',
+              height: '100%',
+            }}
             onClick={toggleDrawer(true)}
           >
-            <Typography variant="body1" fontWeight={700}>
-              Connect wallet
+            <WalletIcon />
+            <Typography sx={{ display: { xs: 'none', md: 'block' }, fontWeight: 600 }} variant="body2">
+              {secondWalletAddress && address ? 'My Wallets' : formatAddress(walletAddress)}
             </Typography>
-          </Button>
-        )}
-      </Stack>
+          </Stack>
+        </Stack>
+      ) : (
+        <Button
+          sx={(theme) => ({
+            p: '6px 16px',
+            background: theme.palette.background.default,
+            color: theme.palette.common.white,
+            ':hover': {
+              background: theme.palette.background.button,
+              color: theme.palette.common.black,
+            },
+            borderRadius: '11px',
+          })}
+          onClick={toggleDrawer(true)}
+        >
+          <Typography variant="body1" fontWeight={700}>
+            Connect wallet
+          </Typography>
+        </Button>
+      )}
       <Drawer disableScrollLock={false} open={openDrawer} onClose={toggleDrawer(false)} anchor="right">
         <Box
           sx={{
             flexGrow: 1,
             bgcolor: '#191918',
             display: 'flex',
-            width: { xs: '270px', md: '520px' },
+            width: { xs: '100%', md: '520px' },
             borderRadius: '0px 16px 16px 0px',
           }}
         >

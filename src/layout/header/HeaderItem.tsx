@@ -27,7 +27,7 @@ const HeaderItem = (props: TMenu) => {
             p: '6px 16px',
             background: isActivePage ? theme.palette.background.button : '#282825',
             color: isActivePage ? theme.palette.common.black : theme.palette.common.white,
-
+            my: 0.2,
             ':hover': {
               background: theme.palette.background.button,
               color: theme.palette.common.black,
@@ -49,7 +49,7 @@ const HeaderItem = (props: TMenu) => {
             p: '6px 16px',
             background: isActivePage ? theme.palette.background.button : '#282825',
             color: isActivePage ? theme.palette.common.black : theme.palette.common.white,
-
+            my: 0.2,
             ':hover': {
               background: theme.palette.background.button,
               color: theme.palette.common.black,
@@ -64,7 +64,6 @@ const HeaderItem = (props: TMenu) => {
           <KeyboardArrowDown />
         </Button>
         <Popover
-          id={'popover_header'}
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
           onClose={handleClose}

@@ -1,10 +1,14 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import { IconButton, Popover, Stack } from '@mui/material';
 import React from 'react';
+import { useModeValue } from 'src/states/mode/hooks';
 import { menu } from '../menu';
 import HeaderItem from './HeaderItem';
 
 const HeaderNavbar = () => {
+  const { isCrossMode } = useModeValue();
+  const id = 'popover_header_menu';
+
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -18,25 +22,28 @@ const HeaderNavbar = () => {
   return (
     <>
       <Stack sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
-        {menu.map((item) => (
-          <HeaderItem key={item.title} {...item} />
-        ))}
+        {menu.map(
+          (item) => (isCrossMode === Boolean(item.isCrossMode) || item.isCrossMode == 'both') && <HeaderItem key={item.title} {...item} />
+        )}
       </Stack>
-
       <Stack sx={{ display: { xs: 'flex', md: 'none' }, flex: 1, justifyContent: 'flex-end' }}>
-        <IconButton onClick={handleClick}>
+        <IconButton aria-describedby={id} onClick={handleClick}>
           <MenuIcon />
         </IconButton>
-
         <Popover
-          id={'popover_header'}
+          id={id}
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
           onClose={handleClose}
           anchorOrigin={{
             vertical: 'bottom',
-            horizontal: 'left',
+            horizontal: 'center',
           }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          sx={{ mt: 1 }}
         >
           <Stack
             flexDirection="column"
@@ -47,9 +54,7 @@ const HeaderNavbar = () => {
               },
             }}
           >
-            {menu.map((item) => (
-              <HeaderItem key={item.title} {...item} />
-            ))}
+            {menu.map((item) => isCrossMode === Boolean(item.isCrossMode) && <HeaderItem key={item.title} {...item} />)}
           </Stack>
         </Popover>
       </Stack>

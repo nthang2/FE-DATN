@@ -15,7 +15,6 @@ import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/
 import { LendingContractUniversal } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingContractUniversal';
 import useDepositEVM from 'src/hooks/mutations/useDepositEVM';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
-import useQueryAllPriceByName from 'src/hooks/useQueryAllPriceByName';
 import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
 import useQueryDepositValue from 'src/hooks/useQueryHook/queryMyPortfolio/useQueryDepositValue';
 import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
@@ -38,7 +37,6 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
   const { refetch: refetchDepositValue } = useQueryDepositValue();
   const { asyncExecute, loading } = useAsyncExecute();
   const { assetByTokenName } = useMyPortfolioUniversal();
-  const { data: listPrice } = useQueryAllPriceByName();
 
   const [valueDeposit, setValueDeposit] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');

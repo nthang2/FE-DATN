@@ -77,7 +77,6 @@ export default function Deposit() {
                 .multipliedBy(assetByTokenName?.[row.symbol]?.priceUSD || 0)
                 .toFixed(2);
               const withdrawAbleValue = assetByTokenName?.[row.symbol]?.maxWithdrawable;
-              console.log('🚀 ~ withdrawAbleValue:', withdrawAbleValue);
               const withdrawAblePrice = BN(assetByTokenName?.[row.symbol]?.maxWithdrawable || 0).multipliedBy(
                 assetByTokenName?.[row.symbol]?.priceUSD || 0
               );
@@ -111,7 +110,7 @@ export default function Deposit() {
                   </TableCell>
                   <TableCell align="right">
                     <Button
-                      disabled={BN(balanceValue).isLessThanOrEqualTo(0)}
+                      // disabled={BN(balanceValue).isLessThanOrEqualTo(0)}
                       variant="contained"
                       size="small"
                       onClick={() => handleDeposit(row)}

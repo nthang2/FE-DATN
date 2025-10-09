@@ -11,6 +11,7 @@ export default function useQueryTrasactionHistory() {
       const data = await getTransactionHistory({ walletAddress: address, chainId: chainId });
       return data;
     },
+    enabled: !!address && !!chainId,
     staleTime: 1000 * 60 * 10,
   });
 }

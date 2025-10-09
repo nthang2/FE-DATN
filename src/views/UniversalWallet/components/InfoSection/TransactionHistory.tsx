@@ -8,12 +8,15 @@ import { mapNameChainId } from 'src/constants/chainId';
 import { mapNameNetwork } from 'src/constants/network';
 import useQueryTrasactionHistory from 'src/hooks/useQueryHook/queryUniversalWallet/useQueryTransactionHistory';
 import { chainIconNetwork } from 'src/states/wallets/constants/chainIcon';
+import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import { copyTextToClipboard } from 'src/utils';
 import { formatAddress } from 'src/utils/format';
 import { transactionHistoryTableHead } from '../../constant';
 
 const TransactionHistory = () => {
   const { data: trasactionHistoryData, status: statusQueryTrasactionHistory } = useQueryTrasactionHistory();
+  const { address, chainId, status } = useSummaryFirstActiveConnect();
+
   return (
     <TableContainer sx={{ mt: 2, borderRadius: '14px' }}>
       <Table>
@@ -31,63 +34,75 @@ const TransactionHistory = () => {
           </TableRow>
         </TableHead>
 
-        <TableBody>
-          {statusQueryTrasactionHistory == 'success' && trasactionHistoryData && trasactionHistoryData.actions.length > 0 ? (
-            trasactionHistoryData.actions.map((row, index) => {
-              const IconNetwork = chainIconNetwork[row.sourceChainId];
-              return (
-                <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                  <TableCell>
-                    <Stack sx={{ alignItems: 'center', gap: 1 }}>
-                      <IconNetwork />
-                      <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disabled' }}>
-                        {mapNameNetwork[mapNameChainId[row.sourceChainId]].name}
-                      </Typography>
-                    </Stack>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
-                      {row.state}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2" sx={{ fontWeight: 500, color: row.state == 'Completed' ? '#08DBA4' : '#FFB41E' }}>
-                      {row.action ? 'Add' : 'Remove'}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
-                      {fd(row.timestamp * 1000, 'h:mm a')}
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
-                      {fd(row.timestamp * 1000, 'MMMM dd, yyy')}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Stack sx={{ gap: 1 }}>
+        {status == 'Connected' ? (
+          <TableBody>
+            {statusQueryTrasactionHistory == 'success' && trasactionHistoryData && trasactionHistoryData.actions.length > 0 ? (
+              trasactionHistoryData.actions.map((row, index) => {
+                const IconNetwork = chainIconNetwork[row.sourceChainId];
+                return (
+                  <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                    <TableCell>
+                      <Stack sx={{ alignItems: 'center', gap: 1 }}>
+                        <IconNetwork />
+                        <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disabled' }}>
+                          {mapNameNetwork[mapNameChainId[row.sourceChainId]].name}
+                        </Typography>
+                      </Stack>
+                    </TableCell>
+                    <TableCell>
                       <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
-                        {formatAddress(row.transactionHash)}
+                        {row.state}
                       </Typography>
-                      <ContentCopyIcon sx={{ fontSize: '14px' }} onClick={() => copyTextToClipboard(row.transactionHash)} />
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              );
-            })
-          ) : (
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: row.state == 'Completed' ? '#08DBA4' : '#FFB41E' }}>
+                        {row.action ? 'Add' : 'Remove'}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
+                        {fd(row.timestamp * 1000, 'h:mm a')}
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
+                        {fd(row.timestamp * 1000, 'MMMM dd, yyy')}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Stack sx={{ gap: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
+                          {formatAddress(row.transactionHash)}
+                        </Typography>
+                        <ContentCopyIcon sx={{ fontSize: '14px' }} onClick={() => copyTextToClipboard(row.transactionHash)} />
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            ) : (
+              <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableCell colSpan={transactionHistoryTableHead.length}>
+                  <Box className="flex-center">
+                    {statusQueryTrasactionHistory == 'pending' && <JPowLoading />}
+                    {statusQueryTrasactionHistory == 'error' && <Failed />}
+                    {statusQueryTrasactionHistory == 'success' && trasactionHistoryData && trasactionHistoryData.actions.length == 0 && (
+                      <NoData />
+                    )}
+                  </Box>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        ) : (
+          <TableBody>
             <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
               <TableCell colSpan={transactionHistoryTableHead.length}>
                 <Box className="flex-center">
-                  {statusQueryTrasactionHistory == 'pending' && <JPowLoading />}
-                  {statusQueryTrasactionHistory == 'error' && <Failed />}
-                  {statusQueryTrasactionHistory == 'success' && trasactionHistoryData && trasactionHistoryData.actions.length == 0 && (
-                    <NoData />
-                  )}
+                  <NoData text="No information !" />
                 </Box>
               </TableCell>
             </TableRow>
-          )}
-        </TableBody>
+          </TableBody>
+        )}
       </Table>
     </TableContainer>
   );
