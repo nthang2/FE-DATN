@@ -58,4 +58,5 @@ export const apiUrl = {
   getUniversalHealthFactor: () => `${BACKEND_URL}/universal/lending/health-factor`,
   getPortfolioCrossTransactionsHistory: (userAddress: string, chainId: string) =>
     `${BACKEND_URL}/universal/lending/actions?chainId=${chainId}&walletAddress=${userAddress}`,
+  simulateTransaction: () => `${BACKEND_URL}/universal/lending/simulate`,
 };

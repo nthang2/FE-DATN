@@ -1,12 +1,13 @@
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Stack, TableCell, TableRow, Typography } from '@mui/material';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import { BN } from 'src/utils';
 import { formatNumber } from 'src/utils/format';
 import { useBorrowCrossState } from '../../state/hooks';
 import { TBorrowCrossItem } from '../../state/types';
+import { mapNameNetwork } from 'src/constants/network';
+import { findTokenInfoByToken } from 'src/constants/tokens/mapNameToInfo';
 
 interface IProps {
   index: number;
@@ -18,14 +19,14 @@ interface IProps {
 const BorrowTableRow = (props: IProps) => {
   const {
     index,
-    borrowItem: { value, address },
+    borrowItem: { value, address, network },
     onClick,
     actionStatus,
   } = props;
   const [borrowState, setBorrowState] = useBorrowCrossState();
   const { asyncExecute, loading } = useAsyncExecute();
 
-  const tokenInfo = findTokenInfoByToken(address);
+  const tokenInfo = findTokenInfoByToken(address, network || mapNameNetwork.solana.name);
 
   const resetBorrow = () => {
     setBorrowState({ ...borrowState, value: '0', price: 0 });

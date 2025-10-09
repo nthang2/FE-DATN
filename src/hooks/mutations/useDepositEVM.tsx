@@ -7,7 +7,7 @@ import { TokenName } from 'src/libs/crypto-icons';
 import { config } from 'src/states/wallets/evm-blockchain/config';
 import useSummaryEVMConnect from 'src/states/wallets/evm-blockchain/hooks/useSummaryEVMConnect';
 import { BN } from 'src/utils';
-import { handleNotifyEVM } from 'src/utils/notify';
+import { handleNotifyEVM, handleNotifySimulateEVM } from 'src/utils/notify';
 import { actionType, ethFeeAmount } from 'src/views/Borrow/constant';
 import { toRSV } from 'src/views/Borrow/utils';
 import { encodePacked, erc20Abi, keccak256, pad, parseEther, toBytes } from 'viem';
@@ -61,6 +61,21 @@ const useDepositEVM = () => {
           account: address as `0x${string}`,
         });
         const compactSignature = toRSV(signature);
+
+        await handleNotifySimulateEVM({
+          chainId: Number(chainId),
+          user: address as `0x${string}`,
+          actionType: actionType.DEPOSIT,
+          token: tokenInfo?.address as `0x${string}`,
+          amount: amount,
+          nonce: Number(nonce),
+          deadline: Number(deadline),
+          signature: {
+            r: compactSignature.r,
+            s: compactSignature.s,
+            v: Number(compactSignature.v),
+          },
+        });
 
         const allowance = await readContract(config, {
           abi: erc20Abi,

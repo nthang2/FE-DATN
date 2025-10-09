@@ -1,11 +1,12 @@
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Stack, TableCell, TableRow, Typography } from '@mui/material';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
-import { findTokenInfoByToken } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 import useAsyncExecute from 'src/hooks/useAsyncExecute';
 import { roundNumber } from 'src/utils/format';
 import { useDepositCrossState } from '../../state/hooks';
 import { TBorrowCrossItem } from '../../state/types';
+import { findTokenInfoByToken } from 'src/constants/tokens/mapNameToInfo';
+import { mapNameNetwork } from 'src/constants/network';
 
 interface IProps {
   index: number;
@@ -23,7 +24,7 @@ const DepositTableRow = (props: IProps) => {
   } = props;
   const [depositItems, setDepositItems] = useDepositCrossState();
   const { asyncExecute, loading } = useAsyncExecute();
-  const tokenInfo = findTokenInfoByToken(address);
+  const tokenInfo = findTokenInfoByToken(address, depositItems[index].network || mapNameNetwork.solana.name);
 
   const handleReset = () => {
     setDepositItems(() => {
