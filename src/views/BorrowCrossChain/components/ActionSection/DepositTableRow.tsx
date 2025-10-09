@@ -7,6 +7,7 @@ import { useDepositCrossState } from '../../state/hooks';
 import { TBorrowCrossItem } from '../../state/types';
 import { findTokenInfoByToken } from 'src/constants/tokens/mapNameToInfo';
 import { mapNameNetwork } from 'src/constants/network';
+import ButtonApproveEVM from 'src/components/ButtonApproveEVM/ButtonApproveEVM';
 
 interface IProps {
   index: number;
@@ -59,14 +60,23 @@ const DepositTableRow = (props: IProps) => {
         {actionStatus ? (
           <CheckCircleIcon fontSize="large" color="success" />
         ) : (
-          <ButtonLoading
-            loading={loading}
-            variant="contained"
-            onClick={() => asyncExecute({ fn: onClick, onSuccess: handleReset })}
+          <ButtonApproveEVM
+            tokenAddress={tokenInfo?.address as `0x${string}`}
+            network={depositItems[index].network || mapNameNetwork.solana.name}
+            amount={value}
             sx={{ minWidth: '100px' }}
-          >
-            Deposit
-          </ButtonLoading>
+            variant="contained"
+            actionButton={
+              <ButtonLoading
+                loading={loading}
+                variant="contained"
+                onClick={() => asyncExecute({ fn: onClick, onSuccess: handleReset })}
+                sx={{ minWidth: '100px' }}
+              >
+                Deposit
+              </ButtonLoading>
+            }
+          />
         )}
       </TableCell>
     </TableRow>

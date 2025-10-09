@@ -10,7 +10,7 @@ import { BN } from 'src/utils';
 import { handleNotifyEVM, handleNotifySimulateEVM } from 'src/utils/notify';
 import { actionType, ethFeeAmount } from 'src/views/Borrow/constant';
 import { toRSV } from 'src/views/Borrow/utils';
-import { encodePacked, erc20Abi, keccak256, pad, parseEther, toBytes } from 'viem';
+import { encodePacked, keccak256, pad, parseEther, toBytes } from 'viem';
 import { readContract, signMessage, waitForTransactionReceipt, writeContract } from 'wagmi/actions';
 
 interface IProps {
@@ -77,21 +77,21 @@ const useDepositEVM = () => {
           },
         });
 
-        const allowance = await readContract(config, {
-          abi: erc20Abi,
-          address: tokenInfo?.address as `0x${string}`,
-          functionName: 'allowance',
-          args: [address as `0x${string}`, ctrAdsEVM.universalWallet as `0x${string}`],
-        });
+        // const allowance = await readContract(config, {
+        //   abi: erc20Abi,
+        //   address: tokenInfo?.address as `0x${string}`,
+        //   functionName: 'allowance',
+        //   args: [address as `0x${string}`, ctrAdsEVM.universalWallet as `0x${string}`],
+        // });
 
-        if (allowance < BigInt(amount)) {
-          await writeContract(config, {
-            abi: erc20Abi,
-            address: tokenInfo?.address as `0x${string}`,
-            functionName: 'approve',
-            args: [ctrAdsEVM.universalWallet as `0x${string}`, BigInt(amount)],
-          });
-        }
+        // if (allowance < BigInt(amount)) {
+        //   await writeContract(config, {
+        //     abi: erc20Abi,
+        //     address: tokenInfo?.address as `0x${string}`,
+        //     functionName: 'approve',
+        //     args: [ctrAdsEVM.universalWallet as `0x${string}`, BigInt(amount)],
+        //   });
+        // }
 
         const tx = await writeContract(config, {
           abi: universalWalletAbi,

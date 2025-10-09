@@ -28,6 +28,8 @@ import { formatAddress, formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
 import { TAvailableToken, TNetwork } from '../type';
 import CheckHealthFactor from './CheckHealthFactor';
+import ButtonApproveEVM from 'src/components/ButtonApproveEVM/ButtonApproveEVM';
+import { listTokenAvailableUniversal } from 'src/constants/tokens/mapNameToInfo';
 
 export default function DepositModal({ token }: { token: SolanaEcosystemTokenInfo | EthereumChainTokenInfo }) {
   const wallet = useWallet();
@@ -54,6 +56,7 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
   } = useGetBalanceUniversalByToken({ address, network: selectedNetwork, token: token.symbol as TokenName });
 
   const id = anchorEl ? `popover_deposit` : undefined;
+  const listTokenAvailable = listTokenAvailableUniversal(selectedNetwork);
   const options = useMemo(() => {
     return {
       solana: [listTokenAvailableSOL[token.symbol as TAvailableToken]],
@@ -407,15 +410,24 @@ export default function DepositModal({ token }: { token: SolanaEcosystemTokenInf
             <IconToken tokenName={token.symbol} />
             <Typography sx={{ ml: 1, fontWeight: 600 }}>Deposit {token.symbol}</Typography>
           </Box>
-          <ButtonLoading
-            disabled={valueDepositHelperText != undefined || !Number(valueDeposit)}
-            size="small"
-            loading={loading}
+          <ButtonApproveEVM
+            tokenAddress={listTokenAvailable?.[token.symbol]?.address as `0x${string}`}
+            network={selectedNetwork}
+            amount={valueDeposit}
             variant="contained"
-            onClick={() => asyncExecute({ fn: handleDeposit })}
-          >
-            Deposit
-          </ButtonLoading>
+            size="small"
+            actionButton={
+              <ButtonLoading
+                disabled={valueDepositHelperText != undefined || !Number(valueDeposit)}
+                size="small"
+                loading={loading}
+                variant="contained"
+                onClick={() => asyncExecute({ fn: handleDeposit })}
+              >
+                Deposit
+              </ButtonLoading>
+            }
+          />
         </Box>
       </Box>
     </Box>

@@ -23,6 +23,7 @@ import { decimalFlood, formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
 import CheckHealthFactor from './CheckHealthFactor';
 import { listTokenAvailableUniversal } from 'src/constants/tokens/mapNameToInfo';
+import ButtonApproveEVM from 'src/components/ButtonApproveEVM/ButtonApproveEVM';
 
 export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo }) {
   const wallet = useWallet();
@@ -351,15 +352,24 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
           <IconToken tokenName={TokenName.USDAI} />
           <Typography sx={{ ml: 1, fontWeight: 600 }}>Redeem {TokenName.USDAI}</Typography>
         </Box>
-        <ButtonLoading
-          disabled={valueRepayHelperText != undefined || !Number(valueRepay)}
-          size="small"
-          loading={loading}
+        <ButtonApproveEVM
+          tokenAddress={listTokenAvailable?.[token.symbol]?.address as `0x${string}`}
+          network={selectedNetwork}
+          amount={valueRepay}
           variant="contained"
-          onClick={() => asyncExecute({ fn: handleRepay })}
-        >
-          Redeem
-        </ButtonLoading>
+          size="small"
+          actionButton={
+            <ButtonLoading
+              disabled={valueRepayHelperText != undefined || !Number(valueRepay)}
+              size="small"
+              loading={loading}
+              variant="contained"
+              onClick={() => asyncExecute({ fn: handleRepay })}
+            >
+              Redeem
+            </ButtonLoading>
+          }
+        />
       </Box>
     </Box>
   );

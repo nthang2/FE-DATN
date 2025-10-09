@@ -5,6 +5,7 @@ import {
   simulateTransactionEVM,
   TSimulateTransactionBody,
 } from 'src/services/HandleApi/universalLending/requestEVMLending';
+import { sleep } from '.';
 
 interface IHandleNotifyEVMProps {
   chainId: number;
@@ -24,16 +25,18 @@ export const handleNotifyEVM = async (props: IHandleNotifyEVMProps) => {
     amount,
   });
 
+  await sleep(3000);
+
   const response = await getWalletLinkingRequest({
     requestId: walletLinkingRequestInfo.requestId,
     walletAddress: user,
     chainId,
   });
 
-  if (response.state === 'Failed') {
-    toast.error('Wallet linking request failed');
+  if (response?.success === false) {
+    toast.error(response?.message || 'Request failed');
   } else {
-    toast.success('Wallet linking request successful');
+    toast.success('Transaction request successful');
   }
 
   return response;
