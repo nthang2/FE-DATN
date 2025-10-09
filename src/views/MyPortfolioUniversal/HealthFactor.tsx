@@ -3,17 +3,30 @@ import { useMemo, useState } from 'react';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
-import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { listTokenAvailableSOLUniversal } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { SolanaEcosystemTokenInfo } from 'src/constants/tokens/solana-ecosystem/SolanaEcosystemTokenInfo';
+import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
+import useHealthFactorUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useHealthFactorUniversal';
+import { TokenName } from 'src/libs/crypto-icons';
+import { decimalFlood } from 'src/utils/format';
+import { displayDecimalByToken } from '../Borrow/components/HealthFactor/constant';
 import HealthFactorSection from '../Borrow/components/HealthFactor/HealthFactorSection';
 import CustomSelectToken from './components/InputCustom/CustomSelectToken';
-import useQueryAllTokensPrice from 'src/hooks/useQueryAllTokensPrice';
-import { displayDecimalByToken } from '../Borrow/components/HealthFactor/constant';
-import { decimalFlood } from 'src/utils/format';
-import useHealthFactorUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useHealthFactorUniversal';
+
+const listTokenAvailable = Object.keys(listTokenAvailableSOLUniversal).reduce((acc, item) => {
+  if (item) {
+    const token = listTokenAvailableSOLUniversal[item as keyof typeof listTokenAvailableSOLUniversal];
+    if (token?.symbol !== TokenName.USDAI) {
+      acc[item] = token;
+    }
+  }
+
+  return acc;
+}, {} as Record<string, SolanaEcosystemTokenInfo>);
 
 export default function HealthFactor() {
   const listToken = Object.values(listTokenAvailable).map((item) => {
-    return item.address;
+    return item?.address as string;
   });
   const [selectedToken, setSelectedToken] = useState(listToken[0]);
 
@@ -25,8 +38,8 @@ export default function HealthFactor() {
   const { data: listPrice, status: statusListPrice } = useQueryAllTokensPrice();
 
   const selectedTokenInfo = useMemo(() => {
-    const token = Object.values(listTokenAvailable).find((item) => item.address === selectedToken);
-    return token || listTokenAvailable['ORAI'];
+    const token = Object.values(listTokenAvailable).find((item) => item?.address === selectedToken);
+    return token || listTokenAvailable['USDC'];
   }, [selectedToken]);
   const liquidationPrice = useMemo(() => {
     if (healthFactor?.estimateLiquidationPrice) {
@@ -76,7 +89,11 @@ export default function HealthFactor() {
           />
         </Box>
 
-        <CustomSelectToken value={selectedToken} onChange={(e) => setSelectedToken(e.target.value)} options={listToken} />
+        <CustomSelectToken
+          value={selectedToken}
+          onChange={(e) => setSelectedToken(e.target.value as string)}
+          options={listToken as string[]}
+        />
       </Box>
 
       <HealthFactorSection

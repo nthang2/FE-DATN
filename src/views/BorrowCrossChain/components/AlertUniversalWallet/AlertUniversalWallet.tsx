@@ -1,4 +1,5 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import React, { useMemo } from 'react';
 import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
@@ -8,6 +9,7 @@ const AlertUniversalWallet = () => {
   const { chainId, address } = useSummaryFirstActiveConnect();
   const listConnectWallet = useSummaryConnect();
   const { data: listWallet } = useGetListWallet(chainId, address);
+  const navigate = useNavigate();
 
   const isConnectAllUniversalWallet = useMemo(() => {
     if (!listWallet || !listWallet?.universalWallet) {
@@ -17,10 +19,13 @@ const AlertUniversalWallet = () => {
     return listWallet.wallets.every((wallet) => listConnectWallet.map((wallet) => wallet.address).indexOf(wallet.walletAddress) > -1);
   }, [listConnectWallet, listWallet]);
 
+  const handleGoToUniversalWallet = () => {
+    navigate('/universal-wallet');
+  };
+
   return (
     <Box
       sx={{
-        bgcolor: '#333331',
         p: 2,
         borderRadius: 2,
         position: 'fixed',
@@ -28,12 +33,19 @@ const AlertUniversalWallet = () => {
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 1000,
-        display: isConnectAllUniversalWallet ? 'none' : 'block',
+        display: isConnectAllUniversalWallet ? 'none' : 'flex',
+        alignItems: 'center',
+        gap: 3,
+        background: 'linear-gradient(90deg, #e55e00 0%, #e12731 100%)',
       }}
     >
       <Typography flexWrap="nowrap" variant="body1">
-        Universal Wallet is not connected
+        Your connected wallet not linked to a Universal Wallet or not created yet
       </Typography>
+
+      <Button variant="contained" size="small" onClick={handleGoToUniversalWallet}>
+        Go to universal wallet
+      </Button>
     </Box>
   );
 };
