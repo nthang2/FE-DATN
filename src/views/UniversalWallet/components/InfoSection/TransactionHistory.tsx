@@ -6,7 +6,7 @@ import JPowLoading from 'src/components/StatusData/Loading';
 import NoData from 'src/components/StatusData/NoData';
 import { mapNameChainId } from 'src/constants/chainId';
 import { mapNameNetwork } from 'src/constants/network';
-import useQueryTrasactionHistory from 'src/hooks/useQueryHook/queryUniversalWallet/useQueryTransactionHistory';
+import useQueryTransactionHistory from 'src/hooks/useQueryHook/queryUniversalWallet/useQueryTransactionHistory';
 import { chainIconNetwork } from 'src/states/wallets/constants/chainIcon';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import { copyTextToClipboard } from 'src/utils';
@@ -14,11 +14,11 @@ import { formatAddress } from 'src/utils/format';
 import { transactionHistoryTableHead } from '../../constant';
 
 const TransactionHistory = () => {
-  const { data: trasactionHistoryData, status: statusQueryTrasactionHistory } = useQueryTrasactionHistory();
-  const { address, chainId, status } = useSummaryFirstActiveConnect();
+  const { data: trasactionHistoryData, status: statusQueryTrasactionHistory } = useQueryTransactionHistory();
+  const { status } = useSummaryFirstActiveConnect();
 
   return (
-    <TableContainer sx={{ mt: 2, borderRadius: '14px' }}>
+    <TableContainer sx={{ mt: 2, borderRadius: '14px', maxHeight: '500px', overflowY: 'auto' }}>
       <Table>
         <TableHead>
           <TableRow>

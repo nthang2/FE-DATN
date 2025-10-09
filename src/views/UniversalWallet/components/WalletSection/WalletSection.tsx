@@ -68,7 +68,7 @@ const WalletSection = () => {
         }}
       >
         <Typography variant="body2" fontWeight={600} color="error">
-          Destination wallet invalid !
+          This destination wallet is already linked to a Universal Wallet.
         </Typography>
       </Box>
 

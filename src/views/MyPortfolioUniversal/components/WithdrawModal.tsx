@@ -21,16 +21,18 @@ import useMyPortfolioUniversalInfo from 'src/hooks/useQueryHook/queryMyPortfolio
 import { TokenName } from 'src/libs/crypto-icons';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import useGetBalanceUniversalByToken from 'src/states/wallets/hooks/useGetBalanceUniversalByToken';
-import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import { BN } from 'src/utils';
 import { decimalFlood, formatNumber } from 'src/utils/format';
 import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
 import { TNetwork } from '../type';
 import CheckHealthFactor from './CheckHealthFactor';
+import useSummaryConnectByNetwork from 'src/states/wallets/hooks/useSummaryConnectByNetwork';
 
 export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo | EthereumChainTokenInfo }) {
+  const [selectedNetwork, setSelectedNetwork] = useState<TNetwork>('solana');
+
   const wallet = useWallet();
-  const { address, networkName, chainId } = useSummaryFirstActiveConnect();
+  const { address, networkName, chainId } = useSummaryConnectByNetwork({ network: selectedNetwork });
   const { mutateAsync: withdrawEVM } = useWithdrawEVM();
   const { data: listWallet } = useGetListWallet(chainId, address);
   const { data: tokensPrice, status: statusQueryAllTokensPrice } = useQueryAllTokensPrice();
@@ -47,7 +49,6 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const [valueWithdraw, setValueWithdraw] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
   const [valueWithdrawHelperText, setValueWithdrawHelperText] = useState<string | undefined>(undefined);
-  const [selectedNetwork, setSelectedNetwork] = useState<TNetwork>('solana');
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const collateral = useMemo(() => {
@@ -377,7 +378,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
             <Typography sx={{ ml: 1, fontWeight: 600 }}>Withdraw {token.symbol}</Typography>
           </Box>
           <ButtonLoading
-            disabled={valueWithdrawHelperText != undefined || !Number(valueWithdraw)}
+            disabled={address.length === 0 || valueWithdrawHelperText != undefined || !Number(valueWithdraw)}
             size="small"
             loading={loading}
             variant="contained"

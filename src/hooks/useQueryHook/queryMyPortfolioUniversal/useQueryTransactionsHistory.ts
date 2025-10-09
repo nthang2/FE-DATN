@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getTransactionsHistory } from 'src/services/HandleApi/getMyPortfolioUniversal/getTransactionsHistory';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 
-export default function useQueryTrasactionsHistory() {
+export default function useQueryTransactionsHistory() {
   const { address, chainId } = useSummaryFirstActiveConnect();
 
   return useQuery({

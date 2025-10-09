@@ -5,7 +5,7 @@ import useSummaryEVMConnect from '../evm-blockchain/hooks/useSummaryEVMConnect';
 import useSummarySolanaConnect from '../solana-blockchain/hooks/useSummarySolanaConnect';
 import { SummaryConnectInfo } from '../types';
 
-const blankWallet: SummaryConnectInfo = {
+export const blankWallet: SummaryConnectInfo = {
   address: '',
   chainId: '1', // for now
   chainIcon: chainIcon['1'],

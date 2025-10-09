@@ -42,7 +42,6 @@ const ClassicConnectWallet = () => {
       <Stack
         sx={(theme) => ({
           background: theme.palette.background.accordion,
-          p: '10px',
           borderRadius: 2,
           alignItems: 'center',
         })}
@@ -55,7 +54,6 @@ const ClassicConnectWallet = () => {
               <Typography sx={{ display: { xs: 'none', md: 'block' } }}>{formatAddress(address)}</Typography>
               <ArrowDown />
             </Stack>
-
             <Popover
               open={!openDialog && Boolean(anchorEl)}
               anchorEl={anchorEl}

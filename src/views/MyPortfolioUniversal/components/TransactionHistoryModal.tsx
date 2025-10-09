@@ -19,7 +19,7 @@ import JPowLoading from 'src/components/StatusData/Loading';
 import NoData from 'src/components/StatusData/NoData';
 import { mapNameChainId } from 'src/constants/chainId';
 import { mapNameNetwork } from 'src/constants/network';
-import useQueryTrasactionsHistory from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useQueryTransactionsHistory';
+import useQueryTransactionsHistory from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useQueryTransactionsHistory';
 import { chainIconNetwork } from 'src/states/wallets/constants/chainIcon';
 import { copyTextToClipboard } from 'src/utils';
 import { formatAddress } from 'src/utils/format';
@@ -27,7 +27,7 @@ import { actionType } from 'src/views/Borrow/constant';
 
 const tableHead = ['Network', 'Action', 'Time', 'Transaction Hash', 'Status'];
 export default function TransactionHistoryModal() {
-  const { data: transactionsHistoryData, status: statusQueryTrasactionsHistory } = useQueryTrasactionsHistory();
+  const { data: transactionsHistoryData, status: statusQueryTransactionsHistory } = useQueryTransactionsHistory();
 
   const [page, setPage] = useState(1);
   const [rowsPerPage] = useState(5);
@@ -63,7 +63,7 @@ export default function TransactionHistoryModal() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {statusQueryTrasactionsHistory == 'success' &&
+            {statusQueryTransactionsHistory == 'success' &&
             transactionsHistoryData &&
             transactionsHistoryData.actions.length > 0 &&
             dataRender.length > 0 ? (
@@ -127,9 +127,9 @@ export default function TransactionHistoryModal() {
               <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell colSpan={tableHead.length}>
                   <Box className="flex-center">
-                    {statusQueryTrasactionsHistory == 'pending' && <JPowLoading />}
-                    {statusQueryTrasactionsHistory == 'error' && <Failed />}
-                    {statusQueryTrasactionsHistory == 'success' &&
+                    {statusQueryTransactionsHistory == 'pending' && <JPowLoading />}
+                    {statusQueryTransactionsHistory == 'error' && <Failed />}
+                    {statusQueryTransactionsHistory == 'success' &&
                       transactionsHistoryData &&
                       transactionsHistoryData.actions.length == 0 && <NoData />}
                   </Box>
@@ -139,7 +139,7 @@ export default function TransactionHistoryModal() {
           </TableBody>
         </Table>
       </TableContainer>
-      {statusQueryTrasactionsHistory == 'success' && transactionsHistoryData && transactionsHistoryData.actions.length > 0 && (
+      {statusQueryTransactionsHistory == 'success' && transactionsHistoryData && transactionsHistoryData.actions.length > 0 && (
         <Pagination
           className="flex-center"
           sx={{ mt: 2 }}

@@ -69,7 +69,7 @@ const ListWallet = () => {
                   </TableCell>
                   <TableCell>{formatAddress(item.walletAddress)}</TableCell>
                   <TableCell>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box className="flex-end" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <ButtonLoading
                         variant="contained"
                         disabled={!isConnected || isCanRemoveFirstWallet}
@@ -78,11 +78,11 @@ const ListWallet = () => {
                         loading={item.walletAddress === loadingAddress && loading}
                         onClick={() => asyncRemoveWallet(item.walletAddress, item.chainId.toString())}
                       >
-                        Remove
+                        {isConnected ? 'Remove' : 'Not connected'}
                       </ButtonLoading>
 
                       <Tooltip
-                        title={'Cannot remove the first wallet or the wallet was not connected.'}
+                        title={'Cannot remove the first wallet until all other wallets have been removed.'}
                         sx={{ display: !isConnected || isCanRemoveFirstWallet ? 'flex' : 'none' }}
                         placement="top-start"
                         arrow={false}

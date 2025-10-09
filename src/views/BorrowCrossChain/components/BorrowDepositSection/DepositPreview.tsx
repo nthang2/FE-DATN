@@ -1,15 +1,16 @@
 import { Collapse, Stack, Typography } from '@mui/material';
 import React, { useMemo } from 'react';
-import { findTokenInfoByToken, mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
-import { TBorrowItem } from 'src/views/Borrow/state/types';
 import { useCrossModeState } from 'src/states/hooks';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { TokenName } from 'src/libs/crypto-icons';
 import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
+import { findTokenInfoByToken, mapNameToInfoUniversal } from 'src/constants/tokens/mapNameToInfo';
+import { TBorrowCrossItem } from '../../state/types';
+import { mapNameNetwork } from 'src/constants/network';
 interface IProps {
   isHasDeposited: boolean;
   depositedValueUsd: number;
-  depositItems: TBorrowItem[];
+  depositItems: TBorrowCrossItem[];
 }
 
 const DepositPreview = (props: IProps) => {
@@ -28,8 +29,10 @@ const DepositPreview = (props: IProps) => {
       const depositedList = Object.values(asset)
         .filter((item) => item.depositedUSD > 0)
         .map((item) => {
-          const key = item.name as keyof typeof mapNameToInfoSolana;
-          return mapNameToInfoSolana[key];
+          const key = item.name as keyof typeof mapNameToInfoUniversal;
+          const respectivelyDepositItem = depositItems.find((depositItem) => depositItem.address === item.contractAddress);
+          const currentNetwork = respectivelyDepositItem?.network || mapNameNetwork.solana.name;
+          return mapNameToInfoUniversal(currentNetwork)?.[key] || mapNameToInfoUniversal(currentNetwork)?.USDC;
         });
 
       return depositedList;
@@ -41,9 +44,9 @@ const DepositPreview = (props: IProps) => {
   const previewNewDepositTokens = useMemo(() => {
     if (crossMode && asset) {
       const list = depositItems
-        .filter((item) => Number(item.value) > 0 && !depositedToken.find((token) => token.address === item.address))
+        .filter((item) => Number(item.value) > 0 && !depositedToken.find((token) => token?.address === item.address))
         .map((item) => {
-          return findTokenInfoByToken(item.address) || item;
+          return findTokenInfoByToken(item.address, item.network) || item;
         });
 
       return [...depositedToken, ...list];
@@ -57,7 +60,8 @@ const DepositPreview = (props: IProps) => {
       <Stack bgcolor="#333331" p="16px 20px" borderRadius="0px 0px 16px 16px" alignItems="left" direction="column" gap={1}>
         <Stack alignItems="center">
           {depositedToken.map((item, index) => {
-            const tokenInfo = findTokenInfoByToken(item?.address);
+            const respectivelyDepositItem = depositItems.find((depositItem) => depositItem.address === item?.address);
+            const tokenInfo = findTokenInfoByToken(item?.address || '', respectivelyDepositItem?.network || mapNameNetwork.solana.name);
             return <IconToken key={index} tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: '1px', width: '16px', height: '16px' }} />;
           })}
           <Typography ml={1} variant="body1">
@@ -66,7 +70,8 @@ const DepositPreview = (props: IProps) => {
         </Stack>
         <Stack alignItems="center" display={isHasNewValue ? 'flex' : 'none'}>
           {previewNewDepositTokens.map((item, index) => {
-            const tokenInfo = findTokenInfoByToken(item?.address);
+            const respectivelyDepositItem = depositItems.find((depositItem) => depositItem.address === item?.address);
+            const tokenInfo = findTokenInfoByToken(item?.address || '', respectivelyDepositItem?.network || mapNameNetwork.solana.name);
             return <IconToken key={index} tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: '1px', width: '16px', height: '16px' }} />;
           })}
           <Typography ml={1} variant="body1">

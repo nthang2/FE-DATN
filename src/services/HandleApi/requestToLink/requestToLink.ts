@@ -20,6 +20,8 @@ export type TGetWalletLinkingRequestResponse = {
   deadline: number;
   action: boolean;
   state: string;
+  success?: boolean;
+  message?: string;
 };
 
 export type TSignMessageBody = {

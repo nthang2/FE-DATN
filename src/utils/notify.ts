@@ -1,6 +1,11 @@
 import { toast } from 'react-toastify';
 import { getWalletLinkingRequest } from 'src/services/HandleApi/requestToLink/requestToLink';
-import { requestEVMLending } from 'src/services/HandleApi/universalLending/requestEVMLending';
+import {
+  requestEVMLending,
+  simulateTransactionEVM,
+  TSimulateTransactionBody,
+} from 'src/services/HandleApi/universalLending/requestEVMLending';
+import { sleep } from '.';
 
 interface IHandleNotifyEVMProps {
   chainId: number;
@@ -20,17 +25,37 @@ export const handleNotifyEVM = async (props: IHandleNotifyEVMProps) => {
     amount,
   });
 
+  await sleep(3000);
+
   const response = await getWalletLinkingRequest({
     requestId: walletLinkingRequestInfo.requestId,
     walletAddress: user,
     chainId,
   });
 
-  if (response.state === 'Failed') {
-    toast.error('Wallet linking request failed');
+  if (response?.success === false) {
+    toast.error(response?.message || 'Request failed');
   } else {
-    toast.success('Wallet linking request successful');
+    toast.success('Transaction request successful');
   }
 
   return response;
+};
+
+export const handleNotifySimulateEVM = async (props: TSimulateTransactionBody) => {
+  const { chainId, user, actionType, token, amount, nonce, deadline, signature } = props;
+  const response = await simulateTransactionEVM({
+    chainId,
+    user,
+    actionType,
+    token,
+    amount,
+    nonce,
+    deadline,
+    signature,
+  });
+
+  if (response.success === false) {
+    throw new Error(response.message);
+  }
 };
