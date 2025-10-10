@@ -55,24 +55,39 @@ const useVaultInfoEVM = () => {
         });
 
         const stakers = result[0].result;
+        console.log('🚀 ~ useVaultInfoEVM ~ stakers:', stakers?.toString());
         const rps = Number(result[1].result || 0);
+        console.log('🚀 ~ useVaultInfoEVM ~ rps:', rps.toString());
         const minAprBps = Number(result[2].result || 0);
+        console.log('🚀 ~ useVaultInfoEVM ~ minAprBps:', minAprBps.toString());
         // [totalStaked, rewardIndex, lastUpdate]
         const vaultInfo = result[3].result;
+        console.log('🚀 ~ useVaultInfoEVM ~ vaultInfo:', vaultInfo?.toString());
 
         const totalStaked = Number(vaultInfo?.[0] || 0);
+        console.log('🚀 ~ useVaultInfoEVM ~ totalStaked:', totalStaked.toString());
         const vaultGlobalIndex = Number(vaultInfo?.[1] || 0);
+        console.log('🚀 ~ useVaultInfoEVM ~ vaultGlobalIndex:', vaultGlobalIndex.toString());
         const lastUpdate = Number(vaultInfo?.[2] || 0);
+        console.log('🚀 ~ useVaultInfoEVM ~ lastUpdate:', lastUpdate.toString());
 
         const amount = Number(stakers?.[0] || 0);
-        const rewardIndex = Number(vaultInfo?.[1] || 0);
+        console.log('🚀 ~ useVaultInfoEVM ~ amount:', amount.toString());
+        const rewardIndex = Number(stakers?.[1] || 0);
+        console.log('🚀 ~ useVaultInfoEVM ~ rewardIndex:', rewardIndex.toString());
         const userPendingReward = Number(stakers?.[2] || 0);
+        console.log('🚀 ~ useVaultInfoEVM ~ userPendingReward:', userPendingReward.toString());
         const passTime = new Date().getTime() / 1000 - lastUpdate;
+        console.log('🚀 ~ useVaultInfoEVM ~ passTime:', passTime.toString());
 
         const newestPendingReward = BN(rps).multipliedBy(passTime).toNumber();
+        console.log('🚀 ~ useVaultInfoEVM ~ newestPendingReward:', newestPendingReward.toString());
         const minRewardPerYear = BN(BN(totalStaked).multipliedBy(passTime).multipliedBy(minAprBps)).dividedBy(BN(10000 * 86400 * 365));
+        console.log('🚀 ~ useVaultInfoEVM ~ minRewardPerYear:', minRewardPerYear.toString());
         const globalIndex = vaultGlobalIndex + Math.max(minRewardPerYear.toNumber(), newestPendingReward) / totalStaked;
+        console.log('🚀 ~ useVaultInfoEVM ~ globalIndex:', globalIndex.toString());
         const pendingReward = (globalIndex - rewardIndex) * Number(amount) + Number(userPendingReward);
+        console.log('🚀 ~ useVaultInfoEVM ~ pendingReward:', pendingReward.toString());
 
         return {
           amount: BN(stakers?.[0] || 0)

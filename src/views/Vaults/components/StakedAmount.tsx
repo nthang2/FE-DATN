@@ -3,9 +3,31 @@ import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithSta
 import useStakedInfo from 'src/hooks/useQueryHook/queryVault/useStakedInfo';
 import { roundNumber } from 'src/utils/format';
 import { NumericFormat } from 'react-number-format';
+import useVaultInfoEVM from 'src/hooks/useQueryHook/queryVault/useVaultInfoEVM';
+import { useVaultSelectedNetwork } from '../state/hooks';
+import { mapNameNetwork } from 'src/constants/network';
+import { useMemo } from 'react';
 
 const StakedAmount = () => {
   const { stakeInfo, status } = useStakedInfo();
+  const { data: vaultInfoEVM, status: statusEVM } = useVaultInfoEVM();
+  const [selectedNetwork] = useVaultSelectedNetwork();
+
+  const statusWallet = useMemo(() => {
+    if (selectedNetwork === mapNameNetwork.solana.id) {
+      return status;
+    } else {
+      return statusEVM;
+    }
+  }, [selectedNetwork, status, statusEVM]);
+
+  const stakedAmount = useMemo(() => {
+    if (selectedNetwork === mapNameNetwork.solana.id) {
+      return stakeInfo?.amount || 0;
+    } else {
+      return vaultInfoEVM?.amount || 0;
+    }
+  }, [selectedNetwork, stakeInfo?.amount, vaultInfoEVM?.amount]);
 
   return (
     <Box
@@ -24,17 +46,17 @@ const StakedAmount = () => {
       </Typography>
       <Typography variant="h2" fontWeight={700} fontSize="42px" sx={{ color: 'primary.main' }}>
         <ValueWithStatus
-          status={[status]}
+          status={[statusWallet]}
           value={
             <Typography variant="h2" fontWeight={700} fontSize="42px">
-              <NumericFormat displayType="text" value={stakeInfo?.amount || 0} thousandSeparator={true} decimalScale={4} />
+              <NumericFormat displayType="text" value={stakedAmount || 0} thousandSeparator={true} decimalScale={4} />
             </Typography>
           }
           skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '50%' }}
         />
       </Typography>
       <Typography variant="body2" color="text.secondary">
-        {roundNumber(Number(stakeInfo?.amount || 0), 6)} USD
+        {roundNumber(Number(stakedAmount || 0), 6)} USD
       </Typography>
     </Box>
   );

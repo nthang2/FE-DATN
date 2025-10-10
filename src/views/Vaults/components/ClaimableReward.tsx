@@ -22,6 +22,13 @@ const ClaimableReward = () => {
   const { mutateAsync: claimRewardEVM } = useClamRewardVault();
 
   const isConnectedWallet = Boolean(wallet.publicKey);
+  const statusWallet = useMemo(() => {
+    if (selectedNetwork === mapNameNetwork.solana.id) {
+      return status;
+    } else {
+      return statusEVM;
+    }
+  }, [selectedNetwork, status, statusEVM]);
 
   const rewardAmount = useMemo(() => {
     if (selectedNetwork === mapNameNetwork.solana.id) {
@@ -72,7 +79,7 @@ const ClaimableReward = () => {
           Claimable Rewards
         </Typography>
         <ValueWithStatus
-          status={[status, statusEVM]}
+          status={[statusWallet]}
           value={
             <Typography variant="h2" fontWeight={700} fontSize="42px" flex={1} sx={{ color: 'primary.main' }}>
               ${roundNumber(rewardAmount || 0, 4)}
