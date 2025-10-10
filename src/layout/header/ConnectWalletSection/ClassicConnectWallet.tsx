@@ -5,6 +5,8 @@ import { ArrowDown, WalletIcon } from 'src/assets/icons';
 import WalletConnectIcon from 'src/components/General/WalletConnectIcon/WalletConnectIcon';
 import ModalConnectWallet from 'src/components/Modals/ConnectSolanaNetwork/ModalConnectWallet';
 import ModalSettingAccount from 'src/components/Modals/ModalSettingAccount/ModalSettingAccount';
+import { mapNameChainId } from 'src/constants/chainId';
+import { mapNameNetwork } from 'src/constants/network';
 import { useModalFunction } from 'src/states/modal/hooks';
 import useSummarySolanaConnect from 'src/states/wallets/solana-blockchain/hooks/useSummarySolanaConnect';
 import { copyTextToClipboard } from 'src/utils';
@@ -13,7 +15,7 @@ import { formatAddress } from 'src/utils/format';
 const ClassicConnectWallet = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
-  const { address, status, walletIcon, disconnect } = useSummarySolanaConnect();
+  const { address, status, walletIcon, disconnect, chainId } = useSummarySolanaConnect();
   const modalFunction = useModalFunction();
 
   const handleCloseAnchor = () => {
@@ -53,7 +55,10 @@ const ClassicConnectWallet = () => {
               gap={1}
               sx={{ background: '#282825', p: 1, borderRadius: '11px', cursor: 'pointer', alignItems: 'center', height: '100%' }}
             >
-              <WalletConnectIcon Icon={walletIcon} />
+              <Box className="flex-center" sx={{ position: 'relative' }}>
+                <WalletConnectIcon Icon={walletIcon} />
+                <Box sx={{ position: 'absolute', right: '-20%', bottom: '-50%' }}>{mapNameNetwork[mapNameChainId[chainId]].icon}</Box>
+              </Box>
             </Box>
             <Stack sx={{ background: '#282825', p: 1, gap: 1, borderRadius: '11px', cursor: 'pointer' }} onClick={handleOpenAnchor}>
               <WalletIcon />

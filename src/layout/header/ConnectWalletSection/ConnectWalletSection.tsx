@@ -2,6 +2,8 @@ import { Box, Button, Drawer, Stack, Tab, Tabs, Typography } from '@mui/material
 import { useState } from 'react';
 import { WalletIcon } from 'src/assets/icons';
 import WalletConnectIcon from 'src/components/General/WalletConnectIcon/WalletConnectIcon';
+import { mapNameChainId } from 'src/constants/chainId';
+import { mapNameNetwork } from 'src/constants/network';
 import { IconETH, IconSOL } from 'src/libs/crypto-icons';
 import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
 import { formatAddress } from 'src/utils/format';
@@ -34,7 +36,7 @@ function a11yProps(index: number) {
 const ConnectWalletSection = () => {
   const [firstWalletSummary, secondWalletSummary] = useSummaryConnect();
 
-  const { address, status, walletIcon } = firstWalletSummary;
+  const { address, status, walletIcon, chainId } = firstWalletSummary;
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [tab, setTab] = useState<number>(0);
 
@@ -43,6 +45,7 @@ const ConnectWalletSection = () => {
     status: secondWalletStatus,
     walletIcon: secondWalletIcon,
     disconnect: secondWalletDisconnect,
+    chainId: secondWalletChainId,
   } = secondWalletSummary;
 
   const walletStatus = status === 'Connected' || secondWalletStatus === 'Connected';
@@ -79,8 +82,20 @@ const ConnectWalletSection = () => {
               height: '100%',
             }}
           >
-            <WalletConnectIcon Icon={walletIcon} />
-            <WalletConnectIcon Icon={secondWalletIcon} />
+            <Box className="flex-center" sx={{ position: 'relative' }}>
+              <WalletConnectIcon Icon={walletIcon} />
+              {status == 'Connected' && (
+                <Box sx={{ position: 'absolute', right: '-20%', bottom: '-50%' }}>{mapNameNetwork[mapNameChainId[chainId]].icon}</Box>
+              )}
+            </Box>
+            <Box className="flex-center" sx={{ position: 'relative' }}>
+              <WalletConnectIcon Icon={secondWalletIcon} />
+              {secondWalletStatus == 'Connected' && (
+                <Box sx={{ position: 'absolute', right: '-20%', bottom: '-50%' }}>
+                  {mapNameNetwork[mapNameChainId[secondWalletChainId]].icon}
+                </Box>
+              )}
+            </Box>
           </Box>
           <Stack
             sx={{
