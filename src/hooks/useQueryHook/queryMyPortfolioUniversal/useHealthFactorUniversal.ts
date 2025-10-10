@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { getUniversalHealthFactor } from 'src/services/HandleApi/getMyPortfolioUniversal/getUniversalHealthFactor';
-import { useCrossModeState } from 'src/states/hooks';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 import { useDebounce } from 'use-debounce';
 
@@ -15,7 +14,6 @@ interface IProps {
 }
 
 const useHealthFactorUniversal = ({ depositItems, mintAmount, otherKeys }: IProps) => {
-  const [crossMode] = useCrossModeState();
   const { address, chainId } = useSummaryFirstActiveConnect();
 
   const totalDepositAmount = useMemo(() => {
@@ -32,11 +30,8 @@ const useHealthFactorUniversal = ({ depositItems, mintAmount, otherKeys }: IProp
   const [mintAmountDebounce] = useDebounce(mintAmount, 500);
 
   const queryKey = useMemo(() => {
-    if (crossMode) {
-      return ['useHealthFactorUniversal', crossMode, address, totalDepositDebounce, mintAmountDebounce, ...(otherKeys || [])];
-    }
-    return ['useHealthFactorUniversal', address, totalDepositDebounce, mintAmountDebounce, tokens, ...(otherKeys || [])];
-  }, [crossMode, address, totalDepositDebounce, mintAmountDebounce, tokens, otherKeys]);
+    return ['useHealthFactorUniversal', true, address, totalDepositDebounce, mintAmountDebounce, ...(otherKeys || [])];
+  }, [address, totalDepositDebounce, mintAmountDebounce, otherKeys]);
 
   const query = useQuery({
     queryKey: queryKey,

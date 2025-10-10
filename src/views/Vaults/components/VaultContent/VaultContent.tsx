@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ToggleButtonGroupCustom from 'src/components/General/ToggleButtonGroupCustom/ToggleButtonGroupCustom';
 import DepositSection from '../DepositSection/DepositSection';
 import WithdrawSection from '../WithdrawSection/WithdrawSection';
-import { Box, MenuItem, Select } from '@mui/material';
+import { Box, MenuItem, Select, Typography } from '@mui/material';
 import { mapNameNetwork } from 'src/constants/network';
 import DepositSectionEVM from '../DepositSection/DepositSectionEVM';
 import { useVaultSelectedNetwork } from '../../state/hooks';
@@ -66,8 +66,11 @@ const VaultContent = () => {
         fullWidth
       >
         {Object.values(mapNameNetwork).map((network) => (
-          <MenuItem key={network.id} value={network.id} sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
-            {network.name}
+          <MenuItem key={network.id} value={network.id} sx={{ px: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>{network.icon}</Box>
+              <Typography>{network.name}</Typography>
+            </Box>
           </MenuItem>
         ))}
       </Select>

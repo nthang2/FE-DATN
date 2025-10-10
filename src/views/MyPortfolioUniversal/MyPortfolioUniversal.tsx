@@ -2,7 +2,7 @@ import { Box, Grid2 } from '@mui/material';
 import Lockout from 'src/components/StatusData/Lockout';
 import Borrow from './Borrow';
 import Deposit from './Deposit';
-import MyWallet from './MyWallet';
+// import MyWallet from './MyWallet';
 import YourPosition from './YourPosition';
 import SwitchMode from './components/SwitchMode';
 import HealthFactor from './HealthFactor';
@@ -35,7 +35,7 @@ export default function MyPortfolioUniversal() {
             </Grid2>
             <Grid2 size={{ xs: 12, md: 4 }}>
               <HealthFactor />
-              <MyWallet />
+              {/* <MyWallet /> */}
             </Grid2>
           </Grid2>
         </Box>
