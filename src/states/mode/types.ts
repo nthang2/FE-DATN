@@ -1,3 +1,3 @@
 export type TMode = {
-  isCrossMode: boolean;
+  isUniversalMode: boolean;
 };

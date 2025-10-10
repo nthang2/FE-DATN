@@ -1,4 +1,4 @@
-import { CheckCircleOutline, ContentCopy, ErrorOutline } from '@mui/icons-material';
+import { CheckCircleOutline, ContentCopy, ErrorOutline, OpenInNew } from '@mui/icons-material';
 import {
   Box,
   Pagination,
@@ -14,11 +14,12 @@ import {
 } from '@mui/material';
 import { format as fd } from 'date-fns';
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Failed from 'src/components/StatusData/Failed';
 import JPowLoading from 'src/components/StatusData/Loading';
 import NoData from 'src/components/StatusData/NoData';
 import { mapNameChainId } from 'src/constants/chainId';
-import { mapNameNetwork } from 'src/constants/network';
+import { listScanLink, mapNameNetwork } from 'src/constants/network';
 import useQueryTransactionsHistory from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useQueryTransactionsHistory';
 import { chainIconNetwork } from 'src/states/wallets/constants/chainIcon';
 import { copyTextToClipboard } from 'src/utils';
@@ -105,6 +106,9 @@ export default function TransactionHistoryModal() {
                           {formatAddress(row.transactionHash)}
                         </Typography>
                         <ContentCopy sx={{ fontSize: '14px' }} onClick={() => copyTextToClipboard(row.transactionHash)} />
+                        <Link target={'_blank'} to={`${listScanLink[mapNameChainId[row.chainId]]}/${row.transactionHash}`}>
+                          <OpenInNew sx={{ fontSize: '14px' }} />
+                        </Link>
                       </Stack>
                     </TableCell>
                     <TableCell component="th" scope="row">

@@ -1,11 +1,13 @@
+import { OpenInNew } from '@mui/icons-material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { format as fd } from 'date-fns';
+import { Link } from 'react-router-dom';
 import Failed from 'src/components/StatusData/Failed';
 import JPowLoading from 'src/components/StatusData/Loading';
 import NoData from 'src/components/StatusData/NoData';
 import { mapNameChainId } from 'src/constants/chainId';
-import { mapNameNetwork } from 'src/constants/network';
+import { listScanLink, mapNameNetwork } from 'src/constants/network';
 import useQueryTransactionHistory from 'src/hooks/useQueryHook/queryUniversalWallet/useQueryTransactionHistory';
 import { chainIconNetwork } from 'src/states/wallets/constants/chainIcon';
 import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
@@ -45,7 +47,7 @@ const TransactionHistory = () => {
                       <Stack sx={{ alignItems: 'center', gap: 1 }}>
                         <IconNetwork />
                         <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disabled' }}>
-                          {mapNameNetwork[mapNameChainId[row.sourceChainId]].name}
+                          {mapNameNetwork[mapNameChainId[row.sourceChainId]]?.name}
                         </Typography>
                       </Stack>
                     </TableCell>
@@ -73,6 +75,9 @@ const TransactionHistory = () => {
                           {formatAddress(row.transactionHash)}
                         </Typography>
                         <ContentCopyIcon sx={{ fontSize: '14px' }} onClick={() => copyTextToClipboard(row.transactionHash)} />
+                        <Link target={'_blank'} to={`${listScanLink[mapNameChainId[row.sourceChainId]]}/${row.transactionHash}`}>
+                          <OpenInNew sx={{ fontSize: '14px' }} />
+                        </Link>
                       </Stack>
                     </TableCell>
                   </TableRow>

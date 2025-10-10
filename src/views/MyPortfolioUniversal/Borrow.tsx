@@ -45,7 +45,7 @@ export default function Borrow() {
   };
 
   const handleMint = () => {
-    navigate(`/universal-borrow/`);
+    navigate(`/universal-borrow`);
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
