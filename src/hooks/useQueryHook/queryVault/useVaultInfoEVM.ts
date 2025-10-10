@@ -73,7 +73,7 @@ const useVaultInfoEVM = () => {
 
         const amount = Number(stakers?.[0] || 0);
         console.log('🚀 ~ useVaultInfoEVM ~ amount:', amount.toString());
-        const rewardIndex = Number(vaultInfo?.[1] || 0);
+        const rewardIndex = Number(stakers?.[1] || 0);
         console.log('🚀 ~ useVaultInfoEVM ~ rewardIndex:', rewardIndex.toString());
         const userPendingReward = Number(stakers?.[2] || 0);
         console.log('🚀 ~ useVaultInfoEVM ~ userPendingReward:', userPendingReward.toString());
