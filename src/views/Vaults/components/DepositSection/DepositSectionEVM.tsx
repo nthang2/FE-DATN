@@ -14,6 +14,7 @@ import { listTokenAvailableVaultEVM } from '../../constant';
 import CustomSlider from '../CustomSlider/Slider';
 import useDepositVault from 'src/hooks/mutations/vault/useDepositVault';
 import ValueWithStatus from 'src/components/General/ValueWithStatus/ValueWithStatus';
+import ButtonApproveEVM from 'src/components/ButtonApproveEVM/ButtonApproveEVM';
 
 const DepositSectionEVM = () => {
   const { address, status, networkName } = useSummaryEVMConnect();
@@ -114,16 +115,26 @@ const DepositSectionEVM = () => {
 
       <CustomSlider disabled={!isConnectedWallet} value={sliderValue} max={100} min={0} onChange={handleChangeSlider} sx={{ mt: 2.5 }} />
 
-      <ButtonLoading
-        loading={loading}
+      <ButtonApproveEVM
+        tokenAddress={selectedToken}
+        network={networkName}
+        amount={inputValue || '0'}
         variant="contained"
         sx={{ mt: 2.5 }}
         fullWidth
-        onClick={handleDeposit}
-        disabled={!isConnectedWallet || !isCanDeposit}
-      >
-        Deposit
-      </ButtonLoading>
+        actionButton={
+          <ButtonLoading
+            loading={loading}
+            variant="contained"
+            sx={{ mt: 2.5 }}
+            fullWidth
+            onClick={handleDeposit}
+            disabled={!isConnectedWallet || !isCanDeposit}
+          >
+            Deposit
+          </ButtonLoading>
+        }
+      />
     </Box>
   );
 };
