@@ -97,14 +97,14 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const handleWithdraw = async () => {
     let hash = '';
     const selectedTokenByNetwork = mapNameToInfoUniversal(networkName)?.[token.symbol];
-    if (!address || !selectedTokenByNetwork) return;
+    if (!address || !selectedTokenByNetwork || !listWallet?.universalWallet) return;
 
     if (networkName === mapNameNetwork.solana.name) {
       const lendingContract = new LendingContractUniversal(wallet);
       const depositoryVault = await lendingContract.getDepositoryVault(selectedTokenByNetwork.address);
-      const loanAccount = await lendingContract.getLoan(selectedTokenByNetwork.address);
+      const rawWithdrawAmount = BN(valueWithdraw).multipliedBy(BN(10).pow(BN(selectedTokenByNetwork.decimals)));
 
-      if (BN(loanAccount.collateralAmount).isGreaterThan(depositoryVault.amount.toString())) {
+      if (BN(rawWithdrawAmount).isGreaterThan(depositoryVault.amount.toString())) {
         toast.error('Protocol has insufficient funds');
         return;
       }
