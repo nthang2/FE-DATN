@@ -3,12 +3,12 @@ import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SwitchIcon } from 'src/assets/icons';
-import { useModeFunction, useModeValue } from 'src/states/mode/hooks';
+import { useUniversalModeFunction, useUniversalModeValue } from 'src/states/mode/hooks';
 import { menu } from '../menu';
 
 export default function Setting() {
-  const { isCrossMode } = useModeValue();
-  const modeFunction = useModeFunction();
+  const { isUniversalMode } = useUniversalModeValue();
+  const modeFunction = useUniversalModeFunction();
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -17,23 +17,23 @@ export default function Setting() {
   const handleClick = () => {
     setIsRotated(true);
     setTimeout(() => setIsRotated(false), 600);
-    if (isCrossMode) {
-      modeFunction({ isCrossMode: false });
+    if (isUniversalMode) {
+      modeFunction({ isUniversalMode: false });
       navigate('/');
     } else {
-      modeFunction({ isCrossMode: true });
+      modeFunction({ isUniversalMode: true });
       navigate('/universal-borrow');
     }
   };
 
   useEffect(() => {
     const result = menu.find((m) => m.url?.includes(pathname));
-    if (result?.isCrossMode == 'both') {
+    if (result?.isUniversalMode == 'both') {
       return;
-    } else if (result?.isCrossMode) {
-      modeFunction({ isCrossMode: true });
+    } else if (result?.isUniversalMode) {
+      modeFunction({ isUniversalMode: true });
     } else {
-      modeFunction({ isCrossMode: false });
+      modeFunction({ isUniversalMode: false });
     }
   }, [pathname]);
 
@@ -57,7 +57,7 @@ export default function Setting() {
       onClick={handleClick}
     >
       <SwitchIcon
-        className={clsx({ universal: isCrossMode })}
+        className={clsx({ universal: isUniversalMode })}
         sx={{
           animation: isRotated ? 'spin 0.6s linear' : 'none',
           '@keyframes spin': {
@@ -65,8 +65,8 @@ export default function Setting() {
           },
         }}
       />
-      <Typography variant="body2" className={clsx({ universal: isCrossMode })} sx={{ display: { xs: 'none', md: 'block' } }}>
-        {isCrossMode ? 'Universal' : 'Classic'}
+      <Typography variant="body2" className={clsx({ universal: isUniversalMode })} sx={{ display: { xs: 'none', md: 'block' } }}>
+        {isUniversalMode ? 'Universal' : 'Classic'}
       </Typography>
     </Box>
   );

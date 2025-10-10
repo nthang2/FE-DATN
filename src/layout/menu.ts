@@ -3,7 +3,7 @@ export type TMenu = {
   url?: string;
   child?: Array<{ title: string; url: string }>;
   parent?: Array<string>;
-  isCrossMode?: boolean | 'both';
+  isUniversalMode?: boolean | 'both';
 };
 
 export const menu: TMenu[] = [
@@ -11,13 +11,13 @@ export const menu: TMenu[] = [
     title: 'My Portfolio',
     url: '/my-portfolio',
   },
-  { title: 'My Portfolio', url: '/universal-my-portfolio', isCrossMode: true },
+  { title: 'My Portfolio', url: '/universal-my-portfolio', isUniversalMode: true },
   { title: 'Borrow', url: '/' },
-  { title: 'Universal Borrow', url: '/universal-borrow', isCrossMode: true },
+  { title: 'Universal Borrow', url: '/universal-borrow', isUniversalMode: true },
   {
     title: 'Earn',
     url: '/earn',
-    isCrossMode: 'both',
+    isUniversalMode: 'both',
   },
   {
     title: 'Liquidation',
@@ -30,6 +30,6 @@ export const menu: TMenu[] = [
   {
     title: 'Universal Wallet',
     url: '/universal-wallet',
-    isCrossMode: true,
+    isUniversalMode: true,
   },
 ];

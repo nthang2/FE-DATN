@@ -2,7 +2,7 @@ import { atom } from 'jotai';
 import { TMode } from './types';
 
 const initData: TMode = {
-  isCrossMode: true,
+  isUniversalMode: true,
 };
 export const mode = atom(initData);
 
