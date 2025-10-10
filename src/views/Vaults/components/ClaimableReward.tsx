@@ -12,16 +12,18 @@ import useClamRewardVault from 'src/hooks/mutations/vault/useClamRewardVault';
 import { mapNameNetwork } from 'src/constants/network';
 import { useMemo } from 'react';
 import useVaultInfoEVM from 'src/hooks/useQueryHook/queryVault/useVaultInfoEVM';
+import useSummaryFirstActiveConnect from 'src/states/wallets/hooks/useSummaryFirstActiveConnect';
 
 const ClaimableReward = () => {
   const wallet = useWallet();
+  const { address: walletAddress } = useSummaryFirstActiveConnect();
   const { stakeInfo, status } = useStakedInfo();
   const { asyncExecute, loading } = useAsyncExecute();
   const [selectedNetwork] = useVaultSelectedNetwork();
   const { data: vaultInfoEVM, status: statusEVM } = useVaultInfoEVM();
   const { mutateAsync: claimRewardEVM } = useClamRewardVault();
 
-  const isConnectedWallet = Boolean(wallet.publicKey);
+  const isConnectedWallet = Boolean(walletAddress.length);
   const statusWallet = useMemo(() => {
     if (selectedNetwork === mapNameNetwork.solana.id) {
       return status;
