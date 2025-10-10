@@ -139,7 +139,7 @@ export class LendingContractUniversal extends SolanaContractAbstract<IdlLending>
     return '';
   }
 
-  async getLoan(tokenAddress: string, universalWallet: string) {
+  async getLoan(tokenAddress: string, universalWallet?: string) {
     //Only accept these collateral
     const fixedAvailableCollateral = [
       mapNameToInfoSolana[TokenName.ORAI].address,
@@ -149,7 +149,7 @@ export class LendingContractUniversal extends SolanaContractAbstract<IdlLending>
     ];
 
     const { depository } = this.getAccountsPartial(tokenAddress);
-    const loanPda = this.getPda(LOAN_TYPE1_SEED, depository, new PublicKey(universalWallet));
+    const loanPda = this.getPda(LOAN_TYPE1_SEED, depository, new PublicKey(universalWallet || this.provider.publicKey));
     const loan = await this.program.account.loanType1.fetch(loanPda);
     const addressCollateral = loan.collateralToken.findIndex((token) => token.toString() === tokenAddress);
     const collateralAmount = addressCollateral !== -1 ? loan.collateralAmount[addressCollateral] : new BN(0);
