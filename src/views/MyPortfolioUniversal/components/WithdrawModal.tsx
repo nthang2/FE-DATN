@@ -27,6 +27,7 @@ import useGetListWallet from 'src/views/UniversalWallet/hooks/useGetListWallet';
 import { TNetwork } from '../type';
 import CheckHealthFactor from './CheckHealthFactor';
 import useSummaryConnectByNetwork from 'src/states/wallets/hooks/useSummaryConnectByNetwork';
+import { mapNameToInfoUniversal } from 'src/constants/tokens/mapNameToInfo';
 
 export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo | EthereumChainTokenInfo }) {
   const [selectedNetwork, setSelectedNetwork] = useState<TNetwork>('solana');
@@ -94,21 +95,23 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   };
 
   const handleWithdraw = async () => {
-    if (!address) return;
     let hash = '';
+    const selectedTokenByNetwork = mapNameToInfoUniversal(networkName)?.[token.symbol];
+    if (!address || !selectedTokenByNetwork) return;
+
     if (networkName === mapNameNetwork.solana.name) {
       const lendingContract = new LendingContractUniversal(wallet);
-      const depositoryVault = await lendingContract.getDepositoryVault(token.address);
-      const loanAccount = await lendingContract.getLoan(token.address);
+      const depositoryVault = await lendingContract.getDepositoryVault(selectedTokenByNetwork.address);
+      const loanAccount = await lendingContract.getLoan(selectedTokenByNetwork.address);
 
       if (BN(loanAccount.collateralAmount).isGreaterThan(depositoryVault.amount.toString())) {
         toast.error('Protocol has insufficient funds');
         return;
       }
 
-      hash = await lendingContract.withdraw(Number(valueWithdraw), token.address, listWallet?.universalWallet);
+      hash = await lendingContract.withdraw(Number(valueWithdraw), selectedTokenByNetwork.address, listWallet?.universalWallet);
     } else {
-      hash = await withdrawEVM({ withdrawAmount: valueWithdraw, selectedToken: token.address });
+      hash = await withdrawEVM({ withdrawAmount: valueWithdraw, selectedToken: selectedTokenByNetwork.address });
     }
     setValueWithdraw('');
     setValueInUSD('0');

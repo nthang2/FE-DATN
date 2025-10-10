@@ -44,12 +44,8 @@ export default function Borrow() {
     });
   };
 
-  const handleMint = (tokenId: string) => {
-    if (crossMode) {
-      navigate(`/?deposit`);
-    } else {
-      navigate(`/?deposit=${tokenId}`);
-    }
+  const handleMint = () => {
+    navigate(`/universal-borrow/`);
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -122,7 +118,7 @@ export default function Borrow() {
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Button variant="contained" size="small" onClick={() => handleMint(row.address)}>
+                    <Button variant="contained" size="small" onClick={() => handleMint()}>
                       <Typography variant="body2" sx={{ fontWeight: '500' }}>
                         Mint
                       </Typography>
