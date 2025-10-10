@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import React, { useMemo } from 'react';
 import useSummaryConnect from 'src/states/wallets/hooks/useSummaryConnect';
@@ -38,12 +38,17 @@ const AlertUniversalWallet = () => {
         alignItems: 'center',
         gap: 1,
         background: 'linear-gradient(36deg,rgb(73, 5, 5)   0%, #AC0000 100%)',
+        maxWidth: '100vw',
+        width: 'max-content',
+        flexDirection: { xs: 'column', md: 'row' },
       }}
     >
-      <WarningIcon sx={{ fontSize: 24, color: '#D52020' }} />
-      <Typography flexWrap="nowrap" variant="body2">
-        Your connected wallet not linked to a Universal Wallet or not created yet
-      </Typography>
+      <Stack alignItems="center" gap={1}>
+        <WarningIcon sx={{ fontSize: 24, color: '#D52020' }} />
+        <Typography flexWrap="nowrap" variant="body2">
+          Your connected wallet not linked to a Universal Wallet or not created yet
+        </Typography>
+      </Stack>
 
       <Button variant="contained" size="small" sx={{ ml: 2 }} onClick={handleGoToUniversalWallet}>
         Go to universal wallet

@@ -4,7 +4,7 @@ import {
   findTokenInfoByTokenEVMDevnet,
   findTokenNameEthereumDevnet,
   mapNameToInfoEthereumDevnet,
-} from './list-tokens/ethereum-testnet/mapNameToInfoEthereum';
+} from './list-tokens/ethereum-testnet/mapNameToInfoEthereumTestnet';
 import { EthereumChainTokenInfo } from './list-tokens/ethereum/EthereumChainTokenInfo';
 import {
   findTokenInfoByTokenEVMMainnet,

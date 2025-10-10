@@ -61,6 +61,7 @@ export default function DepositCustomInput(props: Props) {
         ethereum: [listTokenAvailableETH.USDAI],
       };
     }
+
     return {
       //remove USDAI from the list when is it deposit input
       solana: Object.values(listTokenAvailableSOL).filter((token) => token.address !== listTokenAvailableSOL.USDAI.address),
@@ -73,8 +74,13 @@ export default function DepositCustomInput(props: Props) {
   const id = anchorEl ? `${hideDropdownIcon}_popover_header` : undefined;
 
   const optionByNetwork = useMemo(() => {
-    return options()[selectedNetwork as TNetwork];
-  }, [selectedNetwork, options]);
+    const allOptions = options()[selectedNetwork as TNetwork];
+    const result = allOptions.filter((item) => {
+      return !depositItems.some((option) => option.address === item.address);
+    });
+
+    return result;
+  }, [options, selectedNetwork, depositItems]);
 
   const handleClick = () => {
     const el = document.getElementById(`${hideDropdownIcon}_popover_header`);
@@ -224,7 +230,7 @@ export default function DepositCustomInput(props: Props) {
               {!(selectProps && selectProps.disabled) && (
                 <Box sx={{ mt: 2 }}>
                   <Typography sx={{ color: '#FFFFFF', fontWeight: 700 }}>Select a token</Typography>
-                  {optionByNetwork.map((o) => {
+                  {optionByNetwork?.map((o) => {
                     if (!o) return null;
                     const displayOption =
                       optionByNetwork.length <= 1 ? true : !depositItems.find((deposit) => deposit.address === o.address);

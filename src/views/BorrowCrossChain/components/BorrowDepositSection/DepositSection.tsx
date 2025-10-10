@@ -4,8 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { PlusIcon } from 'src/assets/icons';
 import { BoxCustom } from 'src/components/General/CustomBox/CustomBox';
 import TooltipInfo from 'src/components/General/TooltipInfo/TooltipInfo';
-import { findTokenInfoByToken } from 'src/constants/tokens/mapNameToInfo';
-import { listTokenAvailable } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
+import { findTokenInfoByToken, listTokenAvailableUniversal } from 'src/constants/tokens/mapNameToInfo';
 import useQueryAllTokensPriceUniversal from 'src/hooks/useQueryAllTokensPriceUniversal';
 import useGetBalanceTokenUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useGetBalanceTokenUniversal';
 import useMyPortfolioUniversal from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMyPortfolioUniversal';
@@ -36,8 +35,8 @@ const DepositSection = () => {
     return asset?.[depositAddress]?.depositedUSD;
   }, [asset, crossMode, depositItems, listPrice]);
 
-  const isAddAllOptions = depositItems.length < Object.keys(listTokenAvailable).length;
-
+  const listTokenAvailable = listTokenAvailableUniversal(depositItems[0].network);
+  const isAddAllOptions = depositItems.length < Object.keys(listTokenAvailable || {}).length;
   const isHasDeposited = Boolean(depositedValueUsd) || Number(depositedValueUsd) > 0;
 
   const depositItemBalance = useCallback(
@@ -58,12 +57,12 @@ const DepositSection = () => {
 
   const handleAddItem = () => {
     if (isAddAllOptions) {
-      const listTokenRemain = Object.values(listTokenAvailable).filter((item) => {
-        const isHasChoose = depositItems.every((deposit) => deposit.address !== item.address);
+      const listTokenRemain = Object.values(listTokenAvailable || {}).filter((item) => {
+        const isHasChoose = depositItems.every((deposit) => deposit.address !== item?.address);
         return isHasChoose;
       });
 
-      setDepositState((prev) => [...prev, { ...defaultBorrowCrossValue, address: listTokenRemain[0]?.address }]);
+      setDepositState((prev) => [...prev, { ...defaultBorrowCrossValue, address: listTokenRemain[0]?.address || '' }]);
     }
   };
 
@@ -152,7 +151,7 @@ const DepositSection = () => {
   return (
     <Box flex={1} minHeight="225px">
       <BoxCustom sx={{ flex: 1, borderRadius: isHasDeposited ? '16px 16px 0px 0px' : '16px' }}>
-        <Stack justifyContent="space-between" width="100%" mb={'36px'}>
+        <Stack justifyContent="space-between" width="100%" mb={'38px'}>
           <Typography variant="h6" alignItems="center" display="flex" gap={1} fontWeight={700}>
             Deposit
             <TooltipInfo title="Deposit collateral to mint USDAI" />
@@ -176,7 +175,8 @@ const DepositSection = () => {
           })}
         </Box>
 
-        <Collapse in={crossMode}>
+        {/* TODO: Open when have more than 1 option */}
+        <Collapse in={false}>
           <Button
             variant="text"
             fullWidth
