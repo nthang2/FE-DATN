@@ -25,7 +25,7 @@ export default function Routes() {
         { path: '/liquidation', element: <LiquidationLeaderboard /> },
         { path: '/convert', element: <SwapToken /> },
         { path: '/universal-wallet', element: <UniversalWallet /> },
-        { path: '/my-portfolio-cross', element: <MyPortfolioUniversal /> },
+        { path: '/universal-borrow', element: <MyPortfolioUniversal /> },
       ],
     },
     {

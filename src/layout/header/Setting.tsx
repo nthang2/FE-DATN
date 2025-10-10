@@ -48,7 +48,7 @@ export default function Setting() {
         cursor: 'pointer',
         minWidth: { md: '126px' },
         gap: 1,
-        border: isCrossMode ? '1px solid #919283' : 'none',
+        border: '1px solid #919283',
         '& .universal': {
           color: '#E2E5C2',
         },

@@ -47,7 +47,7 @@ const ClassicConnectWallet = () => {
         })}
       >
         {status === 'Connected' ? (
-          <Stack gap={2} alignItems="center">
+          <Stack gap={1} alignItems="center">
             <WalletConnectIcon Icon={walletIcon} />
             <Stack sx={{ background: '#282825', p: 1, gap: 1, borderRadius: '11px', cursor: 'pointer' }} onClick={handleOpenAnchor}>
               <WalletIcon />
