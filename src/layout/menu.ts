@@ -26,7 +26,6 @@ export const menu: TMenu[] = [
   {
     title: 'Convert',
     url: '/convert',
-    isCrossMode: 'both',
   },
   {
     title: 'Universal Wallet',
