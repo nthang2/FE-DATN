@@ -19,13 +19,13 @@ export default function Routes() {
       element: <Layout />,
       children: [
         { path: '/', element: <Borrow /> },
-        { path: '/mint-cross', element: <BorrowCrossChain /> },
+        { path: '/universal-borrow', element: <BorrowCrossChain /> },
         { path: '/my-portfolio', element: <MyPortfolio /> },
         { path: '/earn', element: <Vaults /> },
         { path: '/liquidation', element: <LiquidationLeaderboard /> },
         { path: '/convert', element: <SwapToken /> },
         { path: '/universal-wallet', element: <UniversalWallet /> },
-        { path: '/universal-borrow', element: <MyPortfolioUniversal /> },
+        { path: '/universal-my-portfolio', element: <MyPortfolioUniversal /> },
       ],
     },
     {

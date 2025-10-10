@@ -22,7 +22,7 @@ export default function Setting() {
       navigate('/');
     } else {
       modeFunction({ isCrossMode: true });
-      navigate('/mint-cross');
+      navigate('/universal-borrow');
     }
   };
 

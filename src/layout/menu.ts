@@ -11,9 +11,9 @@ export const menu: TMenu[] = [
     title: 'My Portfolio',
     url: '/my-portfolio',
   },
-  { title: 'Universal Borrow', url: '/universal-borrow', isCrossMode: true },
+  { title: 'My Portfolio', url: '/universal-my-portfolio', isCrossMode: true },
   { title: 'Borrow', url: '/' },
-  { title: 'Mint Cross', url: '/mint-cross', isCrossMode: true },
+  { title: 'Universal Borrow', url: '/universal-borrow', isCrossMode: true },
   {
     title: 'Earn',
     url: '/earn',
