@@ -11,12 +11,13 @@ export const menu: TMenu[] = [
     title: 'My Portfolio',
     url: '/my-portfolio',
   },
-  { title: 'My Portfolio Cross', url: '/my-portfolio-cross', isCrossMode: true },
-  { title: 'Mint', url: '/' },
+  { title: 'Universal Borrow', url: '/universal-borrow', isCrossMode: true },
+  { title: 'Borrow', url: '/' },
   { title: 'Mint Cross', url: '/mint-cross', isCrossMode: true },
   {
     title: 'Earn',
     url: '/earn',
+    isCrossMode: 'both',
   },
   {
     title: 'Liquidation',
@@ -30,6 +31,6 @@ export const menu: TMenu[] = [
   {
     title: 'Universal Wallet',
     url: '/universal-wallet',
-    isCrossMode: 'both',
+    isCrossMode: true,
   },
 ];
