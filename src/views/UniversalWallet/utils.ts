@@ -20,7 +20,7 @@ export const handleWalletLinkingRequest = async (walletLinkingRequestInfo: TWall
   if (isNotify) {
     if (response.state === 'Failed') {
       toast.error('Wallet linking request failed');
-    } else {
+    } else if (response.state === 'Success') {
       toast.success('Wallet linking request successful');
     }
   }
