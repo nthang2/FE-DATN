@@ -26,15 +26,19 @@ const useRemoveWallet = () => {
           const transactionHash = await contractSolana.removeUniversalWallet(wallet, Number(network));
           const linkWalletInfo = await contractSolana.getLinkWalletInfo(wallet);
 
-          await handleWalletLinkingRequest({
-            requestId: linkWalletInfo.requestId.toNumber(),
-            sourceWallet: wallet,
-            sourceChainId: linkWalletInfo.sourceChainId,
-            destinationWallet: wallet,
-            destinationChainId: linkWalletInfo.sourceChainId,
-            deadline: linkWalletInfo.deadline.toNumber(),
-            action: false,
-          });
+          await handleWalletLinkingRequest(
+            {
+              requestId: linkWalletInfo.requestId.toNumber(),
+              sourceWallet: wallet,
+              sourceChainId: linkWalletInfo.sourceChainId,
+              destinationWallet: wallet,
+              destinationChainId: linkWalletInfo.sourceChainId,
+              deadline: linkWalletInfo.deadline.toNumber(),
+              action: false,
+            },
+            true,
+            1
+          );
 
           return transactionHash;
         } else {
@@ -57,15 +61,19 @@ const useRemoveWallet = () => {
             args: [wallet as `0x${string}`],
           });
 
-          await handleWalletLinkingRequest({
-            requestId: Number(walletRequest[0]),
-            sourceWallet: wallet,
-            sourceChainId: walletRequest[3],
-            destinationWallet: wallet,
-            destinationChainId: walletRequest[4],
-            deadline: Number(walletRequest[5]),
-            action: walletRequest[6],
-          });
+          await handleWalletLinkingRequest(
+            {
+              requestId: Number(walletRequest[0]),
+              sourceWallet: wallet,
+              sourceChainId: walletRequest[3],
+              destinationWallet: wallet,
+              destinationChainId: walletRequest[4],
+              deadline: Number(walletRequest[5]),
+              action: walletRequest[6],
+            },
+            true,
+            1
+          );
 
           const response = await requestToLink(network.toString(), wallet, wallet, network.toString());
           console.log(response);

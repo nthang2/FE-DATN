@@ -9,7 +9,15 @@ import { sleep } from 'src/utils';
 
 const RETRY_TIMES = 5;
 
-export const handleWalletLinkingRequest = async (walletLinkingRequestInfo: TWalletLinkingRequestBody, isNotify: boolean = true) => {
+export const handleWalletLinkingRequest = async (
+  walletLinkingRequestInfo: TWalletLinkingRequestBody,
+  isNotify: boolean = true,
+  retryTimes: number = 0
+) => {
+  if (retryTimes >= RETRY_TIMES) {
+    return;
+  }
+
   await walletLinkingRequest(walletLinkingRequestInfo);
   const response = await getWalletLinkingRequest({
     requestId: walletLinkingRequestInfo.requestId,
@@ -23,6 +31,11 @@ export const handleWalletLinkingRequest = async (walletLinkingRequestInfo: TWall
     } else if (response.state === 'Success') {
       toast.success('Wallet linking request successful');
     }
+  }
+
+  if (response.state === 'Pending' && response?.requestId > 0) {
+    await sleep(1000 * 3);
+    await handleWalletLinkingRequest(walletLinkingRequestInfo, isNotify, retryTimes + 1);
   }
 
   return walletLinkingRequestInfo;
