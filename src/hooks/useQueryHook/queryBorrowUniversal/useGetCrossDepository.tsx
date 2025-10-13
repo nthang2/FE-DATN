@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { LendingUniversalUtils } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingUnityUniversal';
+import { LendingUtilityUniversal } from 'src/contracts/solana/contracts/LendingContractUniversal/LendingUtilityUniversal';
 
 const useGetCrossDepository = () => {
   const query = useQuery({
     queryKey: ['getCrossDepository'],
     queryFn: async () => {
       try {
-        const lendingContract = new LendingUniversalUtils();
+        const lendingContract = new LendingUtilityUniversal();
         const depository = await lendingContract.getAccountType1Depository();
         return depository;
       } catch (error) {

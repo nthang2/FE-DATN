@@ -9,7 +9,11 @@ import { EthereumChainTokenInfo } from './evm-ecosystem/list-tokens/ethereum/Eth
 import { mapNameToInfoSolana as mapNameToInfoSOL } from './solana-ecosystem/mapNameToInfoSolana';
 import { mapNameToInfoEthereum as mapNameToInfoEVM } from './evm-ecosystem/mapNameToInfoEthereum';
 
-export const findTokenInfoByToken = (token: string, network: string) => {
+export const findTokenInfoByToken = (token: string, network?: string) => {
+  if (!network) {
+    return findTokenInfoByTokenSOL(token) || findTokenInfoByTokenEVM(token);
+  }
+
   if (network.toLowerCase() === mapNameNetwork.solana.name.toLowerCase()) {
     return findTokenInfoByTokenSOL(token);
   } else if (network.toLowerCase() === mapNameNetwork.ethereum.name.toLowerCase()) {

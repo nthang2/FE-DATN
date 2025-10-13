@@ -2,8 +2,10 @@ import { ctrAdsSolana } from 'src/constants/contractAddress/solana';
 import { idlLending, IdlLending } from '../../idl/lending/lending';
 import { SolanaContractAbstract } from '../SolanaContractAbstract';
 import { CONTROLLER_SEED, DEPOSITORY_TYPE1_SEED } from './constant';
+import { getAccount, getAssociatedTokenAddressSync } from '@solana/spl-token';
+import { PublicKey } from '@solana/web3.js';
 
-export class LendingUniversalUtils extends SolanaContractAbstract<IdlLending> {
+export class LendingUtilityUniversal extends SolanaContractAbstract<IdlLending> {
   constructor() {
     super(null, ctrAdsSolana.lending, idlLending);
   }
@@ -23,5 +25,13 @@ export class LendingUniversalUtils extends SolanaContractAbstract<IdlLending> {
       ...pdaController,
       ...pdaDepository,
     };
+  }
+
+  async getDepositoryVault(tokenAddress: string) {
+    const depositoryPda = this.getPda(DEPOSITORY_TYPE1_SEED);
+    const depositoryVault = getAssociatedTokenAddressSync(new PublicKey(tokenAddress), depositoryPda, true);
+    const depository = await getAccount(this.provider.connection, depositoryVault);
+
+    return depository;
   }
 }

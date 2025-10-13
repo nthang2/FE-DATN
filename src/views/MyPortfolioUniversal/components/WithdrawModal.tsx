@@ -28,6 +28,7 @@ import { TNetwork } from '../type';
 import CheckHealthFactor from './CheckHealthFactor';
 import useSummaryConnectByNetwork from 'src/states/wallets/hooks/useSummaryConnectByNetwork';
 import { mapNameToInfoUniversal } from 'src/constants/tokens/mapNameToInfo';
+import useMaxProtocolWithdraw from 'src/hooks/useQueryHook/queryMyPortfolioUniversal/useMaxProtocolWithdraw';
 
 export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenInfo | EthereumChainTokenInfo }) {
   const [selectedNetwork, setSelectedNetwork] = useState<TNetwork>('solana');
@@ -46,11 +47,14 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
   const { asset, status: statusMyPortfolioInfo, refetch: refetchMyPortfolioInfo, assetByTokenName } = useMyPortfolioUniversalInfo();
   const { refetch: refetchDepositedValue } = useQueryDepositValue();
   const { data: totalDeposited } = useGetTotalDepositedUniversal({ chainId: Number(chainId), tokenName: token.symbol });
+  const { data: maxProtocolWithdraw } = useMaxProtocolWithdraw(token.address);
 
   const [valueWithdraw, setValueWithdraw] = useState<string>('');
   const [valueInUSD, setValueInUSD] = useState<string>('0');
   const [valueWithdrawHelperText, setValueWithdrawHelperText] = useState<string | undefined>(undefined);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const id = anchorEl ? `popover_withdraw` : undefined;
 
   const collateral = useMemo(() => {
     return assetByTokenName?.[token.symbol]
@@ -58,19 +62,25 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
       : '--';
   }, [assetByTokenName, token.symbol, valueWithdraw]);
 
+  const maxValue = useMemo(() => {
+    if (!assetByTokenName?.[token.symbol]) return '';
+    const maxByAsset = assetByTokenName?.[token.symbol]?.maxWithdrawable;
+    const maxByProtocol = maxProtocolWithdraw || maxByAsset;
+    const maxByTotalDeposited = totalDeposited
+      ? BN(totalDeposited.deposited.toString())
+          .dividedBy(BN(10).pow(BN(token.decimals)))
+          .toNumber()
+      : maxByAsset;
+
+    return Math.min(maxByAsset, maxByProtocol, maxByTotalDeposited);
+  }, [assetByTokenName, maxProtocolWithdraw, token.decimals, token.symbol, totalDeposited]);
+
   const handleChangeValueWithdraw = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValueWithdraw(e.target.value);
     if (!tokensPrice) return;
     const _valueInUSD = BN(e.target.value).times(BN(tokensPrice[token.address].price)).toString();
     setValueInUSD(_valueInUSD);
   };
-
-  const maxValue = useMemo(() => {
-    if (!assetByTokenName?.[token.symbol]) return '';
-    return assetByTokenName?.[token.symbol]?.maxWithdrawable.toString();
-  }, [assetByTokenName, token.symbol]);
-
-  const id = anchorEl ? `popover_withdraw` : undefined;
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const el = event.currentTarget;
@@ -87,10 +97,10 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
 
   const handleMax = () => {
     if (asset) {
-      setValueWithdraw(Number(maxValue).toFixed(token.decimals));
+      setValueWithdraw(decimalFlood(maxValue, token.decimals));
       if (!tokensPrice) return;
-      const _valueInUSD = BN(maxValue).times(BN(tokensPrice[token.address].price)).toString();
-      setValueInUSD(_valueInUSD);
+      const _valueInUSD = BN(maxValue).times(BN(tokensPrice[token.address].price)).toNumber();
+      setValueInUSD(decimalFlood(_valueInUSD, 2));
     }
   };
 
@@ -124,11 +134,12 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
 
   useEffect(() => {
     if (totalDeposited && chainId) {
-      if (BN(totalDeposited.deposited.toString()).isLessThan(BN(valueWithdraw))) {
+      const depositedAmount = BN(totalDeposited.deposited.toString()).dividedBy(BN(10).pow(BN(token.decimals)));
+      if (depositedAmount.isLessThan(BN(valueWithdraw))) {
         setValueWithdrawHelperText(`Not enough liquidity to withdraw on chain ${mapNameChainId[chainId]}`);
       }
     }
-  }, [chainId, totalDeposited, valueWithdraw]);
+  }, [chainId, token.decimals, totalDeposited, valueWithdraw]);
 
   return (
     <Box
