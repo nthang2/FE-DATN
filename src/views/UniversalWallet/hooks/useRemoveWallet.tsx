@@ -21,7 +21,7 @@ const useRemoveWallet = () => {
     mutationKey: ['useRemoveWallet'],
     mutationFn: async ({ wallet, network }: { wallet: string; network: string | number }) => {
       try {
-        if (network.toString().toLowerCase() !== mapNameNetwork.ethereum.id.toLowerCase()) {
+        if (network.toString().toLowerCase() !== mapNameNetwork.ethereum.chainId.toString()) {
           const contractSolana = new LendingContract(walletSolana);
           const transactionHash = await contractSolana.removeUniversalWallet(wallet, Number(network));
           const linkWalletInfo = await contractSolana.getLinkWalletInfo(wallet);
