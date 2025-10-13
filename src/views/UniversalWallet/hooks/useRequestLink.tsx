@@ -37,29 +37,32 @@ const useRequestLink = () => {
       try {
         if (sourceChainId === '2') {
           const contractSolana = new LendingContract(walletSolana);
-          await contractSolana.linkWallet(destinationWallet.address, destinationWallet.chainId, true, sourceAddress);
+          const tx = await contractSolana.linkWallet(destinationWallet.address, destinationWallet.chainId, true, sourceAddress);
 
           await sleep(1000 * 5); // wait 5 seconds
 
           const linkWalletInfo = await contractSolana.getLinkWalletInfo(sourceAddress);
-          await handleWalletLinkingRequest({
-            requestId: linkWalletInfo.requestId.toNumber(),
-            sourceWallet: sourceAddress,
-            sourceChainId: linkWalletInfo.sourceChainId,
-            destinationWallet: destinationWallet.address,
-            destinationChainId: linkWalletInfo.destinationChainId,
-            deadline: linkWalletInfo.deadline.toNumber(),
-            action: linkWalletInfo.action,
-          });
+          await handleWalletLinkingRequest(
+            {
+              requestId: linkWalletInfo.requestId.toNumber(),
+              sourceWallet: sourceAddress,
+              sourceChainId: linkWalletInfo.sourceChainId,
+              destinationWallet: destinationWallet.address,
+              destinationChainId: linkWalletInfo.destinationChainId,
+              deadline: linkWalletInfo.deadline.toNumber(),
+              action: linkWalletInfo.action,
+            },
+            false
+          );
 
           const response = await requestToLink(destinationWallet.chainId, destinationWallet.address, sourceAddress, sourceChainId);
           setGenMessage(response.message);
 
-          return '';
+          return tx;
         } else {
           await switchToChainSelected();
 
-          await writeContract(config, {
+          const tx = await writeContract(config, {
             address: ctrAdsEVM.universalWallet as `0x${string}`,
             abi: universalWalletAbi,
             functionName: 'requestLinkWallet',
@@ -77,15 +80,18 @@ const useRequestLink = () => {
             args: [sourceAddress as `0x${string}`],
           });
 
-          await handleWalletLinkingRequest({
-            requestId: Number(walletRequest[0]),
-            sourceWallet: sourceAddress,
-            sourceChainId: walletRequest[3],
-            destinationWallet: destinationWallet.address,
-            destinationChainId: walletRequest[4],
-            deadline: Number(walletRequest[5]),
-            action: walletRequest[6],
-          });
+          await handleWalletLinkingRequest(
+            {
+              requestId: Number(walletRequest[0]),
+              sourceWallet: sourceAddress,
+              sourceChainId: walletRequest[3],
+              destinationWallet: destinationWallet.address,
+              destinationChainId: walletRequest[4],
+              deadline: Number(walletRequest[5]),
+              action: walletRequest[6],
+            },
+            false
+          );
 
           const response = await requestToLink(
             destinationWallet.chainId,
@@ -95,7 +101,7 @@ const useRequestLink = () => {
           );
           setGenMessage(response.message);
 
-          return '';
+          return tx;
         }
       } catch (error) {
         console.log(error);
