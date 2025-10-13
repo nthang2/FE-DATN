@@ -52,12 +52,7 @@ const TransactionHistory = () => {
                       </Stack>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.disable' }}>
-                        {row.state}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" sx={{ fontWeight: 500, color: row.state == 'Completed' ? '#08DBA4' : '#FFB41E' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: row.action ? '#08DBA4' : 'red' }}>
                         {row.action ? 'Add' : 'Remove'}
                       </Typography>
                     </TableCell>
@@ -79,6 +74,11 @@ const TransactionHistory = () => {
                           <OpenInNew sx={{ fontSize: '14px' }} />
                         </Link>
                       </Stack>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: row.state == 'Completed' ? '#08DBA4' : '#FFB41E' }}>
+                        {row.state}
+                      </Typography>
                     </TableCell>
                   </TableRow>
                 );

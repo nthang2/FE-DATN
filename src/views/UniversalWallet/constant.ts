@@ -6,10 +6,10 @@ export const listWalletTableHead: Array<{ label: string; width?: string }> = [
 
 export const transactionHistoryTableHead: Array<{ label: string; width?: string }> = [
   { label: 'Network' },
-  { label: 'Status' },
   { label: 'Action' },
   { label: 'Date' },
   { label: 'Transaction Hash' },
+  { label: 'Status' },
 ];
 
 export const listNetwork = ['solana', 'ethereum'];
