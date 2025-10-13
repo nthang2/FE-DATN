@@ -1,12 +1,13 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useDestinationNetworkState, useDestinationWalletState, useGenMessageState } from '../state/hooks';
 import { useMutation } from '@tanstack/react-query';
-import { handleSignMessageApi } from 'src/services/HandleApi/requestToLink/requestToLink';
-import { toast } from 'react-toastify';
 import { disconnect as disconnectEVM, signMessage } from '@wagmi/core';
-import { config, configUniversalWallet } from 'src/states/wallets/evm-blockchain/config';
-import { queryClient } from 'src/layout/Layout';
+import { toast } from 'react-toastify';
 import useSwitchToSelectedChain from 'src/hooks/useSwitchToSelectedChain';
+import { queryClient } from 'src/layout/Layout';
+import { handleSignMessageApi } from 'src/services/HandleApi/requestToLink/requestToLink';
+import { config, configUniversalWallet } from 'src/states/wallets/evm-blockchain/config';
+import { useDestinationNetworkState, useDestinationWalletState, useGenMessageState } from '../state/hooks';
+import { handleRetryGetWalletLinkingRequest } from '../utils';
 
 const useSignMessageDestination = () => {
   const [genMessage, setGenMessage] = useGenMessageState();
@@ -25,19 +26,31 @@ const useSignMessageDestination = () => {
           const signatureHex = Array.from(signatureSolana || [])
             .map((byte) => byte.toString(16).padStart(2, '0'))
             .join('');
-          await handleSignMessageApi({
+          const resp = await handleSignMessageApi({
             walletAddress: destinationWallet.address,
             chainId: Number(destinationWallet.chainId),
             signature: signatureHex,
+          });
+
+          await handleRetryGetWalletLinkingRequest({
+            requestId: resp.requestId,
+            walletAddress: resp.sourceWallet,
+            chainId: resp.sourceChainId,
           });
         } else {
           await switchToChainSelected();
 
           const signatureEVM = await signMessage(config, { message: genMessage });
-          await handleSignMessageApi({
+          const resp = await handleSignMessageApi({
             walletAddress: destinationWallet.address,
             chainId: Number(destinationWallet.chainId),
             signature: signatureEVM,
+          });
+
+          await handleRetryGetWalletLinkingRequest({
+            requestId: resp.requestId,
+            walletAddress: resp.sourceWallet,
+            chainId: resp.sourceChainId,
           });
         }
       } catch (error) {

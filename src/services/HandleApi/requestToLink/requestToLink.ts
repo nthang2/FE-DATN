@@ -47,6 +47,12 @@ export type TGetWalletLinkingRequestBody = {
   chainId: number;
 };
 
+export type TRequestToLinkBody = {
+  requestId: number;
+  sourceChainId: number;
+  sourceWallet: string;
+};
+
 export const requestToLink = async (chainId: string, walletAddress: string, sourceWalletAddress: string, sourceChainId: string) => {
   const response = await axios.get<{ message: string }>(apiUrl.generateMessage(chainId, walletAddress, sourceWalletAddress, sourceChainId));
   return response.data;
@@ -65,7 +71,7 @@ export const getWalletLinkingRequest = async (body: TGetWalletLinkingRequestBody
 };
 
 export const handleSignMessageApi = async (body: TSignMessageBody) => {
-  const response = await axios.post(apiUrl.signMessage(), body);
+  const response = await axios.post<TRequestToLinkBody>(apiUrl.signMessage(), body);
   return response.data;
 };
 

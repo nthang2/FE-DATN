@@ -3,7 +3,11 @@ import {
   TWalletLinkingRequestBody,
   walletLinkingRequest,
   getWalletLinkingRequest,
+  TGetWalletLinkingRequestBody,
 } from 'src/services/HandleApi/requestToLink/requestToLink';
+import { sleep } from 'src/utils';
+
+const RETRY_TIMES = 5;
 
 export const handleWalletLinkingRequest = async (walletLinkingRequestInfo: TWalletLinkingRequestBody) => {
   await walletLinkingRequest(walletLinkingRequestInfo);
@@ -20,4 +24,23 @@ export const handleWalletLinkingRequest = async (walletLinkingRequestInfo: TWall
   }
 
   return walletLinkingRequestInfo;
+};
+
+export const handleRetryGetWalletLinkingRequest = async (data: TGetWalletLinkingRequestBody, retryTimes: number = RETRY_TIMES) => {
+  if (retryTimes === 0 || !retryTimes || !data.requestId) {
+    return;
+  }
+
+  const response = await getWalletLinkingRequest({
+    requestId: data.requestId,
+    walletAddress: data.walletAddress,
+    chainId: data.chainId,
+  });
+
+  if (response.state === 'Pending' && response?.requestId > 0) {
+    await sleep(1000 * 3);
+    await handleRetryGetWalletLinkingRequest(data, retryTimes - 1);
+  }
+
+  return response;
 };
