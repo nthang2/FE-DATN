@@ -38,24 +38,23 @@ export type THealthFactoruniversalBody = {
   mintAmount: number;
 };
 
-export type TTransactionHistoryBody = { chainId: string; walletAddress: string };
+export type TTransactionHistoryBody = { chainId: string; walletAddress: string; pageIndex: number; pageSize: number };
 
 export type TTransactonHistoryItem = {
   universalWallet: string | null;
+  numberOfActions: number;
   actions: Array<{
     actionType: number;
     amount: string;
     chainId: number;
     deadline: number;
-    execution: [
-      {
-        message: null | string;
-        step: string;
-        success: boolean;
-        timestamp: number;
-        tx: string;
-      }
-    ];
+    execution?: Array<{
+      message: null | string;
+      step: string;
+      success: boolean;
+      timestamp: number;
+      tx: string;
+    }>;
     nonce: number;
     requestId: number;
     state: string;

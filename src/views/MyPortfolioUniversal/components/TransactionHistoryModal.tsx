@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import { format as fd } from 'date-fns';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Failed from 'src/components/StatusData/Failed';
 import JPowLoading from 'src/components/StatusData/Loading';
@@ -28,22 +28,22 @@ import { actionType } from 'src/views/Borrow/constant';
 
 const tableHead = ['Network', 'Action', 'Time', 'Transaction Hash', 'Status'];
 export default function TransactionHistoryModal() {
-  const { data: transactionsHistoryData, status: statusQueryTransactionsHistory } = useQueryTransactionsHistory();
-
   const [page, setPage] = useState(1);
   const [rowsPerPage] = useState(5);
+
+  const { data: transactionsHistoryData, status: statusQueryTransactionsHistory } = useQueryTransactionsHistory(page, rowsPerPage);
 
   const handleChangePage = (event: React.ChangeEvent<unknown>, newPage: number) => {
     setPage(newPage);
   };
 
-  const dataRender = useMemo(() => {
-    if (transactionsHistoryData && transactionsHistoryData.actions.length > 0) {
-      return transactionsHistoryData.actions.slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage);
-    } else {
-      return [];
-    }
-  }, [page, rowsPerPage, transactionsHistoryData]);
+  // const dataRender = useMemo(() => {
+  //   if (transactionsHistoryData && transactionsHistoryData.actions.length > 0) {
+  //     return transactionsHistoryData.actions.slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage);
+  //   } else {
+  //     return [];
+  //   }
+  // }, [page, rowsPerPage, transactionsHistoryData]);
   return (
     <Box>
       <TableContainer
@@ -64,11 +64,8 @@ export default function TransactionHistoryModal() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {statusQueryTransactionsHistory == 'success' &&
-            transactionsHistoryData &&
-            transactionsHistoryData.actions.length > 0 &&
-            dataRender.length > 0 ? (
-              dataRender.map((row, index) => {
+            {statusQueryTransactionsHistory == 'success' && transactionsHistoryData && transactionsHistoryData.actions.length > 0 ? (
+              transactionsHistoryData.actions.map((row, index) => {
                 const IconNetwork = chainIconNetwork[row.chainId];
                 const eIndex = row.execution?.[0].message?.indexOf('Error Message')
                   ? row.execution?.[0].message?.indexOf('Error Message') + 14
@@ -114,7 +111,7 @@ export default function TransactionHistoryModal() {
                     <TableCell component="th" scope="row">
                       <Stack sx={{ alignItems: 'center', gap: 0.5 }}>
                         {row.state == 'Reverted' && (
-                          <Tooltip title={row.execution[0].message?.slice(eIndex)}>
+                          <Tooltip title={row.execution ? row.execution[0]?.message?.slice(eIndex) : ''}>
                             <ErrorOutline sx={{ color: '#FFB41E' }} />
                           </Tooltip>
                         )}
@@ -148,7 +145,7 @@ export default function TransactionHistoryModal() {
           className="flex-center"
           sx={{ mt: 2 }}
           page={page}
-          count={Math.floor(transactionsHistoryData.actions.length / rowsPerPage)}
+          count={Math.floor(transactionsHistoryData.numberOfActions / rowsPerPage) + 1}
           onChange={handleChangePage}
         />
       )}
