@@ -5,6 +5,11 @@ export default function useSwitchToSelectedChain() {
   const chainIdSelected = useChainId();
   const { switchChainAsync } = useSwitchChain();
   async function switchToChainSelected() {
+    console.log({
+      chainId,
+      chainIdSelected,
+    });
+
     if (chainId != chainIdSelected) {
       await switchChainAsync({ chainId: chainIdSelected });
     }

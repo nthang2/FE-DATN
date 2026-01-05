@@ -13,9 +13,11 @@ import { sepolia } from 'viem/chains';
 import { readContract, writeContract } from 'wagmi/actions';
 import { handleWalletLinkingRequest } from '../utils';
 import { mapNameNetwork } from 'src/constants/network';
+import useSwitchToSelectedChain from 'src/hooks/useSwitchToSelectedChain';
 
 const useRemoveWallet = () => {
   const walletSolana = useWallet();
+  const { switchToChainSelected } = useSwitchToSelectedChain();
 
   const mutation = useMutation({
     mutationKey: ['useRemoveWallet'],
@@ -43,6 +45,8 @@ const useRemoveWallet = () => {
           return transactionHash;
         } else {
           const padAddress = pad(wallet as `0x${string}`, { size: 32 });
+
+          switchToChainSelected();
 
           await writeContract(config, {
             address: ctrAdsEVM.universalWallet as `0x${string}`,
