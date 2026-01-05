@@ -46,7 +46,7 @@ const useRemoveWallet = () => {
         } else {
           const padAddress = pad(wallet as `0x${string}`, { size: 32 });
 
-          switchToChainSelected();
+          await switchToChainSelected();
 
           await writeContract(config, {
             address: ctrAdsEVM.universalWallet as `0x${string}`,
