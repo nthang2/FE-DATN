@@ -48,6 +48,7 @@ const useRemoveWallet = () => {
             address: ctrAdsEVM.universalWallet as `0x${string}`,
             abi: universalWalletAbi,
             functionName: 'requestLinkWallet',
+            chainId: sepolia.id,
             args: [padAddress, Number(network), false],
           });
 
