@@ -15,6 +15,7 @@ import { TBorrowCrossItem } from '../../state/types';
 import BorrowTableRow from './BorrowTableRow';
 import DepositTableRow from './DepositTableRow';
 import useInvestedValueUniversal from 'src/hooks/useQueryHook/queryBorrowUniversal/useInvestedValueUniversal';
+import useMyPortfolio from 'src/hooks/useQueryHook/queryMyPortfolio/useMyPortfolio';
 
 const ActionSection = () => {
   const wallet = useWallet();
@@ -28,6 +29,7 @@ const ActionSection = () => {
   const { data: listWallet } = useGetListWallet(chainId, address);
   const { mutateAsync: depositEVM } = useDepositEVM();
   const { mutateAsync: borrowEVM } = useBorrowEVM();
+  const { refetch: refetchAsset } = useMyPortfolio();
   const [borrowNetwork] = useSelectedNetworkBorrowState();
 
   const initDepositItems = useMemo(() => {
@@ -73,6 +75,7 @@ const ActionSection = () => {
 
     await refetchDeposited();
     await allSlpTokenBalances.refetch();
+    await refetchAsset();
     handChangeActionStatus(index);
 
     return hash;
