@@ -61,7 +61,7 @@ const DepositPreview = (props: IProps) => {
             return <IconToken key={index} tokenName={tokenInfo?.symbol as TokenName} sx={{ mr: '1px', width: '16px', height: '16px' }} />;
           })}
           <Typography ml={1} variant="body1">
-            Your deposited ~ ${depositedValueUsd?.toFixed(4)}
+            Your deposited ~ ${depositedValueUsd?.toFixed(0)}
           </Typography>
         </Stack>
         <Stack alignItems="center" display={isHasNewValue ? 'flex' : 'none'}>

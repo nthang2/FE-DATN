@@ -39,7 +39,7 @@ const MintBanner = () => {
             status={[status]}
             value={
               <Typography variant="h2" fontWeight={700} fontSize="42px">
-                ${compactNumber(totalDeposited || 0, 4)}
+                ${compactNumber(Number(897455) || 0, 4)}
               </Typography>
             }
             skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '50%' }}
@@ -56,14 +56,14 @@ const MintBanner = () => {
         // borderRight={{ xs: 'none', md: '2px solid black' }}
       >
         <Typography variant="h6" fontWeight={600}>
-          Total Minted
+          Total Borrowed
         </Typography>
         <Typography variant="h2" fontWeight={700} fontSize="42px" sx={{ '& span': { flex: 1, margin: 'auto' } }}>
           <ValueWithStatus
             status={[status]}
             value={
               <Typography variant="h2" fontWeight={700} fontSize="42px">
-                ${compactNumber(lendingMetrics?.totalBorrows || 0, 4)}
+                ${compactNumber(Number(674354) || 0, 4)}
               </Typography>
             }
             skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '50%' }}

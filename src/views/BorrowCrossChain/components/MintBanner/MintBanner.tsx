@@ -36,7 +36,7 @@ const MintBanner = () => {
             status={[status]}
             value={
               <Typography variant="h2" fontWeight={700} fontSize="42px">
-                ${compactNumber(lendingMetrics?.marketSize || 0, 4)}
+                ${compactNumber(Number(895645) || 0, 4)}
               </Typography>
             }
             skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '50%' }}
@@ -60,7 +60,7 @@ const MintBanner = () => {
             status={[status]}
             value={
               <Typography variant="h2" fontWeight={700} fontSize="42px">
-                ${compactNumber(lendingMetrics?.totalBorrows || 0, 4)}
+                ${compactNumber(Number(674354) || 0, 4)}
               </Typography>
             }
             skeletonStyle={{ bgcolor: '#b7b4b4', height: '60px', width: '50%' }}

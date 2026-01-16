@@ -14,19 +14,19 @@ export const menu: TMenu[] = [
   { title: 'My Portfolio', url: '/universal-my-portfolio', isUniversalMode: true },
   { title: 'Borrow', url: '/' },
   { title: 'Universal Borrow', url: '/universal-borrow', isUniversalMode: true },
-  {
-    title: 'Earn',
-    url: '/earn',
-    isUniversalMode: 'both',
-  },
-  {
-    title: 'Liquidation',
-    url: '/liquidation',
-  },
-  {
-    title: 'Convert',
-    url: '/convert',
-  },
+  // {
+  //   title: 'Earn',
+  //   url: '/earn',
+  //   isUniversalMode: 'both',
+  // },
+  // {
+  //   title: 'Liquidation',
+  //   url: '/liquidation',
+  // },
+  // {
+  //   title: 'Convert',
+  //   url: '/convert',
+  // },
   {
     title: 'Universal Wallet',
     url: '/universal-wallet',
