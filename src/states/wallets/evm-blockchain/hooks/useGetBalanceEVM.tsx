@@ -5,7 +5,7 @@ import { getBalance } from 'wagmi/actions';
 import { config } from '../config';
 import { useQuery } from '@tanstack/react-query';
 
-export type TAppChainIdEVM = 1 | 11155111;
+export type TAppChainIdEVM = 11155111;
 
 const useGetBalanceEVM = (tokenName: string) => {
   const { address, chainId } = useSummaryEVMConnect();

@@ -67,7 +67,7 @@ const useRequestLink = () => {
             abi: universalWalletAbi,
             functionName: 'requestLinkWallet',
             args: [padAddress, Number(destinationWallet.chainId), true],
-            chainId: isDevNet ? sepolia.id : (Number(sourceWalletState.chainId) as 1 | 11155111),
+            chainId: isDevNet ? sepolia.id : (Number(sourceWalletState.chainId) as 11155111),
             value: ethFee,
           });
 

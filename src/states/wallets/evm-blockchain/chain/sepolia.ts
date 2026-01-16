@@ -6,7 +6,8 @@ export const sepolia = /*#__PURE__*/ defineChain({
   nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
   rpcUrls: {
     default: {
-      http: ['https://eth-sepolia.g.alchemy.com/v2/tyTWOxcpFmiTzLAQxu816zjdAasbpWIp'],
+      // http: ['https://eth-sepolia.g.alchemy.com/v2/tyTWOxcpFmiTzLAQxu816zjdAasbpWIp'],
+      http: ['https://eth-sepolia.g.alchemy.com/v2/6R1NR6Yef8Rx3lzwr1v19'],
     },
   },
   blockExplorers: {

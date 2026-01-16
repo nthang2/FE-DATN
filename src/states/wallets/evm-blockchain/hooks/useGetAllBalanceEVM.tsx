@@ -8,7 +8,7 @@ import { config } from '../config';
 import useSummaryEVMConnect from './useSummaryEVMConnect';
 import { useChainId } from 'wagmi';
 
-export type TAppChainIdEVM = 1 | 11155111;
+export type TAppChainIdEVM = 11155111;
 
 const useGetAllBalanceEVM = () => {
   const { address } = useSummaryEVMConnect();
