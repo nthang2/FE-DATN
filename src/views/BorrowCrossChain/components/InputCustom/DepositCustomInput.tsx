@@ -57,15 +57,15 @@ export default function DepositCustomInput(props: Props) {
   const options = useCallback(() => {
     if (hideDropdownIcon) {
       return {
-        solana: [listTokenAvailableSOL.USDAI],
-        ethereum: [listTokenAvailableETH.USDAI],
+        solana: [listTokenAvailableSOL.HEHEHE],
+        ethereum: [listTokenAvailableETH.HEHEHE],
       };
     }
 
     return {
       //remove USDAI from the list when is it deposit input
-      solana: Object.values(listTokenAvailableSOL).filter((token) => token.address !== listTokenAvailableSOL.USDAI.address),
-      ethereum: Object.values(listTokenAvailableETH).filter((token) => token.address !== listTokenAvailableETH.USDAI.address),
+      solana: Object.values(listTokenAvailableSOL).filter((token) => token.address !== listTokenAvailableSOL.HEHEHE.address),
+      ethereum: Object.values(listTokenAvailableETH).filter((token) => token.address !== listTokenAvailableETH.HEHEHE.address),
     };
   }, [hideDropdownIcon]);
 
@@ -151,7 +151,7 @@ export default function DepositCustomInput(props: Props) {
                     sx={{ position: 'absolute', right: '-6px', bottom: 6, width: '12px', height: '12px' }}
                   />
                 </Box>
-                <Typography variant="body2">USDAI</Typography>
+                <Typography variant="body2">HEHEHE</Typography>
               </Stack>
             ) : (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

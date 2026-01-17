@@ -18,7 +18,7 @@ export default function Setting() {
     setIsRotated(true);
     setTimeout(() => setIsRotated(false), 600);
     if (isUniversalMode) {
-      modeFunction({ isUniversalMode: false });
+      modeFunction({ isUniversalMode: true });
       navigate('/');
     } else {
       modeFunction({ isUniversalMode: true });
@@ -33,7 +33,7 @@ export default function Setting() {
     } else if (result?.isUniversalMode) {
       modeFunction({ isUniversalMode: true });
     } else {
-      modeFunction({ isUniversalMode: false });
+      modeFunction({ isUniversalMode: true });
     }
   }, [pathname]);
 
