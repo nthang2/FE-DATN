@@ -28,7 +28,7 @@ export default function Header() {
       >
         <Stack sx={{ alignItems: 'center', justifyContent: 'space-between', width: { xs: '100%', md: 'initial' } }}>
           <Stack sx={{ p: '6px 16px', position: 'relative' }}>
-            <img src={logo} alt="jpow_logo" width={69} height={24} />
+            <img src={logo} alt="jpow_logo" style={{objectFit: 'cover', maxWidth: '69px', maxHeight: '24px'}} />
             <Typography sx={{ fontSize: '6px', position: 'absolute', bottom: 0, right: 10 }}>
               {isUniversalMode ? 'Universal' : 'Classic'}
             </Typography>
