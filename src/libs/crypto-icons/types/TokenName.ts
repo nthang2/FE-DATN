@@ -6,7 +6,7 @@ export enum TokenName {
   ORAI = 'ORAI',
   SOL = 'SOL',
   TRUMP = 'TRUMP',
-  USDAI = 'HEHEHE',
+  USDAI = 'UniUSD',
   USDC = 'USDC',
   USDT = 'USDT',
   VIRTUAL = 'VIRTUAL',
