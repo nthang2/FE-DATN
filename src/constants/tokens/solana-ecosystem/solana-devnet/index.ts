@@ -28,7 +28,7 @@ export const usdaiSolanaDevnet = new SolanaDevnetTokenInfo({
   address: '7cBW2SiCLDPgpG5ebz5TBsPPnTkTS9eN4Sx6Nzm3Px7X',
   decimals: 6,
   symbol: TokenName.USDAI,
-  prettyName: 'UniUSD',
+  prettyName: 'HEHEHE',
   isNative: false,
   isToken2022: false,
 });

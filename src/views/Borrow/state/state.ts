@@ -4,5 +4,5 @@ import { TBorrowItem } from './types';
 import { mapNameToInfoSolana } from 'src/constants/tokens/solana-ecosystem/mapNameToInfoSolana';
 
 export const depositAtom = atom<TBorrowItem[]>([defaultBorrowValue]);
-export const borrowAtom = atom<TBorrowItem>({ ...defaultBorrowValue, address: mapNameToInfoSolana.USDAI.address });
+export const borrowAtom = atom<TBorrowItem>({ ...defaultBorrowValue, address: mapNameToInfoSolana.HEHEHE.address });
 export const borrowSubmitAtom = atom<boolean>(false);
