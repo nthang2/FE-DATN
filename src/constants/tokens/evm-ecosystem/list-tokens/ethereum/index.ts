@@ -60,7 +60,7 @@ export const usdaiEthereum = new EthereumChainTokenInfo({
   address: '0xAC7Faf2d8b654e2e7cbD14624893aD85Acc881bF',
   decimals: 6,
   symbol: TokenName.USDAI,
-  prettyName: 'USDAI',
+  prettyName: 'UniUSD',
   isNative: false,
   coingeckoId: 'usdai',
 });
