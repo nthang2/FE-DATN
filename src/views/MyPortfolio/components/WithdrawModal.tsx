@@ -199,7 +199,7 @@ export default function WithdrawModal({ token }: { token: SolanaEcosystemTokenIn
           </Box>
         </Box>
         <Box sx={{ alignItems: 'center', gap: 1.5, height: '100%', display: 'flex' }}>
-          <Typography variant="h5" sx={{ cursor: 'pointer', fontWeight: 600, color: '#FCFFD8' }} onClick={handleMax}>
+          <Typography variant="h5" sx={{ cursor: 'pointer', fontWeight: 600, color: '#FFD8F0' }} onClick={handleMax}>
             Max
           </Typography>
         </Box>

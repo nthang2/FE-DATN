@@ -9,7 +9,7 @@ const CustomMark = ({ ...props }) => {
 
   const maxValue: number = props.ownerState.marks[3].value;
   const liquidationValue: number = props.ownerState.marks[2].value;
-  const bgcolor = dataIndex > 1 ? '#FCFFD8' : '#666662';
+  const bgcolor = dataIndex > 1 ? '#FFD8F0' : '#666662';
   const isOverflow = liquidationValue > 90;
 
   const positionLiquidationTop = !isMobile ? 40 : 55;

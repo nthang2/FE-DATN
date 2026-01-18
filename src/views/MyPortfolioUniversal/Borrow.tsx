@@ -16,7 +16,7 @@ import { formatNumber } from 'src/utils/format';
 import RepayModal from './components/RepayModal';
 import CrossModeRepayModal from './components/RepayModals/CrossModeRepayModal';
 
-const tableHead = ['Asset', 'Available', 'USDAI Minted', ''];
+const tableHead = ['Asset', 'Available', 'UniUSD Minted', ''];
 const listRepayableWithCollateral = [TokenName.USDC, TokenName.MAX, TokenName.SOL];
 
 export default function Borrow() {

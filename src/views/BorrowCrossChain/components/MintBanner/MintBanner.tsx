@@ -10,7 +10,7 @@ const MintBanner = () => {
     <Stack
       sx={{
         borderRadius: '14px',
-        background: 'linear-gradient(0deg, #F2F9A5 0%, #FEFFF3 100%)',
+        background: 'linear-gradient(0deg, #FFB6D9 0%, #FFF3F9 100%)',
         color: '#000',
         height: 'fit-content',
         padding: '36px 32px 24px 32px',

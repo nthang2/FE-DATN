@@ -196,7 +196,7 @@ export default function DepositCustomInput(props: Props) {
                   mt: 1,
                   '& .selectedNetwork': {
                     border: '1px solid',
-                    borderimage: 'linear-gradient(to right, #F2F9A5, #FEFFF3) 1',
+                    borderimage: 'linear-gradient(to right, #FFB6D9, #FFF3F9) 1',
                     color: '#FFFFFF',
                     bgcolor: '#444443',
                   },

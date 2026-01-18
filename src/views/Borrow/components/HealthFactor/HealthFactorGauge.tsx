@@ -18,7 +18,7 @@ const HealthFactorGauge = ({ healthFactorAngle, bgColor }: HealthFactorGaugeProp
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'yellow',
+        backgroundColor: '#FFB6D9',
         border: 'none',
       }}
     >

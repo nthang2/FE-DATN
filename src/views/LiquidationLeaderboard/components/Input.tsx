@@ -21,7 +21,7 @@ export const Input = styled(InputBase)(({ theme }) => ({
     '&:focus': {
       borderRadius: 4,
       borderColor: '#80bdff',
-      boxShadow: `0 0 0 0.1rem #FCFFD8`,
+      boxShadow: `0 0 0 0.1rem #FFD8F0`,
     },
   },
 }));

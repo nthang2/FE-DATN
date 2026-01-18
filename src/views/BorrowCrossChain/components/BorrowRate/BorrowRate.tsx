@@ -23,7 +23,7 @@ const BorrowRate = () => {
       </Typography>
       <Typography variant="h2" fontWeight={700}>
         {/* {roundNumber(borrowRate || 3, 2)}% */}
-        3%
+        0%
       </Typography>
 
       {/* <Typography variant="body2">Borrow USDAI from jpow.ai for the best rates</Typography> */}

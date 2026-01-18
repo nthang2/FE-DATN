@@ -54,7 +54,7 @@ export default function SliderCustom({
         <Tooltip title={textFill}>
           <Box
             sx={{
-              bgcolor: '#FCFFD8',
+              bgcolor: '#FFD8F0',
               height: '23px',
               borderRadius: '1200px',
               border: '0.5px solid #919283',

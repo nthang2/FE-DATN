@@ -193,7 +193,7 @@ export default function RepayCustomInput(props: Props) {
         <Box sx={{ alignItems: 'center', gap: 1.5, height: '100%', display: 'flex' }}>
           {maxValue ? (
             <Box>
-              <Typography variant="h5" sx={{ cursor: 'pointer', fontWeight: 600, color: '#FCFFD8', mr: 0.5 }} onClick={onClickMax}>
+              <Typography variant="h5" sx={{ cursor: 'pointer', fontWeight: 600, color: '#FFD8F0', mr: 0.5 }} onClick={onClickMax}>
                 Max
               </Typography>
             </Box>

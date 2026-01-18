@@ -18,7 +18,7 @@ export default function SwitchCustom({ _checked }: { _checked: boolean }) {
         display: 'flex',
         alignItems: 'center',
         cursor: 'pointer',
-        bgcolor: checked ? '#FCFFD8' : '#35352D',
+        bgcolor: checked ? '#FFD8F0' : '#35352D',
       }}
       onClick={handleChange}
     >

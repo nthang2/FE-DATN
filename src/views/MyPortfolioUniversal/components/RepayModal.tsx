@@ -201,7 +201,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
                 mt: 1,
                 '& .selectedNetwork': {
                   border: '1px solid',
-                  borderimage: 'linear-gradient(to right, #F2F9A5, #FEFFF3) 1',
+                  borderimage: 'linear-gradient(to right, #FFB6D9, #FFF3F9) 1',
                   color: '#FFFFFF',
                   bgcolor: '#444443',
                 },
@@ -293,7 +293,7 @@ export default function RepayModal({ token }: { token: SolanaEcosystemTokenInfo 
           </Box>
         </Box>
         <Box sx={{ alignItems: 'center', gap: 1.5, height: '100%', display: 'flex' }}>
-          <Typography variant="h5" sx={{ cursor: 'pointer', fontWeight: 600, color: '#FCFFD8' }} onClick={handleMax}>
+          <Typography variant="h5" sx={{ cursor: 'pointer', fontWeight: 600, color: '#FFD8F0' }} onClick={handleMax}>
             Max
           </Typography>
         </Box>

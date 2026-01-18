@@ -19,15 +19,15 @@ export function getWalletThemeConfig(mode: THEME_MODE): ThemeOptions {
       content: getColor('#181817', '#181817'), // ? color content background
       selection: getColor('#1B1C14', '#4CADD3'), // ? color selection sidebar
       hover: 'linear-gradient(90deg, #0E1713 0%, #246b87 48%, #0E1713 100%)',
-      button: getColor('rgba(252, 255, 216, 1)', 'linear-gradient(142deg, #b6eaff 0%, #d3f1ff 35%, #a2d6ff 65%, #5dcdff 100%)'),
+      button: getColor('rgba(255, 182, 217, 1)', 'linear-gradient(142deg, #b6eaff 0%, #d3f1ff 35%, #a2d6ff 65%, #5dcdff 100%)'),
       border: getColor('#666662', '#E3E3E3'),
       accordion: getColor('#191917', '#191917'),
     },
 
     primary: {
-      main: 'rgba(252, 255, 216, 1)', // text color selected ,background color button contained
-      light: 'rgba(242, 249, 165, 1)', // background color selected text,
-      dark: 'rgba(254, 255, 243, 1)',
+      main: 'rgba(255, 182, 217, 1)', // text color selected ,background color button contained
+      light: 'rgba(255, 159, 204, 1)', // background color selected text,
+      dark: 'rgba(255, 243, 249, 1)',
     },
     secondary: {
       main: getColor('rgba(194, 205, 124, 0.2)', '#131816'),
