@@ -119,13 +119,37 @@ const ConnectWalletSection = () => {
         <Button
           sx={(theme) => ({
             p: '6px 16px',
-            background: theme.palette.background.default,
-            color: theme.palette.common.white,
-            ':hover': {
-              background: theme.palette.background.button,
-              color: theme.palette.common.black,
-            },
+            background: 'rgba(255, 182, 217, 1)',
+            color: '#000',
             borderRadius: '11px',
+            position: 'relative',
+            overflow: 'hidden',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            transform: 'translateY(0)',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              width: '0',
+              height: '0',
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.3)',
+              transform: 'translate(-50%, -50%)',
+              transition: 'width 0.6s, height 0.6s',
+            },
+            '&:hover': {
+              background: 'rgba(255, 159, 204, 1)',
+              transform: 'translateY(-2px)',
+              boxShadow: '0 8px 25px rgba(255, 182, 217, 0.5), 0 0 40px rgba(255, 182, 217, 0.3)',
+              '&::before': {
+                width: '300px',
+                height: '300px',
+              },
+            },
+            '&:active': {
+              transform: 'translateY(0)',
+            },
           })}
           onClick={toggleDrawer(true)}
         >

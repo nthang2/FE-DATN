@@ -12,11 +12,11 @@ export function getWalletThemeConfig(mode: THEME_MODE): ThemeOptions {
     mode,
     divider: '#D3E8E7',
     background: {
-      paper: getColor('#232322', '#FFFFFF'),
-      default: '#08080D', // ? body background
-      primary: getColor('#2D2D2D', '#F7F7F7'),
-      secondary: getColor('#333331', '#D8D8D8'),
-      content: getColor('#181817', '#181817'), // ? color content background
+      paper: getColor('#1A1E2E', '#FFFFFF'),
+      default: '#0F1419', // ? body background - dark blue-grey
+      primary: getColor('#242938', '#F7F7F7'),
+      secondary: getColor('#2D3441', '#D8D8D8'),
+      content: getColor('#2D3441', '#181817'), // ? color content background
       selection: getColor('#1B1C14', '#4CADD3'), // ? color selection sidebar
       hover: 'linear-gradient(90deg, #0E1713 0%, #246b87 48%, #0E1713 100%)',
       button: getColor('rgba(255, 182, 217, 1)', 'linear-gradient(142deg, #b6eaff 0%, #d3f1ff 35%, #a2d6ff 65%, #5dcdff 100%)'),
@@ -147,6 +147,76 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
           'input[type=number]': {
             MozAppearance: 'textfield',
           },
+          body: {
+            background: `#0F1419 url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231A1E2E' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundSize: '60px 60px',
+            position: 'relative',
+            overflowX: 'hidden',
+            '&::before': {
+              content: '""',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background: `
+                radial-gradient(circle at 20% 50%, rgba(255, 182, 217, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 159, 204, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(182, 234, 255, 0.05) 0%, transparent 50%)
+              `,
+              animation: 'gradientShift 15s ease infinite',
+              pointerEvents: 'none',
+              zIndex: 0,
+              '@keyframes gradientShift': {
+                '0%, 100%': {
+                  opacity: 1,
+                  transform: 'scale(1) translate(0, 0)',
+                },
+                '33%': {
+                  opacity: 0.9,
+                  transform: 'scale(1.05) translate(10px, -10px)',
+                },
+                '66%': {
+                  opacity: 0.8,
+                  transform: 'scale(1.1) translate(-10px, 10px)',
+                },
+              },
+            },
+            '&::after': {
+              content: '""',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundImage: `
+                radial-gradient(2px 2px at 20px 30px, rgba(255, 182, 217, 0.3), transparent),
+                radial-gradient(2px 2px at 60px 70px, rgba(255, 159, 204, 0.2), transparent),
+                radial-gradient(1px 1px at 50px 50px, rgba(182, 234, 255, 0.4), transparent),
+                radial-gradient(1px 1px at 80px 20px, rgba(255, 182, 217, 0.3), transparent),
+                radial-gradient(2px 2px at 40px 90px, rgba(255, 159, 204, 0.2), transparent),
+                radial-gradient(1px 1px at 90px 60px, rgba(182, 234, 255, 0.3), transparent)
+              `,
+              backgroundSize: '200px 200px',
+              backgroundRepeat: 'repeat',
+              animation: 'particleFloat 20s linear infinite',
+              pointerEvents: 'none',
+              zIndex: 0,
+              opacity: 0.6,
+              '@keyframes particleFloat': {
+                '0%': {
+                  transform: 'translate(0, 0)',
+                },
+                '100%': {
+                  transform: 'translate(-200px, -200px)',
+                },
+              },
+            },
+            '& > *': {
+              position: 'relative',
+              zIndex: 1,
+            },
+          },
           'body::-webkit-scrollbar-thumb': {
             background: 'linear-gradient(0deg, #f7edff75 -12.14%, #eaf1fead 53.02%, #beeafe94 100%)',
           },
@@ -193,6 +263,30 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
             display: 'flex',
             justifyContent: 'start',
             alignItems: 'center',
+          },
+          '@keyframes float': {
+            '0%, 100%': {
+              transform: 'translateY(0px)',
+            },
+            '50%': {
+              transform: 'translateY(-10px)',
+            },
+          },
+          '@keyframes pulse': {
+            '0%, 100%': {
+              opacity: 1,
+            },
+            '50%': {
+              opacity: 0.7,
+            },
+          },
+          '@keyframes shimmer': {
+            '0%': {
+              backgroundPosition: '-1000px 0',
+            },
+            '100%': {
+              backgroundPosition: '1000px 0',
+            },
           },
         },
       },
@@ -429,6 +523,14 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
             borderRadius: '8px',
             boxShadow: 'none',
             ...theme.typography.button,
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            transform: 'translateY(0)',
+            '&:hover': {
+              transform: 'translateY(-2px)',
+            },
+            '&:active': {
+              transform: 'translateY(0)',
+            },
           },
           sizeLarge: {
             height: '50px',
@@ -448,9 +550,27 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
           containedPrimary: {
             color: '#000',
             background: theme.palette.background.button,
+            position: 'relative',
+            overflow: 'hidden',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              width: '0',
+              height: '0',
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.2)',
+              transform: 'translate(-50%, -50%)',
+              transition: 'width 0.6s, height 0.6s',
+            },
+            '&:hover::before': {
+              width: '300px',
+              height: '300px',
+            },
             '&:hover, &.Mui-focusVisible': {
               backgroundColor: darken(theme.palette.background.button, 0.1),
-              boxShadow: 'rgb(42, 61, 61) 2px 2px 20px',
+              boxShadow: '0 8px 25px rgba(255, 182, 217, 0.4), 0 0 40px rgba(255, 182, 217, 0.2)',
             },
             '&.Mui-disabled': {
               color: theme.palette.mode === 'dark' ? '#E4E3D6' : '#B5B5B5',
@@ -545,6 +665,22 @@ export function getWalletThemedComponent(theme: Theme): ThemeOptions {
           root: {
             borderRadius: '14px',
             boxShadow: theme.shadows[4],
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            animation: 'fadeInUp 0.6s ease-out',
+            '@keyframes fadeInUp': {
+              '0%': {
+                opacity: 0,
+                transform: 'translateY(20px)',
+              },
+              '100%': {
+                opacity: 1,
+                transform: 'translateY(0)',
+              },
+            },
+            '&:hover': {
+              transform: 'translateY(-4px)',
+              boxShadow: '0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 182, 217, 0.1)',
+            },
           },
         },
       },

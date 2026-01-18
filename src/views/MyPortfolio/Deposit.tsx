@@ -1,4 +1,4 @@
-import { ContentCopy } from '@mui/icons-material';
+import { ContentCopy, ArrowDownward, ArrowUpward } from '@mui/icons-material';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
@@ -102,6 +102,7 @@ export default function Deposit() {
                       variant="contained"
                       size="small"
                       onClick={() => handleDeposit(row)}
+                      startIcon={<ArrowDownward />}
                     >
                       <Typography variant="body2" sx={{ fontWeight: '500' }}>
                         Deposit
@@ -116,6 +117,7 @@ export default function Deposit() {
                         handleWithdraw(row);
                       }}
                       disabled={withdrawAbleValue == 0 || BN(withdrawAblePrice).isLessThan(1e-3) || asset?.[row.address] == undefined}
+                      startIcon={loading ? undefined : <ArrowUpward />}
                     >
                       Withdraw
                     </ButtonLoading>

@@ -1,4 +1,4 @@
-import { ContentCopy } from '@mui/icons-material';
+import { ContentCopy, LocalPrintshop, Redeem } from '@mui/icons-material';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { BoxCustom } from 'src/components/General/BoxCustom/BoxCustom';
@@ -118,7 +118,7 @@ export default function Borrow() {
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Button variant="contained" size="small" onClick={() => handleMint()}>
+                    <Button variant="contained" size="small" onClick={() => handleMint()} startIcon={<LocalPrintshop />}>
                       <Typography variant="body2" sx={{ fontWeight: '500' }}>
                         Mint
                       </Typography>
@@ -130,6 +130,7 @@ export default function Borrow() {
                       onClick={() => {
                         handleRepay(row);
                       }}
+                      startIcon={<Redeem />}
                       // disabled={borrowedValue == 0 || !borrowedValue}
                     >
                       Redeem

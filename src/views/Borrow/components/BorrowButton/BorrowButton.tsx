@@ -1,4 +1,5 @@
 import { Button } from '@mui/material';
+import { LocalPrintshop } from '@mui/icons-material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useMemo } from 'react';
 import ButtonLoading from 'src/components/General/ButtonLoading/ButtonLoading';
@@ -76,6 +77,7 @@ const BorrowButton = () => {
       disabled={!address || !isValidBorrow}
       fullWidth
       sx={{ mt: 2 }}
+      startIcon={loading ? undefined : <LocalPrintshop />}
     >
       Mint
     </ButtonLoading>

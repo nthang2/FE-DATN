@@ -1,4 +1,4 @@
-import { ContentCopy } from '@mui/icons-material';
+import { ContentCopy, LocalPrintshop, Redeem } from '@mui/icons-material';
 import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { IconToken } from 'src/libs/crypto-icons/common/IconToken';
 import { TokenName } from 'src/libs/crypto-icons';
@@ -122,7 +122,7 @@ export default function Borrow() {
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Button variant="contained" size="small" onClick={() => handleMint(row.address)}>
+                    <Button variant="contained" size="small" onClick={() => handleMint(row.address)} startIcon={<LocalPrintshop />}>
                       <Typography variant="body2" sx={{ fontWeight: '500' }}>
                         Mint
                       </Typography>
@@ -135,6 +135,7 @@ export default function Borrow() {
                         handleRepay(row);
                       }}
                       disabled={borrowedValue == 0 || !borrowedValue}
+                      startIcon={<Redeem />}
                     >
                       Redeem
                     </Button>

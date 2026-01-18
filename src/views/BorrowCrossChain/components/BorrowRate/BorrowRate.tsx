@@ -9,13 +9,38 @@ const BorrowRate = () => {
     <Box
       sx={{
         borderRadius: '14px',
-        background: '#2A2A2A',
+        background: '#1A1E2E',
         display: 'flex',
         flexDirection: 'column',
         gap: 1.5,
         height: 'fit-content',
         padding: '36px 20px 24px 20px',
         maxHeight: '152px',
+        position: 'relative',
+        overflow: 'hidden',
+        transition: 'all 0.3s ease',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: '-100%',
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(90deg, transparent, rgba(255, 182, 217, 0.1), transparent)',
+          animation: 'shimmer 3s infinite',
+        },
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: '0 8px 25px rgba(255, 182, 217, 0.3)',
+        },
+        '@keyframes shimmer': {
+          '0%': {
+            left: '-100%',
+          },
+          '100%': {
+            left: '100%',
+          },
+        },
       }}
     >
       <Typography variant="h6" fontWeight={700}>

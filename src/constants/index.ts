@@ -1,6 +1,6 @@
 import { clusterApiUrl } from '@solana/web3.js';
 
-export const FontOxanium = "'Oxanium', serif";
+export const FontOxanium = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif";
 
 export const ProjectID_WalletConnect = '349c73495596fe0938c2557979bddc8c';
 

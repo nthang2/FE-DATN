@@ -71,9 +71,40 @@ const SolanaWallet = (props: IProps) => {
                 variant="outlined"
                 color={walletItem.adapter.connected ? 'error' : 'primary'}
                 onClick={() => handleClickBtn(walletItem.adapter)}
-                sx={{ height: '32px', bgcolor: '#46492F', border: '0px' }}
+                sx={{
+                  height: '32px',
+                  bgcolor: walletItem.adapter.connected ? '#FFFFFF' : 'rgba(255, 182, 217, 1)',
+                  border: '0px',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    width: '0',
+                    height: '0',
+                    borderRadius: '50%',
+                    background: 'rgba(255, 255, 255, 0.3)',
+                    transform: 'translate(-50%, -50%)',
+                    transition: 'width 0.6s, height 0.6s',
+                  },
+                  '&:hover': {
+                    bgcolor: walletItem.adapter.connected ? '#FFFFFF' : 'rgba(255, 159, 204, 1)',
+                    transform: 'translateY(-2px)',
+                    boxShadow: walletItem.adapter.connected ? '0 6px 20px rgba(255, 182, 217, 0.3)' : '0 6px 20px rgba(255, 182, 217, 0.4)',
+                    '&::before': {
+                      width: walletItem.adapter.connected ? '0' : '200px',
+                      height: walletItem.adapter.connected ? '0' : '200px',
+                    },
+                  },
+                  '&:active': {
+                    transform: 'translateY(0)',
+                  },
+                }}
               >
-                <Typography variant="caption2" sx={{ color: '#E2E5C2' }}>
+                <Typography variant="caption2" sx={{ color: walletItem.adapter.connected ? 'rgba(255, 182, 217, 1)' : '#000', position: 'relative', zIndex: 1 }}>
                   {walletItem.adapter.connected ? 'Connected' : 'Connect'}
                 </Typography>
               </Button>
